@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.n8n_local/
+.n8n/
+data/processed/
+data/raw/prices_daily.csv
+reports/*.html
+reports/*.pdf
+reports/*.csv
+reports/*.json
+reports/*.pid
+config/settings.local.json
+.DS_Store

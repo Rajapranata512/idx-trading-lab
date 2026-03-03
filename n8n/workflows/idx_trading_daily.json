@@ -1,0 +1,152 @@
+{
+  "name": "IDX Trading Daily EOD (Robust)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "25 16 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Schedule 16:25 WIB",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -ExecutionPolicy Bypass -File c:\\TRADING\\idx-trading-lab\\scripts\\run_daily_retry.ps1"
+      },
+      "id": "2",
+      "name": "Run Daily Retry",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        480,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.stdout || '';\nconst lines = raw.split(/\\r?\\n/).filter(Boolean);\nconst marker = lines.find((l) => l.startsWith('N8N_SUMMARY='));\nif (!marker) {\n  return [{\n    json: {\n      ok: false,\n      status: 'PARSER_ERROR',\n      message: 'N8N_SUMMARY marker not found in stdout',\n      attempts: 0,\n      exit_code: 98,\n      run_id: '',\n      generated_at: new Date().toISOString(),\n      signal_count: 0,\n      gate_t1: false,\n      gate_swing: false\n    }\n  }];\n}\ntry {\n  const parsed = JSON.parse(marker.slice('N8N_SUMMARY='.length));\n  return [{ json: parsed }];\n} catch (e) {\n  return [{\n    json: {\n      ok: false,\n      status: 'PARSER_ERROR',\n      message: `JSON parse failed: ${e.message}`,\n      attempts: 0,\n      exit_code: 97,\n      run_id: '',\n      generated_at: new Date().toISOString(),\n      signal_count: 0,\n      gate_t1: false,\n      gate_swing: false\n    }\n  }];\n}"
+      },
+      "id": "3",
+      "name": "Parse Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_CHAT_ID || ''}}",
+        "text": "=IDX Daily Pipeline\\nstatus={{$json.status}}\\ntrade_ready={{$json.trade_ready}}\\naction={{$json.action || 'NO_TRADE'}}\\nreason={{$json.action_reason || '-'}}\\nrun_id={{$json.run_id || '-'}}\\nattempts={{$json.attempts || 0}}\\nsignals={{$json.signal_count || 0}}\\nallowed_modes={{($json.allowed_modes || []).join(',')}}\\nmax_date={{$json.data_max_date || '-'}} age={{$json.data_age_days}}d\\nmissing_tickers={{$json.missing_tickers_count || 0}}\\ngate_t1={{$json.gate_t1}} gate_swing={{$json.gate_swing}}\\nvol_regime={{$json.vol_target_market_regime || '-'}} idx={{$json.vol_target_market_vol_index || 0}}\\nvol_mult_avg={{$json.vol_target_multiplier_avg || 0}} range={{$json.vol_target_multiplier_min || 0}}-{{$json.vol_target_multiplier_max || 0}} cap={{$json.vol_target_regime_cap || 0}}\\nvol_recalib={{$json.volatility_recalibration_status || '-'}} atr_ref={{$json.volatility_recalibration_atr_ref || 0}} rv_ref={{$json.volatility_recalibration_realized_ref || 0}}\\nevent_update={{$json.event_risk_update_status || '-'}}\\nmessage={{$json.message || '-'}}",
+        "additionalFields": {}
+      },
+      "id": "4",
+      "name": "Telegram Status",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "10 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "5",
+      "name": "Schedule Weekly Universe",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -ExecutionPolicy Bypass -File c:\\TRADING\\idx-trading-lab\\scripts\\update_universe.ps1"
+      },
+      "id": "6",
+      "name": "Run Weekly Universe Update",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        520,
+        560
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule 16:25 WIB": {
+      "main": [
+        [
+          {
+            "node": "Run Daily Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Daily Retry": {
+      "main": [
+        [
+          {
+            "node": "Parse Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Summary": {
+      "main": [
+        [
+          {
+            "node": "Telegram Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Weekly Universe": {
+      "main": [
+        [
+          {
+            "node": "Run Weekly Universe Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Jakarta"
+  },
+  "pinData": {},
+  "meta": null,
+  "versionId": "2"
+}
