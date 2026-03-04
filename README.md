@@ -36,6 +36,7 @@ Risk sizing now supports:
 - ATR + realized volatility blend (`risk.volatility_realized_weight`)
 - dynamic market-vol regime cap (`calm/normal/high/stress`)
 - configurable regime caps for position-size multiplier
+- mode-level execution caps and priority (`risk.max_positions_t1`, `risk.max_positions_swing`, `risk.execution_mode_priority`)
 
 ## Data contract
 
@@ -46,7 +47,8 @@ Canonical price columns:
 Universe file:
 
 - `data/reference/universe_lq45_idx30.csv`
-- optional event-risk blocklist: `data/reference/event_risk_blacklist.csv`
+- optional event-risk blocklist: `data/reference/event_risk_blacklist.csv` (local live file, git-ignored)
+- tracked baseline snapshot: `data/reference/event_risk_blacklist.sample.csv`
 - optional auto-update feeds for event-risk: `pipeline.event_risk.auto_update`
 
 ## CLI

@@ -143,6 +143,9 @@ class RiskSettings(BaseModel):
     account_size_idr: float = 10000000
     risk_per_trade_pct: float = 0.75
     max_positions: int = 3
+    max_positions_t1: int = 1
+    max_positions_swing: int = 3
+    execution_mode_priority: list[str] = Field(default_factory=lambda: ["swing", "t1"])
     daily_loss_stop_r: float = 2.0
     position_lot: int = 100
     stop_atr_multiple: float = 2.0

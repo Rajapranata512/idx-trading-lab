@@ -6,6 +6,7 @@ __pycache__/
 .n8n/
 data/processed/
 data/raw/prices_daily.csv
+data/reference/event_risk_blacklist.csv
 reports/*.html
 reports/*.pdf
 reports/*.csv

@@ -47,6 +47,18 @@ function Show-DebugReasons {
             Write-Output ("combined.execution_count   : {0}" -f [int]$cb.execution_plan_count)
             Write-Output ("combined.signal_count      : {0}" -f [int]$cb.signal_count)
         }
+        if ($null -ne $funnel.thresholds) {
+            $th = $funnel.thresholds
+            if ($null -ne $th.max_positions_t1) {
+                Write-Output ("limits.max_positions_t1    : {0}" -f [int]$th.max_positions_t1)
+            }
+            if ($null -ne $th.max_positions_swing) {
+                Write-Output ("limits.max_positions_swing : {0}" -f [int]$th.max_positions_swing)
+            }
+            if ($null -ne $th.execution_mode_priority) {
+                Write-Output ("limits.mode_priority       : {0}" -f (@($th.execution_mode_priority) -join ","))
+            }
+        }
     }
     else {
         Write-Output "signal_funnel.json not found."

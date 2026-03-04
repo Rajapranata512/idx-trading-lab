@@ -165,6 +165,12 @@
     "account_size_idr": 10000000,
     "risk_per_trade_pct": 0.6,
     "max_positions": 3,
+    "max_positions_t1": 1,
+    "max_positions_swing": 3,
+    "execution_mode_priority": [
+      "swing",
+      "t1"
+    ],
     "daily_loss_stop_r": 2.0,
     "position_lot": 100,
     "stop_atr_multiple": 2.0,

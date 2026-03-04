@@ -36,6 +36,36 @@ def test_apply_global_position_limit():
     assert len(out) == 3
 
 
+def test_apply_global_position_limit_with_mode_caps():
+    out = apply_global_position_limit(
+        _picks_df(),
+        max_positions=3,
+        max_positions_by_mode={"t1": 1, "swing": 3},
+    )
+    assert len(out) == 3
+    mode_counts = out["mode"].value_counts().to_dict()
+    assert int(mode_counts.get("t1", 0)) <= 1
+    assert int(mode_counts.get("swing", 0)) >= 2
+
+
+def test_apply_global_position_limit_respects_mode_priority():
+    picks = pd.DataFrame(
+        [
+            {"ticker": "T1A", "mode": "t1", "score": 99, "close": 10000, "atr_14": 100, "reason": "ok"},
+            {"ticker": "SWA", "mode": "swing", "score": 90, "close": 9000, "atr_14": 100, "reason": "ok"},
+            {"ticker": "SWB", "mode": "swing", "score": 89, "close": 8000, "atr_14": 100, "reason": "ok"},
+        ]
+    )
+    out = apply_global_position_limit(
+        picks,
+        max_positions=2,
+        max_positions_by_mode={"t1": 2, "swing": 2},
+        mode_priority=["swing", "t1"],
+    )
+    assert len(out) == 2
+    assert set(out["ticker"].tolist()) == {"SWA", "SWB"}
+
+
 def test_volatility_targeting_reduces_size_on_high_atr_pct():
     picks = _picks_df().copy()
     picks["atr_pct"] = 10.0

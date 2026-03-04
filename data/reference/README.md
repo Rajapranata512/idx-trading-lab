@@ -8,6 +8,11 @@ weekly from configured URLs (`settings.json`), then fallback to existing file wh
 URLs are not configured or request fails.
 
 `event_risk_blacklist.csv` is used to block risky tickers from live signals.
+For public-repo hygiene, this live file is ignored by git because it is refreshed often.
+
+Tracked baseline snapshot:
+
+- `event_risk_blacklist.sample.csv`
 Supported statuses are controlled in `pipeline.event_risk.active_statuses`.
 The file can also be refreshed automatically using `pipeline.event_risk.auto_update`
 or manually using `python -m src.cli update-event-risk --force`.

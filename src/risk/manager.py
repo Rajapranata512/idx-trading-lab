@@ -209,7 +209,57 @@ def propose_trade_plan(picks: pd.DataFrame, risk: RiskSettings) -> pd.DataFrame:
     return df
 
 
-def apply_global_position_limit(plan: pd.DataFrame, max_positions: int) -> pd.DataFrame:
+def apply_global_position_limit(
+    plan: pd.DataFrame,
+    max_positions: int,
+    max_positions_by_mode: dict[str, int] | None = None,
+    mode_priority: list[str] | None = None,
+) -> pd.DataFrame:
     if plan.empty:
         return plan.copy()
-    return plan.sort_values("score", ascending=False).head(max_positions).copy()
+
+    limit_total = max(0, int(max_positions))
+    if limit_total == 0:
+        return plan.iloc[0:0].copy()
+
+    df = plan.copy()
+    if "score" in df.columns:
+        df = df.sort_values("score", ascending=False).copy()
+
+    mode_priority = [str(m).strip().lower() for m in (mode_priority or []) if str(m).strip()]
+    if mode_priority and "mode" in df.columns:
+        fallback_rank = len(mode_priority)
+        priority_rank = {mode: i for i, mode in enumerate(mode_priority)}
+        df["__mode_priority"] = df["mode"].astype(str).str.lower().map(priority_rank).fillna(fallback_rank).astype(int)
+        if "score" in df.columns:
+            df = df.sort_values(["__mode_priority", "score"], ascending=[True, False]).copy()
+        else:
+            df = df.sort_values(["__mode_priority"]).copy()
+
+    limits: dict[str, int] = {}
+    for mode, raw_limit in (max_positions_by_mode or {}).items():
+        try:
+            parsed = int(raw_limit)
+        except Exception:
+            continue
+        if parsed >= 0:
+            limits[str(mode).strip().lower()] = parsed
+
+    if "mode" not in df.columns or not limits:
+        out = df.head(limit_total).copy()
+        return out.drop(columns=["__mode_priority"], errors="ignore")
+
+    selected_idx: list[int] = []
+    mode_counts: dict[str, int] = {}
+    for idx, row in df.iterrows():
+        if len(selected_idx) >= limit_total:
+            break
+        mode = str(row.get("mode", "")).strip().lower()
+        mode_cap = limits.get(mode, limit_total)
+        if mode_counts.get(mode, 0) >= mode_cap:
+            continue
+        selected_idx.append(idx)
+        mode_counts[mode] = mode_counts.get(mode, 0) + 1
+
+    out = df.loc[selected_idx].copy()
+    return out.drop(columns=["__mode_priority"], errors="ignore")

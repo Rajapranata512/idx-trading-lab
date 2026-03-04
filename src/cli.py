@@ -176,7 +176,17 @@ def score_step(settings: Settings) -> dict[str, Any]:
         settings.pipeline.top_n_combined
     ).reset_index(drop=True)
     combined_after_topn = int(len(combined_plan))
-    execution_plan = apply_global_position_limit(combined_plan, settings.risk.max_positions)
+    mode_caps = {
+        "t1": int(settings.risk.max_positions_t1),
+        "swing": int(settings.risk.max_positions_swing),
+    }
+    mode_priority = [str(m).strip().lower() for m in settings.risk.execution_mode_priority if str(m).strip()]
+    execution_plan = apply_global_position_limit(
+        combined_plan,
+        settings.risk.max_positions,
+        max_positions_by_mode=mode_caps,
+        mode_priority=mode_priority,
+    )
     execution_count = int(len(execution_plan))
 
     reports_dir = Path("reports")
@@ -197,6 +207,9 @@ def score_step(settings: Settings) -> dict[str, Any]:
             "position_lot": lot_size,
             "top_n_combined": int(settings.pipeline.top_n_combined),
             "max_positions": int(settings.risk.max_positions),
+            "max_positions_t1": int(settings.risk.max_positions_t1),
+            "max_positions_swing": int(settings.risk.max_positions_swing),
+            "execution_mode_priority": mode_priority,
         },
         "modes": {
             "t1": {
@@ -258,7 +271,12 @@ def _load_event_risk_active(settings: Settings, as_of_date: str | None = None) -
     cfg = settings.pipeline.event_risk
     path = Path(cfg.blacklist_csv_path)
     if not path.exists():
-        return pd.DataFrame(columns=["ticker", "status", "reason", "start_date", "end_date", "updated_at"])
+        # Public repo may track a sample file while live file is ignored for daily updates.
+        sample_path = path.with_name(f"{path.stem}.sample{path.suffix}")
+        if sample_path.exists():
+            path = sample_path
+        else:
+            return pd.DataFrame(columns=["ticker", "status", "reason", "start_date", "end_date", "updated_at"])
 
     raw = pd.read_csv(path)
     if "ticker" not in raw.columns:
@@ -831,6 +849,7 @@ def send_telegram_step(settings: Settings, run_id: str, data_status: str | None 
     risk_summary = (
         f"risk/trade={settings.risk.risk_per_trade_pct}% | "
         f"max_positions={settings.risk.max_positions} | "
+        f"mode_caps=t1:{settings.risk.max_positions_t1},swing:{settings.risk.max_positions_swing} | "
         f"daily_loss_stop={settings.risk.daily_loss_stop_r}R"
     )
     status_line = data_status or f"signals={len(signals)}"
@@ -880,6 +899,9 @@ def run_daily(
         risk_summary = {
             "risk_per_trade_pct": settings.risk.risk_per_trade_pct,
             "max_positions": settings.risk.max_positions,
+            "max_positions_t1": settings.risk.max_positions_t1,
+            "max_positions_swing": settings.risk.max_positions_swing,
+            "execution_mode_priority": settings.risk.execution_mode_priority,
             "daily_loss_stop_r": settings.risk.daily_loss_stop_r,
             "vol_target_enabled": settings.risk.volatility_targeting_enabled,
             "vol_target_ref_atr_pct": settings.risk.volatility_reference_atr_pct,
