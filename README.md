@@ -22,6 +22,7 @@ It generates:
 Primary runtime config:
 
 - `config/settings.json`
+- optional conservative profile: `config/settings.beginner.json`
 
 Schema is validated by pydantic (`src/config.py`).
 
@@ -72,13 +73,21 @@ PowerShell automation:
 powershell -ExecutionPolicy Bypass -File scripts/validate_env.ps1
 powershell -ExecutionPolicy Bypass -File scripts/backfill_2y.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run_daily_retry.ps1
+powershell -ExecutionPolicy Bypass -File scripts/run_daily_retry.ps1 -SettingsPath config/settings.beginner.json
 powershell -ExecutionPolicy Bypass -File scripts/trade_gate_swing.ps1
 powershell -ExecutionPolicy Bypass -File scripts/trade_gate_swing.ps1 -DebugReasons
+powershell -ExecutionPolicy Bypass -File scripts/trade_gate_beginner.ps1
+powershell -ExecutionPolicy Bypass -File scripts/trade_gate_beginner.ps1 -DebugReasons
 ```
 
 Local n8n setup guide:
 
 - `docs/N8N_LOCAL_SETUP.md`
+
+Model v2 integration blueprint:
+
+- `docs/MODEL_V2_BLUEPRINT.md`
+- `docs/TRADER_BEGINNER_PLAYBOOK.md`
 
 Backward compatibility:
 

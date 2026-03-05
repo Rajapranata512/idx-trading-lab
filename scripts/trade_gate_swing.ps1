@@ -1,6 +1,8 @@
 param(
     [switch]$SkipRun,
-    [switch]$DebugReasons
+    [switch]$DebugReasons,
+    [string]$SettingsPath = "config/settings.json",
+    [switch]$BeginnerSafe
 )
 
 $ErrorActionPreference = "Stop"
@@ -146,9 +148,13 @@ function Show-DebugReasons {
     }
 }
 
+if (-not (Test-Path $SettingsPath)) {
+    throw "Settings file not found: $SettingsPath"
+}
+
 if (-not $SkipRun) {
     Write-Output "Running daily pipeline with retry..."
-    & "c:\TRADING\idx-trading-lab\scripts\run_daily_retry.ps1"
+    & "c:\TRADING\idx-trading-lab\scripts\run_daily_retry.ps1" -SettingsPath $SettingsPath
 }
 
 $summaryPath = "reports/n8n_last_summary.json"
@@ -159,26 +165,41 @@ if (-not (Test-Path $summaryPath)) {
 
 $s = Get-Content $summaryPath -Raw | ConvertFrom-Json
 $allowedModes = @($s.allowed_modes)
+$profileName = if ($BeginnerSafe) { "BEGINNER_SAFE" } else { "STANDARD" }
+$missingThreshold = if ($BeginnerSafe) { 2 } else { 5 }
+$volRegime = [string]$s.vol_target_market_regime
+$volRegimeAllowed = $true
+if ($BeginnerSafe) {
+    if ($s.status -eq "SUCCESS") {
+        $volRegimeAllowed = @("calm", "normal") -contains $volRegime
+    }
+}
 $isGateOk = (
     $s.status -eq "SUCCESS" -and
     [bool]$s.trade_ready -eq $true -and
     ($allowedModes -contains "swing") -and
     [int]$s.data_age_days -le 1 -and
-    [int]$s.missing_tickers_count -le 5
+    [int]$s.missing_tickers_count -le $missingThreshold -and
+    $volRegimeAllowed
 )
 
 Write-Output "=== Swing Trade Gate ==="
+Write-Output ("profile              : {0}" -f $profileName)
 Write-Output ("status               : {0}" -f $s.status)
 Write-Output ("trade_ready          : {0}" -f $s.trade_ready)
 Write-Output ("allowed_modes        : {0}" -f ($allowedModes -join ","))
 Write-Output ("data_age_days        : {0}" -f $s.data_age_days)
 Write-Output ("missing_tickers_count: {0}" -f $s.missing_tickers_count)
+Write-Output ("missing_threshold    : {0}" -f $missingThreshold)
 Write-Output ("vol_regime           : {0}" -f $s.vol_target_market_regime)
 Write-Output ("vol_regime_cap       : {0}" -f $s.vol_target_regime_cap)
 Write-Output ("decision             : {0}" -f $(if ($isGateOk) { "TRADE_OK" } else { "NO_TRADE" }))
 Write-Output ("reason               : {0}" -f $s.action_reason)
 
 if (-not $isGateOk) {
+    if ($BeginnerSafe -and $s.status -eq "SUCCESS" -and (-not $volRegimeAllowed)) {
+        Write-Output "beginner_guardrail    : Blocked (vol_regime must be calm/normal)"
+    }
     if ($DebugReasons) {
         Show-DebugReasons -Summary $s
     }
@@ -197,7 +218,7 @@ if (-not (Test-Path $signalPath)) {
 $signals = (Get-Content $signalPath -Raw | ConvertFrom-Json).signals |
     Where-Object { $_.mode -eq "swing" } |
     Sort-Object { [double]$_.score } -Descending |
-    Select-Object -First 3
+    Select-Object -First $(if ($BeginnerSafe) { 1 } else { 3 })
 
 if (@($signals).Count -eq 0) {
     Write-Output "No swing signals available after filters."
@@ -212,5 +233,5 @@ if (@($signals).Count -eq 0) {
 }
 
 Write-Output ""
-Write-Output "Top Swing Picks (max 3):"
+Write-Output ("Top Swing Picks (max {0}):" -f $(if ($BeginnerSafe) { 1 } else { 3 }))
 $signals | Format-Table ticker, mode, score, entry, stop, tp1, tp2, size
