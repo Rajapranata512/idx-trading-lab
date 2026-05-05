@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-05T08:40:40.443191",
+  "generated_at": "2026-05-05T11:11:59.383707",
   "signals": {
-    "generated_at": "2026-03-05T02:02:43.955701",
+    "generated_at": "2026-05-05T11:11:57.084187",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -53,10 +53,10 @@
       "status": "risk_off",
       "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok",
       "values": {
-        "breadth_ma50_pct": 22.727272727272727,
-        "breadth_ma20_pct": 22.727272727272727,
-        "avg_ret20_pct": 1.5243384371442654,
-        "median_atr_pct": 3.6016857162444578,
+        "breadth_ma50_pct": 0.0,
+        "breadth_ma20_pct": 27.27272727272727,
+        "avg_ret20_pct": 1.5549893091452676,
+        "median_atr_pct": 3.5636606928730976,
         "sample_tickers": 44
       },
       "thresholds": {
@@ -80,7 +80,7 @@
       "active_modes": [],
       "triggered_modes_today": [],
       "cooldown_until": "",
-      "state_path": "reports\\kill_switch_state.json"
+      "state_path": "reports/kill_switch_state.json"
     },
     "model_v2_promotion": {
       "enabled": true,
@@ -100,87 +100,18 @@
         "t1": {
           "passed": false,
           "reasons": [
-            "Total OOS trades (0) < minimum (120)",
-            "Median ProfitFactor (0.0000) < minimum (1.20)",
-            "Median Expectancy (0.000000) <= minimum (0.0000)",
-            "Profitable folds (0%) < minimum (60%)"
+            "No fold metrics provided"
           ],
-          "summary": {
-            "total_oos_trades": 0,
-            "median_profit_factor": 0.0,
-            "median_expectancy": 0.0,
-            "worst_max_drawdown_pct": 0.0,
-            "profitable_fold_pct": 0.0,
-            "n_folds": 3,
-            "n_folds_profitable": 0
-          },
-          "fold_details": [
-            {
-              "fold": 1,
-              "trades": 0,
-              "profit_factor": 0.0,
-              "expectancy": 0.0,
-              "max_dd_pct": 0.0,
-              "profitable": false
-            },
-            {
-              "fold": 2,
-              "trades": 0,
-              "profit_factor": 0.0,
-              "expectancy": 0.0,
-              "max_dd_pct": 0.0,
-              "profitable": false
-            },
-            {
-              "fold": 3,
-              "trades": 0,
-              "profit_factor": 0.0,
-              "expectancy": 0.0,
-              "max_dd_pct": 0.0,
-              "profitable": false
-            }
-          ]
+          "summary": {},
+          "fold_details": []
         },
         "swing": {
           "passed": false,
           "reasons": [
-            "Median ProfitFactor (1.0774) < minimum (1.20)"
+            "No fold metrics provided"
           ],
-          "summary": {
-            "total_oos_trades": 126,
-            "median_profit_factor": 1.0774,
-            "median_expectancy": 0.002299,
-            "worst_max_drawdown_pct": 4.91,
-            "profitable_fold_pct": 0.6667,
-            "n_folds": 3,
-            "n_folds_profitable": 2
-          },
-          "fold_details": [
-            {
-              "fold": 1,
-              "trades": 50,
-              "profit_factor": 6.1278,
-              "expectancy": 0.12165,
-              "max_dd_pct": 1.58,
-              "profitable": true
-            },
-            {
-              "fold": 2,
-              "trades": 42,
-              "profit_factor": 1.0774,
-              "expectancy": 0.002299,
-              "max_dd_pct": 1.61,
-              "profitable": true
-            },
-            {
-              "fold": 3,
-              "trades": 34,
-              "profit_factor": 0.8576,
-              "expectancy": -0.007798,
-              "max_dd_pct": 4.91,
-              "profitable": false
-            }
-          ]
+          "summary": {},
+          "fold_details": []
         }
       }
     },
@@ -203,18 +134,18 @@
         "MaxDD": 0.0
       },
       "swing": {
-        "WinRate": 97.53086419753086,
-        "ProfitFactor": 80.74205304187745,
-        "Expectancy": 0.3158407174940206,
-        "Trades": 81,
-        "CAGR": 940.4571473255295,
-        "MaxDD": -0.9602144938780706
+        "WinRate": 0.0,
+        "ProfitFactor": 0.0,
+        "Expectancy": 0.0,
+        "Trades": 0,
+        "CAGR": 0.0,
+        "MaxDD": 0.0
       }
     }
   },
   "funnel": {
-    "generated_at": "2026-05-05T07:14:40.028739",
-    "run_id": "20260505_141204",
+    "generated_at": "2026-05-05T11:11:57.094105",
+    "run_id": "20260505_111144",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -246,7 +177,7 @@
       "kill_switch": "clear"
     },
     "score_funnel": {
-      "generated_at": "2026-05-05T07:13:44.413195",
+      "generated_at": "2026-05-05T11:11:56.927861",
       "thresholds": {
         "active_modes": [
           "swing"
@@ -277,11 +208,11 @@
         },
         "swing": {
           "enabled": true,
-          "rank_candidates": 8,
+          "rank_candidates": 0,
           "after_score_filter": 0,
           "after_event_risk": 0,
-          "small_size_before_filter": 2,
-          "dropped_by_score": 8,
+          "small_size_before_filter": 0,
+          "dropped_by_score": 0,
           "dropped_by_event_risk": 0
         }
       },
@@ -296,10 +227,10 @@
       "event_risk": {
         "enabled": true,
         "status": "ok",
-        "message": "No active event-risk entries",
+        "message": "Event-risk filter applied",
         "path": "data/reference/event_risk_blacklist.csv",
         "as_of_date": "",
-        "active_events": 0,
+        "active_events": 8,
         "excluded_count": 0,
         "excluded_tickers": [],
         "excluded_t1": 0,
@@ -308,17 +239,80 @@
     }
   },
   "event_risk": {
-    "active_total": 1,
+    "active_total": 8,
     "excluded_total": 0,
     "active_items": [
       {
-        "ticker": "ALKA",
+        "ticker": "BOBA",
         "status": "SUSPEND",
-        "reason": "Penghentian Sementara Perdagangan Saham PT Alakasa Industrindo Tbk (ALKA)",
-        "start_date": "2026-03-12",
-        "end_date": "2026-03-26",
-        "updated_at": "2026-03-26",
+        "reason": "Penghentian Sementara Perdagangan Saham PT Formosa Ingredient Factory Tbk. (BOBA)",
+        "start_date": "2026-04-28",
+        "end_date": "2026-05-12",
+        "updated_at": "2026-05-05",
         "source": "idx_announcement_suspend"
+      },
+      {
+        "ticker": "BOBA",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Formosa Ingredient Factory Tbk. (BOBA)",
+        "start_date": "2026-04-22",
+        "end_date": "2026-05-06",
+        "updated_at": "2026-05-05",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "EPAC",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Megalestari Epack Sentosaraya Tbk. (EPAC)",
+        "start_date": "2026-04-27",
+        "end_date": "2026-05-11",
+        "updated_at": "2026-05-05",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "KING",
+        "status": "SUSPEND",
+        "reason": "Penghentian Sementara Perdagangan Saham PT Hoffmen Cleanindo Tbk. (KING)",
+        "start_date": "2026-04-27",
+        "end_date": "2026-05-11",
+        "updated_at": "2026-05-05",
+        "source": "idx_announcement_suspend"
+      },
+      {
+        "ticker": "KOTA",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT DMS Propertindo Tbk. (KOTA)",
+        "start_date": "2026-04-30",
+        "end_date": "2026-05-14",
+        "updated_at": "2026-05-05",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "MAXI",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Maxindo Karya Anugerah Tbk. (MAXI)",
+        "start_date": "2026-04-23",
+        "end_date": "2026-05-07",
+        "updated_at": "2026-05-05",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "NUSA",
+        "status": "SUSPEND",
+        "reason": "Penghentian Sementara Perdagangan Efek PT Sinergi Megah Internusa Tbk (NUSA)",
+        "start_date": "2026-05-04",
+        "end_date": "2026-05-18",
+        "updated_at": "2026-05-05",
+        "source": "idx_announcement_suspend"
+      },
+      {
+        "ticker": "TOOL",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Rohartindo Nusantara Luas Tbk. (TOOL)",
+        "start_date": "2026-04-30",
+        "end_date": "2026-05-14",
+        "updated_at": "2026-05-05",
+        "source": "idx_announcement_uma"
       }
     ],
     "excluded_items": []
@@ -344,21 +338,9 @@
     },
     {
       "severity": "warn",
-      "code": "quality_outliers_detected",
-      "title": "Price outliers detected",
-      "message": "Latest data-quality check found 2 outlier row(s). Review anomalous tickers before promotion."
-    },
-    {
-      "severity": "warn",
       "code": "no_execution_feedback",
       "title": "No execution feedback loop yet",
       "message": "Live reconciliation still has zero fill entries, so closed-loop retraining is not learning from execution."
-    },
-    {
-      "severity": "warn",
-      "code": "swing_edge_instability",
-      "title": "Swing edge is uneven across buckets",
-      "message": "Weakest bucket: segment=IDX30. Expectancy R -0.6322, PF 0.2579."
     }
   ],
   "paper_fills": {
@@ -366,8 +348,8 @@
     "message": "Signal snapshots were found, but all of them contained zero executable signals",
     "generated_count": 0,
     "pending_count": 0,
-    "snapshot_files_total": 85,
-    "snapshot_files_in_window": 59,
+    "snapshot_files_total": 1,
+    "snapshot_files_in_window": 1,
     "signals_total": 0,
     "valid_signals": 0,
     "trade_count_total": 0,
@@ -377,482 +359,22 @@
     "recent_generated": []
   },
   "swing_audit": {
-    "status": "ok",
-    "message": "Swing audit generated",
-    "group_source": "segment",
-    "overall": {
-      "trade_count": 168,
-      "win_rate_pct": 48.21,
-      "expectancy_r": 0.4402,
-      "profit_factor_r": 1.848,
-      "avg_return_pct": 4.2338,
-      "avg_mae_r": -0.9044,
-      "avg_mfe_r": 1.7077,
-      "median_score": 76.185,
-      "date_from": "2024-05-22",
-      "date_to": "2026-04-14"
-    },
-    "by_regime": [
-      {
-        "regime": "risk_on",
-        "trade_count": 127,
-        "win_rate_pct": 50.39,
-        "expectancy_r": 0.5739,
-        "profit_factor_r": 2.1855,
-        "avg_return_pct": 5.2819,
-        "avg_mae_r": -0.8424,
-        "avg_mfe_r": 1.8233,
-        "median_score": 76.85
-      },
-      {
-        "regime": "risk_off",
-        "trade_count": 41,
-        "win_rate_pct": 41.46,
-        "expectancy_r": 0.026,
-        "profit_factor_r": 1.0415,
-        "avg_return_pct": 0.9875,
-        "avg_mae_r": -1.0965,
-        "avg_mfe_r": 1.3498,
-        "median_score": 75.05
-      }
-    ],
-    "by_group": [
-      {
-        "segment": "LQ45",
-        "trade_count": 155,
-        "win_rate_pct": 50.32,
-        "expectancy_r": 0.5302,
-        "profit_factor_r": 2.0792,
-        "avg_return_pct": 5.0947,
-        "avg_mae_r": -0.8682,
-        "avg_mfe_r": 1.795,
-        "median_score": 76.47
-      },
-      {
-        "segment": "IDX30",
-        "trade_count": 13,
-        "win_rate_pct": 23.08,
-        "expectancy_r": -0.6322,
-        "profit_factor_r": 0.2579,
-        "avg_return_pct": -6.0298,
-        "avg_mae_r": -1.3361,
-        "avg_mfe_r": 0.6671,
-        "median_score": 74.91
-      }
-    ],
-    "by_volatility": [
-      {
-        "volatility_bucket": "high",
-        "trade_count": 56,
-        "win_rate_pct": 46.43,
-        "expectancy_r": 0.3665,
-        "profit_factor_r": 1.7701,
-        "avg_return_pct": 3.723,
-        "avg_mae_r": -0.8515,
-        "avg_mfe_r": 1.3898,
-        "median_score": 74.77
-      },
-      {
-        "volatility_bucket": "low",
-        "trade_count": 56,
-        "win_rate_pct": 33.93,
-        "expectancy_r": 0.017,
-        "profit_factor_r": 1.0239,
-        "avg_return_pct": 0.5482,
-        "avg_mae_r": -1.1852,
-        "avg_mfe_r": 1.7834,
-        "median_score": 76.955
-      },
-      {
-        "volatility_bucket": "mid",
-        "trade_count": 56,
-        "win_rate_pct": 64.29,
-        "expectancy_r": 0.9371,
-        "profit_factor_r": 3.5247,
-        "avg_return_pct": 8.4304,
-        "avg_mae_r": -0.6765,
-        "avg_mfe_r": 1.95,
-        "median_score": 76.305
-      }
-    ],
-    "weak_spots": [
-      {
-        "source": "segment",
-        "label": "IDX30",
-        "trade_count": 13,
-        "expectancy_r": -0.6322,
-        "profit_factor_r": 0.2579
-      }
-    ],
-    "recent_trades": [
-      {
-        "date": "2026-04-14",
-        "ticker": "BRPT",
-        "score": 71.65,
-        "atr_pct": 7.3276,
-        "avg_vol_20d": 154586475.0,
-        "ret_20d": 70.0348,
-        "realized_r": -1.25168,
-        "return_pct": -18.279669,
-        "mae_r": -1.286398,
-        "mfe_r": 0.307617,
-        "entry_close": 2440.0,
-        "exit_close": 2010.0,
-        "exit_date": "2026-04-28",
-        "regime_status": "risk_on",
-        "group_label": "LQ45",
-        "volatility_bucket": "high"
-      },
-      {
-        "date": "2026-04-01",
-        "ticker": "ITMG",
-        "score": 70.24,
-        "atr_pct": 3.6332,
-        "avg_vol_20d": 3671390.0,
-        "ret_20d": 23.0343,
-        "realized_r": -0.578682,
-        "return_pct": -4.190284,
-        "mae_r": -1.362566,
-        "mfe_r": 0.210578,
-        "entry_close": 27775.0,
-        "exit_close": 26825.0,
-        "exit_date": "2026-04-16",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-31",
-        "ticker": "ITMG",
-        "score": 78.71,
-        "atr_pct": 3.119,
-        "avg_vol_20d": 3337735.0,
-        "ret_20d": 31.2362,
-        "realized_r": -1.363044,
-        "return_pct": -8.47312,
-        "mae_r": -2.534691,
-        "mfe_r": -0.175271,
-        "entry_close": 29725.0,
-        "exit_close": 27425.0,
-        "exit_date": "2026-04-15",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-30",
-        "ticker": "ITMG",
-        "score": 84.67,
-        "atr_pct": 3.0257,
-        "avg_vol_20d": 3164690.0,
-        "ret_20d": 32.9282,
-        "realized_r": -1.677427,
-        "return_pct": -10.11551,
-        "mae_r": -2.774752,
-        "mfe_r": 0.096155,
-        "entry_close": 30075.0,
-        "exit_close": 27250.0,
-        "exit_date": "2026-04-14",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-27",
-        "ticker": "ITMG",
-        "score": 74.93,
-        "atr_pct": 3.0062,
-        "avg_vol_20d": 2862880.0,
-        "ret_20d": 28.2536,
-        "realized_r": -1.382419,
-        "return_pct": -8.282589,
-        "mae_r": -2.192656,
-        "mfe_r": 0.851097,
-        "entry_close": 28825.0,
-        "exit_close": 26650.0,
-        "exit_date": "2026-04-13",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-26",
-        "ticker": "ITMG",
-        "score": 77.02,
-        "atr_pct": 2.6639,
-        "avg_vol_20d": 2734060.0,
-        "ret_20d": 32.9646,
-        "realized_r": -2.046661,
-        "return_pct": -10.866045,
-        "mae_r": -3.138692,
-        "mfe_r": 0.156154,
-        "entry_close": 30050.0,
-        "exit_close": 27000.0,
-        "exit_date": "2026-04-10",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-25",
-        "ticker": "ITMG",
-        "score": 81.42,
-        "atr_pct": 2.6223,
-        "avg_vol_20d": 2740275.0,
-        "ret_20d": 32.3266,
-        "realized_r": -1.724996,
-        "return_pct": -9.015192,
-        "mae_r": -2.933475,
-        "mfe_r": 0.72531,
-        "entry_close": 29575.0,
-        "exit_close": 27125.0,
-        "exit_date": "2026-04-09",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-17",
-        "ticker": "ITMG",
-        "score": 74.31,
-        "atr_pct": 2.4218,
-        "avg_vol_20d": 2610585.0,
-        "ret_20d": 26.0135,
-        "realized_r": -1.487613,
-        "return_pct": -7.180231,
-        "mae_r": -2.177139,
-        "mfe_r": 2.011086,
-        "entry_close": 27975.0,
-        "exit_close": 26175.0,
-        "exit_date": "2026-04-08",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-16",
-        "ticker": "ITMG",
-        "score": 79.05,
-        "atr_pct": 2.4908,
-        "avg_vol_20d": 2567435.0,
-        "ret_20d": 26.3337,
-        "realized_r": -1.004451,
-        "return_pct": -4.986366,
-        "mae_r": -1.20839,
-        "mfe_r": 2.074102,
-        "entry_close": 27825.0,
-        "exit_close": 26650.0,
-        "exit_date": "2026-04-07",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-13",
-        "ticker": "ITMG",
-        "score": 78.69,
-        "atr_pct": 2.4493,
-        "avg_vol_20d": 2412240.0,
-        "ret_20d": 24.6067,
-        "realized_r": -0.951264,
-        "return_pct": -4.643666,
-        "mae_r": -0.828331,
-        "mfe_r": 2.190475,
-        "entry_close": 27725.0,
-        "exit_close": 26650.0,
-        "exit_date": "2026-04-06",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-12",
-        "ticker": "ITMG",
-        "score": 76.72,
-        "atr_pct": 2.4818,
-        "avg_vol_20d": 2253310.0,
-        "ret_20d": 23.8688,
-        "realized_r": -0.197806,
-        "return_pct": -0.978402,
-        "mae_r": -0.275983,
-        "mfe_r": 2.447048,
-        "entry_close": 27375.0,
-        "exit_close": 27325.0,
-        "exit_date": "2026-04-02",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-11",
-        "ticker": "ITMG",
-        "score": 73.77,
-        "atr_pct": 2.381,
-        "avg_vol_20d": 2128410.0,
-        "ret_20d": 23.3825,
-        "realized_r": 0.29357,
-        "return_pct": 1.3931,
-        "mae_r": -0.482972,
-        "mfe_r": 2.723962,
-        "entry_close": 27175.0,
-        "exit_close": 27775.0,
-        "exit_date": "2026-04-01",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-10",
-        "ticker": "ITMG",
-        "score": 80.3,
-        "atr_pct": 2.3758,
-        "avg_vol_20d": 2046065.0,
-        "ret_20d": 24.0319,
-        "realized_r": 1.755507,
-        "return_pct": 8.312321,
-        "mae_r": -0.521794,
-        "mfe_r": 2.686271,
-        "entry_close": 27225.0,
-        "exit_close": 29725.0,
-        "exit_date": "2026-03-31",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-09",
-        "ticker": "ITMG",
-        "score": 76.63,
-        "atr_pct": 2.2865,
-        "avg_vol_20d": 1929860.0,
-        "ret_20d": 22.4859,
-        "realized_r": 2.214849,
-        "return_pct": 10.093133,
-        "mae_r": -0.443807,
-        "mfe_r": 2.904918,
-        "entry_close": 27100.0,
-        "exit_close": 30075.0,
-        "exit_date": "2026-03-30",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "low"
-      },
-      {
-        "date": "2026-03-05",
-        "ticker": "MEDC",
-        "score": 74.28,
-        "atr_pct": 5.7045,
-        "avg_vol_20d": 175123050.0,
-        "ret_20d": 27.4914,
-        "realized_r": -0.35235,
-        "return_pct": -4.005925,
-        "mae_r": -1.252148,
-        "mfe_r": 0.212629,
-        "entry_close": 1855.0,
-        "exit_close": 1795.0,
-        "exit_date": "2026-03-26",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "high"
-      },
-      {
-        "date": "2026-03-04",
-        "ticker": "MEDC",
-        "score": 74.67,
-        "atr_pct": 5.4692,
-        "avg_vol_20d": 142164310.0,
-        "ret_20d": 36.8421,
-        "realized_r": -0.679862,
-        "return_pct": -7.410729,
-        "mae_r": -1.687759,
-        "mfe_r": -0.234411,
-        "entry_close": 1950.0,
-        "exit_close": 1820.0,
-        "exit_date": "2026-03-25",
-        "regime_status": "risk_on",
-        "group_label": "LQ45",
-        "volatility_bucket": "high"
-      },
-      {
-        "date": "2026-03-03",
-        "ticker": "TKIM",
-        "score": 70.67,
-        "atr_pct": 5.2036,
-        "avg_vol_20d": 3946535.0,
-        "ret_20d": 47.6027,
-        "realized_r": -1.741399,
-        "return_pct": -18.059876,
-        "mae_r": -2.340874,
-        "mfe_r": -0.423587,
-        "entry_close": 10775.0,
-        "exit_close": 8900.0,
-        "exit_date": "2026-03-17",
-        "regime_status": "risk_on",
-        "group_label": "IDX30",
-        "volatility_bucket": "high"
-      },
-      {
-        "date": "2026-03-02",
-        "ticker": "TKIM",
-        "score": 74.91,
-        "atr_pct": 5.1817,
-        "avg_vol_20d": 4007520.0,
-        "ret_20d": 48.9583,
-        "realized_r": -2.070018,
-        "return_pct": -21.377742,
-        "mae_r": -2.316727,
-        "mfe_r": 0.382372,
-        "entry_close": 10725.0,
-        "exit_close": 8500.0,
-        "exit_date": "2026-03-16",
-        "regime_status": "risk_on",
-        "group_label": "IDX30",
-        "volatility_bucket": "high"
-      },
-      {
-        "date": "2026-01-29",
-        "ticker": "ANTM",
-        "score": 72.74,
-        "atr_pct": 6.1616,
-        "avg_vol_20d": 300895510.0,
-        "ret_20d": 37.1429,
-        "realized_r": -0.43891,
-        "return_pct": -5.389932,
-        "mae_r": -1.333672,
-        "mfe_r": 0.056352,
-        "entry_close": 4320.0,
-        "exit_close": 4120.0,
-        "exit_date": "2026-02-12",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "high"
-      },
-      {
-        "date": "2026-01-28",
-        "ticker": "ANTM",
-        "score": 75.19,
-        "atr_pct": 5.0758,
-        "avg_vol_20d": 259982195.0,
-        "ret_20d": 40.3175,
-        "realized_r": -1.032816,
-        "return_pct": -10.44816,
-        "mae_r": -1.805214,
-        "mfe_r": 0.334299,
-        "entry_close": 4420.0,
-        "exit_close": 3990.0,
-        "exit_date": "2026-02-11",
-        "regime_status": "risk_off",
-        "group_label": "LQ45",
-        "volatility_bucket": "high"
-      }
-    ]
+    "status": "no_trades",
+    "message": "No swing trades available for audit",
+    "group_source": "unclassified",
+    "overall": {},
+    "by_regime": [],
+    "by_group": [],
+    "by_volatility": [],
+    "weak_spots": [],
+    "recent_trades": []
   },
   "runs": [
     {
       "file": "run_log_20260505.json",
-      "run_id": "20260505_141204",
-      "started_at": "2026-05-05T07:12:04.143344",
-      "ended_at": "2026-05-05T07:14:40.994668",
+      "run_id": "20260505_111144",
+      "started_at": "2026-05-05T11:11:44.285624",
+      "ended_at": "2026-05-05T11:11:57.097663",
       "source": "yfinance_fallback",
       "signals": 0,
       "error_count": 0,
@@ -874,278 +396,21 @@
       "status_category_label": "Protective warning",
       "status_tone": "protective",
       "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260326.json",
-      "run_id": "20260326_093638",
-      "started_at": "2026-03-26T02:36:38.994827",
-      "ended_at": "2026-03-26T02:36:57.558243",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 24,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260326.json",
-      "run_id": "20260326_093428",
-      "started_at": "2026-03-26T02:34:28.741172",
-      "ended_at": "2026-03-26T02:35:27.837267",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 24,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260325.json",
-      "run_id": "20260325_164841",
-      "started_at": "2026-03-25T09:48:41.645095",
-      "ended_at": "2026-03-25T09:49:00.032958",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 24,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260325.json",
-      "run_id": "20260325_164429",
-      "started_at": "2026-03-25T09:44:29.688652",
-      "ended_at": "2026-03-25T09:44:40.349207",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 24,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260325.json",
-      "run_id": "20260325_164406",
-      "started_at": "2026-03-25T09:44:06.785406",
-      "ended_at": "2026-03-25T09:44:20.738219",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 24,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260325.json",
-      "run_id": "20260325_152204",
-      "started_at": "2026-03-25T08:22:04.959737",
-      "ended_at": "2026-03-25T08:22:22.981320",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 24,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260325.json",
-      "run_id": "20260325_151919",
-      "started_at": "2026-03-25T08:19:19.574082",
-      "ended_at": "2026-03-25T08:19:35.118769",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 24,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
     }
   ],
   "report": {
     "html_exists": true
   },
   "intraday": {
-    "status": {
-      "generated_at": "2026-03-05T02:02:43.957521",
-      "timeframe": "5m",
-      "ingest": {
-        "rows": 6,
-        "rows_new": 6,
-        "tickers": 2,
-        "source": "csv_intraday_fallback",
-        "timeframe": "5m",
-        "max_timestamp": "2026-03-04T09:10:00",
-        "min_timestamp": "2026-03-04T09:00:00",
-        "out_path": "data/raw/prices_intraday.csv"
-      },
-      "features": {
-        "rows": 0,
-        "out_path": "data/processed/features_intraday.parquet",
-        "timeframe": "5m",
-        "eligible_tickers": 0,
-        "skipped_tickers": [
-          "BBCA",
-          "TLKM"
-        ],
-        "min_bars_per_ticker": 20
-      },
-      "signals": {
-        "signal_path": "reports\\intraday_signal.json",
-        "execution_count": 0,
-        "signal_count": 0
-      },
-      "funnel_path": "reports\\intraday_signal_funnel.json"
-    },
-    "daemon_state": {
-      "status": "ok",
-      "started_at": "2026-03-05T02:02:42.081132",
-      "finished_at": "2026-03-05T02:02:43.957521",
-      "timeframe": "5m",
-      "poll_seconds": 60,
-      "consecutive_errors": 0,
-      "result": {
-        "generated_at": "2026-03-05T02:02:43.957521",
-        "timeframe": "5m",
-        "ingest": {
-          "rows": 6,
-          "rows_new": 6,
-          "tickers": 2,
-          "source": "csv_intraday_fallback",
-          "timeframe": "5m",
-          "max_timestamp": "2026-03-04T09:10:00",
-          "min_timestamp": "2026-03-04T09:00:00",
-          "out_path": "data/raw/prices_intraday.csv"
-        },
-        "features": {
-          "rows": 0,
-          "out_path": "data/processed/features_intraday.parquet",
-          "timeframe": "5m",
-          "eligible_tickers": 0,
-          "skipped_tickers": [
-            "BBCA",
-            "TLKM"
-          ],
-          "min_bars_per_ticker": 20
-        },
-        "signals": {
-          "signal_path": "reports\\intraday_signal.json",
-          "execution_count": 0,
-          "signal_count": 0
-        },
-        "funnel_path": "reports\\intraday_signal_funnel.json"
-      }
-    }
+    "status": {},
+    "daemon_state": {}
   },
   "closed_loop_retrain": {
     "status": "skipped_no_trigger",
     "message": "Closed-loop conditions not met",
     "triggered": false,
     "reasons": [],
-    "last_evaluated_at": "2026-05-05T07:14:40.015019",
+    "last_evaluated_at": "2026-05-05T11:11:57.092510",
     "last_triggered_at": "",
     "fills_in_window": 0,
     "new_fills_since_last_trigger": 0,
@@ -1166,14 +431,14 @@
       "outlier_ok": true
     },
     "stats": {
-      "rows_total": 22913,
+      "rows_total": 924,
       "ticker_total": 44,
       "max_data_date": "2026-05-05",
       "stale_days": 0,
       "missing_rows": 0,
       "duplicate_rows": 0,
       "missing_tickers_count": 0,
-      "outlier_rows": 2
+      "outlier_rows": 0
     },
     "message": "Data quality checks passed."
   },
@@ -1190,8 +455,8 @@
     "decision_version": "v2026.03.roadmap_90d"
   },
   "summary": {
-    "generated_at": "2026-05-05T07:14:40.021930",
-    "run_id": "20260505_141204",
+    "generated_at": "2026-05-05T11:11:57.093295",
+    "run_id": "20260505_111144",
     "decision_version": "v2026.03.roadmap_90d",
     "status": "BLOCKED_BY_GATE",
     "action": "NO_TRADE",
@@ -1234,476 +499,16 @@
       "profit_factor_r": 0.0
     },
     "swing_audit": {
-      "generated_at": "2026-05-05T07:14:39.712511",
-      "status": "ok",
-      "message": "Swing audit generated",
-      "group_source": "segment",
-      "overall": {
-        "trade_count": 168,
-        "win_rate_pct": 48.21,
-        "expectancy_r": 0.4402,
-        "profit_factor_r": 1.848,
-        "avg_return_pct": 4.2338,
-        "avg_mae_r": -0.9044,
-        "avg_mfe_r": 1.7077,
-        "median_score": 76.185,
-        "date_from": "2024-05-22",
-        "date_to": "2026-04-14"
-      },
-      "by_regime": [
-        {
-          "regime": "risk_on",
-          "trade_count": 127,
-          "win_rate_pct": 50.39,
-          "expectancy_r": 0.5739,
-          "profit_factor_r": 2.1855,
-          "avg_return_pct": 5.2819,
-          "avg_mae_r": -0.8424,
-          "avg_mfe_r": 1.8233,
-          "median_score": 76.85
-        },
-        {
-          "regime": "risk_off",
-          "trade_count": 41,
-          "win_rate_pct": 41.46,
-          "expectancy_r": 0.026,
-          "profit_factor_r": 1.0415,
-          "avg_return_pct": 0.9875,
-          "avg_mae_r": -1.0965,
-          "avg_mfe_r": 1.3498,
-          "median_score": 75.05
-        }
-      ],
-      "by_group": [
-        {
-          "segment": "LQ45",
-          "trade_count": 155,
-          "win_rate_pct": 50.32,
-          "expectancy_r": 0.5302,
-          "profit_factor_r": 2.0792,
-          "avg_return_pct": 5.0947,
-          "avg_mae_r": -0.8682,
-          "avg_mfe_r": 1.795,
-          "median_score": 76.47
-        },
-        {
-          "segment": "IDX30",
-          "trade_count": 13,
-          "win_rate_pct": 23.08,
-          "expectancy_r": -0.6322,
-          "profit_factor_r": 0.2579,
-          "avg_return_pct": -6.0298,
-          "avg_mae_r": -1.3361,
-          "avg_mfe_r": 0.6671,
-          "median_score": 74.91
-        }
-      ],
-      "by_volatility": [
-        {
-          "volatility_bucket": "high",
-          "trade_count": 56,
-          "win_rate_pct": 46.43,
-          "expectancy_r": 0.3665,
-          "profit_factor_r": 1.7701,
-          "avg_return_pct": 3.723,
-          "avg_mae_r": -0.8515,
-          "avg_mfe_r": 1.3898,
-          "median_score": 74.77
-        },
-        {
-          "volatility_bucket": "low",
-          "trade_count": 56,
-          "win_rate_pct": 33.93,
-          "expectancy_r": 0.017,
-          "profit_factor_r": 1.0239,
-          "avg_return_pct": 0.5482,
-          "avg_mae_r": -1.1852,
-          "avg_mfe_r": 1.7834,
-          "median_score": 76.955
-        },
-        {
-          "volatility_bucket": "mid",
-          "trade_count": 56,
-          "win_rate_pct": 64.29,
-          "expectancy_r": 0.9371,
-          "profit_factor_r": 3.5247,
-          "avg_return_pct": 8.4304,
-          "avg_mae_r": -0.6765,
-          "avg_mfe_r": 1.95,
-          "median_score": 76.305
-        }
-      ],
-      "weak_spots": [
-        {
-          "source": "segment",
-          "label": "IDX30",
-          "trade_count": 13,
-          "expectancy_r": -0.6322,
-          "profit_factor_r": 0.2579
-        }
-      ],
-      "recent_trades": [
-        {
-          "date": "2026-04-14",
-          "ticker": "BRPT",
-          "score": 71.65,
-          "atr_pct": 7.3276,
-          "avg_vol_20d": 154586475.0,
-          "ret_20d": 70.0348,
-          "realized_r": -1.25168,
-          "return_pct": -18.279669,
-          "mae_r": -1.286398,
-          "mfe_r": 0.307617,
-          "entry_close": 2440.0,
-          "exit_close": 2010.0,
-          "exit_date": "2026-04-28",
-          "regime_status": "risk_on",
-          "group_label": "LQ45",
-          "volatility_bucket": "high"
-        },
-        {
-          "date": "2026-04-01",
-          "ticker": "ITMG",
-          "score": 70.24,
-          "atr_pct": 3.6332,
-          "avg_vol_20d": 3671390.0,
-          "ret_20d": 23.0343,
-          "realized_r": -0.578682,
-          "return_pct": -4.190284,
-          "mae_r": -1.362566,
-          "mfe_r": 0.210578,
-          "entry_close": 27775.0,
-          "exit_close": 26825.0,
-          "exit_date": "2026-04-16",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-31",
-          "ticker": "ITMG",
-          "score": 78.71,
-          "atr_pct": 3.119,
-          "avg_vol_20d": 3337735.0,
-          "ret_20d": 31.2362,
-          "realized_r": -1.363044,
-          "return_pct": -8.47312,
-          "mae_r": -2.534691,
-          "mfe_r": -0.175271,
-          "entry_close": 29725.0,
-          "exit_close": 27425.0,
-          "exit_date": "2026-04-15",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-30",
-          "ticker": "ITMG",
-          "score": 84.67,
-          "atr_pct": 3.0257,
-          "avg_vol_20d": 3164690.0,
-          "ret_20d": 32.9282,
-          "realized_r": -1.677427,
-          "return_pct": -10.11551,
-          "mae_r": -2.774752,
-          "mfe_r": 0.096155,
-          "entry_close": 30075.0,
-          "exit_close": 27250.0,
-          "exit_date": "2026-04-14",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-27",
-          "ticker": "ITMG",
-          "score": 74.93,
-          "atr_pct": 3.0062,
-          "avg_vol_20d": 2862880.0,
-          "ret_20d": 28.2536,
-          "realized_r": -1.382419,
-          "return_pct": -8.282589,
-          "mae_r": -2.192656,
-          "mfe_r": 0.851097,
-          "entry_close": 28825.0,
-          "exit_close": 26650.0,
-          "exit_date": "2026-04-13",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-26",
-          "ticker": "ITMG",
-          "score": 77.02,
-          "atr_pct": 2.6639,
-          "avg_vol_20d": 2734060.0,
-          "ret_20d": 32.9646,
-          "realized_r": -2.046661,
-          "return_pct": -10.866045,
-          "mae_r": -3.138692,
-          "mfe_r": 0.156154,
-          "entry_close": 30050.0,
-          "exit_close": 27000.0,
-          "exit_date": "2026-04-10",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-25",
-          "ticker": "ITMG",
-          "score": 81.42,
-          "atr_pct": 2.6223,
-          "avg_vol_20d": 2740275.0,
-          "ret_20d": 32.3266,
-          "realized_r": -1.724996,
-          "return_pct": -9.015192,
-          "mae_r": -2.933475,
-          "mfe_r": 0.72531,
-          "entry_close": 29575.0,
-          "exit_close": 27125.0,
-          "exit_date": "2026-04-09",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-17",
-          "ticker": "ITMG",
-          "score": 74.31,
-          "atr_pct": 2.4218,
-          "avg_vol_20d": 2610585.0,
-          "ret_20d": 26.0135,
-          "realized_r": -1.487613,
-          "return_pct": -7.180231,
-          "mae_r": -2.177139,
-          "mfe_r": 2.011086,
-          "entry_close": 27975.0,
-          "exit_close": 26175.0,
-          "exit_date": "2026-04-08",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-16",
-          "ticker": "ITMG",
-          "score": 79.05,
-          "atr_pct": 2.4908,
-          "avg_vol_20d": 2567435.0,
-          "ret_20d": 26.3337,
-          "realized_r": -1.004451,
-          "return_pct": -4.986366,
-          "mae_r": -1.20839,
-          "mfe_r": 2.074102,
-          "entry_close": 27825.0,
-          "exit_close": 26650.0,
-          "exit_date": "2026-04-07",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-13",
-          "ticker": "ITMG",
-          "score": 78.69,
-          "atr_pct": 2.4493,
-          "avg_vol_20d": 2412240.0,
-          "ret_20d": 24.6067,
-          "realized_r": -0.951264,
-          "return_pct": -4.643666,
-          "mae_r": -0.828331,
-          "mfe_r": 2.190475,
-          "entry_close": 27725.0,
-          "exit_close": 26650.0,
-          "exit_date": "2026-04-06",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-12",
-          "ticker": "ITMG",
-          "score": 76.72,
-          "atr_pct": 2.4818,
-          "avg_vol_20d": 2253310.0,
-          "ret_20d": 23.8688,
-          "realized_r": -0.197806,
-          "return_pct": -0.978402,
-          "mae_r": -0.275983,
-          "mfe_r": 2.447048,
-          "entry_close": 27375.0,
-          "exit_close": 27325.0,
-          "exit_date": "2026-04-02",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-11",
-          "ticker": "ITMG",
-          "score": 73.77,
-          "atr_pct": 2.381,
-          "avg_vol_20d": 2128410.0,
-          "ret_20d": 23.3825,
-          "realized_r": 0.29357,
-          "return_pct": 1.3931,
-          "mae_r": -0.482972,
-          "mfe_r": 2.723962,
-          "entry_close": 27175.0,
-          "exit_close": 27775.0,
-          "exit_date": "2026-04-01",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-10",
-          "ticker": "ITMG",
-          "score": 80.3,
-          "atr_pct": 2.3758,
-          "avg_vol_20d": 2046065.0,
-          "ret_20d": 24.0319,
-          "realized_r": 1.755507,
-          "return_pct": 8.312321,
-          "mae_r": -0.521794,
-          "mfe_r": 2.686271,
-          "entry_close": 27225.0,
-          "exit_close": 29725.0,
-          "exit_date": "2026-03-31",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-09",
-          "ticker": "ITMG",
-          "score": 76.63,
-          "atr_pct": 2.2865,
-          "avg_vol_20d": 1929860.0,
-          "ret_20d": 22.4859,
-          "realized_r": 2.214849,
-          "return_pct": 10.093133,
-          "mae_r": -0.443807,
-          "mfe_r": 2.904918,
-          "entry_close": 27100.0,
-          "exit_close": 30075.0,
-          "exit_date": "2026-03-30",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "low"
-        },
-        {
-          "date": "2026-03-05",
-          "ticker": "MEDC",
-          "score": 74.28,
-          "atr_pct": 5.7045,
-          "avg_vol_20d": 175123050.0,
-          "ret_20d": 27.4914,
-          "realized_r": -0.35235,
-          "return_pct": -4.005925,
-          "mae_r": -1.252148,
-          "mfe_r": 0.212629,
-          "entry_close": 1855.0,
-          "exit_close": 1795.0,
-          "exit_date": "2026-03-26",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "high"
-        },
-        {
-          "date": "2026-03-04",
-          "ticker": "MEDC",
-          "score": 74.67,
-          "atr_pct": 5.4692,
-          "avg_vol_20d": 142164310.0,
-          "ret_20d": 36.8421,
-          "realized_r": -0.679862,
-          "return_pct": -7.410729,
-          "mae_r": -1.687759,
-          "mfe_r": -0.234411,
-          "entry_close": 1950.0,
-          "exit_close": 1820.0,
-          "exit_date": "2026-03-25",
-          "regime_status": "risk_on",
-          "group_label": "LQ45",
-          "volatility_bucket": "high"
-        },
-        {
-          "date": "2026-03-03",
-          "ticker": "TKIM",
-          "score": 70.67,
-          "atr_pct": 5.2036,
-          "avg_vol_20d": 3946535.0,
-          "ret_20d": 47.6027,
-          "realized_r": -1.741399,
-          "return_pct": -18.059876,
-          "mae_r": -2.340874,
-          "mfe_r": -0.423587,
-          "entry_close": 10775.0,
-          "exit_close": 8900.0,
-          "exit_date": "2026-03-17",
-          "regime_status": "risk_on",
-          "group_label": "IDX30",
-          "volatility_bucket": "high"
-        },
-        {
-          "date": "2026-03-02",
-          "ticker": "TKIM",
-          "score": 74.91,
-          "atr_pct": 5.1817,
-          "avg_vol_20d": 4007520.0,
-          "ret_20d": 48.9583,
-          "realized_r": -2.070018,
-          "return_pct": -21.377742,
-          "mae_r": -2.316727,
-          "mfe_r": 0.382372,
-          "entry_close": 10725.0,
-          "exit_close": 8500.0,
-          "exit_date": "2026-03-16",
-          "regime_status": "risk_on",
-          "group_label": "IDX30",
-          "volatility_bucket": "high"
-        },
-        {
-          "date": "2026-01-29",
-          "ticker": "ANTM",
-          "score": 72.74,
-          "atr_pct": 6.1616,
-          "avg_vol_20d": 300895510.0,
-          "ret_20d": 37.1429,
-          "realized_r": -0.43891,
-          "return_pct": -5.389932,
-          "mae_r": -1.333672,
-          "mfe_r": 0.056352,
-          "entry_close": 4320.0,
-          "exit_close": 4120.0,
-          "exit_date": "2026-02-12",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "high"
-        },
-        {
-          "date": "2026-01-28",
-          "ticker": "ANTM",
-          "score": 75.19,
-          "atr_pct": 5.0758,
-          "avg_vol_20d": 259982195.0,
-          "ret_20d": 40.3175,
-          "realized_r": -1.032816,
-          "return_pct": -10.44816,
-          "mae_r": -1.805214,
-          "mfe_r": 0.334299,
-          "entry_close": 4420.0,
-          "exit_close": 3990.0,
-          "exit_date": "2026-02-11",
-          "regime_status": "risk_off",
-          "group_label": "LQ45",
-          "volatility_bucket": "high"
-        }
-      ]
+      "generated_at": "2026-05-05T11:11:57.078919",
+      "status": "no_trades",
+      "message": "No swing trades available for audit",
+      "overall": {},
+      "by_regime": [],
+      "by_group": [],
+      "by_volatility": [],
+      "weak_spots": [],
+      "recent_trades": [],
+      "group_source": "unclassified"
     },
     "quality": {
       "status": "pass",
@@ -1717,14 +522,14 @@
         "outlier_ok": true
       },
       "stats": {
-        "rows_total": 22913,
+        "rows_total": 924,
         "ticker_total": 44,
         "max_data_date": "2026-05-05",
         "stale_days": 0,
         "missing_rows": 0,
         "duplicate_rows": 0,
         "missing_tickers_count": 0,
-        "outlier_rows": 2
+        "outlier_rows": 0
       }
     },
     "operator_alerts": [
@@ -1748,21 +553,9 @@
       },
       {
         "severity": "warn",
-        "code": "quality_outliers_detected",
-        "title": "Price outliers detected",
-        "message": "Latest data-quality check found 2 outlier row(s). Review anomalous tickers before promotion."
-      },
-      {
-        "severity": "warn",
         "code": "no_execution_feedback",
         "title": "No execution feedback loop yet",
         "message": "Live reconciliation still has zero fill entries, so closed-loop retraining is not learning from execution."
-      },
-      {
-        "severity": "warn",
-        "code": "swing_edge_instability",
-        "title": "Swing edge is uneven across buckets",
-        "message": "Weakest bucket: segment=IDX30. Expectancy R -0.6322, PF 0.2579."
       }
     ]
   },
@@ -1775,8 +568,7 @@
       "Live gate blocked all active modes: swing",
       "No executable signals found after filtering.",
       "Live gate blocked all active modes: swing.",
-      "Market regime is `risk_off` (risk-off).",
-      "8 candidates dropped by minimum score threshold."
+      "Market regime is `risk_off` (risk-off)."
     ],
     "allowed_modes": [],
     "signal_total": 0,
@@ -1809,7 +601,7 @@
   "kpi": {
     "signal_total": 0,
     "execution_total": 0,
-    "event_active_total": 1,
+    "event_active_total": 8,
     "event_excluded_total": 0,
     "signal_avg_score": 0.0,
     "gate_pass": {
@@ -1818,7 +610,7 @@
     },
     "regime_status": "risk_off",
     "kill_switch_status": "clear",
-    "intraday_daemon_status": "ok",
+    "intraday_daemon_status": "",
     "intraday_signal_count": 0,
     "decision_action": "NO_TRADE",
     "decision_trade_ready": false,
@@ -1833,8 +625,8 @@
     "risk_budget_status": "paper_only",
     "paper_live_mode": "paper",
     "rollout_phase": "paper",
-    "operator_alert_count": 6,
+    "operator_alert_count": 4,
     "paper_fill_trade_count": 0,
-    "swing_audit_trade_count": 168
+    "swing_audit_trade_count": 0
   }
 }
