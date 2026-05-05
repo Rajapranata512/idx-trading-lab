@@ -1,0 +1,12 @@
+127.0.0.1 - - [05/May/2026 11:03:49] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:03:58] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:03:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:15:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:15:13] "GET /premium-dashboard.css HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:15:14] "GET /premium-dashboard.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:15:14] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:15:15] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:15:44] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:16:14] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:16:45] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [05/May/2026 11:17:15] "GET /api/dashboard HTTP/1.1" 200 -

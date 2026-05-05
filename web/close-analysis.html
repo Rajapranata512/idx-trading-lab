@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IDX Trading Lab Close Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/app.css" />
+  <link rel="stylesheet" href="/close-analysis.css" />
+</head>
+<body>
+  <div class="bg-shape bg-shape-a"></div>
+  <div class="bg-shape bg-shape-b"></div>
+  <main class="layout close-layout">
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <div>
+          <p class="brand-kicker">Enterprise Trading Desk</p>
+          <strong>Close Price Analysis</strong>
+        </div>
+      </div>
+      <div class="topbar-meta">
+        <a href="/" class="theme-toggle" aria-label="Back to main dashboard">Back to Dashboard</a>
+        <span id="asOfBadge" class="status-chip">As of: -</span>
+      </div>
+    </header>
+
+    <header class="hero close-hero">
+      <div>
+        <p class="eyebrow">IDX Trading Lab</p>
+        <h1>Analisis Saham Berbasis Harga Close</h1>
+        <p class="subtext">Halaman ini menampilkan ranking saham dari data close harian project: return, MA, volume, volatilitas, dan score sinyal terakhir.</p>
+      </div>
+    </header>
+
+    <section class="close-live-strip" aria-label="Live update status">
+      <span id="liveRefreshInfo" class="status-chip neutral">Auto-refresh: -</span>
+      <span id="liveFreshnessInfo" class="status-chip neutral">Data freshness: -</span>
+      <span id="liveCountInfo" class="status-chip neutral">Rows: -</span>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Filter Analisis</h3>
+      </div>
+      <p class="section-note">Set `Limit = 0` untuk menampilkan semua saham.</p>
+      <div class="close-filters">
+        <label>
+          Ticker
+          <input id="tickerFilter" type="text" placeholder="BBCA" />
+        </label>
+        <label>
+          Min Close
+          <input id="minCloseFilter" type="number" step="1" min="0" value="0" />
+        </label>
+        <label>
+          Min Avg Vol 20D
+          <input id="minVolumeFilter" type="number" step="1000" min="0" value="0" />
+        </label>
+        <label>
+          Limit
+          <input id="limitFilter" type="number" step="1" min="0" max="5000" value="0" />
+        </label>
+        <div class="close-actions">
+          <button id="applyBtn" class="btn primary" type="button">Apply Filter</button>
+          <button id="refreshBtn" class="btn ghost" type="button">Refresh</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="close-kpi-grid">
+      <article class="close-kpi-card">
+        <p>Total Ticker</p>
+        <h2 id="kpiCount">-</h2>
+      </article>
+      <article class="close-kpi-card">
+        <p>Rata-rata Close</p>
+        <h2 id="kpiAvgClose">-</h2>
+      </article>
+      <article class="close-kpi-card">
+        <p>Rata-rata Return 5D</p>
+        <h2 id="kpiAvg5d">-</h2>
+      </article>
+      <article class="close-kpi-card">
+        <p>Rata-rata Volume 20D</p>
+        <h2 id="kpiAvgVol">-</h2>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Daftar Analisis Close</h3>
+        <span id="generatedAt" class="status-chip neutral">Generated: -</span>
+      </div>
+      <p class="mobile-table-hint">Geser tabel ke samping untuk melihat semua kolom.</p>
+      <div class="table-wrap">
+        <table id="closeTable">
+          <thead>
+            <tr>
+              <th data-sort="ticker">Ticker</th>
+              <th data-sort="last_close">Last Close</th>
+              <th data-sort="chg_1d_pct">1D %</th>
+              <th data-sort="chg_5d_pct">5D %</th>
+              <th data-sort="chg_20d_pct">20D %</th>
+              <th data-sort="ma20">MA20</th>
+              <th data-sort="ma50">MA50</th>
+              <th data-sort="dist_ma20_pct">Dist MA20 %</th>
+              <th data-sort="dist_ma50_pct">Dist MA50 %</th>
+              <th data-sort="avg_volume_20d">Avg Vol 20D</th>
+              <th data-sort="volatility_20d_pct">Vol 20D %</th>
+              <th data-sort="trend_state">Trend</th>
+              <th data-sort="signal_mode">Signal Mode</th>
+              <th data-sort="signal_score">Signal Score</th>
+            </tr>
+          </thead>
+          <tbody id="closeBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="closePageLoader" class="page-loader hidden" aria-live="polite" aria-busy="true">
+    <div class="loader-card">
+      <span class="loader-spinner" aria-hidden="true"></span>
+      <p id="closeLoaderText">Loading close analysis...</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/ops-auth.js" defer></script>
+  <script src="/close-analysis.js" defer></script>
+</body>
+</html>

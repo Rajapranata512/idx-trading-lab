@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT_DIR"
+
+echo "[1/4] Starting bootstrap stack (HTTP + ACME challenge support)..."
+docker compose -f docker-compose.prod.yml up -d idx-web nginx
+
+echo "[2/4] Requesting first Let's Encrypt certificate..."
+docker compose -f docker-compose.prod.yml --profile certbot-init run --rm certbot-init
+
+echo "[3/4] Certificate issued."
+echo "Now update .env:"
+echo "  IDX_NGINX_TEMPLATE=./deploy/nginx.prod.conf.template"
+
+echo "[4/4] Then restart nginx and enable renewal:"
+echo "  docker compose -f docker-compose.prod.yml up -d nginx"
+echo "  docker compose -f docker-compose.prod.yml --profile tls up -d certbot-renew"

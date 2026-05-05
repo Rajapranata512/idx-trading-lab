@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IDX Trading Lab Premium Dashboard</title>
+  <meta
+    name="description"
+    content="Premium trading decision-support dashboard for IDX research, signals, risk controls, paper fills, and recent run intelligence."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind = {
+      config: {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["IBM Plex Sans", "sans-serif"],
+              display: ["Sora", "sans-serif"],
+              mono: ["IBM Plex Mono", "monospace"],
+            },
+            colors: {
+              finance: {
+                950: "#050816",
+                900: "#08101f",
+                850: "#0b1426",
+                800: "#0f172a",
+                700: "#12233f",
+                600: "#183152",
+                accent: "#2dd4bf",
+                blue: "#38bdf8",
+                gold: "#f59e0b",
+                rose: "#fb7185",
+              },
+            },
+            boxShadow: {
+              glow: "0 0 0 1px rgba(148, 163, 184, 0.08), 0 18px 40px rgba(3, 7, 18, 0.45)",
+              emerald: "0 0 0 1px rgba(45, 212, 191, 0.18), 0 18px 44px rgba(13, 148, 136, 0.16)",
+            },
+            backgroundImage: {
+              "hero-grid":
+                "linear-gradient(rgba(148,163,184,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.05) 1px, transparent 1px)",
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <link rel="stylesheet" href="/premium-dashboard.css" />
+</head>
+<body class="bg-finance-950 text-slate-100 antialiased">
+  <div class="premium-progress" id="premiumScrollProgress" aria-hidden="true"></div>
+  <div class="premium-bg-orb orb-a" aria-hidden="true"></div>
+  <div class="premium-bg-orb orb-b" aria-hidden="true"></div>
+  <div class="premium-bg-orb orb-c" aria-hidden="true"></div>
+  <div class="premium-grid-overlay" aria-hidden="true"></div>
+  <div id="premiumRoot"></div>
+
+  <script src="https://unpkg.com/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" data-presets="react" src="/premium-dashboard.js"></script>
+</body>
+</html>

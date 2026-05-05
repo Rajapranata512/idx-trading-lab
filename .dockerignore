@@ -1,0 +1,14 @@
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.env
+reports
+models
+data/live
+data/raw/prices_daily.csv
+data/raw/prices_intraday.csv
+tmp_*.log

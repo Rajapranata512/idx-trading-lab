@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.strategy.swing_model import score_swing_candidates
+from src.strategy.swing_model import build_swing_score_frame, score_swing_candidates
 from src.strategy.t1_model import score_t1_candidates
 
 
@@ -51,12 +51,7 @@ def score_history_modes(features: pd.DataFrame, min_avg_volume_20d: float) -> pd
         (df["close"] > df["ma_50"]) &
         (df["ret_20d"].fillna(0) > 0)
     ].copy()
-    sw_r20 = sw["ret_20d"].clip(lower=sw["ret_20d"].quantile(0.05), upper=sw["ret_20d"].quantile(0.95))
-    sw_mom = ((sw_r20 - sw_r20.min()) / (sw_r20.max() - sw_r20.min() + 1e-9)).fillna(0.0)
-    sw_atr_pct = sw["atr_pct"].clip(lower=sw["atr_pct"].quantile(0.05), upper=sw["atr_pct"].quantile(0.95))
-    sw_atr_exp = ((sw_atr_pct - sw_atr_pct.min()) / (sw_atr_pct.max() - sw_atr_pct.min() + 1e-9)).fillna(0.0)
-    sw["score"] = (60 * sw_mom) + (40 * sw_atr_exp)
-    sw["score"] = sw["score"].clip(0, 100)
+    sw = build_swing_score_frame(sw)
     sw["mode"] = "swing"
 
     out = pd.concat([t1, sw], ignore_index=True, sort=False)

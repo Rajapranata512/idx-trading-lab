@@ -1,0 +1,89 @@
+services:
+  idx-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: idx-trading-lab-web:latest
+    container_name: idx-trading-lab-web
+    env_file:
+      - .env
+    expose:
+      - "8080"
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data
+      - ./reports:/app/reports
+      - ./models:/app/models
+    restart: unless-stopped
+    networks:
+      - idx_net
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: idx-trading-lab-nginx
+    depends_on:
+      - idx-web
+    environment:
+      IDX_PUBLIC_DOMAIN: ${IDX_PUBLIC_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${IDX_NGINX_TEMPLATE:-./deploy/nginx.bootstrap.conf.template}:/etc/nginx/templates/default.conf.template:ro
+      - ./logs/nginx:/var/log/nginx
+      - certbot_www:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+    networks:
+      - idx_net
+
+  certbot-init:
+    image: certbot/certbot:latest
+    container_name: idx-trading-lab-certbot-init
+    profiles: ["certbot-init"]
+    env_file:
+      - .env
+    volumes:
+      - certbot_www:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+    entrypoint:
+      - certbot
+    command:
+      - certonly
+      - --webroot
+      - -w
+      - /var/www/certbot
+      - --email
+      - ${LETSENCRYPT_EMAIL}
+      - --agree-tos
+      - --no-eff-email
+      - -d
+      - ${IDX_PUBLIC_DOMAIN}
+    networks:
+      - idx_net
+
+  certbot-renew:
+    image: certbot/certbot:latest
+    container_name: idx-trading-lab-certbot-renew
+    profiles: ["tls"]
+    env_file:
+      - .env
+    volumes:
+      - certbot_www:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done
+    restart: unless-stopped
+    networks:
+      - idx_net
+
+networks:
+  idx_net:
+    driver: bridge
+
+volumes:
+  certbot_www:
+  letsencrypt:

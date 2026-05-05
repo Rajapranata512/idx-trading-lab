@@ -5,6 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from src.utils.io import atomic_write_json
+
 
 class JsonRunLogger:
     def __init__(self, run_id: str, out_dir: str = "reports") -> None:
@@ -36,5 +38,4 @@ class JsonRunLogger:
             except Exception:
                 prior = []
         payload = prior + self.events
-        out_path.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
-        return str(out_path)
+        return atomic_write_json(out_path, payload)

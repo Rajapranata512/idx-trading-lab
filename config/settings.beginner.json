@@ -1,0 +1,323 @@
+{
+    "data":  {
+                 "timezone":  "Asia/Jakarta",
+                 "canonical_prices_path":  "data/raw/prices_daily.csv",
+                 "fallback_csv_path":  "data/raw/prices_daily.sample.csv",
+                 "universe_csv_path":  "data/reference/universe_lq45_idx30.csv",
+                 "universe_auto_update":  {
+                                              "enabled":  true,
+                                              "interval_days":  7,
+                                              "fail_on_error":  false,
+                                              "state_path":  "reports/universe_update_state.json",
+                                              "request_timeout_seconds":  20,
+                                              "headers":  {
+                                                              "Accept":  "application/json"
+                                                          },
+                                              "lq45":  {
+                                                           "url":  "",
+                                                           "format":  "csv",
+                                                           "response_data_path":  "",
+                                                           "ticker_column":  "ticker",
+                                                           "query_params":  {
+
+                                                                            }
+                                                       },
+                                              "idx30":  {
+                                                            "url":  "",
+                                                            "format":  "csv",
+                                                            "response_data_path":  "",
+                                                            "ticker_column":  "ticker",
+                                                            "query_params":  {
+
+                                                                             }
+                                                        }
+                                          },
+                 "provider":  {
+                                  "kind":  "rest",
+                                  "yfinance_fallback_enabled":  true,
+                                  "yfinance_ticker_suffix":  ".JK",
+                                  "rest":  {
+                                               "base_url":  "",
+                                               "base_url_template":  "https://eodhd.com/api/eod/{ticker}.JK",
+                                               "timeout_seconds":  20,
+                                               "headers":  {
+                                                               "Accept":  "application/json"
+                                                           },
+                                               "query_params":  {
+                                                                    "api_token":  "${EODHD_API_TOKEN}",
+                                                                    "fmt":  "json",
+                                                                    "period":  "d"
+                                                                },
+                                               "ticker_param_name":  "ticker",
+                                               "ticker_suffix":  "",
+                                               "date_from_param_name":  "from",
+                                               "date_to_param_name":  "to",
+                                               "response_data_path":  "",
+                                               "sleep_seconds_between_requests":  0.15,
+                                               "column_mapping":  {
+                                                                      "date":  "date",
+                                                                      "ticker":  "ticker",
+                                                                      "open":  "open",
+                                                                      "high":  "high",
+                                                                      "low":  "low",
+                                                                      "close":  "close",
+                                                                      "volume":  "volume"
+                                                                  }
+                                           }
+                              }
+             },
+    "pipeline":  {
+                     "min_avg_volume_20d":  1000000,
+                     "top_n_per_mode":  10,
+                     "top_n_combined":  20,
+                     "min_live_score_t1":  99,
+                     "min_live_score_swing":  72,
+                     "event_risk":  {
+                                        "enabled":  true,
+                                        "blacklist_csv_path":  "data/reference/event_risk_blacklist.csv",
+                                        "active_statuses":  [
+                                                                "SUSPEND",
+                                                                "UMA",
+                                                                "MATERIAL",
+                                                                "SPECIAL_MONITORING"
+                                                            ],
+                                        "default_active_days":  14,
+                                        "fail_on_error":  false,
+                                        "auto_update":  {
+                                                            "enabled":  true,
+                                                            "interval_hours":  8,
+                                                            "fail_on_error":  false,
+                                                            "state_path":  "reports/event_risk_update_state.json",
+                                                            "request_timeout_seconds":  30,
+                                                            "headers":  {
+                                                                            "Accept":  "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                                                                            "User-Agent":  "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                                                                        },
+                                                            "query_params":  {
+
+                                                                             },
+                                                            "suspend":  {
+                                                                            "url":  "https://block.idx.id/en/news/suspension/",
+                                                                            "format":  "html",
+                                                                            "response_data_path":  "",
+                                                                            "ticker_column":  "ticker",
+                                                                            "status_column":  "status",
+                                                                            "reason_column":  "reason",
+                                                                            "start_date_column":  "start_date",
+                                                                            "end_date_column":  "end_date",
+                                                                            "status_override":  "SUSPEND",
+                                                                            "source_name":  "idx_announcement_suspend",
+                                                                            "html_keyword_any":  [
+                                                                                                     "penghentian sementara",
+                                                                                                     "suspension"
+                                                                                                 ],
+                                                                            "html_keyword_all":  [
+
+                                                                                                 ],
+                                                                            "html_keyword_none":  [
+                                                                                                      "unsuspensi",
+                                                                                                      "unsuspension",
+                                                                                                      "lifting suspension",
+                                                                                                      "pembukaan kembali",
+                                                                                                      "pembukaan penghentian"
+                                                                                                  ],
+                                                                            "query_params":  {
+
+                                                                                             }
+                                                                        },
+                                                            "uma":  {
+                                                                        "url":  "https://block.idx.id/en/news/unusual-market-activity-uma/",
+                                                                        "format":  "html",
+                                                                        "response_data_path":  "",
+                                                                        "ticker_column":  "ticker",
+                                                                        "status_column":  "status",
+                                                                        "reason_column":  "reason",
+                                                                        "start_date_column":  "start_date",
+                                                                        "end_date_column":  "end_date",
+                                                                        "status_override":  "UMA",
+                                                                        "source_name":  "idx_announcement_uma",
+                                                                        "html_keyword_any":  [
+                                                                                                 "unusual market activity",
+                                                                                                 "uma atas saham",
+                                                                                                 "uma"
+                                                                                             ],
+                                                                        "html_keyword_all":  [
+
+                                                                                             ],
+                                                                        "html_keyword_none":  [
+
+                                                                                              ],
+                                                                        "query_params":  {
+
+                                                                                         }
+                                                                    },
+                                                            "material":  {
+                                                                             "url":  "https://block.idx.id/en/news/announcement/",
+                                                                             "format":  "html",
+                                                                             "response_data_path":  "",
+                                                                             "ticker_column":  "ticker",
+                                                                             "status_column":  "status",
+                                                                             "reason_column":  "reason",
+                                                                             "start_date_column":  "start_date",
+                                                                             "end_date_column":  "end_date",
+                                                                             "status_override":  "MATERIAL",
+                                                                             "source_name":  "idx_announcement_material",
+                                                                             "html_keyword_any":  [
+                                                                                                      "public expose material",
+                                                                                                      "material information",
+                                                                                                      "material transaction",
+                                                                                                      "informasi material",
+                                                                                                      "transaksi material"
+                                                                                                  ],
+                                                                             "html_keyword_all":  [
+
+                                                                                                  ],
+                                                                             "html_keyword_none":  [
+
+                                                                                                   ],
+                                                                             "query_params":  {
+
+                                                                                              }
+                                                                         }
+                                                        }
+                                    }
+                 },
+    "risk":  {
+                 "account_size_idr":  10000000,
+                 "risk_per_trade_pct":  0.35,
+                 "max_positions":  1,
+                 "max_positions_t1":  0,
+                 "max_positions_swing":  1,
+                 "execution_mode_priority":  [
+                                                 "swing",
+                                                 "t1"
+                                             ],
+                 "daily_loss_stop_r":  1.5,
+                 "position_lot":  100,
+                 "stop_atr_multiple":  2.0,
+                 "tp1_r_multiple":  1.0,
+                 "tp2_r_multiple":  2.0,
+                 "volatility_targeting_enabled":  true,
+                 "volatility_reference_atr_pct":  3.3406,
+                 "volatility_floor_multiplier":  0.4,
+                 "volatility_cap_multiplier":  1,
+                 "volatility_targeting_mode":  "hybrid",
+                 "volatility_market_weight":  0.55,
+                 "volatility_use_realized_vol":  true,
+                 "volatility_reference_realized_pct":  2.2743,
+                 "volatility_realized_weight":  0.4,
+                 "volatility_market_regime_cap_enabled":  true,
+                 "volatility_market_regime_calm_threshold":  0.85,
+                 "volatility_market_regime_high_threshold":  1.15,
+                 "volatility_market_regime_stress_threshold":  1.5,
+                 "volatility_market_regime_calm_max_mult":  1.15,
+                 "volatility_market_regime_normal_max_mult":  1.0,
+                 "volatility_market_regime_high_max_mult":  0.65,
+                 "volatility_market_regime_stress_max_mult":  0.5,
+                 "volatility_auto_recalibration_enabled":  true,
+                 "volatility_auto_recalibration_interval_days":  7,
+                 "volatility_auto_recalibration_state_path":  "reports/volatility_recalibration_state.json",
+                 "volatility_auto_recalibration_lookback_days":  252,
+                 "volatility_auto_recalibration_min_rows":  200,
+                 "volatility_auto_recalibration_quantile_atr":  0.5,
+                 "volatility_auto_recalibration_quantile_realized":  0.5,
+                 "volatility_auto_recalibration_min_atr_pct":  1.5,
+                 "volatility_auto_recalibration_max_atr_pct":  8.0,
+                 "volatility_auto_recalibration_min_realized_pct":  0.8,
+                 "volatility_auto_recalibration_max_realized_pct":  6.0,
+                 "volatility_auto_recalibration_min_delta_pct":  0.05,
+                 "max_position_exposure_pct":  12
+             },
+    "backtest":  {
+                     "buy_fee_pct":  0.15,
+                     "sell_fee_pct":  0.25,
+                     "slippage_pct":  0.1,
+                     "liq_bucket_mid_avg_volume_20d":  750000,
+                     "liq_bucket_high_avg_volume_20d":  2000000,
+                     "slippage_multiplier_low_liq":  1.5,
+                     "slippage_multiplier_mid_liq":  1.0,
+                     "slippage_multiplier_high_liq":  0.8,
+                     "equity_allocation_pct":  3.0,
+                     "min_trades_for_promotion":  150,
+                     "profit_factor_min":  1.2,
+                     "expectancy_min":  0.0,
+                     "max_drawdown_pct_limit":  15.0
+                 },
+    "validation":  {
+                       "use_walk_forward_gate":  true,
+                       "train_days":  252,
+                       "test_days":  63,
+                       "step_days":  63,
+                       "min_folds":  3,
+                       "min_train_trades":  120,
+                       "min_oos_trades":  120,
+                       "threshold_grid_t1":  [
+                                                 85.0,
+                                                 90.0,
+                                                 95.0,
+                                                 97.0,
+                                                 100.0
+                                             ],
+                       "threshold_grid_swing":  [
+                                                    55.0,
+                                                    60.0,
+                                                    65.0,
+                                                    70.0,
+                                                    75.0,
+                                                    80.0
+                                                ]
+                   },
+    "regime":  {
+                   "enabled":  true,
+                   "min_breadth_ma50_pct":  48,
+                   "min_breadth_ma20_pct":  52,
+                   "min_avg_ret20_pct":  0.0,
+                   "max_median_atr_pct":  8.0
+               },
+    "guardrail":  {
+                      "kill_switch_enabled":  true,
+                      "rolling_trades":  80,
+                      "min_rolling_trades":  50,
+                      "min_rolling_pf":  1.1,
+                      "min_rolling_expectancy":  0.0,
+                      "cooldown_days":  3
+                  },
+    "model_v2":  {
+                     "enabled":  true,
+                     "shadow_mode":  true,
+                     "auto_train_enabled":  true,
+                     "auto_train_interval_days":  7,
+                     "model_dir":  "models/model_v2",
+                     "state_path":  "reports/model_v2_state.json",
+                     "min_train_rows_per_mode":  180,
+                     "train_lookback_days":  720,
+                     "horizon_days_t1":  1,
+                     "horizon_days_swing":  10,
+                     "min_prob_threshold_t1":  0.58,
+                     "min_prob_threshold_swing":  0.6
+                 },
+    "coaching":  {
+                     "enabled":  true,
+                     "beginner_mode":  true,
+                     "weekly_kpi_lookback_days":  7,
+                     "weekly_kpi_path":  "reports/weekly_kpi.json",
+                     "beginner_note_path":  "reports/beginner_coaching.md"
+                 },
+    "reconciliation":  {
+                           "enabled":  true,
+                           "auto_reconcile_on_run_daily":  true,
+                           "lookback_days":  45,
+                           "max_signal_lag_days":  5,
+                           "fills_csv_path":  "data/live/trade_fills.csv",
+                           "signal_snapshot_dir":  "reports/snapshots",
+                           "output_json_path":  "reports/live_reconciliation.json",
+                           "output_markdown_path":  "reports/live_reconciliation.md",
+                           "details_csv_path":  "reports/live_reconciliation_details.csv",
+                           "unmatched_entries_csv_path":  "reports/live_reconciliation_unmatched_entries.csv",
+                           "fail_on_error":  false
+                       },
+    "notifications":  {
+                          "telegram_bot_token_env":  "TELEGRAM_BOT_TOKEN",
+                          "telegram_chat_id_env":  "TELEGRAM_CHAT_ID"
+                      }
+}
