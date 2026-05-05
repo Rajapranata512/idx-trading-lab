@@ -1,3 +1,7 @@
+param(
+    [string]$SettingsPath = "config/settings.json"
+)
+
 $ErrorActionPreference = "Stop"
 Set-Location "c:\TRADING\idx-trading-lab"
 
@@ -252,11 +256,15 @@ $lastOutput = ""
 $softSuccessDetected = $false
 
 try {
+    if (-not (Test-Path $SettingsPath)) {
+        throw "Settings file not found: $SettingsPath"
+    }
+
     Ensure-RequiredEnv
 
     while ($attempt -lt $maxAttempts) {
         $attempt += 1
-        $lastOutput = (& python -m src.cli run-daily --skip-telegram 2>&1 | Out-String)
+        $lastOutput = (& python -m src.cli --settings $SettingsPath run-daily --skip-telegram 2>&1 | Out-String)
         $lastExitCode = $LASTEXITCODE
         if ($lastOutput -match '"run_id"\s*:\s*"([^"]+)"') {
             $runId = $matches[1]

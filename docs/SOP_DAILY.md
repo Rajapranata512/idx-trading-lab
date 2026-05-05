@@ -18,7 +18,9 @@
    `powershell -ExecutionPolicy Bypass -File scripts/trade_gate_swing.ps1`
 5. Jika `NO_SIGNAL` dan ingin root-cause:
    `powershell -ExecutionPolicy Bypass -File scripts/trade_gate_swing.ps1 -SkipRun -DebugReasons`
-4. Validasi status dari `reports/n8n_last_summary.json`.
+6. Untuk mode pemula (lebih konservatif):
+   `powershell -ExecutionPolicy Bypass -File scripts/trade_gate_beginner.ps1`
+7. Validasi status dari `reports/n8n_last_summary.json`.
 
 ## Decision Matrix
 
@@ -68,3 +70,11 @@
 - `min_live_score_t1 = 95`
 - `min_live_score_swing = 65`
 - Hanya sinyal di atas threshold yang akan masuk `daily_signal.json`.
+
+## Beginner Safe Profile
+
+- settings: `config/settings.beginner.json`
+- mode: swing-first, target posisi maksimal 1
+- gate tambahan: no-trade saat `vol_regime` bukan `calm/normal`
+- command cepat:
+  `powershell -ExecutionPolicy Bypass -File scripts/trade_gate_beginner.ps1 -DebugReasons`
