@@ -1,7 +1,17 @@
-# idx-trading-lab
+# IDX Trading Lab
+
+> 🚀 **Live Premium Dashboard:** [https://idx-trading-lab.vercel.app](https://idx-trading-lab.vercel.app)
+
+An Institutional-Grade automated daily trading research pipeline for Indonesian stocks (IDX). It fetches data, computes technical/statistical features, scores candidates using Machine Learning V2 (LightGBM/XGBoost), applies Risk-On/Risk-Off regime filters, calculates Kelly Criterion position sizing, and outputs executable daily plans via a sleek Glassmorphism web dashboard.
+
+Features:
+- **ML V2 Scoring Engine**: Advanced probability scoring and Shadow/A-B testing.
+- **Dynamic Guardrails**: Macro Regime Thresholds and Sector Diversification Limits (Max 35%).
+- **Closed-Loop Feedback**: Live reconciliation and performance expectancy tracking.
+- **Automated Pipeline**: 100% Serverless execution via GitHub Actions.
+- **Premium UI**: React + Tailwind + GSAP dashboard hosted on Vercel.
 
 Production-oriented EOD research pipeline for Indonesian stocks (IDX):
-
 - ingest -> validate -> features -> score -> risk -> report -> notify
 - dual signal model: `T+1` and `Swing 1-4 weeks`
 - semi-auto execution workflow (manual order entry in Stockbit with Auto Order/Bracket)
