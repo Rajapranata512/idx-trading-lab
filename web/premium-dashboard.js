@@ -1010,7 +1010,7 @@ function App() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <button type="button" onClick={() => refreshDashboard(false)} className="rounded-full border border-slate-700/70 bg-slate-900/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200 transition hover:border-slate-500/80">Refresh</button>
+            {/* Refresh button removed for static site */}
           </div>
         </div>
       </header>
@@ -1020,7 +1020,7 @@ function App() {
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/10 via-transparent to-sky-400/10" />
           <div className="premium-hero-layout premium-grid-balanced relative grid xl:grid-cols-[1.04fr,0.96fr]">
             <div className="flex h-full flex-col justify-between gap-8">
-              <StatusPill label={`Auto refresh ${AUTO_REFRESH_MS / 1000}s`} tone="accent" className="w-fit" />
+              {/* Auto refresh pill removed */}
               <div className="space-y-3">
                 <p data-hero-reveal className="font-mono text-[11px] uppercase tracking-[0.36em] text-slate-400">Institutional-grade trading research interface</p>
                 <div className="hero-title space-y-2">
