@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-05T11:11:59.383707",
+  "generated_at": "2026-05-06T03:29:49.786555",
   "signals": {
-    "generated_at": "2026-05-05T11:11:57.084187",
+    "generated_at": "2026-05-06T03:29:46.700177",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -48,15 +48,15 @@
     },
     "regime": {
       "enabled": true,
-      "as_of_date": "2026-05-05",
+      "as_of_date": "2026-05-06",
       "pass": false,
       "status": "risk_off",
       "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok",
       "values": {
         "breadth_ma50_pct": 0.0,
-        "breadth_ma20_pct": 27.27272727272727,
-        "avg_ret20_pct": 1.5549893091452676,
-        "median_atr_pct": 3.5636606928730976,
+        "breadth_ma20_pct": 29.545454545454547,
+        "avg_ret20_pct": 2.9555633723144727,
+        "median_atr_pct": 3.3511835138396027,
         "sample_tickers": 44
       },
       "thresholds": {
@@ -75,7 +75,7 @@
     "kill_switch": {
       "enabled": true,
       "status": "clear",
-      "as_of_date": "2026-05-05",
+      "as_of_date": "2026-05-06",
       "active": false,
       "active_modes": [],
       "triggered_modes_today": [],
@@ -144,8 +144,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-05-05T11:11:57.094105",
-    "run_id": "20260505_111144",
+    "generated_at": "2026-05-06T03:29:46.708159",
+    "run_id": "20260506_032806",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -177,7 +177,7 @@
       "kill_switch": "clear"
     },
     "score_funnel": {
-      "generated_at": "2026-05-05T11:11:56.927861",
+      "generated_at": "2026-05-06T03:29:46.555858",
       "thresholds": {
         "active_modes": [
           "swing"
@@ -227,10 +227,10 @@
       "event_risk": {
         "enabled": true,
         "status": "ok",
-        "message": "Event-risk filter applied",
+        "message": "No active event-risk entries",
         "path": "data/reference/event_risk_blacklist.csv",
         "as_of_date": "",
-        "active_events": 8,
+        "active_events": 0,
         "excluded_count": 0,
         "excluded_tickers": [],
         "excluded_t1": 0,
@@ -239,82 +239,9 @@
     }
   },
   "event_risk": {
-    "active_total": 8,
+    "active_total": 0,
     "excluded_total": 0,
-    "active_items": [
-      {
-        "ticker": "BOBA",
-        "status": "SUSPEND",
-        "reason": "Penghentian Sementara Perdagangan Saham PT Formosa Ingredient Factory Tbk. (BOBA)",
-        "start_date": "2026-04-28",
-        "end_date": "2026-05-12",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_suspend"
-      },
-      {
-        "ticker": "BOBA",
-        "status": "UMA",
-        "reason": "UMA atas Saham PT Formosa Ingredient Factory Tbk. (BOBA)",
-        "start_date": "2026-04-22",
-        "end_date": "2026-05-06",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_uma"
-      },
-      {
-        "ticker": "EPAC",
-        "status": "UMA",
-        "reason": "UMA atas Saham PT Megalestari Epack Sentosaraya Tbk. (EPAC)",
-        "start_date": "2026-04-27",
-        "end_date": "2026-05-11",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_uma"
-      },
-      {
-        "ticker": "KING",
-        "status": "SUSPEND",
-        "reason": "Penghentian Sementara Perdagangan Saham PT Hoffmen Cleanindo Tbk. (KING)",
-        "start_date": "2026-04-27",
-        "end_date": "2026-05-11",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_suspend"
-      },
-      {
-        "ticker": "KOTA",
-        "status": "UMA",
-        "reason": "UMA atas Saham PT DMS Propertindo Tbk. (KOTA)",
-        "start_date": "2026-04-30",
-        "end_date": "2026-05-14",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_uma"
-      },
-      {
-        "ticker": "MAXI",
-        "status": "UMA",
-        "reason": "UMA atas Saham PT Maxindo Karya Anugerah Tbk. (MAXI)",
-        "start_date": "2026-04-23",
-        "end_date": "2026-05-07",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_uma"
-      },
-      {
-        "ticker": "NUSA",
-        "status": "SUSPEND",
-        "reason": "Penghentian Sementara Perdagangan Efek PT Sinergi Megah Internusa Tbk (NUSA)",
-        "start_date": "2026-05-04",
-        "end_date": "2026-05-18",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_suspend"
-      },
-      {
-        "ticker": "TOOL",
-        "status": "UMA",
-        "reason": "UMA atas Saham PT Rohartindo Nusantara Luas Tbk. (TOOL)",
-        "start_date": "2026-04-30",
-        "end_date": "2026-05-14",
-        "updated_at": "2026-05-05",
-        "source": "idx_announcement_uma"
-      }
-    ],
+    "active_items": [],
     "excluded_items": []
   },
   "operator_alerts": [
@@ -371,10 +298,10 @@
   },
   "runs": [
     {
-      "file": "run_log_20260505.json",
-      "run_id": "20260505_111144",
-      "started_at": "2026-05-05T11:11:44.285624",
-      "ended_at": "2026-05-05T11:11:57.097663",
+      "file": "run_log_20260506.json",
+      "run_id": "20260506_032806",
+      "started_at": "2026-05-06T03:28:06.044366",
+      "ended_at": "2026-05-06T03:29:47.259355",
       "source": "yfinance_fallback",
       "signals": 0,
       "error_count": 0,
@@ -410,7 +337,7 @@
     "message": "Closed-loop conditions not met",
     "triggered": false,
     "reasons": [],
-    "last_evaluated_at": "2026-05-05T11:11:57.092510",
+    "last_evaluated_at": "2026-05-06T03:29:46.706878",
     "last_triggered_at": "",
     "fills_in_window": 0,
     "new_fills_since_last_trigger": 0,
@@ -433,7 +360,7 @@
     "stats": {
       "rows_total": 924,
       "ticker_total": 44,
-      "max_data_date": "2026-05-05",
+      "max_data_date": "2026-05-06",
       "stale_days": 0,
       "missing_rows": 0,
       "duplicate_rows": 0,
@@ -455,8 +382,8 @@
     "decision_version": "v2026.03.roadmap_90d"
   },
   "summary": {
-    "generated_at": "2026-05-05T11:11:57.093295",
-    "run_id": "20260505_111144",
+    "generated_at": "2026-05-06T03:29:46.707447",
+    "run_id": "20260506_032806",
     "decision_version": "v2026.03.roadmap_90d",
     "status": "BLOCKED_BY_GATE",
     "action": "NO_TRADE",
@@ -477,7 +404,7 @@
       "t1": false,
       "swing": false
     },
-    "data_max_date": "2026-05-05",
+    "data_max_date": "2026-05-06",
     "data_age_days": 0,
     "source": "yfinance_fallback",
     "paper_live_mode": "paper",
@@ -499,7 +426,7 @@
       "profit_factor_r": 0.0
     },
     "swing_audit": {
-      "generated_at": "2026-05-05T11:11:57.078919",
+      "generated_at": "2026-05-06T03:29:46.695541",
       "status": "no_trades",
       "message": "No swing trades available for audit",
       "overall": {},
@@ -524,7 +451,7 @@
       "stats": {
         "rows_total": 924,
         "ticker_total": 44,
-        "max_data_date": "2026-05-05",
+        "max_data_date": "2026-05-06",
         "stale_days": 0,
         "missing_rows": 0,
         "duplicate_rows": 0,
@@ -586,7 +513,7 @@
     },
     "model_v2_promotion_blocked_modes": [],
     "data_age_days": 0,
-    "data_max_date": "2026-05-05",
+    "data_max_date": "2026-05-06",
     "source": "n8n_summary",
     "mode_activation": {
       "active_modes": [
@@ -601,7 +528,7 @@
   "kpi": {
     "signal_total": 0,
     "execution_total": 0,
-    "event_active_total": 8,
+    "event_active_total": 0,
     "event_excluded_total": 0,
     "signal_avg_score": 0.0,
     "gate_pass": {
