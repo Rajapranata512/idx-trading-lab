@@ -1,0 +1,21 @@
+{
+  "last_attempt_at": "2026-05-11T09:25:34.805798",
+  "last_success_at": "2026-05-11T09:25:34.805798",
+  "status": "updated",
+  "message": "Event-risk blacklist updated successfully",
+  "counts": {
+    "rows": 889,
+    "tickers": 566,
+    "status_counts": {
+      "UMA": 522,
+      "SUSPEND": 367
+    }
+  },
+  "errors": [],
+  "source_status": {
+    "SUSPEND": "ok",
+    "UMA": "ok",
+    "MATERIAL": "ok"
+  },
+  "blacklist_path": "data\\reference\\event_risk_blacklist.csv"
+}

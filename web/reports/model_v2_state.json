@@ -1,0 +1,48 @@
+{
+  "last_success_at": "2026-05-05T09:26:46.266583",
+  "updated": true,
+  "modes": {
+    "t1": {
+      "status": "trained",
+      "rows": 20970,
+      "train_rows": 20970,
+      "positive_rate": 0.3436814496900334,
+      "auc_train": 0.5624,
+      "features": [
+        "score",
+        "ret_1d",
+        "ret_5d",
+        "ret_20d",
+        "atr_pct",
+        "vol_20d",
+        "avg_vol_20d",
+        "close",
+        "ma_20",
+        "ma_50"
+      ],
+      "artifact_path": "models\\model_v2\\t1.joblib",
+      "metadata_path": "models\\model_v2\\t1.meta.json"
+    },
+    "swing": {
+      "status": "trained",
+      "rows": 7460,
+      "train_rows": 7460,
+      "positive_rate": 0.4250670241286863,
+      "auc_train": 0.546,
+      "features": [
+        "score",
+        "ret_1d",
+        "ret_5d",
+        "ret_20d",
+        "atr_pct",
+        "vol_20d",
+        "avg_vol_20d",
+        "close",
+        "ma_20",
+        "ma_50"
+      ],
+      "artifact_path": "models\\model_v2\\swing.joblib",
+      "metadata_path": "models\\model_v2\\swing.meta.json"
+    }
+  }
+}

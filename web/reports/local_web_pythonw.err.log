@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\TRADING\idx-trading-lab - Copy\scripts\start_local_web.py", line 14, in <module>
+    from src.web.server import start_web_server
+ModuleNotFoundError: No module named 'src'
+Traceback (most recent call last):
+  File "C:\TRADING\idx-trading-lab - Copy\scripts\start_local_web.py", line 14, in <module>
+    from src.web.server import start_web_server
+ModuleNotFoundError: No module named 'src'

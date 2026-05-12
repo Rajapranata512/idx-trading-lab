@@ -1,0 +1,211 @@
+{
+  "generated_at": "2026-05-11T09:25:41.408067",
+  "run_id": "20260511_102502",
+  "signals": [
+    {
+      "ticker": "ISAT",
+      "mode": "t1",
+      "score": 97.3,
+      "shadow_rank": 1,
+      "shadow_p_win": 0.5351,
+      "shadow_expected_r": 0.3378,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "model",
+      "entry": 2180.0,
+      "stop": 1998.57,
+      "tp1": 2361.43,
+      "tp2": 2542.86,
+      "size": 300
+    },
+    {
+      "ticker": "UNVR",
+      "mode": "t1",
+      "score": 100.0,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.5211,
+      "shadow_expected_r": 0.3027,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "model",
+      "entry": 1785.0,
+      "stop": 1630.78,
+      "tp1": 1939.22,
+      "tp2": 2093.43,
+      "size": 300
+    },
+    {
+      "ticker": "MAPI",
+      "mode": "swing",
+      "score": 68.97,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.4917,
+      "shadow_expected_r": 0.2293,
+      "shadow_threshold": 0.55,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 1505.0,
+      "stop": 1378.12,
+      "tp1": 1631.88,
+      "tp2": 1758.77,
+      "size": 300
+    },
+    {
+      "ticker": "MAPI",
+      "mode": "t1",
+      "score": 100.0,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.4871,
+      "shadow_expected_r": 0.2178,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 1505.0,
+      "stop": 1378.12,
+      "tp1": 1631.88,
+      "tp2": 1758.77,
+      "size": 400
+    },
+    {
+      "ticker": "SMRA",
+      "mode": "t1",
+      "score": 96.98,
+      "shadow_rank": 5,
+      "shadow_p_win": 0.4646,
+      "shadow_expected_r": 0.1615,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 324.0,
+      "stop": 304.73,
+      "tp1": 343.27,
+      "tp2": 362.53,
+      "size": 3100
+    },
+    {
+      "ticker": "ICBP",
+      "mode": "t1",
+      "score": 96.86,
+      "shadow_rank": 6,
+      "shadow_p_win": 0.4607,
+      "shadow_expected_r": 0.1517,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 7100.0,
+      "stop": 6725.8,
+      "tp1": 7474.2,
+      "tp2": 7848.39,
+      "size": 100
+    }
+  ],
+  "infer": {
+    "status": "ok",
+    "message": "Shadow inference completed",
+    "modes": {
+      "swing": {
+        "rows": 1,
+        "source": "model",
+        "threshold": 0.55,
+        "metadata": {
+          "saved_at": "2026-05-05T09:26:46.531552",
+          "train_rows": 7460,
+          "positive_rate": 0.4250670241286863,
+          "auc_train": 0.546,
+          "features": [
+            "score",
+            "ret_1d",
+            "ret_5d",
+            "ret_20d",
+            "atr_pct",
+            "vol_20d",
+            "avg_vol_20d",
+            "close",
+            "ma_20",
+            "ma_50"
+          ],
+          "mode": "swing",
+          "horizon_days": 10,
+          "trained_at": "2026-05-05T09:26:46.266583"
+        }
+      },
+      "t1": {
+        "rows": 5,
+        "source": "model",
+        "threshold": 0.52,
+        "metadata": {
+          "saved_at": "2026-05-05T09:26:46.402021",
+          "train_rows": 20970,
+          "positive_rate": 0.3436814496900334,
+          "auc_train": 0.5624,
+          "features": [
+            "score",
+            "ret_1d",
+            "ret_5d",
+            "ret_20d",
+            "atr_pct",
+            "vol_20d",
+            "avg_vol_20d",
+            "close",
+            "ma_20",
+            "ma_50"
+          ],
+          "mode": "t1",
+          "horizon_days": 1,
+          "trained_at": "2026-05-05T09:26:46.266583"
+        }
+      }
+    },
+    "rows": 6
+  },
+  "train": {
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
+    "state_path": "reports/model_v2_state.json",
+    "modes": {
+      "t1": {
+        "status": "trained",
+        "rows": 20970,
+        "train_rows": 20970,
+        "positive_rate": 0.3436814496900334,
+        "auc_train": 0.5624,
+        "features": [
+          "score",
+          "ret_1d",
+          "ret_5d",
+          "ret_20d",
+          "atr_pct",
+          "vol_20d",
+          "avg_vol_20d",
+          "close",
+          "ma_20",
+          "ma_50"
+        ],
+        "artifact_path": "models\\model_v2\\t1.joblib",
+        "metadata_path": "models\\model_v2\\t1.meta.json"
+      },
+      "swing": {
+        "status": "trained",
+        "rows": 7460,
+        "train_rows": 7460,
+        "positive_rate": 0.4250670241286863,
+        "auc_train": 0.546,
+        "features": [
+          "score",
+          "ret_1d",
+          "ret_5d",
+          "ret_20d",
+          "atr_pct",
+          "vol_20d",
+          "avg_vol_20d",
+          "close",
+          "ma_20",
+          "ma_50"
+        ],
+        "artifact_path": "models\\model_v2\\swing.joblib",
+        "metadata_path": "models\\model_v2\\swing.meta.json"
+      }
+    }
+  }
+}

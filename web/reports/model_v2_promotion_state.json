@@ -1,0 +1,43 @@
+{
+  "enabled": true,
+  "status": "ok",
+  "message": "Model v2 promotion state evaluated",
+  "updated_at": "2026-05-11T09:25:41.420902",
+  "state_path": "reports/model_v2_promotion_state.json",
+  "live_active": false,
+  "stage_index": 0,
+  "rollout_pct": 0,
+  "rollout_levels_pct": [
+    0,
+    30,
+    60,
+    100
+  ],
+  "consecutive_passes": 0,
+  "reason": "criteria_not_met",
+  "previous_stage_index": 0,
+  "previous_rollout_pct": 0,
+  "reconciliation_status": "no_signals",
+  "reconciliation_metrics": {
+    "samples": 0,
+    "expectancy_r": 0.0,
+    "profit_factor_r": 0.0,
+    "entry_match_rate_pct": 0.0
+  },
+  "checks": {
+    "pass_checks": {
+      "status_ok": false,
+      "samples_ok": false,
+      "expectancy_ok": true,
+      "profit_factor_ok": false,
+      "entry_match_ok": false
+    },
+    "rollback_checks": {
+      "rollback_status_error": false,
+      "rollback_expectancy_bad": false,
+      "rollback_pf_bad": false
+    },
+    "pass_now": false,
+    "rollback_now": false
+  }
+}

@@ -1,0 +1,602 @@
+[
+  {
+    "ts": "2026-04-13T09:25:07.075011",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:07.083182",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "universe_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "skipped_no_source",
+      "message": "Universe source URLs are empty; keeping existing universe file",
+      "universe_path": "data\\reference\\universe_lq45_idx30.csv",
+      "state_path": "reports\\universe_update_state.json",
+      "updated": false,
+      "attempted_at": "2026-04-13T09:25:07.075011",
+      "last_success_at": "",
+      "counts": {
+        "lq45": 0,
+        "idx30": 0,
+        "combined": 0
+      },
+      "errors": [],
+      "source_status": {
+        "LQ45": "no_url",
+        "IDX30": "no_url"
+      }
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:40.605405",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 22253,
+      "rows_new": 660,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-04-13",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:41.338988",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 22253,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:41.545377",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "volatility_recalibration_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "updated",
+      "message": "Volatility reference targets recalibrated",
+      "updated": true,
+      "attempted_at": "2026-04-13T09:25:41.338988",
+      "last_success_at": "2026-04-13T09:25:41.338988",
+      "state_path": "reports\\volatility_recalibration_state.json",
+      "features_path": "data/processed/features.parquet",
+      "samples": {
+        "rows_total": 22253,
+        "rows_window": 7601,
+        "atr_rows": 7601,
+        "realized_rows": 7601,
+        "lookback_days": 252
+      },
+      "old_targets": {
+        "volatility_reference_atr_pct": 3.4318,
+        "volatility_reference_realized_pct": 2.2708
+      },
+      "new_targets": {
+        "volatility_reference_atr_pct": 3.4885,
+        "volatility_reference_realized_pct": 2.3542
+      },
+      "quantiles": {
+        "atr_q": 0.5,
+        "realized_q": 0.5,
+        "raw_atr_pct": 3.4885,
+        "raw_realized_pct": 2.3542
+      },
+      "bounds": {
+        "atr_pct": [
+          1.5,
+          8.0
+        ],
+        "realized_pct": [
+          0.8,
+          6.0
+        ]
+      },
+      "delta": {
+        "atr_pct": 0.0567,
+        "realized_pct": 0.0834,
+        "min_delta_pct": 0.05
+      },
+      "settings_path": "config/settings.json"
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:52.640361",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "event_risk_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "updated",
+      "message": "Event-risk blacklist updated successfully",
+      "blacklist_path": "data\\reference\\event_risk_blacklist.csv",
+      "state_path": "reports\\event_risk_update_state.json",
+      "updated": true,
+      "attempted_at": "2026-04-13T09:25:41.545377",
+      "last_success_at": "2026-04-13T09:25:41.545377",
+      "counts": {
+        "rows": 877,
+        "tickers": 559,
+        "status_counts": {
+          "UMA": 515,
+          "SUSPEND": 362
+        }
+      },
+      "errors": [],
+      "source_status": {
+        "SUSPEND": "ok",
+        "UMA": "ok",
+        "MATERIAL": "ok"
+      }
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:52.814612",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "event_risk_filtered",
+    "extra": {
+      "enabled": true,
+      "status": "ok",
+      "message": "Event-risk filter applied",
+      "path": "data/reference/event_risk_blacklist.csv",
+      "as_of_date": "2026-04-13",
+      "active_events": 7,
+      "excluded_count": 0,
+      "excluded_tickers": [],
+      "excluded_t1": 0,
+      "excluded_swing": 0
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:53.624689",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "model_v2_shadow_done",
+    "extra": {
+      "status": "ok",
+      "message": "Model v2 shadow inference completed",
+      "shadow_csv_path": "reports\\model_v2_shadow_signals.csv",
+      "shadow_json_path": "reports\\model_v2_shadow_signals.json",
+      "ab_test_path": "reports\\model_v2_ab_test.json",
+      "rows": 2,
+      "train": {
+        "status": "updated",
+        "message": "Model v2 trained for modes: t1, swing",
+        "updated": true,
+        "state_path": "reports/model_v2_state.json",
+        "model_dir": "models/model_v2",
+        "modes": {
+          "t1": {
+            "status": "trained",
+            "rows": 20882,
+            "train_rows": 20882,
+            "positive_rate": 0.34618331577435113,
+            "auc_train": 0.5638,
+            "features": [
+              "score",
+              "ret_1d",
+              "ret_5d",
+              "ret_20d",
+              "atr_pct",
+              "vol_20d",
+              "avg_vol_20d",
+              "close",
+              "ma_20",
+              "ma_50"
+            ],
+            "artifact_path": "models\\model_v2\\t1.joblib",
+            "metadata_path": "models\\model_v2\\t1.meta.json"
+          },
+          "swing": {
+            "status": "trained",
+            "rows": 7298,
+            "train_rows": 7298,
+            "positive_rate": 0.42573307755549467,
+            "auc_train": 0.5475,
+            "features": [
+              "score",
+              "ret_1d",
+              "ret_5d",
+              "ret_20d",
+              "atr_pct",
+              "vol_20d",
+              "avg_vol_20d",
+              "close",
+              "ma_20",
+              "ma_50"
+            ],
+            "artifact_path": "models\\model_v2\\swing.joblib",
+            "metadata_path": "models\\model_v2\\swing.meta.json"
+          }
+        },
+        "errors": []
+      },
+      "infer": {
+        "status": "ok",
+        "message": "Shadow inference completed",
+        "modes": {
+          "swing": {
+            "rows": 1,
+            "source": "model",
+            "threshold": 0.55,
+            "metadata": {
+              "saved_at": "2026-04-13T09:25:53.570397",
+              "train_rows": 7298,
+              "positive_rate": 0.42573307755549467,
+              "auc_train": 0.5475,
+              "features": [
+                "score",
+                "ret_1d",
+                "ret_5d",
+                "ret_20d",
+                "atr_pct",
+                "vol_20d",
+                "avg_vol_20d",
+                "close",
+                "ma_20",
+                "ma_50"
+              ],
+              "mode": "swing",
+              "horizon_days": 10,
+              "trained_at": "2026-04-13T09:25:52.907152"
+            }
+          },
+          "t1": {
+            "rows": 1,
+            "source": "model",
+            "threshold": 0.52,
+            "metadata": {
+              "saved_at": "2026-04-13T09:25:53.223874",
+              "train_rows": 20882,
+              "positive_rate": 0.34618331577435113,
+              "auc_train": 0.5638,
+              "features": [
+                "score",
+                "ret_1d",
+                "ret_5d",
+                "ret_20d",
+                "atr_pct",
+                "vol_20d",
+                "avg_vol_20d",
+                "close",
+                "ma_20",
+                "ma_50"
+              ],
+              "mode": "t1",
+              "horizon_days": 1,
+              "trained_at": "2026-04-13T09:25:52.907152"
+            }
+          }
+        },
+        "rows": 2
+      },
+      "ab_test": {
+        "max_positions": 3,
+        "v1_top": [
+          "EMTK",
+          "BRPT"
+        ],
+        "v2_top": [
+          "BRPT"
+        ],
+        "overlap_count": 1,
+        "overlap_tickers": [
+          "BRPT"
+        ],
+        "only_v1": [
+          "EMTK"
+        ],
+        "only_v2": [],
+        "jaccard_overlap": 0.5,
+        "v1_avg_score": 100.0,
+        "v2_avg_p_win": 0.6638
+      }
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:53.627787",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "model_v2_promotion_evaluated",
+    "extra": {
+      "enabled": true,
+      "status": "ok",
+      "message": "Model v2 promotion state evaluated",
+      "updated_at": "2026-04-13T09:25:53.625695",
+      "state_path": "reports/model_v2_promotion_state.json",
+      "live_active": false,
+      "stage_index": 0,
+      "rollout_pct": 0,
+      "rollout_levels_pct": [
+        0,
+        30,
+        60,
+        100
+      ],
+      "consecutive_passes": 0,
+      "reason": "criteria_not_met",
+      "previous_stage_index": 0,
+      "previous_rollout_pct": 0,
+      "reconciliation_status": "no_signals",
+      "reconciliation_metrics": {
+        "samples": 0,
+        "expectancy_r": 0.0,
+        "profit_factor_r": 0.0,
+        "entry_match_rate_pct": 0.0
+      },
+      "checks": {
+        "pass_checks": {
+          "status_ok": false,
+          "samples_ok": false,
+          "expectancy_ok": true,
+          "profit_factor_ok": false,
+          "entry_match_ok": false
+        },
+        "rollback_checks": {
+          "rollback_status_error": false,
+          "rollback_expectancy_bad": false,
+          "rollback_pf_bad": false
+        },
+        "pass_now": false,
+        "rollback_now": false
+      }
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:53.645452",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.124069",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 40.184757505773675,
+          "ProfitFactor": 0.6718867825088977,
+          "Expectancy": -0.006193334704169772,
+          "Trades": 433,
+          "CAGR": -4.596780230857844,
+          "MaxDD": -8.44361716178758
+        },
+        "swing": {
+          "WinRate": 62.5,
+          "ProfitFactor": 2.534485301441589,
+          "Expectancy": 0.05540159002296555,
+          "Trades": 232,
+          "CAGR": 51.27939279593714,
+          "MaxDD": -8.094167264316301
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-04-13",
+        "pass": false,
+        "status": "risk_off",
+        "reason": "Failed checks: breadth_ma50_ok, avg_ret20_ok",
+        "values": {
+          "breadth_ma50_pct": 31.818181818181817,
+          "breadth_ma20_pct": 61.36363636363637,
+          "avg_ret20_pct": -0.5302042520036372,
+          "median_atr_pct": 3.918389806629631,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": false,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": false,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "triggered",
+        "as_of_date": "2026-04-13",
+        "active": true,
+        "active_modes": [
+          "t1"
+        ],
+        "triggered_modes_today": [
+          "t1"
+        ],
+        "cooldown_until": "2026-04-16",
+        "state_path": "reports\\kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.132880",
+    "run_id": "20260413_102507",
+    "level": "WARN",
+    "message": "live_gate_blocked",
+    "extra": {
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "gate_components": {
+        "t1": {
+          "model_gate_ok": false,
+          "regime_ok": false,
+          "kill_switch_ok": false,
+          "final_ok": false
+        },
+        "swing": {
+          "model_gate_ok": true,
+          "regime_ok": false,
+          "kill_switch_ok": true,
+          "final_ok": false
+        }
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-04-13",
+        "pass": false,
+        "status": "risk_off",
+        "reason": "Failed checks: breadth_ma50_ok, avg_ret20_ok",
+        "values": {
+          "breadth_ma50_pct": 31.818181818181817,
+          "breadth_ma20_pct": 61.36363636363637,
+          "avg_ret20_pct": -0.5302042520036372,
+          "median_atr_pct": 3.918389806629631,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": false,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": false,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "triggered",
+        "as_of_date": "2026-04-13",
+        "active": true,
+        "active_modes": [
+          "t1"
+        ],
+        "triggered_modes_today": [
+          "t1"
+        ],
+        "cooldown_until": "2026-04-16",
+        "state_path": "reports\\kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.135468",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "signal_snapshot_written",
+    "extra": {
+      "path": "reports\\snapshots\\signals_20260413_102507.json",
+      "signal_count": 0
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.194887",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "live_reconciliation_done",
+    "extra": {
+      "status": "no_signals",
+      "message": "Snapshot files found, but all have zero executable signals",
+      "json_path": "reports\\live_reconciliation.json",
+      "details_csv_path": "reports\\live_reconciliation_details.csv"
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.196529",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "signal_funnel_written",
+    "extra": {
+      "path": "reports\\signal_funnel_live.json",
+      "post_gate_signals": 0
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.196529",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.252711",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "weekly_kpi_generated",
+    "extra": {
+      "status": "ok",
+      "message": "Weekly KPI dashboard generated",
+      "json_path": "reports\\weekly_kpi.json",
+      "markdown_path": "reports\\weekly_kpi.md",
+      "payload": {
+        "generated_at": "2026-04-13T09:25:56.247693",
+        "lookback_days": 7,
+        "run_stats": {
+          "runs_total": 4,
+          "runs_failed": 0,
+          "runs_live_allowed": 0,
+          "runs_risk_blocked": 4,
+          "setup_errors": 0,
+          "error_rate_pct": 0.0
+        },
+        "event_risk_update": {
+          "ok_count": 4,
+          "error_count": 0
+        },
+        "strategy_snapshot": {
+          "swing_profit_factor": 2.534485301441589,
+          "swing_expectancy": 0.05540159002296555,
+          "swing_max_dd_pct": -8.094167264316301,
+          "swing_trades": 232
+        },
+        "live_reconciliation": {
+          "status": "no_signals",
+          "entry_match_rate_pct": 0.0,
+          "signal_execution_rate_pct": 0.0,
+          "live_win_rate_pct": 0.0,
+          "live_expectancy_r": 0.0,
+          "live_profit_factor_r": 0.0,
+          "live_samples": 0
+        }
+      }
+    }
+  },
+  {
+    "ts": "2026-04-13T09:25:56.255568",
+    "run_id": "20260413_102507",
+    "level": "INFO",
+    "message": "beginner_coaching_written",
+    "extra": {
+      "path": "reports\\beginner_coaching.md"
+    }
+  }
+]

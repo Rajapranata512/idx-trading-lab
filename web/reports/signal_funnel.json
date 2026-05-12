@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-05-11T09:25:41.330753",
+  "thresholds": {
+    "min_live_score_t1": 95.0,
+    "min_live_score_swing": 68.0,
+    "position_lot": 100,
+    "top_n_combined": 20,
+    "max_positions": 3,
+    "max_positions_t1": 1,
+    "max_positions_swing": 3,
+    "execution_mode_priority": [
+      "swing",
+      "t1"
+    ],
+    "liq_bucket_mid_avg_volume_20d": 750000.0,
+    "liq_bucket_high_avg_volume_20d": 2000000.0,
+    "slippage_pct_base": 0.1
+  },
+  "modes": {
+    "t1": {
+      "rank_candidates": 10,
+      "after_score_filter": 5,
+      "after_event_risk": 5,
+      "small_size_before_filter": 0,
+      "dropped_by_score": 5,
+      "dropped_by_event_risk": 0
+    },
+    "swing": {
+      "rank_candidates": 7,
+      "after_score_filter": 1,
+      "after_event_risk": 1,
+      "small_size_before_filter": 1,
+      "dropped_by_score": 6,
+      "dropped_by_event_risk": 0
+    }
+  },
+  "combined": {
+    "before_size_filter": 6,
+    "dropped_by_size_filter": 0,
+    "after_size_filter": 6,
+    "after_top_n_combined": 6,
+    "execution_plan_count": 2,
+    "signal_count": 6,
+    "avg_roundtrip_cost_est_pct": 0.56
+  },
+  "event_risk": {
+    "enabled": true,
+    "status": "ok",
+    "message": "Event-risk filter applied",
+    "path": "data/reference/event_risk_blacklist.csv",
+    "as_of_date": "2026-05-11",
+    "active_events": 9,
+    "excluded_count": 0,
+    "excluded_tickers": [],
+    "excluded_t1": 0,
+    "excluded_swing": 0
+  }
+}

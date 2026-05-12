@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-11T12:35:46.997832",
+  "generated_at": "2026-05-12T07:30:32.417008",
   "signals": {
-    "generated_at": "2026-05-11T12:35:44.077840",
+    "generated_at": "2026-05-11T09:25:43.132177",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -12,11 +12,307 @@
     "items": []
   },
   "top_picks": {
-    "t1_total": 0,
-    "swing_total": 0,
+    "t1_total": 5,
+    "swing_total": 1,
     "intraday_total": 0,
-    "t1_items": [],
-    "swing_items": [],
+    "t1_items": [
+      {
+        "date": "2026-05-11",
+        "ticker": "UNVR",
+        "open": 1805.0,
+        "high": 1815.0,
+        "low": 1760.0,
+        "close": 1785.0,
+        "volume": 15726900.0,
+        "source": "canonical_csv",
+        "ingested_at": "2026-05-11 09:25:34.400514",
+        "ret_1d": -0.0083333333333333,
+        "ret_5d": 0.1442307692307691,
+        "ret_20d": -0.0703125,
+        "ma_20": 1732.5,
+        "ma_50": 1908.0,
+        "ma_200": 2106.5,
+        "vol_20d": 0.0380485238446395,
+        "avg_vol_20d": 29374705.0,
+        "turnover": 28072516500.0,
+        "turnover_20d": 49293797700.0,
+        "rsi_14": 50.627207954066975,
+        "atr_14": 77.10823504800659,
+        "atr_pct": 4.319789078317277,
+        "score": 100.0,
+        "mode": "t1",
+        "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "rank": 1,
+        "entry": 1785.0,
+        "stop": 1630.78,
+        "tp1": 1939.22,
+        "tp2": 2093.43,
+        "risk_per_share": 154.22,
+        "size": 300,
+        "position_value": 535500.0,
+        "risk_budget_base": 60000.0,
+        "risk_budget_effective": 53270.13,
+        "vol_target_multiplier": 0.8878,
+        "vol_target_multiplier_market": 1.0468,
+        "vol_target_multiplier_asset": 0.726,
+        "vol_target_multiplier_asset_atr": 0.8076,
+        "vol_target_multiplier_asset_realized": 0.6187,
+        "vol_target_market_vol_index": 0.9553,
+        "vol_target_market_regime": "normal",
+        "vol_target_regime_cap_enabled": true,
+        "vol_target_regime_cap": 1.0,
+        "vol_target_regime_cap_raw": 1.0,
+        "vol_target_realized_weight": 0.4,
+        "vol_target_ref_realized_pct": 2.3542
+      },
+      {
+        "date": "2026-05-11",
+        "ticker": "MAPI",
+        "open": 1490.0,
+        "high": 1515.0,
+        "low": 1480.0,
+        "close": 1505.0,
+        "volume": 155453400.0,
+        "source": "canonical_csv",
+        "ingested_at": "2026-05-11 09:25:34.400514",
+        "ret_1d": 0.0343642611683849,
+        "ret_5d": 0.162162162162162,
+        "ret_20d": 0.199203187250996,
+        "ma_20": 1301.0,
+        "ma_50": 1249.6,
+        "ma_200": 1229.75,
+        "vol_20d": 0.0412907688586176,
+        "avg_vol_20d": 29438270.0,
+        "turnover": 233957367000.0,
+        "turnover_20d": 40487388225.0,
+        "rsi_14": 67.76091675677765,
+        "atr_14": 63.44240083267327,
+        "atr_pct": 4.215441915789444,
+        "score": 100.0,
+        "mode": "t1",
+        "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "rank": 2,
+        "entry": 1505.0,
+        "stop": 1378.12,
+        "tp1": 1631.88,
+        "tp2": 1758.77,
+        "risk_per_share": 126.88,
+        "size": 400,
+        "position_value": 602000.0,
+        "risk_budget_base": 60000.0,
+        "risk_budget_effective": 52839.45,
+        "vol_target_multiplier": 0.8807,
+        "vol_target_multiplier_market": 1.0468,
+        "vol_target_multiplier_asset": 0.713,
+        "vol_target_multiplier_asset_atr": 0.8276,
+        "vol_target_multiplier_asset_realized": 0.5702,
+        "vol_target_market_vol_index": 0.9553,
+        "vol_target_market_regime": "normal",
+        "vol_target_regime_cap_enabled": true,
+        "vol_target_regime_cap": 1.0,
+        "vol_target_regime_cap_raw": 1.0,
+        "vol_target_realized_weight": 0.4,
+        "vol_target_ref_realized_pct": 2.3542
+      },
+      {
+        "date": "2026-05-11",
+        "ticker": "ISAT",
+        "open": 2250.0,
+        "high": 2250.0,
+        "low": 2110.0,
+        "close": 2180.0,
+        "volume": 15509300.0,
+        "source": "canonical_csv",
+        "ingested_at": "2026-05-11 09:25:34.400514",
+        "ret_1d": -0.0267857142857143,
+        "ret_5d": 0.0480769230769231,
+        "ret_20d": 0.0092592592592593,
+        "ma_20": 2060.0,
+        "ma_50": 2120.2,
+        "ma_200": 2122.525,
+        "vol_20d": 0.0205692611385093,
+        "avg_vol_20d": 14775970.0,
+        "turnover": 33810274000.0,
+        "turnover_20d": 30472210725.0,
+        "rsi_14": 58.34519474410361,
+        "atr_14": 90.71493305208504,
+        "atr_pct": 4.16123546110291,
+        "score": 97.3,
+        "mode": "t1",
+        "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "rank": 3,
+        "entry": 2180.0,
+        "stop": 1998.57,
+        "tp1": 2361.43,
+        "tp2": 2542.86,
+        "risk_per_share": 181.43,
+        "size": 300,
+        "position_value": 654000.0,
+        "risk_budget_base": 60000.0,
+        "risk_budget_effective": 60000.0,
+        "vol_target_multiplier": 1.0,
+        "vol_target_multiplier_market": 1.0468,
+        "vol_target_multiplier_asset": 0.9495,
+        "vol_target_multiplier_asset_atr": 0.8383,
+        "vol_target_multiplier_asset_realized": 1.1445,
+        "vol_target_market_vol_index": 0.9553,
+        "vol_target_market_regime": "normal",
+        "vol_target_regime_cap_enabled": true,
+        "vol_target_regime_cap": 1.0,
+        "vol_target_regime_cap_raw": 1.0,
+        "vol_target_realized_weight": 0.4,
+        "vol_target_ref_realized_pct": 2.3542
+      },
+      {
+        "date": "2026-05-11",
+        "ticker": "SMRA",
+        "open": 322.0,
+        "high": 324.0,
+        "low": 316.0,
+        "close": 324.0,
+        "volume": 14332900.0,
+        "source": "canonical_csv",
+        "ingested_at": "2026-05-11 09:25:34.400514",
+        "ret_1d": 0.0062111801242235,
+        "ret_5d": 0.0451612903225806,
+        "ret_20d": -0.029940119760479,
+        "ma_20": 322.0,
+        "ma_50": 337.68,
+        "ma_200": 390.38,
+        "vol_20d": 0.0247962215696931,
+        "avg_vol_20d": 37147435.0,
+        "turnover": 4643859600.0,
+        "turnover_20d": 11953540700.0,
+        "rsi_14": 48.885600607772176,
+        "atr_14": 9.63258556244787,
+        "atr_pct": 2.973020235314241,
+        "score": 96.98,
+        "mode": "t1",
+        "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "rank": 4,
+        "entry": 324.0,
+        "stop": 304.73,
+        "tp1": 343.27,
+        "tp2": 362.53,
+        "risk_per_share": 19.27,
+        "size": 3100,
+        "position_value": 1004400.0,
+        "risk_budget_base": 60000.0,
+        "risk_budget_effective": 60000.0,
+        "vol_target_multiplier": 1.0,
+        "vol_target_multiplier_market": 1.0468,
+        "vol_target_multiplier_asset": 1.0781,
+        "vol_target_multiplier_asset_atr": 1.15,
+        "vol_target_multiplier_asset_realized": 0.9494,
+        "vol_target_market_vol_index": 0.9553,
+        "vol_target_market_regime": "normal",
+        "vol_target_regime_cap_enabled": true,
+        "vol_target_regime_cap": 1.0,
+        "vol_target_regime_cap_raw": 1.0,
+        "vol_target_realized_weight": 0.4,
+        "vol_target_ref_realized_pct": 2.3542
+      },
+      {
+        "date": "2026-05-11",
+        "ticker": "ICBP",
+        "open": 7050.0,
+        "high": 7175.0,
+        "low": 6900.0,
+        "close": 7100.0,
+        "volume": 5073100.0,
+        "source": "canonical_csv",
+        "ingested_at": "2026-05-11 09:25:34.400514",
+        "ret_1d": 0.0070921985815601,
+        "ret_5d": 0.0441176470588235,
+        "ret_20d": -0.0372881355932203,
+        "ma_20": 7021.25,
+        "ma_50": 7304.5,
+        "ma_200": 8435.625,
+        "vol_20d": 0.0180957311427362,
+        "avg_vol_20d": 5981620.0,
+        "turnover": 36019010000.0,
+        "turnover_20d": 41863224500.0,
+        "rsi_14": 50.20495433501588,
+        "atr_14": 187.0978533810476,
+        "atr_pct": 2.63518103353551,
+        "score": 96.86,
+        "mode": "t1",
+        "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "rank": 5,
+        "entry": 7100.0,
+        "stop": 6725.8,
+        "tp1": 7474.2,
+        "tp2": 7848.39,
+        "risk_per_share": 374.2,
+        "size": 100,
+        "position_value": 710000.0,
+        "risk_budget_base": 60000.0,
+        "risk_budget_effective": 60000.0,
+        "vol_target_multiplier": 1.0,
+        "vol_target_multiplier_market": 1.0468,
+        "vol_target_multiplier_asset": 1.15,
+        "vol_target_multiplier_asset_atr": 1.15,
+        "vol_target_multiplier_asset_realized": 1.15,
+        "vol_target_market_vol_index": 0.9553,
+        "vol_target_market_regime": "normal",
+        "vol_target_regime_cap_enabled": true,
+        "vol_target_regime_cap": 1.0,
+        "vol_target_regime_cap_raw": 1.0,
+        "vol_target_realized_weight": 0.4,
+        "vol_target_ref_realized_pct": 2.3542
+      }
+    ],
+    "swing_items": [
+      {
+        "date": "2026-05-11",
+        "ticker": "MAPI",
+        "open": 1490.0,
+        "high": 1515.0,
+        "low": 1480.0,
+        "close": 1505.0,
+        "volume": 155453400.0,
+        "source": "canonical_csv",
+        "ingested_at": "2026-05-11 09:25:34.400514",
+        "ret_1d": 0.0343642611683849,
+        "ret_5d": 0.162162162162162,
+        "ret_20d": 0.199203187250996,
+        "ma_20": 1301.0,
+        "ma_50": 1249.6,
+        "ma_200": 1229.75,
+        "vol_20d": 0.0412907688586176,
+        "avg_vol_20d": 29438270.0,
+        "turnover": 233957367000.0,
+        "turnover_20d": 40487388225.0,
+        "rsi_14": 67.76091675677765,
+        "atr_14": 63.44240083267327,
+        "atr_pct": 4.215441915789444,
+        "score": 68.97,
+        "mode": "swing",
+        "reason": "Trend MA50 + momentum 20D + ATR expansion",
+        "rank": 1,
+        "entry": 1505.0,
+        "stop": 1378.12,
+        "tp1": 1631.88,
+        "tp2": 1758.77,
+        "risk_per_share": 126.88,
+        "size": 300,
+        "position_value": 451500.0,
+        "risk_budget_base": 60000.0,
+        "risk_budget_effective": 45000.0,
+        "vol_target_multiplier": 0.75,
+        "vol_target_multiplier_market": 0.7931,
+        "vol_target_multiplier_asset": 0.713,
+        "vol_target_multiplier_asset_atr": 0.8276,
+        "vol_target_multiplier_asset_realized": 0.5702,
+        "vol_target_market_vol_index": 1.2608,
+        "vol_target_market_regime": "high",
+        "vol_target_regime_cap_enabled": true,
+        "vol_target_regime_cap": 0.75,
+        "vol_target_regime_cap_raw": 0.75,
+        "vol_target_realized_weight": 0.4,
+        "vol_target_ref_realized_pct": 2.3542
+      }
+    ],
     "intraday_items": []
   },
   "backtest": {
@@ -26,24 +322,16 @@
     },
     "gate_components": {
       "t1": {
-        "mode_enabled": false,
         "model_gate_ok": false,
         "regime_ok": false,
-        "kill_switch_ok": true,
-        "promotion_required": false,
-        "promotion_gate_ok": true,
-        "final_ok": false,
-        "quality_ok": true
+        "kill_switch_ok": false,
+        "final_ok": false
       },
       "swing": {
-        "mode_enabled": true,
-        "model_gate_ok": false,
+        "model_gate_ok": true,
         "regime_ok": false,
-        "kill_switch_ok": true,
-        "promotion_required": false,
-        "promotion_gate_ok": true,
-        "final_ok": false,
-        "quality_ok": true
+        "kill_switch_ok": false,
+        "final_ok": false
       }
     },
     "regime": {
@@ -51,120 +339,84 @@
       "as_of_date": "2026-05-11",
       "pass": false,
       "status": "risk_off",
-      "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok",
+      "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
       "values": {
-        "breadth_ma50_pct": 0.0,
+        "breadth_ma50_pct": 18.181818181818183,
         "breadth_ma20_pct": 15.909090909090908,
-        "avg_ret20_pct": 0.0,
-        "median_atr_pct": 3.898768456631668,
+        "avg_ret20_pct": -5.234074240375984,
+        "median_atr_pct": 3.9211292165016,
         "sample_tickers": 44
       },
       "thresholds": {
-        "min_breadth_ma50_pct": 35.0,
-        "min_breadth_ma20_pct": 30.0,
+        "min_breadth_ma50_pct": 45.0,
+        "min_breadth_ma20_pct": 50.0,
         "min_avg_ret20_pct": 0.0,
         "max_median_atr_pct": 8.0
       },
       "checks": {
         "breadth_ma50_ok": false,
         "breadth_ma20_ok": false,
-        "avg_ret20_ok": true,
+        "avg_ret20_ok": false,
         "median_atr_ok": true
       }
     },
     "kill_switch": {
       "enabled": true,
-      "status": "clear",
+      "status": "triggered",
       "as_of_date": "2026-05-11",
-      "active": false,
-      "active_modes": [],
-      "triggered_modes_today": [],
-      "cooldown_until": "",
-      "state_path": "reports/kill_switch_state.json"
-    },
-    "model_v2_promotion": {
-      "enabled": true,
-      "shadow_mode": true,
-      "required_for_live": false,
-      "gate": {
-        "min_oos_trades": 120,
-        "min_profit_factor": 1.2,
-        "min_expectancy": 0.0,
-        "max_drawdown_pct": 15.0
-      },
-      "gate_pass": {
-        "t1": false,
-        "swing": false
-      },
-      "modes": {
-        "t1": {
-          "passed": false,
-          "reasons": [
-            "No fold metrics provided"
-          ],
-          "summary": {},
-          "fold_details": []
-        },
-        "swing": {
-          "passed": false,
-          "reasons": [
-            "No fold metrics provided"
-          ],
-          "summary": {},
-          "fold_details": []
-        }
-      }
-    },
-    "mode_activation": {
+      "active": true,
       "active_modes": [
-        "swing"
-      ],
-      "inactive_modes": [
+        "swing",
         "t1"
       ],
-      "swing_only": true
+      "triggered_modes_today": [
+        "swing",
+        "t1"
+      ],
+      "cooldown_until": "2026-05-14",
+      "state_path": "reports\\kill_switch_state.json"
+    },
+    "model_v2_promotion": {},
+    "mode_activation": {
+      "active_modes": [],
+      "inactive_modes": [],
+      "swing_only": false
     },
     "metrics": {
       "t1": {
-        "WinRate": 0.0,
-        "ProfitFactor": 0.0,
-        "Expectancy": 0.0,
-        "Trades": 0,
-        "CAGR": 0.0,
-        "MaxDD": 0.0
+        "WinRate": 40.17857142857143,
+        "ProfitFactor": 0.6598611746363624,
+        "Expectancy": -0.00657629940966299,
+        "Trades": 448,
+        "CAGR": -4.8730510515642145,
+        "MaxDD": -9.111786684454772
       },
       "swing": {
-        "WinRate": 0.0,
-        "ProfitFactor": 0.0,
-        "Expectancy": 0.0,
-        "Trades": 0,
-        "CAGR": 0.0,
-        "MaxDD": 0.0
+        "WinRate": 58.2995951417004,
+        "ProfitFactor": 1.720498349675538,
+        "Expectancy": 0.03579463507865223,
+        "Trades": 247,
+        "CAGR": 30.48752700327706,
+        "MaxDD": -12.461336429067428
       }
     }
   },
   "funnel": {
-    "generated_at": "2026-05-11T12:35:44.085115",
-    "run_id": "20260511_123529",
+    "generated_at": "2026-05-11T09:25:43.208960",
+    "run_id": "20260511_102502",
     "gate_pass": {
       "t1": false,
       "swing": false
     },
     "allowed_modes": [],
-    "mode_activation": {
-      "active_modes": [
-        "swing"
-      ],
-      "inactive_modes": [
-        "t1"
-      ],
-      "swing_only": true
-    },
     "pre_gate": {
-      "combined_plan_count": 0,
-      "execution_plan_count": 0,
-      "signal_count": 0,
-      "by_mode": {}
+      "combined_plan_count": 6,
+      "execution_plan_count": 2,
+      "signal_count": 6,
+      "by_mode": {
+        "t1": 5,
+        "swing": 1
+      }
     },
     "post_gate": {
       "combined_plan_count": 0,
@@ -174,62 +426,59 @@
     },
     "status": {
       "regime": "risk_off",
-      "kill_switch": "clear"
+      "kill_switch": "triggered"
     },
     "score_funnel": {
-      "generated_at": "2026-05-11T12:35:43.930238",
+      "generated_at": "2026-05-11T09:25:41.330753",
       "thresholds": {
-        "active_modes": [
-          "swing"
-        ],
-        "inactive_modes": [
-          "t1"
-        ],
-        "min_live_score_t1": 999.0,
-        "min_live_score_swing": 70.0,
+        "min_live_score_t1": 95.0,
+        "min_live_score_swing": 68.0,
         "position_lot": 100,
         "top_n_combined": 20,
         "max_positions": 3,
         "max_positions_t1": 1,
         "max_positions_swing": 3,
         "execution_mode_priority": [
-          "swing"
-        ]
+          "swing",
+          "t1"
+        ],
+        "liq_bucket_mid_avg_volume_20d": 750000.0,
+        "liq_bucket_high_avg_volume_20d": 2000000.0,
+        "slippage_pct_base": 0.1
       },
       "modes": {
         "t1": {
-          "enabled": false,
-          "rank_candidates": 0,
-          "after_score_filter": 0,
-          "after_event_risk": 0,
+          "rank_candidates": 10,
+          "after_score_filter": 5,
+          "after_event_risk": 5,
           "small_size_before_filter": 0,
-          "dropped_by_score": 0,
+          "dropped_by_score": 5,
           "dropped_by_event_risk": 0
         },
         "swing": {
-          "enabled": true,
-          "rank_candidates": 0,
-          "after_score_filter": 0,
-          "after_event_risk": 0,
-          "small_size_before_filter": 0,
-          "dropped_by_score": 0,
+          "rank_candidates": 7,
+          "after_score_filter": 1,
+          "after_event_risk": 1,
+          "small_size_before_filter": 1,
+          "dropped_by_score": 6,
           "dropped_by_event_risk": 0
         }
       },
       "combined": {
-        "before_size_filter": 0,
+        "before_size_filter": 6,
         "dropped_by_size_filter": 0,
-        "after_size_filter": 0,
-        "after_top_n_combined": 0,
-        "execution_plan_count": 0,
-        "signal_count": 0
+        "after_size_filter": 6,
+        "after_top_n_combined": 6,
+        "execution_plan_count": 2,
+        "signal_count": 6,
+        "avg_roundtrip_cost_est_pct": 0.56
       },
       "event_risk": {
         "enabled": true,
         "status": "ok",
         "message": "Event-risk filter applied",
         "path": "data/reference/event_risk_blacklist.csv",
-        "as_of_date": "",
+        "as_of_date": "2026-05-11",
         "active_events": 9,
         "excluded_count": 0,
         "excluded_tickers": [],
@@ -326,39 +575,14 @@
     ],
     "excluded_items": []
   },
-  "operator_alerts": [
-    {
-      "severity": "warn",
-      "code": "provider_fallback_active",
-      "title": "Fallback data source active",
-      "message": "Latest ingest used `yfinance_fallback`. Validate market data before trusting backtest or live decisions."
-    },
-    {
-      "severity": "info",
-      "code": "mode_freeze_active",
-      "title": "Strategy mode freeze active",
-      "message": "Active modes: swing. Inactive modes: t1."
-    },
-    {
-      "severity": "warn",
-      "code": "universe_source_missing",
-      "title": "Universe auto-update not fully configured",
-      "message": "Missing source URL for: IDX30, LQ45"
-    },
-    {
-      "severity": "warn",
-      "code": "no_execution_feedback",
-      "title": "No execution feedback loop yet",
-      "message": "Live reconciliation still has zero fill entries, so closed-loop retraining is not learning from execution."
-    }
-  ],
+  "operator_alerts": [],
   "paper_fills": {
-    "status": "no_signals",
-    "message": "Signal snapshots were found, but all of them contained zero executable signals",
+    "status": "unknown",
+    "message": "",
     "generated_count": 0,
     "pending_count": 0,
-    "snapshot_files_total": 1,
-    "snapshot_files_in_window": 1,
+    "snapshot_files_total": 0,
+    "snapshot_files_in_window": 0,
     "signals_total": 0,
     "valid_signals": 0,
     "trade_count_total": 0,
@@ -368,8 +592,8 @@
     "recent_generated": []
   },
   "swing_audit": {
-    "status": "no_trades",
-    "message": "No swing trades available for audit",
+    "status": "unknown",
+    "message": "",
     "group_source": "unclassified",
     "overall": {},
     "by_regime": [],
@@ -381,19 +605,208 @@
   "runs": [
     {
       "file": "run_log_20260511.json",
-      "run_id": "20260511_123529",
-      "started_at": "2026-05-11T12:35:29.555626",
-      "ended_at": "2026-05-11T12:35:44.680373",
+      "run_id": "20260511_102502",
+      "started_at": "2026-05-11T09:25:02.918718",
+      "ended_at": "2026-05-11T09:25:43.279677",
       "source": "yfinance_fallback",
       "signals": 0,
       "error_count": 0,
       "warning_count": 1,
-      "events": 24,
+      "events": 18,
       "issues": [
         {
           "level": "WARN",
           "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
+    {
+      "file": "run_log_20260508.json",
+      "run_id": "20260508_102503",
+      "started_at": "2026-05-08T09:25:03.304937",
+      "ended_at": "2026-05-08T09:25:46.376752",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
+    {
+      "file": "run_log_20260507.json",
+      "run_id": "20260507_102503",
+      "started_at": "2026-05-07T09:25:03.144329",
+      "ended_at": "2026-05-07T09:25:41.022924",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
+    {
+      "file": "run_log_20260506.json",
+      "run_id": "20260506_102503",
+      "started_at": "2026-05-06T09:25:03.665571",
+      "ended_at": "2026-05-06T09:25:41.850966",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
+    {
+      "file": "run_log_20260505.json",
+      "run_id": "20260505_102502",
+      "started_at": "2026-05-05T09:25:02.977351",
+      "ended_at": "2026-05-05T09:26:47.962726",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
+    {
+      "file": "run_log_20260504.json",
+      "run_id": "20260504_102502",
+      "started_at": "2026-05-04T09:25:02.925628",
+      "ended_at": "2026-05-04T09:25:46.531346",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
+    {
+      "file": "run_log_20260430.json",
+      "run_id": "20260430_102503",
+      "started_at": "2026-04-30T09:25:03.552816",
+      "ended_at": "2026-04-30T09:25:47.846005",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
+    {
+      "file": "run_log_20260429.json",
+      "run_id": "20260429_102503",
+      "started_at": "2026-04-29T09:25:03.056009",
+      "ended_at": "2026-04-29T09:25:42.166985",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok | Kill switch=triggered",
           "category": "protective_warning",
           "category_label": "Protective warning",
           "category_tone": "protective",
@@ -415,11 +828,11 @@
     "daemon_state": {}
   },
   "closed_loop_retrain": {
-    "status": "skipped_no_trigger",
-    "message": "Closed-loop conditions not met",
+    "status": "not_run",
+    "message": "Closed-loop retrain has not been evaluated yet",
     "triggered": false,
     "reasons": [],
-    "last_evaluated_at": "2026-05-11T12:35:44.084013",
+    "last_evaluated_at": "",
     "last_triggered_at": "",
     "fills_in_window": 0,
     "new_fills_since_last_trigger": 0,
@@ -429,155 +842,37 @@
     "train_status": ""
   },
   "quality": {
-    "status": "pass",
-    "pass": true,
+    "status": "not_run",
+    "pass": false,
     "reason_codes": [],
-    "checks": {
-      "stale_ok": true,
-      "missing_ok": true,
-      "duplicate_ok": true,
-      "missing_tickers_ok": true,
-      "outlier_ok": true
-    },
-    "stats": {
-      "rows_total": 880,
-      "ticker_total": 44,
-      "max_data_date": "2026-05-11",
-      "stale_days": 0,
-      "missing_rows": 0,
-      "duplicate_rows": 0,
-      "missing_tickers_count": 0,
-      "outlier_rows": 0
-    },
-    "message": "Data quality checks passed."
+    "checks": {},
+    "stats": {},
+    "message": "Data quality report not available"
   },
   "risk_budget": {
-    "status": "paper_only",
+    "status": "unknown",
     "risk_budget_pct": 0.0,
     "effective_risk_per_trade_pct": 0.0,
-    "hard_daily_stop_r": 2.0,
-    "hard_weekly_stop_r": 6.0
+    "hard_daily_stop_r": 0.0,
+    "hard_weekly_stop_r": 0.0
   },
   "paper_live_mode": {
-    "mode": "paper",
-    "rollout_phase": "paper",
-    "decision_version": "v2026.03.roadmap_90d"
+    "mode": "unknown",
+    "rollout_phase": "",
+    "decision_version": ""
   },
-  "summary": {
-    "generated_at": "2026-05-11T12:35:44.084511",
-    "run_id": "20260511_123529",
-    "decision_version": "v2026.03.roadmap_90d",
-    "status": "BLOCKED_BY_GATE",
-    "action": "NO_TRADE",
-    "action_reason": "Live gate blocked all active modes: swing",
-    "trade_ready": false,
-    "allowed_modes": [],
-    "mode_activation": {
-      "active_modes": [
-        "swing"
-      ],
-      "inactive_modes": [
-        "t1"
-      ],
-      "swing_only": true
-    },
-    "signals_total": 0,
-    "gate": {
-      "t1": false,
-      "swing": false
-    },
-    "data_max_date": "2026-05-11",
-    "data_age_days": 0,
-    "source": "yfinance_fallback",
-    "paper_live_mode": "paper",
-    "rollout_phase": "paper",
-    "risk_budget_pct": 0.0,
-    "risk_budget_status": "paper_only",
-    "effective_risk_per_trade_pct": 0.0,
-    "hard_daily_stop_r": 2.0,
-    "hard_weekly_stop_r": 6.0,
-    "closed_loop_retrain_status": "skipped_no_trigger",
-    "closed_loop_retrain_triggered": false,
-    "paper_fills": {
-      "status": "no_signals",
-      "generated_count": 0,
-      "pending_count": 0,
-      "trade_count_total": 0,
-      "win_rate_pct": 0.0,
-      "expectancy_r": 0.0,
-      "profit_factor_r": 0.0
-    },
-    "swing_audit": {
-      "generated_at": "2026-05-11T12:35:44.073457",
-      "status": "no_trades",
-      "message": "No swing trades available for audit",
-      "overall": {},
-      "by_regime": [],
-      "by_group": [],
-      "by_volatility": [],
-      "weak_spots": [],
-      "recent_trades": [],
-      "group_source": "unclassified"
-    },
-    "quality": {
-      "status": "pass",
-      "pass": true,
-      "reason_codes": [],
-      "checks": {
-        "stale_ok": true,
-        "missing_ok": true,
-        "duplicate_ok": true,
-        "missing_tickers_ok": true,
-        "outlier_ok": true
-      },
-      "stats": {
-        "rows_total": 880,
-        "ticker_total": 44,
-        "max_data_date": "2026-05-11",
-        "stale_days": 0,
-        "missing_rows": 0,
-        "duplicate_rows": 0,
-        "missing_tickers_count": 0,
-        "outlier_rows": 0
-      }
-    },
-    "operator_alerts": [
-      {
-        "severity": "warn",
-        "code": "provider_fallback_active",
-        "title": "Fallback data source active",
-        "message": "Latest ingest used `yfinance_fallback`. Validate market data before trusting backtest or live decisions."
-      },
-      {
-        "severity": "info",
-        "code": "mode_freeze_active",
-        "title": "Strategy mode freeze active",
-        "message": "Active modes: swing. Inactive modes: t1."
-      },
-      {
-        "severity": "warn",
-        "code": "universe_source_missing",
-        "title": "Universe auto-update not fully configured",
-        "message": "Missing source URL for: IDX30, LQ45"
-      },
-      {
-        "severity": "warn",
-        "code": "no_execution_feedback",
-        "title": "No execution feedback loop yet",
-        "message": "Live reconciliation still has zero fill entries, so closed-loop retraining is not learning from execution."
-      }
-    ]
-  },
+  "summary": {},
   "decision": {
-    "status": "BLOCKED_BY_GATE",
+    "status": "KILL_SWITCH_ACTIVE",
     "action": "NO_TRADE",
     "trade_ready": false,
-    "action_reason": "Live gate blocked all active modes: swing",
+    "action_reason": "No executable signals found after filtering.",
     "why_no_signal": [
-      "Live gate blocked all active modes: swing",
       "No executable signals found after filtering.",
-      "Live gate blocked all active modes: swing.",
-      "Market regime is `risk_off` (risk-off)."
+      "Live gate blocked all active modes: all configured modes.",
+      "Kill switch is active or cooldown is running.",
+      "Market regime is `risk_off` (risk-off).",
+      "11 candidates dropped by minimum score threshold."
     ],
     "allowed_modes": [],
     "signal_total": 0,
@@ -586,25 +881,18 @@
       "swing": false
     },
     "regime_status": "risk_off",
-    "kill_switch_status": "clear",
+    "kill_switch_status": "triggered",
     "event_excluded_total": 0,
     "model_v2_promotion_required": false,
-    "model_v2_promotion_gate_pass": {
-      "t1": false,
-      "swing": false
-    },
+    "model_v2_promotion_gate_pass": {},
     "model_v2_promotion_blocked_modes": [],
-    "data_age_days": 0,
-    "data_max_date": "2026-05-11",
-    "source": "n8n_summary",
+    "data_age_days": -1,
+    "data_max_date": "",
+    "source": "derived_snapshot",
     "mode_activation": {
-      "active_modes": [
-        "swing"
-      ],
-      "inactive_modes": [
-        "t1"
-      ],
-      "swing_only": true
+      "active_modes": [],
+      "inactive_modes": [],
+      "swing_only": false
     }
   },
   "kpi": {
@@ -618,7 +906,7 @@
       "swing": false
     },
     "regime_status": "risk_off",
-    "kill_switch_status": "clear",
+    "kill_switch_status": "triggered",
     "intraday_daemon_status": "",
     "intraday_signal_count": 0,
     "decision_action": "NO_TRADE",
@@ -626,15 +914,15 @@
     "model_v2_promotion_required": false,
     "model_v2_promotion_pass_t1": false,
     "model_v2_promotion_pass_swing": false,
-    "closed_loop_retrain_status": "skipped_no_trigger",
+    "closed_loop_retrain_status": "not_run",
     "closed_loop_retrain_triggered": false,
-    "quality_status": "pass",
-    "quality_pass": true,
+    "quality_status": "not_run",
+    "quality_pass": false,
     "risk_budget_pct": 0.0,
-    "risk_budget_status": "paper_only",
-    "paper_live_mode": "paper",
-    "rollout_phase": "paper",
-    "operator_alert_count": 4,
+    "risk_budget_status": "unknown",
+    "paper_live_mode": "unknown",
+    "rollout_phase": "",
+    "operator_alert_count": 0,
     "paper_fill_trade_count": 0,
     "swing_audit_trade_count": 0
   }

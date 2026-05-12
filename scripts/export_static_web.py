@@ -1,11 +1,17 @@
 import json
 import os
+import shutil
 from pathlib import Path
 from src.web.service import build_dashboard_snapshot, query_ticker_detail
 
 def export_static():
     reports_dir = Path("reports").resolve()
     web_dir = Path("web").resolve()
+    
+    # 0. Copy raw reports directory for the Vanilla JS Dashboard
+    print("Copying raw reports data for Vanilla JS dashboard...")
+    web_reports_dir = web_dir / "reports"
+    shutil.copytree(reports_dir, web_reports_dir, dirs_exist_ok=True)
     
     # 1. Export Dashboard
     print("Exporting public_dashboard.json...")

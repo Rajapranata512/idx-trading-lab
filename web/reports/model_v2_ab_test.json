@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-05-11T09:25:41.416709",
+  "run_id": "20260511_102502",
+  "max_positions": 3,
+  "v1_top": [
+    "UNVR",
+    "MAPI",
+    "ISAT"
+  ],
+  "v2_top": [
+    "ISAT",
+    "UNVR"
+  ],
+  "overlap_count": 2,
+  "overlap_tickers": [
+    "ISAT",
+    "UNVR"
+  ],
+  "only_v1": [
+    "MAPI"
+  ],
+  "only_v2": [],
+  "jaccard_overlap": 0.6667,
+  "v1_avg_score": 99.1,
+  "v2_avg_p_win": 0.5281
+}

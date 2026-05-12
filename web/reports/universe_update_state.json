@@ -1,0 +1,12 @@
+{
+  "last_attempt_at": "2026-05-11T09:25:02.918718",
+  "last_success_at": "",
+  "status": "skipped_no_source",
+  "message": "Universe source URLs are empty; keeping existing universe file",
+  "errors": [],
+  "source_status": {
+    "LQ45": "no_url",
+    "IDX30": "no_url"
+  },
+  "universe_path": "data\\reference\\universe_lq45_idx30.csv"
+}

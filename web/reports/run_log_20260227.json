@@ -1,0 +1,1529 @@
+[
+  {
+    "ts": "2026-02-27T03:16:20.242991",
+    "run_id": "20260227_101620",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T03:17:45.204539",
+    "run_id": "20260227_101620",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21109,
+      "rows_new": 10677,
+      "tickers": 44,
+      "source": "rest",
+      "max_data_date": "2026-02-26",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T03:17:45.681146",
+    "run_id": "20260227_101620",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21109,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T03:17:45.888604",
+    "run_id": "20260227_101620",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T03:17:46.050882",
+    "run_id": "20260227_101620",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.952380952380953,
+          "ProfitFactor": 0.4886472400647392,
+          "Expectancy": -0.0086084903053628,
+          "Trades": 462,
+          "CAGR": -90.16637006107648,
+          "MaxDD": -98.58969966862118
+        },
+        "swing": {
+          "WinRate": 42.23194748358862,
+          "ProfitFactor": 0.6385014727646712,
+          "Expectancy": -0.010339548213438915,
+          "Trades": 457,
+          "CAGR": -95.4710891454635,
+          "MaxDD": -99.81397041225304
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T03:17:46.060174",
+    "run_id": "20260227_101620",
+    "level": "WARN",
+    "message": "live_gate_blocked",
+    "extra": {
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T03:17:46.060174",
+    "run_id": "20260227_101620",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T04:18:09.923113",
+    "run_id": "20260227_111809",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T04:19:15.421915",
+    "run_id": "20260227_111809",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21109,
+      "rows_new": 10677,
+      "tickers": 44,
+      "source": "rest",
+      "max_data_date": "2026-02-26",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T04:19:15.929071",
+    "run_id": "20260227_111809",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21109,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T04:19:16.057585",
+    "run_id": "20260227_111809",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T04:19:16.287833",
+    "run_id": "20260227_111809",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.952380952380953,
+          "ProfitFactor": 0.4886472400647392,
+          "Expectancy": -0.0086084903053628,
+          "Trades": 462,
+          "CAGR": -6.300493985942957,
+          "MaxDD": -11.271506062423473
+        },
+        "swing": {
+          "WinRate": 50.95693779904307,
+          "ProfitFactor": 1.3898403977933846,
+          "Expectancy": 0.013211774359143547,
+          "Trades": 418,
+          "CAGR": 10.33209747418331,
+          "MaxDD": -14.630431307304589
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T04:19:16.296819",
+    "run_id": "20260227_111809",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 7
+    }
+  },
+  {
+    "ts": "2026-02-27T04:19:16.296819",
+    "run_id": "20260227_111809",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T05:52:49.155791",
+    "run_id": "20260227_125249",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T05:53:47.225201",
+    "run_id": "20260227_125249",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21109,
+      "rows_new": 10677,
+      "tickers": 44,
+      "source": "rest",
+      "max_data_date": "2026-02-26",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T05:53:47.486942",
+    "run_id": "20260227_125249",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21109,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T05:53:47.597208",
+    "run_id": "20260227_125249",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T05:53:47.682171",
+    "run_id": "20260227_125249",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.952380952380953,
+          "ProfitFactor": 0.4886472400647392,
+          "Expectancy": -0.0086084903053628,
+          "Trades": 462,
+          "CAGR": -6.300493985942957,
+          "MaxDD": -11.271506062423473
+        },
+        "swing": {
+          "WinRate": 50.95693779904307,
+          "ProfitFactor": 1.3898403977933846,
+          "Expectancy": 0.013211774359143547,
+          "Trades": 418,
+          "CAGR": 10.33209747418331,
+          "MaxDD": -14.630431307304589
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T05:53:47.700914",
+    "run_id": "20260227_125249",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 7
+    }
+  },
+  {
+    "ts": "2026-02-27T05:53:47.700914",
+    "run_id": "20260227_125249",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T05:59:06.895421",
+    "run_id": "20260227_055906",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:00:27.159435",
+    "run_id": "20260227_055906",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21109,
+      "rows_new": 10677,
+      "tickers": 44,
+      "source": "rest",
+      "max_data_date": "2026-02-26",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:00:27.557090",
+    "run_id": "20260227_055906",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21109,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:00:27.672731",
+    "run_id": "20260227_055906",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:00:27.894431",
+    "run_id": "20260227_055906",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.952380952380953,
+          "ProfitFactor": 0.4886472400647392,
+          "Expectancy": -0.0086084903053628,
+          "Trades": 462,
+          "CAGR": -6.300493985942957,
+          "MaxDD": -11.271506062423473
+        },
+        "swing": {
+          "WinRate": 50.95693779904307,
+          "ProfitFactor": 1.3898403977933846,
+          "Expectancy": 0.013211774359143547,
+          "Trades": 418,
+          "CAGR": 10.33209747418331,
+          "MaxDD": -14.630431307304589
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T06:00:27.908521",
+    "run_id": "20260227_055906",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 7
+    }
+  },
+  {
+    "ts": "2026-02-27T06:00:27.908521",
+    "run_id": "20260227_055906",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T06:09:17.603562",
+    "run_id": "20260227_060917",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:11:43.438232",
+    "run_id": "20260227_060917",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21109,
+      "rows_new": 10677,
+      "tickers": 44,
+      "source": "rest",
+      "max_data_date": "2026-02-26",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:11:44.017298",
+    "run_id": "20260227_060917",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21109,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:11:44.301481",
+    "run_id": "20260227_060917",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:11:44.665031",
+    "run_id": "20260227_060917",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.952380952380953,
+          "ProfitFactor": 0.4886472400647392,
+          "Expectancy": -0.0086084903053628,
+          "Trades": 462,
+          "CAGR": -6.300493985942957,
+          "MaxDD": -11.271506062423473
+        },
+        "swing": {
+          "WinRate": 50.95693779904307,
+          "ProfitFactor": 1.3898403977933846,
+          "Expectancy": 0.013211774359143547,
+          "Trades": 418,
+          "CAGR": 10.33209747418331,
+          "MaxDD": -14.630431307304589
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T06:11:44.684549",
+    "run_id": "20260227_060917",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 7
+    }
+  },
+  {
+    "ts": "2026-02-27T06:11:44.684549",
+    "run_id": "20260227_060917",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T06:37:23.631315",
+    "run_id": "20260227_063723",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:37:46.376153",
+    "run_id": "20260227_063723",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:37:47.017163",
+    "run_id": "20260227_063723",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:37:47.327312",
+    "run_id": "20260227_063723",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T06:37:47.757641",
+    "run_id": "20260227_063723",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.885529157667385,
+          "ProfitFactor": 0.4866224533414699,
+          "Expectancy": -0.008656278446702416,
+          "Trades": 463,
+          "CAGR": -6.334274642296089,
+          "MaxDD": -11.44163528474822
+        },
+        "swing": {
+          "WinRate": 50.83532219570406,
+          "ProfitFactor": 1.3832930173004883,
+          "Expectancy": 0.013020216895215868,
+          "Trades": 419,
+          "CAGR": 10.173087201983977,
+          "MaxDD": -14.630431307304589
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T06:37:47.782389",
+    "run_id": "20260227_063723",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 8
+    }
+  },
+  {
+    "ts": "2026-02-27T06:37:47.782389",
+    "run_id": "20260227_063723",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T07:07:07.290242",
+    "run_id": "20260227_140707",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:07:43.091936",
+    "run_id": "20260227_140707",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:07:43.746738",
+    "run_id": "20260227_140707",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:07:44.025729",
+    "run_id": "20260227_140707",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:07:44.244682",
+    "run_id": "20260227_140707",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.885529157667385,
+          "ProfitFactor": 0.4866224533414699,
+          "Expectancy": -0.008656278446702416,
+          "Trades": 463,
+          "CAGR": -6.334274642296089,
+          "MaxDD": -11.44163528474822
+        },
+        "swing": {
+          "WinRate": 50.83532219570406,
+          "ProfitFactor": 1.3832930173004883,
+          "Expectancy": 0.013020216895215868,
+          "Trades": 419,
+          "CAGR": 10.173087201983977,
+          "MaxDD": -14.630431307304589
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T07:07:44.254673",
+    "run_id": "20260227_140707",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 8
+    }
+  },
+  {
+    "ts": "2026-02-27T07:07:44.254673",
+    "run_id": "20260227_140707",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T07:09:04.829576",
+    "run_id": "20260227_140904",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:09:10.577920",
+    "run_id": "20260227_140904",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:09:11.216329",
+    "run_id": "20260227_140904",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:09:11.514374",
+    "run_id": "20260227_140904",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T07:09:11.828792",
+    "run_id": "20260227_140904",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 30.885529157667385,
+          "ProfitFactor": 0.4866224533414699,
+          "Expectancy": -0.008656278446702416,
+          "Trades": 463,
+          "CAGR": -6.334274642296089,
+          "MaxDD": -11.44163528474822
+        },
+        "swing": {
+          "WinRate": 50.83532219570406,
+          "ProfitFactor": 1.3832930173004883,
+          "Expectancy": 0.013020216895215868,
+          "Trades": 419,
+          "CAGR": 10.173087201983977,
+          "MaxDD": -14.630431307304589
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T07:09:11.840788",
+    "run_id": "20260227_140904",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 8
+    }
+  },
+  {
+    "ts": "2026-02-27T07:09:11.840788",
+    "run_id": "20260227_140904",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T08:19:17.748146",
+    "run_id": "20260227_151917",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:19:24.643082",
+    "run_id": "20260227_151917",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:19:24.944797",
+    "run_id": "20260227_151917",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:19:25.043980",
+    "run_id": "20260227_151917",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:19:25.139070",
+    "run_id": "20260227_151917",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 38.72549019607843,
+          "ProfitFactor": 0.6782413388019181,
+          "Expectancy": -0.006239939772507838,
+          "Trades": 408,
+          "CAGR": -4.63069686742541,
+          "MaxDD": -9.115436749369337
+        },
+        "swing": {
+          "WinRate": 66.8141592920354,
+          "ProfitFactor": 3.0127380061020848,
+          "Expectancy": 0.05894984213131349,
+          "Trades": 226,
+          "CAGR": 55.454531793295935,
+          "MaxDD": -7.33675052143741
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T08:19:25.148831",
+    "run_id": "20260227_151917",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 3
+    }
+  },
+  {
+    "ts": "2026-02-27T08:19:25.148831",
+    "run_id": "20260227_151917",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T08:36:08.998526",
+    "run_id": "20260227_153608",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:36:14.337204",
+    "run_id": "20260227_153608",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:36:14.964322",
+    "run_id": "20260227_153608",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:36:15.100853",
+    "run_id": "20260227_153608",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:36:17.212974",
+    "run_id": "20260227_153608",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 38.72549019607843,
+          "ProfitFactor": 0.6782413388019181,
+          "Expectancy": -0.006239939772507838,
+          "Trades": 408,
+          "CAGR": -4.63069686742541,
+          "MaxDD": -9.115436749369337
+        },
+        "swing": {
+          "WinRate": 66.8141592920354,
+          "ProfitFactor": 3.0127380061020848,
+          "Expectancy": 0.05894984213131349,
+          "Trades": 226,
+          "CAGR": 55.454531793295935,
+          "MaxDD": -7.33675052143741
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T08:36:17.231257",
+    "run_id": "20260227_153608",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 3
+    }
+  },
+  {
+    "ts": "2026-02-27T08:36:17.231257",
+    "run_id": "20260227_153608",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T08:40:19.730796",
+    "run_id": "20260227_154019",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:40:24.609141",
+    "run_id": "20260227_154019",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:40:24.906070",
+    "run_id": "20260227_154019",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:40:24.985880",
+    "run_id": "20260227_154019",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:40:26.437868",
+    "run_id": "20260227_154019",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 38.72549019607843,
+          "ProfitFactor": 0.6782413388019181,
+          "Expectancy": -0.006239939772507838,
+          "Trades": 408,
+          "CAGR": -4.63069686742541,
+          "MaxDD": -9.115436749369337
+        },
+        "swing": {
+          "WinRate": 66.8141592920354,
+          "ProfitFactor": 3.0127380061020848,
+          "Expectancy": 0.05894984213131349,
+          "Trades": 226,
+          "CAGR": 55.454531793295935,
+          "MaxDD": -7.33675052143741
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T08:40:26.451676",
+    "run_id": "20260227_154019",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 3
+    }
+  },
+  {
+    "ts": "2026-02-27T08:40:26.451676",
+    "run_id": "20260227_154019",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T08:44:40.616047",
+    "run_id": "20260227_154440",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:44:46.554626",
+    "run_id": "20260227_154440",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:44:46.931175",
+    "run_id": "20260227_154440",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:44:47.072674",
+    "run_id": "20260227_154440",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T08:44:48.443018",
+    "run_id": "20260227_154440",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 38.72549019607843,
+          "ProfitFactor": 0.6782413388019181,
+          "Expectancy": -0.006239939772507838,
+          "Trades": 408,
+          "CAGR": -4.63069686742541,
+          "MaxDD": -9.115436749369337
+        },
+        "swing": {
+          "WinRate": 66.8141592920354,
+          "ProfitFactor": 3.0127380061020848,
+          "Expectancy": 0.05894984213131349,
+          "Trades": 226,
+          "CAGR": 55.454531793295935,
+          "MaxDD": -7.33675052143741
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T08:44:48.451164",
+    "run_id": "20260227_154440",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 3
+    }
+  },
+  {
+    "ts": "2026-02-27T08:44:48.451164",
+    "run_id": "20260227_154440",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T09:25:01.814817",
+    "run_id": "20260227_092501",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:25:10.533605",
+    "run_id": "20260227_092501",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:25:11.003538",
+    "run_id": "20260227_092501",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:25:11.180006",
+    "run_id": "20260227_092501",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:25:13.059909",
+    "run_id": "20260227_092501",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 38.72549019607843,
+          "ProfitFactor": 0.6782413388019181,
+          "Expectancy": -0.006239939772507838,
+          "Trades": 408,
+          "CAGR": -4.63069686742541,
+          "MaxDD": -9.115436749369337
+        },
+        "swing": {
+          "WinRate": 66.8141592920354,
+          "ProfitFactor": 3.0127380061020848,
+          "Expectancy": 0.05894984213131349,
+          "Trades": 226,
+          "CAGR": 55.454531793295935,
+          "MaxDD": -7.33675052143741
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T09:25:13.069901",
+    "run_id": "20260227_092501",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 3
+    }
+  },
+  {
+    "ts": "2026-02-27T09:25:13.069901",
+    "run_id": "20260227_092501",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T09:29:07.101626",
+    "run_id": "20260227_162907",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:29:13.335549",
+    "run_id": "20260227_162907",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:29:13.664251",
+    "run_id": "20260227_162907",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:29:13.749266",
+    "run_id": "20260227_162907",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:29:15.136687",
+    "run_id": "20260227_162907",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 38.72549019607843,
+          "ProfitFactor": 0.6782413388019181,
+          "Expectancy": -0.006239939772507838,
+          "Trades": 408,
+          "CAGR": -4.63069686742541,
+          "MaxDD": -9.115436749369337
+        },
+        "swing": {
+          "WinRate": 66.8141592920354,
+          "ProfitFactor": 3.0127380061020848,
+          "Expectancy": 0.05894984213131349,
+          "Trades": 226,
+          "CAGR": 55.454531793295935,
+          "MaxDD": -7.33675052143741
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-02-27",
+        "pass": true,
+        "status": "risk_on",
+        "reason": "All regime checks passed",
+        "values": {
+          "breadth_ma50_pct": 52.27272727272727,
+          "breadth_ma20_pct": 59.09090909090909,
+          "avg_ret20_pct": 5.0336014761180135,
+          "median_atr_pct": 3.280256620773107,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": true,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": true,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "clear",
+        "as_of_date": "2026-02-27",
+        "active": false,
+        "active_modes": [],
+        "triggered_modes_today": [],
+        "cooldown_until": "",
+        "state_path": "reports\\kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T09:29:15.143686",
+    "run_id": "20260227_162907",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 3
+    }
+  },
+  {
+    "ts": "2026-02-27T09:29:15.143686",
+    "run_id": "20260227_162907",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  },
+  {
+    "ts": "2026-02-27T09:31:30.663050",
+    "run_id": "20260227_163130",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:31:41.792926",
+    "run_id": "20260227_163130",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 21153,
+      "rows_new": 924,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-02-27",
+      "min_data_date": "2024-02-27",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:31:42.080935",
+    "run_id": "20260227_163130",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 21153,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:31:42.165015",
+    "run_id": "20260227_163130",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports\\daily_report.html",
+      "signal_path": "reports\\daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-02-27T09:31:43.432481",
+    "run_id": "20260227_163130",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 38.72549019607843,
+          "ProfitFactor": 0.6782413388019181,
+          "Expectancy": -0.006239939772507838,
+          "Trades": 408,
+          "CAGR": -4.63069686742541,
+          "MaxDD": -9.115436749369337
+        },
+        "swing": {
+          "WinRate": 66.8141592920354,
+          "ProfitFactor": 3.0127380061020848,
+          "Expectancy": 0.05894984213131349,
+          "Trades": 226,
+          "CAGR": 55.454531793295935,
+          "MaxDD": -7.33675052143741
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": true
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-02-27",
+        "pass": true,
+        "status": "risk_on",
+        "reason": "All regime checks passed",
+        "values": {
+          "breadth_ma50_pct": 52.27272727272727,
+          "breadth_ma20_pct": 59.09090909090909,
+          "avg_ret20_pct": 5.0336014761180135,
+          "median_atr_pct": 3.280256620773107,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": true,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": true,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "clear",
+        "as_of_date": "2026-02-27",
+        "active": false,
+        "active_modes": [],
+        "triggered_modes_today": [],
+        "cooldown_until": "",
+        "state_path": "reports\\kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-02-27T09:31:43.439467",
+    "run_id": "20260227_163130",
+    "level": "INFO",
+    "message": "live_gate_modes_allowed",
+    "extra": {
+      "allowed_modes": [
+        "swing"
+      ],
+      "signal_count": 3
+    }
+  },
+  {
+    "ts": "2026-02-27T09:31:43.439467",
+    "run_id": "20260227_163130",
+    "level": "INFO",
+    "message": "telegram_skipped",
+    "extra": {
+      "ok": null
+    }
+  }
+]

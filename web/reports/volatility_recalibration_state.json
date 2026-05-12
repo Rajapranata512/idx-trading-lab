@@ -1,0 +1,22 @@
+{
+  "last_attempt_at": "2026-05-06T09:25:34.400896",
+  "last_success_at": "2026-05-06T09:25:34.400896",
+  "status": "unchanged",
+  "message": "Recalibration completed with no meaningful target change",
+  "new_targets": {
+    "volatility_reference_atr_pct": 3.5158,
+    "volatility_reference_realized_pct": 2.3675
+  },
+  "delta": {
+    "atr_pct": 0.0273,
+    "realized_pct": 0.0133,
+    "min_delta_pct": 0.05
+  },
+  "samples": {
+    "rows_total": 22957,
+    "rows_window": 7559,
+    "atr_rows": 7559,
+    "realized_rows": 7559,
+    "lookback_days": 252
+  }
+}
