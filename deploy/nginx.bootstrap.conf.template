@@ -1,0 +1,72 @@
+map $request_uri $idx_ops_request {
+    default 0;
+    ~^/ops-login\.html$ 1;
+    ~^/ops-report\.html$ 1;
+    ~^/close-analysis\.html$ 1;
+    ~^/api/(jobs(?:/.*)?|run-daily|report-html|close-analysis|close-prices)$ 1;
+}
+
+limit_req_zone $binary_remote_addr zone=idx_ops_limit:10m rate=10r/m;
+log_format idx_ops '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
+
+server {
+    listen 80;
+    server_name ${IDX_PUBLIC_DOMAIN};
+
+    access_log /var/log/nginx/idx_access.log combined;
+    access_log /var/log/nginx/idx_ops_access.log idx_ops if=$idx_ops_request;
+    error_log /var/log/nginx/idx_error.log warn;
+
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+    add_header Cross-Origin-Opener-Policy same-origin always;
+    add_header Cross-Origin-Resource-Policy same-origin always;
+
+    client_max_body_size 2m;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        proxy_pass http://idx-web:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+
+    location ~ ^/api/(jobs|run-daily|report-html|close-analysis|close-prices) {
+        limit_req zone=idx_ops_limit burst=15 nodelay;
+        proxy_pass http://idx-web:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+
+    location = /ops-login.html {
+        limit_req zone=idx_ops_limit burst=6 nodelay;
+        proxy_pass http://idx-web:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location = /ops-report.html {
+        proxy_pass http://idx-web:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

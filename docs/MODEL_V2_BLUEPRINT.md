@@ -11,6 +11,16 @@ Bangun `model_v2` yang meningkatkan kualitas sinyal tanpa mengorbankan safety:
 
 Catatan: tidak ada model yang bisa menjamin profit maksimal.
 
+## 1.1 Status Implementasi Saat Ini
+
+Scaffolding fase awal sudah aktif di pipeline harian:
+
+- `src/model_v2/train.py`: auto-train baseline logistic (interval mingguan, per mode).
+- `src/model_v2/predict.py`: infer probabilitas shadow (`shadow_p_win`, `shadow_expected_r`).
+- `src/model_v2/shadow.py`: output shadow + A/B test v1 vs v2.
+- `src/model_v2/io.py`: simpan/load artifact + metadata + state.
+- `run-daily` tetap memakai gate risiko live yang sama; model_v2 belum override eksekusi.
+
 ## 2. Prinsip Desain
 
 1. `Risk-first`: model hanya boleh eksekusi jika lolos gate risiko.
@@ -32,7 +42,7 @@ Komponen baru:
 
 - `src/model_v2/train.py` (training + walk-forward train loop).
 - `src/model_v2/predict.py` (inference harian).
-- `src/model_v2/calibration.py` (probability calibration).
+- `src/model_v2/calibration.py` (opsional/fase lanjutan untuk probability calibration).
 - `src/model_v2/io.py` (versioning model + metadata).
 
 ## 4. Target Model

@@ -232,6 +232,11 @@
                      "buy_fee_pct":  0.15,
                      "sell_fee_pct":  0.25,
                      "slippage_pct":  0.1,
+                     "liq_bucket_mid_avg_volume_20d":  750000,
+                     "liq_bucket_high_avg_volume_20d":  2000000,
+                     "slippage_multiplier_low_liq":  1.5,
+                     "slippage_multiplier_mid_liq":  1.0,
+                     "slippage_multiplier_high_liq":  0.8,
                      "equity_allocation_pct":  3.0,
                      "min_trades_for_promotion":  150,
                      "profit_factor_min":  1.2,
@@ -277,6 +282,40 @@
                       "min_rolling_expectancy":  0.0,
                       "cooldown_days":  3
                   },
+    "model_v2":  {
+                     "enabled":  true,
+                     "shadow_mode":  true,
+                     "auto_train_enabled":  true,
+                     "auto_train_interval_days":  7,
+                     "model_dir":  "models/model_v2",
+                     "state_path":  "reports/model_v2_state.json",
+                     "min_train_rows_per_mode":  180,
+                     "train_lookback_days":  720,
+                     "horizon_days_t1":  1,
+                     "horizon_days_swing":  10,
+                     "min_prob_threshold_t1":  0.58,
+                     "min_prob_threshold_swing":  0.6
+                 },
+    "coaching":  {
+                     "enabled":  true,
+                     "beginner_mode":  true,
+                     "weekly_kpi_lookback_days":  7,
+                     "weekly_kpi_path":  "reports/weekly_kpi.json",
+                     "beginner_note_path":  "reports/beginner_coaching.md"
+                 },
+    "reconciliation":  {
+                           "enabled":  true,
+                           "auto_reconcile_on_run_daily":  true,
+                           "lookback_days":  45,
+                           "max_signal_lag_days":  5,
+                           "fills_csv_path":  "data/live/trade_fills.csv",
+                           "signal_snapshot_dir":  "reports/snapshots",
+                           "output_json_path":  "reports/live_reconciliation.json",
+                           "output_markdown_path":  "reports/live_reconciliation.md",
+                           "details_csv_path":  "reports/live_reconciliation_details.csv",
+                           "unmatched_entries_csv_path":  "reports/live_reconciliation_unmatched_entries.csv",
+                           "fail_on_error":  false
+                       },
     "notifications":  {
                           "telegram_bot_token_env":  "TELEGRAM_BOT_TOKEN",
                           "telegram_chat_id_env":  "TELEGRAM_CHAT_ID"

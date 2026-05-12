@@ -131,3 +131,77 @@ def test_rest_provider_fallback_to_csv(tmp_path):
     df, source = load_prices_from_provider(settings, tickers=["BBCA"])
     assert source == "csv_fallback"
     assert not df.empty
+
+
+def test_load_prices_from_provider_surfaces_provider_chain_when_all_sources_fail(tmp_path):
+    stale_date = (datetime.utcnow() - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
+    fallback = tmp_path / "fallback.csv"
+    fallback.write_text(
+        "date,ticker,open,high,low,close,volume\n"
+        f"{stale_date},BBCA,10000,10100,9900,10050,1200000\n",
+        encoding="utf-8",
+    )
+
+    settings_payload = {
+        "data": {
+            "timezone": "Asia/Jakarta",
+            "canonical_prices_path": str(tmp_path / "prices.csv"),
+            "fallback_csv_path": str(fallback),
+            "universe_csv_path": str(tmp_path / "universe.csv"),
+            "provider": {
+                "kind": "rest",
+                "yfinance_fallback_enabled": False,
+                "rest": {
+                    "base_url": "http://127.0.0.1:1/not_reachable",
+                    "timeout_seconds": 1,
+                    "headers": {},
+                    "query_params": {},
+                    "ticker_param_name": "ticker",
+                    "date_from_param_name": "start",
+                    "date_to_param_name": "end",
+                    "response_data_path": "",
+                    "column_mapping": {
+                        "date": "date",
+                        "ticker": "ticker",
+                        "open": "open",
+                        "high": "high",
+                        "low": "low",
+                        "close": "close",
+                        "volume": "volume",
+                    },
+                },
+            },
+        },
+        "pipeline": {"min_avg_volume_20d": 200000, "top_n_per_mode": 10, "top_n_combined": 20},
+        "risk": {
+            "account_size_idr": 10000000,
+            "risk_per_trade_pct": 0.75,
+            "max_positions": 3,
+            "daily_loss_stop_r": 2.0,
+            "position_lot": 100,
+            "stop_atr_multiple": 2.0,
+            "tp1_r_multiple": 1.0,
+            "tp2_r_multiple": 2.0,
+        },
+        "backtest": {
+            "buy_fee_pct": 0.15,
+            "sell_fee_pct": 0.25,
+            "slippage_pct": 0.1,
+            "min_trades_for_promotion": 150,
+            "profit_factor_min": 1.2,
+            "expectancy_min": 0.0,
+            "max_drawdown_pct_limit": 15.0,
+        },
+        "notifications": {"telegram_bot_token_env": "TELEGRAM_BOT_TOKEN", "telegram_chat_id_env": "TELEGRAM_CHAT_ID"},
+    }
+    (tmp_path / "universe.csv").write_text("ticker\nBBCA\n", encoding="utf-8")
+
+    settings = Settings.model_validate(settings_payload)
+    with pytest.raises(ValueError) as exc_info:
+        load_prices_from_provider(settings, tickers=["BBCA"])
+
+    message = str(exc_info.value)
+    assert "All daily providers failed:" in message
+    assert "rest=" in message
+    assert "csv_fallback=" in message
+    assert "stale by" in message.lower()

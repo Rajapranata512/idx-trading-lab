@@ -5,6 +5,10 @@ import pandas as pd
 from pathlib import Path
 from datetime import datetime
 import json
+import math
+from typing import Any
+
+from src.utils import atomic_write_json, atomic_write_text
 
 HTML_TEMPLATE = """
 <!doctype html>
@@ -109,7 +113,117 @@ def _normalized_records(df: pd.DataFrame) -> list[dict]:
     for col in numeric_cols:
         if col in out.columns:
             out[col] = out[col].round(2)
-    return out.to_dict(orient="records")
+    rows = out.to_dict(orient="records")
+    return [_sanitize_row_json_compatible(row) for row in rows]
+
+
+def _json_compatible(value: Any) -> Any:
+    if value is None:
+        return None
+    if isinstance(value, dict):
+        return {str(k): _json_compatible(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_compatible(v) for v in value]
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            return None
+        return value
+    if isinstance(value, (int, str, bool)):
+        return value
+    if isinstance(value, (datetime, pd.Timestamp)):
+        return value.isoformat()
+    try:
+        if pd.isna(value):
+            return None
+    except Exception:
+        pass
+    if hasattr(value, "item"):
+        try:
+            return _json_compatible(value.item())
+        except Exception:
+            return str(value)
+    return str(value)
+
+
+def _sanitize_row_json_compatible(row: dict[str, Any]) -> dict[str, Any]:
+    return {str(k): _json_compatible(v) for k, v in row.items()}
+
+
+def _reason_codes_from_text(reason_text: str) -> list[str]:
+    text = str(reason_text or "").strip().lower()
+    if not text:
+        return ["NO_REASON"]
+    codes: list[str] = []
+    if "trend" in text or "ma" in text:
+        codes.append("TREND_MA")
+    if "momentum" in text:
+        codes.append("MOMENTUM")
+    if "atr" in text or "volatil" in text:
+        codes.append("ATR_VOLATILITY")
+    if "volume" in text or "liquid" in text:
+        codes.append("VOLUME_LIQUIDITY")
+    if "breakout" in text:
+        codes.append("BREAKOUT")
+    if not codes:
+        codes.append("CUSTOM_REASON")
+    return codes
+
+
+def _normalize_gate_flags(value: Any, default_flags: dict[str, Any]) -> dict[str, Any]:
+    if isinstance(value, dict):
+        base = dict(value)
+    elif isinstance(value, str):
+        clean = value.strip()
+        if clean.startswith("{") and clean.endswith("}"):
+            try:
+                parsed = json.loads(clean)
+                base = parsed if isinstance(parsed, dict) else {}
+            except Exception:
+                base = {}
+        else:
+            base = {}
+    else:
+        base = {}
+    for key, val in default_flags.items():
+        base.setdefault(str(key), val)
+    return base
+
+
+def _normalize_signal_rows(
+    df: pd.DataFrame,
+    model_version: str,
+    default_gate_flags: dict[str, Any] | None,
+) -> pd.DataFrame:
+    if df.empty:
+        return df.copy()
+    out = df.copy()
+    gate_defaults = dict(default_gate_flags or {})
+
+    if "confidence" not in out.columns:
+        if "score" in out.columns:
+            score = pd.to_numeric(out["score"], errors="coerce").fillna(0.0)
+            out["confidence"] = (score / 100.0).clip(lower=0.0, upper=1.0).round(6)
+        else:
+            out["confidence"] = 0.0
+    else:
+        out["confidence"] = pd.to_numeric(out["confidence"], errors="coerce").fillna(0.0).clip(0.0, 1.0).round(6)
+
+    if "model_version" not in out.columns:
+        out["model_version"] = str(model_version)
+    else:
+        out["model_version"] = out["model_version"].astype(str).replace({"": str(model_version)}).fillna(str(model_version))
+
+    if "reason_codes" not in out.columns:
+        out["reason_codes"] = out.get("reason", pd.Series(dtype=str)).apply(_reason_codes_from_text)
+    else:
+        out["reason_codes"] = out["reason_codes"].apply(
+            lambda value: value if isinstance(value, list) and value else _reason_codes_from_text("")
+        )
+
+    if "gate_flags" not in out.columns:
+        out["gate_flags"] = [{} for _ in range(len(out))]
+    out["gate_flags"] = out["gate_flags"].apply(lambda value: _normalize_gate_flags(value, gate_defaults))
+    return out
 
 
 def render_html_report(
@@ -155,17 +269,25 @@ def render_html_report(
     html = template.render(**payload)
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(html, encoding="utf-8")
-    return str(out)
+    return atomic_write_text(out, html, encoding="utf-8")
 
 
-def write_signal_json(df: pd.DataFrame, out_path: str) -> str:
+def write_signal_json(
+    df: pd.DataFrame,
+    out_path: str,
+    model_version: str = "model_v1",
+    default_gate_flags: dict[str, Any] | None = None,
+) -> str:
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    rows = _normalized_records(df)
+    normalized = _normalize_signal_rows(
+        df=df,
+        model_version=model_version,
+        default_gate_flags=default_gate_flags,
+    )
+    rows = _normalized_records(normalized)
     payload = {
         "generated_at": datetime.utcnow().isoformat(),
         "signals": rows,
     }
-    out.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
-    return str(out)
+    return atomic_write_json(out, payload)

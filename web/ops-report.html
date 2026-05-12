@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IDX Trading Lab Ops Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ops-login.css" />
+  <link rel="stylesheet" href="/ops-report.css" />
+</head>
+<body>
+  <div class="ops-shell">
+    <header class="ops-topbar">
+      <a href="/ops-login.html" class="ops-backlink">Back to Ops Login</a>
+      <span id="reportStatusBadge" class="ops-status neutral">Loading report</span>
+    </header>
+
+    <main class="ops-main">
+      <section class="ops-hero">
+        <p class="ops-kicker">Operational report</p>
+        <h1>Protected daily report viewer</h1>
+        <p>
+          This page uses the same lightweight browser session from the ops login page. If the session
+          is missing or expired, it will redirect back to login before loading the protected report HTML.
+        </p>
+        <div class="ops-hero-strip">
+          <div class="ops-mini-stat">
+            <span>Scope</span>
+            <strong>Daily HTML report</strong>
+          </div>
+          <div class="ops-mini-stat">
+            <span>Auth model</span>
+            <strong>Session + protected API</strong>
+          </div>
+          <div class="ops-mini-stat">
+            <span>Rendering</span>
+            <strong>Embedded secure preview</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="ops-card">
+        <div class="ops-card-head">
+          <div>
+            <p class="ops-label">Report actions</p>
+            <h2>Refresh or open the raw protected report</h2>
+          </div>
+          <div class="ops-actions">
+            <button id="refreshReportBtn" class="ops-btn secondary" type="button">Refresh Report</button>
+            <button id="openRawReportBtn" class="ops-btn primary" type="button">Open Raw Report</button>
+          </div>
+        </div>
+        <p id="reportHint" class="ops-hint">The report HTML is rendered inside a sandboxed iframe-like view below.</p>
+      </section>
+
+      <section class="ops-card ops-report-frame-card">
+        <iframe id="reportFrame" title="Protected Daily Report" class="ops-report-frame"></iframe>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="ops-toast hidden"></div>
+
+  <script src="/ops-auth.js" defer></script>
+  <script src="/ops-report.js" defer></script>
+</body>
+</html>

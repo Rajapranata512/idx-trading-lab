@@ -1,0 +1,10 @@
+[idx-ops-auth]
+enabled  = true
+port     = http,https
+filter   = idx-ops-auth
+logpath  = /opt/idx-trading-lab/logs/nginx/idx_ops_access.log
+backend  = auto
+findtime = 10m
+maxretry = 6
+bantime  = 1h
+action   = %(action_mwl)s

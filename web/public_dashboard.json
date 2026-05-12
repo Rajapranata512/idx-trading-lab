@@ -1,0 +1,641 @@
+{
+  "generated_at": "2026-05-11T12:35:46.997832",
+  "signals": {
+    "generated_at": "2026-05-11T12:35:44.077840",
+    "total": 0,
+    "avg_score": 0.0,
+    "by_mode": {},
+    "items": []
+  },
+  "execution_plan": {
+    "total": 0,
+    "items": []
+  },
+  "top_picks": {
+    "t1_total": 0,
+    "swing_total": 0,
+    "intraday_total": 0,
+    "t1_items": [],
+    "swing_items": [],
+    "intraday_items": []
+  },
+  "backtest": {
+    "gate_pass": {
+      "t1": false,
+      "swing": false
+    },
+    "gate_components": {
+      "t1": {
+        "mode_enabled": false,
+        "model_gate_ok": false,
+        "regime_ok": false,
+        "kill_switch_ok": true,
+        "promotion_required": false,
+        "promotion_gate_ok": true,
+        "final_ok": false,
+        "quality_ok": true
+      },
+      "swing": {
+        "mode_enabled": true,
+        "model_gate_ok": false,
+        "regime_ok": false,
+        "kill_switch_ok": true,
+        "promotion_required": false,
+        "promotion_gate_ok": true,
+        "final_ok": false,
+        "quality_ok": true
+      }
+    },
+    "regime": {
+      "enabled": true,
+      "as_of_date": "2026-05-11",
+      "pass": false,
+      "status": "risk_off",
+      "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok",
+      "values": {
+        "breadth_ma50_pct": 0.0,
+        "breadth_ma20_pct": 15.909090909090908,
+        "avg_ret20_pct": 0.0,
+        "median_atr_pct": 3.898768456631668,
+        "sample_tickers": 44
+      },
+      "thresholds": {
+        "min_breadth_ma50_pct": 35.0,
+        "min_breadth_ma20_pct": 30.0,
+        "min_avg_ret20_pct": 0.0,
+        "max_median_atr_pct": 8.0
+      },
+      "checks": {
+        "breadth_ma50_ok": false,
+        "breadth_ma20_ok": false,
+        "avg_ret20_ok": true,
+        "median_atr_ok": true
+      }
+    },
+    "kill_switch": {
+      "enabled": true,
+      "status": "clear",
+      "as_of_date": "2026-05-11",
+      "active": false,
+      "active_modes": [],
+      "triggered_modes_today": [],
+      "cooldown_until": "",
+      "state_path": "reports/kill_switch_state.json"
+    },
+    "model_v2_promotion": {
+      "enabled": true,
+      "shadow_mode": true,
+      "required_for_live": false,
+      "gate": {
+        "min_oos_trades": 120,
+        "min_profit_factor": 1.2,
+        "min_expectancy": 0.0,
+        "max_drawdown_pct": 15.0
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "modes": {
+        "t1": {
+          "passed": false,
+          "reasons": [
+            "No fold metrics provided"
+          ],
+          "summary": {},
+          "fold_details": []
+        },
+        "swing": {
+          "passed": false,
+          "reasons": [
+            "No fold metrics provided"
+          ],
+          "summary": {},
+          "fold_details": []
+        }
+      }
+    },
+    "mode_activation": {
+      "active_modes": [
+        "swing"
+      ],
+      "inactive_modes": [
+        "t1"
+      ],
+      "swing_only": true
+    },
+    "metrics": {
+      "t1": {
+        "WinRate": 0.0,
+        "ProfitFactor": 0.0,
+        "Expectancy": 0.0,
+        "Trades": 0,
+        "CAGR": 0.0,
+        "MaxDD": 0.0
+      },
+      "swing": {
+        "WinRate": 0.0,
+        "ProfitFactor": 0.0,
+        "Expectancy": 0.0,
+        "Trades": 0,
+        "CAGR": 0.0,
+        "MaxDD": 0.0
+      }
+    }
+  },
+  "funnel": {
+    "generated_at": "2026-05-11T12:35:44.085115",
+    "run_id": "20260511_123529",
+    "gate_pass": {
+      "t1": false,
+      "swing": false
+    },
+    "allowed_modes": [],
+    "mode_activation": {
+      "active_modes": [
+        "swing"
+      ],
+      "inactive_modes": [
+        "t1"
+      ],
+      "swing_only": true
+    },
+    "pre_gate": {
+      "combined_plan_count": 0,
+      "execution_plan_count": 0,
+      "signal_count": 0,
+      "by_mode": {}
+    },
+    "post_gate": {
+      "combined_plan_count": 0,
+      "execution_plan_count": 0,
+      "signal_count": 0,
+      "by_mode": {}
+    },
+    "status": {
+      "regime": "risk_off",
+      "kill_switch": "clear"
+    },
+    "score_funnel": {
+      "generated_at": "2026-05-11T12:35:43.930238",
+      "thresholds": {
+        "active_modes": [
+          "swing"
+        ],
+        "inactive_modes": [
+          "t1"
+        ],
+        "min_live_score_t1": 999.0,
+        "min_live_score_swing": 70.0,
+        "position_lot": 100,
+        "top_n_combined": 20,
+        "max_positions": 3,
+        "max_positions_t1": 1,
+        "max_positions_swing": 3,
+        "execution_mode_priority": [
+          "swing"
+        ]
+      },
+      "modes": {
+        "t1": {
+          "enabled": false,
+          "rank_candidates": 0,
+          "after_score_filter": 0,
+          "after_event_risk": 0,
+          "small_size_before_filter": 0,
+          "dropped_by_score": 0,
+          "dropped_by_event_risk": 0
+        },
+        "swing": {
+          "enabled": true,
+          "rank_candidates": 0,
+          "after_score_filter": 0,
+          "after_event_risk": 0,
+          "small_size_before_filter": 0,
+          "dropped_by_score": 0,
+          "dropped_by_event_risk": 0
+        }
+      },
+      "combined": {
+        "before_size_filter": 0,
+        "dropped_by_size_filter": 0,
+        "after_size_filter": 0,
+        "after_top_n_combined": 0,
+        "execution_plan_count": 0,
+        "signal_count": 0
+      },
+      "event_risk": {
+        "enabled": true,
+        "status": "ok",
+        "message": "Event-risk filter applied",
+        "path": "data/reference/event_risk_blacklist.csv",
+        "as_of_date": "",
+        "active_events": 9,
+        "excluded_count": 0,
+        "excluded_tickers": [],
+        "excluded_t1": 0,
+        "excluded_swing": 0
+      }
+    }
+  },
+  "event_risk": {
+    "active_total": 9,
+    "excluded_total": 0,
+    "active_items": [
+      {
+        "ticker": "ABDA",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Asuransi Bina Dana Arta Tbk. (ABDA)",
+        "start_date": "2026-05-06",
+        "end_date": "2026-05-20",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "BOBA",
+        "status": "SUSPEND",
+        "reason": "Penghentian Sementara Perdagangan Saham PT Formosa Ingredient Factory Tbk. (BOBA)",
+        "start_date": "2026-04-28",
+        "end_date": "2026-05-12",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_suspend"
+      },
+      {
+        "ticker": "EPAC",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Megalestari Epack Sentosaraya Tbk. (EPAC)",
+        "start_date": "2026-04-27",
+        "end_date": "2026-05-11",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "ESIP",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Sinergi Inti Plastindo Tbk. (ESIP)",
+        "start_date": "2026-05-07",
+        "end_date": "2026-05-21",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "KING",
+        "status": "SUSPEND",
+        "reason": "Penghentian Sementara Perdagangan Saham PT Hoffmen Cleanindo Tbk. (KING)",
+        "start_date": "2026-04-27",
+        "end_date": "2026-05-11",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_suspend"
+      },
+      {
+        "ticker": "KOTA",
+        "status": "SUSPEND",
+        "reason": "Penghentian Sementara Perdagangan Saham PT DMS Propertindo Tbk. (KOTA)",
+        "start_date": "2026-05-06",
+        "end_date": "2026-05-20",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_suspend"
+      },
+      {
+        "ticker": "KOTA",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT DMS Propertindo Tbk. (KOTA)",
+        "start_date": "2026-04-30",
+        "end_date": "2026-05-14",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "NUSA",
+        "status": "SUSPEND",
+        "reason": "Penghentian Sementara Perdagangan Efek PT Sinergi Megah Internusa Tbk (NUSA)",
+        "start_date": "2026-05-04",
+        "end_date": "2026-05-18",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_suspend"
+      },
+      {
+        "ticker": "TOOL",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Rohartindo Nusantara Luas Tbk. (TOOL)",
+        "start_date": "2026-04-30",
+        "end_date": "2026-05-14",
+        "updated_at": "2026-05-11",
+        "source": "idx_announcement_uma"
+      }
+    ],
+    "excluded_items": []
+  },
+  "operator_alerts": [
+    {
+      "severity": "warn",
+      "code": "provider_fallback_active",
+      "title": "Fallback data source active",
+      "message": "Latest ingest used `yfinance_fallback`. Validate market data before trusting backtest or live decisions."
+    },
+    {
+      "severity": "info",
+      "code": "mode_freeze_active",
+      "title": "Strategy mode freeze active",
+      "message": "Active modes: swing. Inactive modes: t1."
+    },
+    {
+      "severity": "warn",
+      "code": "universe_source_missing",
+      "title": "Universe auto-update not fully configured",
+      "message": "Missing source URL for: IDX30, LQ45"
+    },
+    {
+      "severity": "warn",
+      "code": "no_execution_feedback",
+      "title": "No execution feedback loop yet",
+      "message": "Live reconciliation still has zero fill entries, so closed-loop retraining is not learning from execution."
+    }
+  ],
+  "paper_fills": {
+    "status": "no_signals",
+    "message": "Signal snapshots were found, but all of them contained zero executable signals",
+    "generated_count": 0,
+    "pending_count": 0,
+    "snapshot_files_total": 1,
+    "snapshot_files_in_window": 1,
+    "signals_total": 0,
+    "valid_signals": 0,
+    "trade_count_total": 0,
+    "win_rate_pct": 0.0,
+    "expectancy_r": 0.0,
+    "profit_factor_r": 0.0,
+    "recent_generated": []
+  },
+  "swing_audit": {
+    "status": "no_trades",
+    "message": "No swing trades available for audit",
+    "group_source": "unclassified",
+    "overall": {},
+    "by_regime": [],
+    "by_group": [],
+    "by_volatility": [],
+    "weak_spots": [],
+    "recent_trades": []
+  },
+  "runs": [
+    {
+      "file": "run_log_20260511.json",
+      "run_id": "20260511_123529",
+      "started_at": "2026-05-11T12:35:29.555626",
+      "ended_at": "2026-05-11T12:35:44.680373",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 24,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    }
+  ],
+  "report": {
+    "html_exists": true
+  },
+  "intraday": {
+    "status": {},
+    "daemon_state": {}
+  },
+  "closed_loop_retrain": {
+    "status": "skipped_no_trigger",
+    "message": "Closed-loop conditions not met",
+    "triggered": false,
+    "reasons": [],
+    "last_evaluated_at": "2026-05-11T12:35:44.084013",
+    "last_triggered_at": "",
+    "fills_in_window": 0,
+    "new_fills_since_last_trigger": 0,
+    "live_samples": 0,
+    "live_profit_factor_r": 0.0,
+    "live_expectancy_r": 0.0,
+    "train_status": ""
+  },
+  "quality": {
+    "status": "pass",
+    "pass": true,
+    "reason_codes": [],
+    "checks": {
+      "stale_ok": true,
+      "missing_ok": true,
+      "duplicate_ok": true,
+      "missing_tickers_ok": true,
+      "outlier_ok": true
+    },
+    "stats": {
+      "rows_total": 880,
+      "ticker_total": 44,
+      "max_data_date": "2026-05-11",
+      "stale_days": 0,
+      "missing_rows": 0,
+      "duplicate_rows": 0,
+      "missing_tickers_count": 0,
+      "outlier_rows": 0
+    },
+    "message": "Data quality checks passed."
+  },
+  "risk_budget": {
+    "status": "paper_only",
+    "risk_budget_pct": 0.0,
+    "effective_risk_per_trade_pct": 0.0,
+    "hard_daily_stop_r": 2.0,
+    "hard_weekly_stop_r": 6.0
+  },
+  "paper_live_mode": {
+    "mode": "paper",
+    "rollout_phase": "paper",
+    "decision_version": "v2026.03.roadmap_90d"
+  },
+  "summary": {
+    "generated_at": "2026-05-11T12:35:44.084511",
+    "run_id": "20260511_123529",
+    "decision_version": "v2026.03.roadmap_90d",
+    "status": "BLOCKED_BY_GATE",
+    "action": "NO_TRADE",
+    "action_reason": "Live gate blocked all active modes: swing",
+    "trade_ready": false,
+    "allowed_modes": [],
+    "mode_activation": {
+      "active_modes": [
+        "swing"
+      ],
+      "inactive_modes": [
+        "t1"
+      ],
+      "swing_only": true
+    },
+    "signals_total": 0,
+    "gate": {
+      "t1": false,
+      "swing": false
+    },
+    "data_max_date": "2026-05-11",
+    "data_age_days": 0,
+    "source": "yfinance_fallback",
+    "paper_live_mode": "paper",
+    "rollout_phase": "paper",
+    "risk_budget_pct": 0.0,
+    "risk_budget_status": "paper_only",
+    "effective_risk_per_trade_pct": 0.0,
+    "hard_daily_stop_r": 2.0,
+    "hard_weekly_stop_r": 6.0,
+    "closed_loop_retrain_status": "skipped_no_trigger",
+    "closed_loop_retrain_triggered": false,
+    "paper_fills": {
+      "status": "no_signals",
+      "generated_count": 0,
+      "pending_count": 0,
+      "trade_count_total": 0,
+      "win_rate_pct": 0.0,
+      "expectancy_r": 0.0,
+      "profit_factor_r": 0.0
+    },
+    "swing_audit": {
+      "generated_at": "2026-05-11T12:35:44.073457",
+      "status": "no_trades",
+      "message": "No swing trades available for audit",
+      "overall": {},
+      "by_regime": [],
+      "by_group": [],
+      "by_volatility": [],
+      "weak_spots": [],
+      "recent_trades": [],
+      "group_source": "unclassified"
+    },
+    "quality": {
+      "status": "pass",
+      "pass": true,
+      "reason_codes": [],
+      "checks": {
+        "stale_ok": true,
+        "missing_ok": true,
+        "duplicate_ok": true,
+        "missing_tickers_ok": true,
+        "outlier_ok": true
+      },
+      "stats": {
+        "rows_total": 880,
+        "ticker_total": 44,
+        "max_data_date": "2026-05-11",
+        "stale_days": 0,
+        "missing_rows": 0,
+        "duplicate_rows": 0,
+        "missing_tickers_count": 0,
+        "outlier_rows": 0
+      }
+    },
+    "operator_alerts": [
+      {
+        "severity": "warn",
+        "code": "provider_fallback_active",
+        "title": "Fallback data source active",
+        "message": "Latest ingest used `yfinance_fallback`. Validate market data before trusting backtest or live decisions."
+      },
+      {
+        "severity": "info",
+        "code": "mode_freeze_active",
+        "title": "Strategy mode freeze active",
+        "message": "Active modes: swing. Inactive modes: t1."
+      },
+      {
+        "severity": "warn",
+        "code": "universe_source_missing",
+        "title": "Universe auto-update not fully configured",
+        "message": "Missing source URL for: IDX30, LQ45"
+      },
+      {
+        "severity": "warn",
+        "code": "no_execution_feedback",
+        "title": "No execution feedback loop yet",
+        "message": "Live reconciliation still has zero fill entries, so closed-loop retraining is not learning from execution."
+      }
+    ]
+  },
+  "decision": {
+    "status": "BLOCKED_BY_GATE",
+    "action": "NO_TRADE",
+    "trade_ready": false,
+    "action_reason": "Live gate blocked all active modes: swing",
+    "why_no_signal": [
+      "Live gate blocked all active modes: swing",
+      "No executable signals found after filtering.",
+      "Live gate blocked all active modes: swing.",
+      "Market regime is `risk_off` (risk-off)."
+    ],
+    "allowed_modes": [],
+    "signal_total": 0,
+    "gate": {
+      "t1": false,
+      "swing": false
+    },
+    "regime_status": "risk_off",
+    "kill_switch_status": "clear",
+    "event_excluded_total": 0,
+    "model_v2_promotion_required": false,
+    "model_v2_promotion_gate_pass": {
+      "t1": false,
+      "swing": false
+    },
+    "model_v2_promotion_blocked_modes": [],
+    "data_age_days": 0,
+    "data_max_date": "2026-05-11",
+    "source": "n8n_summary",
+    "mode_activation": {
+      "active_modes": [
+        "swing"
+      ],
+      "inactive_modes": [
+        "t1"
+      ],
+      "swing_only": true
+    }
+  },
+  "kpi": {
+    "signal_total": 0,
+    "execution_total": 0,
+    "event_active_total": 9,
+    "event_excluded_total": 0,
+    "signal_avg_score": 0.0,
+    "gate_pass": {
+      "t1": false,
+      "swing": false
+    },
+    "regime_status": "risk_off",
+    "kill_switch_status": "clear",
+    "intraday_daemon_status": "",
+    "intraday_signal_count": 0,
+    "decision_action": "NO_TRADE",
+    "decision_trade_ready": false,
+    "model_v2_promotion_required": false,
+    "model_v2_promotion_pass_t1": false,
+    "model_v2_promotion_pass_swing": false,
+    "closed_loop_retrain_status": "skipped_no_trigger",
+    "closed_loop_retrain_triggered": false,
+    "quality_status": "pass",
+    "quality_pass": true,
+    "risk_budget_pct": 0.0,
+    "risk_budget_status": "paper_only",
+    "paper_live_mode": "paper",
+    "rollout_phase": "paper",
+    "operator_alert_count": 4,
+    "paper_fill_trade_count": 0,
+    "swing_audit_trade_count": 0
+  }
+}

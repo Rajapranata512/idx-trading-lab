@@ -17,3 +17,17 @@ class PriceProvider(ABC):
     ) -> pd.DataFrame:
         """Fetch daily price bars."""
         raise NotImplementedError
+
+    def fetch_intraday(
+        self,
+        timeframe: str,
+        start_datetime: str | None = None,
+        end_datetime: str | None = None,
+        tickers: list[str] | None = None,
+        max_rows_per_ticker: int = 500,
+    ) -> pd.DataFrame:
+        """Fetch intraday OHLCV bars.
+
+        Providers can override this to support polling/websocket feeds.
+        """
+        raise NotImplementedError(f"{self.__class__.__name__} does not support intraday fetch")

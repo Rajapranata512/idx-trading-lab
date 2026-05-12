@@ -1,0 +1,17 @@
+[Unit]
+Description=IDX Trading Lab Web Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/idx-trading-lab
+EnvironmentFile=/opt/idx-trading-lab/.env
+ExecStart=/opt/idx-trading-lab/.venv/bin/python -m src.cli --settings config/settings.json serve-web --host 127.0.0.1 --port 8080
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

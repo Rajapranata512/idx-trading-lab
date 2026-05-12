@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IDX Trading Lab Ops Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ops-login.css" />
+</head>
+<body>
+  <div class="ops-shell">
+    <header class="ops-topbar">
+      <a href="/" class="ops-backlink">Back to Premium Dashboard</a>
+      <span class="ops-badge">Operational Access</span>
+    </header>
+
+    <main class="ops-main">
+      <section class="ops-hero">
+        <p class="ops-kicker">IDX Trading Lab</p>
+        <h1>Lightweight login for operational pages</h1>
+        <p>
+          Public users can stay on the premium dashboard. Operators can authenticate here to open
+          close analysis, inspect recent jobs, and view the protected daily report without exposing
+          those routes directly on the public UI.
+        </p>
+        <div class="ops-hero-strip">
+          <div class="ops-mini-stat">
+            <span>Public layer</span>
+            <strong>Premium dashboard</strong>
+          </div>
+          <div class="ops-mini-stat">
+            <span>Protected tools</span>
+            <strong>Jobs, report, close analysis</strong>
+          </div>
+          <div class="ops-mini-stat">
+            <span>Mutation policy</span>
+            <strong>Run Daily via localhost only</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="ops-grid">
+        <article class="ops-card">
+          <div class="ops-card-head">
+            <div>
+              <p class="ops-label">Login</p>
+              <h2>Authenticate this browser tab</h2>
+            </div>
+            <span id="authStatusBadge" class="ops-status neutral">Signed out</span>
+          </div>
+
+          <form id="loginForm" class="ops-form">
+            <label>
+              Username
+              <input id="usernameInput" type="text" autocomplete="username" placeholder="ops" />
+            </label>
+            <label>
+              Password
+              <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Enter your password" />
+            </label>
+            <div class="ops-form-actions">
+              <button id="loginBtn" class="ops-btn primary" type="submit">Sign In</button>
+              <button id="logoutBtn" class="ops-btn secondary" type="button">Clear Session</button>
+            </div>
+          </form>
+
+          <div class="ops-notes">
+            <p id="authStatusText">No operational credential is stored in this tab yet.</p>
+            <ul>
+              <li>Credentials are stored in <code>sessionStorage</code> for this browser tab only.</li>
+              <li>Protected APIs still enforce Basic Auth server-side when enabled.</li>
+              <li><code>run-daily</code> remains localhost-only even after authentication.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="ops-card ops-card-accent">
+          <div class="ops-card-head">
+            <div>
+              <p class="ops-label">Operational shortcuts</p>
+              <h2>Access protected tools</h2>
+            </div>
+            <span id="opsModeBadge" class="ops-status neutral">Checking...</span>
+          </div>
+
+          <div class="ops-actions">
+            <button id="openCloseAnalysisBtn" class="ops-btn secondary" type="button">Open Close Analysis</button>
+            <button id="openReportBtn" class="ops-btn secondary" type="button">Open Ops Report</button>
+            <button id="refreshJobsBtn" class="ops-btn secondary" type="button">Refresh Job Status</button>
+            <button id="runDailyBtn" class="ops-btn primary" type="button">Run Daily</button>
+          </div>
+
+          <p id="opsHint" class="ops-hint">Operational pages stay locked until this tab has a valid session.</p>
+          <div class="ops-inline-callout">
+            <strong>Research vs execution</strong>
+            <p>The public premium dashboard remains visible without login, but actions and protected diagnostics stay behind this operator flow.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="ops-grid">
+        <article class="ops-card">
+          <div class="ops-card-head">
+            <div>
+              <p class="ops-label">Job health</p>
+              <h2>Recent async pipeline status</h2>
+            </div>
+            <span id="jobCountsBadge" class="ops-status neutral">No data</span>
+          </div>
+          <div id="jobCounts" class="ops-job-counts">
+            <div><span>Queued</span><strong>-</strong></div>
+            <div><span>Running</span><strong>-</strong></div>
+            <div><span>Succeeded</span><strong>-</strong></div>
+            <div><span>Failed</span><strong>-</strong></div>
+          </div>
+          <ul id="jobList" class="ops-job-list">
+            <li>No authenticated job data yet.</li>
+          </ul>
+        </article>
+
+        <article class="ops-card ops-card-accent-soft">
+          <div class="ops-card-head">
+            <div>
+              <p class="ops-label">Safety notes</p>
+              <h2>Public deploy posture</h2>
+            </div>
+          </div>
+          <ul class="ops-checklist">
+            <li>Serve the Python app behind a reverse proxy and bind it to <code>127.0.0.1</code>.</li>
+            <li>Set <code>IDX_WEB_USERNAME</code> and <code>IDX_WEB_PASSWORD</code> before public exposure.</li>
+            <li>Keep the premium dashboard public, but reserve operational routes for authenticated operators.</li>
+            <li>Use localhost to trigger <code>run-daily</code> so the pipeline cannot be kicked off remotely.</li>
+          </ul>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="ops-toast hidden"></div>
+
+  <script src="/ops-auth.js" defer></script>
+  <script src="/ops-login.js" defer></script>
+</body>
+</html>

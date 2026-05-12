@@ -126,3 +126,52 @@ class RestEodProvider(PriceProvider):
         payload = self._request_json(url=url)
         rows = _extract_by_path(payload, self.settings.response_data_path)
         return self._map_rows(rows, ticker=None)
+
+    def fetch_intraday(
+        self,
+        timeframe: str,
+        start_datetime: str | None = None,
+        end_datetime: str | None = None,
+        tickers: list[str] | None = None,
+        max_rows_per_ticker: int = 500,
+    ) -> pd.DataFrame:
+        base_params: dict[str, str] = _resolved_dict(dict(self.settings.query_params))
+        base_params["interval"] = str(timeframe)
+        base_params["limit"] = str(max(1, int(max_rows_per_ticker)))
+        if start_datetime:
+            base_params[self.settings.date_from_param_name] = str(start_datetime)
+        if end_datetime:
+            base_params[self.settings.date_to_param_name] = str(end_datetime)
+
+        template = (self.settings.base_url_template or "").strip()
+        frames: list[pd.DataFrame] = []
+
+        if template:
+            if not tickers:
+                raise ValueError("Ticker list required in per-ticker REST mode")
+            for ticker in sorted({t.upper().strip() for t in tickers}):
+                url = self._build_url(base_url=template, params=base_params, ticker=ticker)
+                payload = self._request_json(url=url)
+                rows = _extract_by_path(payload, self.settings.response_data_path)
+                frame = self._map_rows(rows, ticker=ticker)
+                frames.append(frame)
+                if self.settings.sleep_seconds_between_requests > 0:
+                    time.sleep(self.settings.sleep_seconds_between_requests)
+        else:
+            params = dict(base_params)
+            if tickers:
+                params[self.settings.ticker_param_name] = ",".join(sorted(set(tickers)))
+            url = self._build_url(base_url=self.settings.base_url, params=params)
+            payload = self._request_json(url=url)
+            rows = _extract_by_path(payload, self.settings.response_data_path)
+            frames.append(self._map_rows(rows, ticker=None))
+
+        if not frames:
+            return pd.DataFrame(columns=["timestamp", "ticker", "open", "high", "low", "close", "volume", "timeframe"])
+
+        out = pd.concat(frames, ignore_index=True, sort=False)
+        if "date" in out.columns and "timestamp" not in out.columns:
+            out = out.rename(columns={"date": "timestamp"})
+        out["timestamp"] = pd.to_datetime(out["timestamp"], errors="coerce")
+        out["timeframe"] = str(timeframe)
+        return out.reset_index(drop=True)
