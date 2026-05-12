@@ -202,7 +202,7 @@ function Sparkline({ values, lineColor = "#2dd4bf" }) {
   const { line, area } = useMemo(() => buildSparkPath(values), [values]);
   const gradientId = `spark-${lineColor.replace("#", "")}`;
   return (
-    <div className="h-20 w-full">
+    <div className="h-16 w-full">
       <svg viewBox="0 0 220 72" className="h-full w-full overflow-visible">
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
@@ -219,11 +219,11 @@ function Sparkline({ values, lineColor = "#2dd4bf" }) {
 
 function SectionHeading({ eyebrow, title, description, action }) {
   return (
-    <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
       <div className="max-w-2xl">
         <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.34em] text-slate-400">{eyebrow}</p>
-        <h2 className="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">{title}</h2>
-        <p className="mt-2 text-sm leading-7 text-slate-400 md:text-base">{description}</p>
+        <h2 className="font-display text-xl font-semibold tracking-tight text-white md:text-2xl">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
@@ -233,17 +233,14 @@ function SectionHeading({ eyebrow, title, description, action }) {
 function TiltCard({ children, className = "", reducedMotion = false }) {
   const ref = useRef(null);
   const onMouseMove = (event) => {
-    if (reducedMotion || !ref.current || window.innerWidth < 1024) return;
-    const bounds = ref.current.getBoundingClientRect();
-    const px = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const py = (event.clientY - bounds.top) / bounds.height - 0.5;
-    ref.current.style.transform = `perspective(1200px) rotateX(${(-py * 7).toFixed(2)}deg) rotateY(${(px * 9).toFixed(2)}deg) translateY(-3px)`;
+    if (reducedMotion || !ref.current || window.innerWidth < 1280) return;
+    ref.current.style.transform = "translateY(-2px)";
   };
   const reset = () => {
     if (ref.current) ref.current.style.transform = "";
   };
   return (
-    <div ref={ref} className={cn("premium-tilt relative rounded-3xl transition-transform duration-300 ease-out", className)} onMouseMove={onMouseMove} onMouseLeave={reset}>
+    <div ref={ref} className={cn("premium-tilt relative rounded-2xl transition-transform duration-200 ease-out", className)} onMouseMove={onMouseMove} onMouseLeave={reset}>
       {children}
     </div>
   );
@@ -253,15 +250,15 @@ function KpiCard({ label, value, subtext, suffix = "", digits = 0, tone = "accen
   const toneClass = tone === "accent" ? "from-emerald-400/20 via-cyan-400/5 to-transparent" : tone === "warning" ? "from-amber-400/20 via-amber-200/5 to-transparent" : tone === "danger" ? "from-rose-400/18 via-rose-200/5 to-transparent" : "from-slate-300/12 via-slate-200/4 to-transparent";
   return (
     <TiltCard reducedMotion={reducedMotion}>
-      <article data-kpi-card className={cn("metric-card-glow glass-panel premium-ring relative overflow-hidden rounded-3xl p-5", "bg-gradient-to-br", toneClass)}>
-        <p className="text-sm text-slate-400">{label}</p>
-        <div className="mt-3 flex items-end justify-between gap-4">
-          <h3 className="font-display text-3xl font-semibold text-white sm:text-4xl">
+      <article data-kpi-card className={cn("metric-card-glow glass-panel premium-ring relative overflow-hidden rounded-2xl p-4", "bg-gradient-to-br", toneClass)}>
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{label}</p>
+        <div className="mt-2 flex items-end justify-between gap-4">
+          <h3 className="font-display text-2xl font-semibold text-white sm:text-3xl">
             <CounterNumber value={value} digits={digits} suffix={suffix} reducedMotion={reducedMotion} />
           </h3>
           <div className={cn("h-2.5 w-2.5 rounded-full", tone === "danger" ? "bg-rose-400" : tone === "warning" ? "bg-amber-300" : "bg-emerald-400")} />
         </div>
-        <p className="mt-3 text-sm leading-6 text-slate-400">{subtext}</p>
+        <p className="mt-2 text-sm leading-6 text-slate-400">{subtext}</p>
       </article>
     </TiltCard>
   );
@@ -273,15 +270,51 @@ function SkeletonBlock({ className = "" }) {
 
 function LoadingKpiGrid() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
       {Array.from({ length: 4 }).map((_, index) => (
-        <div key={index} className="glass-panel rounded-3xl p-5">
+        <div key={index} className="glass-panel rounded-2xl p-4">
           <SkeletonBlock className="h-4 w-24" />
           <SkeletonBlock className="mt-4 h-10 w-28" />
           <SkeletonBlock className="mt-4 h-3 w-full" />
           <SkeletonBlock className="mt-2 h-3 w-4/5" />
         </div>
       ))}
+    </div>
+  );
+}
+
+function DashboardLoading({ error, onRetry }) {
+  return (
+    <div className="premium-loader-shell premium-shell flex items-center justify-center py-10">
+      <div className="glass-panel w-full max-w-3xl rounded-2xl p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-slate-500">IDX Trading Lab</p>
+            <h1 className="mt-2 font-display text-2xl font-semibold text-white">Loading operating snapshot</h1>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Reading the latest public dashboard export, signals, execution plan, and run intelligence.
+            </p>
+          </div>
+          <StatusPill label={error ? "Retry needed" : "Loading"} tone={error ? "danger" : "accent"} />
+        </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="rounded-2xl border border-slate-800/80 bg-slate-950/70 p-4">
+              <SkeletonBlock className="h-3 w-24" />
+              <SkeletonBlock className="mt-4 h-8 w-20" />
+              <SkeletonBlock className="mt-4 h-3 w-full" />
+            </div>
+          ))}
+        </div>
+        {error ? (
+          <div className="mt-5 rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4">
+            <p className="text-sm leading-6 text-rose-100">{error}</p>
+            <button type="button" onClick={onRetry} className="mt-4 rounded-full border border-rose-300/40 bg-rose-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-100 transition hover:border-rose-200/70">
+              Retry
+            </button>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -333,7 +366,7 @@ function MetricList({ items }) {
 
 function EmptyState({ title, message }) {
   return (
-    <div className="glass-panel-soft rounded-3xl border border-dashed border-slate-700/80 p-8 text-center">
+    <div className="glass-panel-soft rounded-2xl border border-dashed border-slate-700/80 p-6 text-center">
       <p className="font-display text-lg text-white">{title}</p>
       <p className="mt-2 text-sm leading-6 text-slate-400">{message}</p>
     </div>
@@ -343,7 +376,7 @@ function EmptyState({ title, message }) {
 function AlertCard({ alert }) {
   const tone = alert.severity === "error" ? "danger" : alert.severity === "warning" ? "warning" : alert.severity === "info" ? "accent" : "neutral";
   return (
-    <article className="glass-panel-soft rounded-3xl p-5">
+    <article className="glass-panel-soft rounded-2xl p-4">
       <div className="flex flex-wrap items-center gap-3">
         <StatusPill label={alert.code || alert.severity || "alert"} tone={tone} className="px-2 py-1 text-[10px]" />
         <h4 className="font-display text-lg font-semibold text-white">{alert.title || "Operator alert"}</h4>
@@ -359,7 +392,7 @@ function RunCard({ run }) {
   const badgeTone = run.status === "failed" ? "critical" : run.status_category === "protective_warning" ? "protective" : run.status === "warning" ? "operational" : "clean";
 
   return (
-    <article className="glass-panel-soft rounded-3xl p-5">
+    <article className="glass-panel-soft rounded-2xl p-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-3">
@@ -687,7 +720,6 @@ function SignalsTable({ items, loading, onSelectTicker, query }) {
 function App() {
   const reducedMotion = useReducedMotion();
   useScrollProgress();
-  useParallaxBackground(reducedMotion);
 
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -993,12 +1025,16 @@ function App() {
 
   const activeFilters = [filterMode !== "all", minScore > 0, filterQuery.trim() !== ""].filter(Boolean).length;
 
+  if (loading && !dashboard) {
+    return <DashboardLoading error={error} onRetry={() => refreshDashboard(true)} />;
+  }
+
   return (
     <div className="relative">
       <header className="sticky top-0 z-50 border-b border-slate-800/70 bg-finance-950/80 backdrop-blur-xl">
-        <div className="premium-shell flex w-full items-center justify-between gap-4 py-4">
+        <div className="premium-shell flex w-full items-center justify-between gap-3 py-3">
           <div className="flex min-w-0 items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 font-display text-lg font-semibold text-emerald-200">ID</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 font-display text-base font-semibold text-emerald-200">ID</div>
             <div className="min-w-0">
               <p className="font-mono text-[11px] uppercase tracking-[0.34em] text-slate-500">Premium decision-support</p>
               <h1 className="truncate font-display text-lg font-semibold text-white sm:text-xl">IDX Trading Lab</h1>
@@ -1016,49 +1052,56 @@ function App() {
       </header>
 
       <main className="premium-shell premium-main">
-        <section id="overview" className="premium-hero-panel relative overflow-hidden rounded-[32px] border border-slate-800/70 bg-hero-grid bg-[size:42px_42px] p-6 shadow-glow sm:p-8 lg:p-10" data-reveal>
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/10 via-transparent to-sky-400/10" />
-          <div className="premium-hero-layout premium-grid-balanced relative grid xl:grid-cols-[1.04fr,0.96fr]">
-            <div className="flex h-full flex-col justify-between gap-8">
-              {/* Auto refresh pill removed */}
+        <section id="overview" className="premium-hero-panel relative overflow-hidden rounded-[32px] border border-slate-800/70 bg-slate-950/40 p-4 shadow-glow sm:p-5 lg:p-6" data-reveal>
+          <div className="premium-hero-layout premium-grid-balanced relative grid xl:grid-cols-[0.95fr,1.05fr]">
+            <div className="flex h-full flex-col justify-between gap-5">
               <div className="space-y-3">
-                <p data-hero-reveal className="font-mono text-[11px] uppercase tracking-[0.36em] text-slate-400">Institutional-grade trading research interface</p>
-                <div className="hero-title space-y-2">
-                  <span data-hero-reveal><strong className="font-display text-4xl font-semibold leading-tight text-white sm:text-5xl xl:text-6xl">Premium intelligence for</strong></span>
-                  <span data-hero-reveal><strong className="font-display text-4xl font-semibold leading-tight text-transparent sm:text-5xl xl:text-6xl bg-gradient-to-r from-emerald-200 via-cyan-200 to-sky-300 bg-clip-text">signal selection and risk posture</strong></span>
-                </div>
-                <p data-hero-reveal className="max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">A responsive dark financial workspace for scoring, monitoring, and auditing the entire daily trading research pipeline without sacrificing readability.</p>
+                <p data-hero-reveal className="font-mono text-[11px] uppercase tracking-[0.32em] text-slate-400">Daily trading operations</p>
+                <h2 data-hero-reveal className="font-display text-3xl font-semibold leading-tight text-white sm:text-4xl xl:text-5xl">
+                  IDX Trading Lab
+                </h2>
+                <p data-hero-reveal className="max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                  Compact signal, risk, execution, and run status workspace for daily review before manual trading decisions.
+                </p>
               </div>
-              <div data-hero-reveal className="flex flex-wrap gap-3">
-                <StatusPill label={`Decision ${decision.status || "-"}`} tone={statusTone(decision.status)} />
-                <StatusPill label={`Regime ${regime.status || "-"}`} tone={statusTone(regime.status)} />
-                <StatusPill label={`Kill ${killSwitch.status || "-"}`} tone={statusTone(killSwitch.status)} />
-                <StatusPill label={`Quality ${quality.status || "-"}`} tone={statusTone(quality.status)} />
+              <div data-hero-reveal className="premium-operational-strip">
+                {[
+                  ["Decision", decision.status || "-", statusTone(decision.status)],
+                  ["Regime", regime.status || "-", statusTone(regime.status)],
+                  ["Kill switch", killSwitch.status || "-", statusTone(killSwitch.status)],
+                  ["Quality", quality.status || "-", statusTone(quality.status)],
+                ].map(([label, value, tone]) => (
+                  <div key={label} className="rounded-2xl border border-slate-800/80 bg-slate-950/70 p-3">
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">{label}</p>
+                    <p className={cn("mt-2 truncate text-sm font-semibold", tone === "success" ? "text-emerald-200" : tone === "danger" ? "text-rose-200" : "text-slate-200")}>{value}</p>
+                  </div>
+                ))}
               </div>
-              <div data-hero-reveal className="flex flex-wrap gap-3">
-                <a href="#signals" className="rounded-full border border-slate-700/70 bg-slate-900/70 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-100 transition hover:border-slate-500/80">Jump to signals</a>
-                <a href="#runs" className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100 transition hover:border-emerald-300/40 hover:bg-emerald-400/16">Review recent runs</a>
+              <div data-hero-reveal className="flex flex-wrap gap-2">
+                <a href="#signals" className="rounded-full border border-slate-700/70 bg-slate-900/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:border-slate-500/80">Signals</a>
+                <a href="#execution" className="rounded-full border border-slate-700/70 bg-slate-900/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:border-slate-500/80">Execution</a>
+                <a href="#runs" className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100 transition hover:border-emerald-300/40">Runs</a>
               </div>
             </div>
             <div data-hero-reveal className="glass-panel premium-overview-card premium-panel-tight rounded-[28px]">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase tracking-[0.22em] text-slate-500">Live overview</p>
-                  <h2 className="mt-2 font-display text-2xl font-semibold text-white">Current operating snapshot</h2>
+                  <h2 className="mt-2 font-display text-xl font-semibold text-white">Current operating snapshot</h2>
                 </div>
                 <StatusPill label={decision.trade_ready ? "Trade ready" : "No trade"} tone={decision.trade_ready ? "success" : "warning"} />
               </div>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <div className="rounded-3xl border border-slate-800/70 bg-slate-950/70 p-4">
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-slate-800/70 bg-slate-950/70 p-3">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">As of</p>
                   <p className="mt-2 text-sm leading-6 text-slate-200">{fmtDateTime(dashboard?.signals?.generated_at || dashboard?.generated_at)}</p>
                 </div>
-                <div className="rounded-3xl border border-slate-800/70 bg-slate-950/70 p-4">
+                <div className="rounded-2xl border border-slate-800/70 bg-slate-950/70 p-3">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Action reason</p>
                   <p className="mt-2 text-sm leading-6 text-slate-200">{decision.action_reason || "No reason available."}</p>
                 </div>
               </div>
-              <div className="mt-5 rounded-[28px] border border-slate-800/70 bg-slate-950/70 p-4">
+              <div className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/70 p-3">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Signal momentum</p>
                   <span className="font-mono text-xs text-slate-500">{filteredSignals.length} filtered rows</span>
