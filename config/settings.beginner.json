@@ -294,7 +294,25 @@
                      "horizon_days_t1":  1,
                      "horizon_days_swing":  10,
                      "min_prob_threshold_t1":  0.58,
-                     "min_prob_threshold_swing":  0.6
+                     "min_prob_threshold_swing":  0.6,
+                     "promotion":  {
+                                       "enabled":  true,
+                                       "state_path":  "reports/model_v2_promotion_state.json",
+                                       "rollout_levels_pct":  [
+                                                                  0,
+                                                                  30,
+                                                                  60,
+                                                                  100
+                                                              ],
+                                       "consecutive_passes_required":  4,
+                                       "min_live_samples":  30,
+                                       "min_expectancy_r":  0.02,
+                                       "min_profit_factor_r":  1.2,
+                                       "min_entry_match_rate_pct":  50.0,
+                                       "rollback_on_fail":  true,
+                                       "rollback_expectancy_r":  0.0,
+                                       "rollback_profit_factor_r":  1.0
+                                   }
                  },
     "coaching":  {
                      "enabled":  true,

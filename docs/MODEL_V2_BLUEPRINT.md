@@ -20,6 +20,7 @@ Scaffolding fase awal sudah aktif di pipeline harian:
 - `src/model_v2/shadow.py`: output shadow + A/B test v1 vs v2.
 - `src/model_v2/io.py`: simpan/load artifact + metadata + state.
 - `run-daily` tetap memakai gate risiko live yang sama; model_v2 belum override eksekusi.
+- Promotion gate + rollback otomatis tersedia lewat `model_v2.promotion.*` (bertahap 0 -> 30 -> 60 -> 100).
 
 ## 2. Prinsip Desain
 

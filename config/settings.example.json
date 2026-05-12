@@ -29,26 +29,6 @@
         "query_params": {}
       }
     },
-    "intraday": {
-      "enabled": true,
-      "timeframe": "5m",
-      "lookback_minutes": 240,
-      "poll_seconds": 60,
-      "max_rows_per_ticker": 600,
-      "canonical_prices_path": "data/raw/prices_intraday.csv",
-      "fallback_csv_path": "data/raw/prices_intraday.sample.csv",
-      "websocket_enabled": false,
-      "websocket_url": "",
-      "websocket_subscribe_payload": "",
-      "websocket_timeout_seconds": 15,
-      "reconnect_max_attempts": 8,
-      "reconnect_backoff_seconds": 2,
-      "reconnect_max_backoff_seconds": 60,
-      "auto_refresh_web_seconds": 30,
-      "min_avg_volume_20bars": 50000.0,
-      "min_live_score": 70.0,
-      "top_n": 15
-    },
     "provider": {
       "kind": "rest",
       "yfinance_fallback_enabled": true,
@@ -87,12 +67,8 @@
     "min_avg_volume_20d": 500000,
     "top_n_per_mode": 10,
     "top_n_combined": 20,
-    "active_modes": [
-      "swing",
-      "t1"
-    ],
-    "min_live_score_t1": 999.0,
-    "min_live_score_swing": 70.0,
+    "min_live_score_t1": 95.0,
+    "min_live_score_swing": 68.0,
     "event_risk": {
       "enabled": true,
       "blacklist_csv_path": "data/reference/event_risk_blacklist.csv",
@@ -187,7 +163,7 @@
   },
   "risk": {
     "account_size_idr": 10000000,
-    "risk_per_trade_pct": 0.5,
+    "risk_per_trade_pct": 0.6,
     "max_positions": 3,
     "max_positions_t1": 1,
     "max_positions_swing": 3,
@@ -195,7 +171,7 @@
       "swing",
       "t1"
     ],
-    "daily_loss_stop_r": 1.5,
+    "daily_loss_stop_r": 2.0,
     "position_lot": 100,
     "stop_atr_multiple": 2.0,
     "tp1_r_multiple": 1.0,
@@ -232,9 +208,14 @@
     "max_position_exposure_pct": 20.0
   },
   "backtest": {
-    "buy_fee_pct": 0.2,
-    "sell_fee_pct": 0.3,
-    "slippage_pct": 0.15,
+    "buy_fee_pct": 0.15,
+    "sell_fee_pct": 0.25,
+    "slippage_pct": 0.1,
+    "liq_bucket_mid_avg_volume_20d": 750000,
+    "liq_bucket_high_avg_volume_20d": 2000000,
+    "slippage_multiplier_low_liq": 1.5,
+    "slippage_multiplier_mid_liq": 1.0,
+    "slippage_multiplier_high_liq": 0.8,
     "equity_allocation_pct": 3.0,
     "min_trades_for_promotion": 150,
     "profit_factor_min": 1.2,
@@ -267,8 +248,8 @@
   },
   "regime": {
     "enabled": true,
-    "min_breadth_ma50_pct": 35.0,
-    "min_breadth_ma20_pct": 30.0,
+    "min_breadth_ma50_pct": 45.0,
+    "min_breadth_ma20_pct": 50.0,
     "min_avg_ret20_pct": 0.0,
     "max_median_atr_pct": 8.0
   },
@@ -293,13 +274,24 @@
     "horizon_days_swing": 10,
     "min_prob_threshold_t1": 0.52,
     "min_prob_threshold_swing": 0.55,
-    "closed_loop_retrain_enabled": true,
-    "closed_loop_state_path": "reports/model_v2_closed_loop_state.json",
-    "closed_loop_min_live_samples": 20,
-    "closed_loop_min_new_fills": 25,
-    "closed_loop_min_profit_factor_r": 1.0,
-    "closed_loop_min_expectancy_r": 0.0,
-    "closed_loop_min_hours_between_retrain": 24
+    "promotion": {
+      "enabled": true,
+      "state_path": "reports/model_v2_promotion_state.json",
+      "rollout_levels_pct": [
+        0,
+        30,
+        60,
+        100
+      ],
+      "consecutive_passes_required": 3,
+      "min_live_samples": 30,
+      "min_expectancy_r": 0.0,
+      "min_profit_factor_r": 1.1,
+      "min_entry_match_rate_pct": 40.0,
+      "rollback_on_fail": true,
+      "rollback_expectancy_r": -0.02,
+      "rollback_profit_factor_r": 0.95
+    }
   },
   "coaching": {
     "enabled": true,
@@ -320,44 +312,6 @@
     "details_csv_path": "reports/live_reconciliation_details.csv",
     "unmatched_entries_csv_path": "reports/live_reconciliation_unmatched_entries.csv",
     "fail_on_error": false
-  },
-  "kpi_gates": {
-    "gate_a_pipeline_success_rate_pct_min": 98.0,
-    "gate_a_critical_errors_max": 0,
-    "gate_b_swing_profit_factor_min": 1.25,
-    "gate_b_swing_expectancy_min": 0.0,
-    "gate_b_swing_max_dd_pct_max": 12.0,
-    "gate_c_micro_live_profit_factor_min": 1.1,
-    "gate_c_micro_live_expectancy_min": 0.0,
-    "gate_c_operational_error_rate_pct_max": 1.0,
-    "data_quality_max_stale_days": 3,
-    "data_quality_max_missing_rows": 0,
-    "data_quality_max_duplicate_rows": 0,
-    "data_quality_max_missing_tickers": 0,
-    "data_quality_outlier_ret_1d_pct": 25.0,
-    "data_quality_max_outlier_rows": 25
-  },
-  "paper_trading": {
-    "enabled": true,
-    "mode": "paper",
-    "auto_fill_enabled": true,
-    "slippage_pct": 0.15,
-    "buy_fee_pct": 0.2,
-    "sell_fee_pct": 0.3,
-    "state_path": "reports/paper_trading_state.json"
-  },
-  "rollout": {
-    "phase": "paper",
-    "micro_live_multiplier": 0.25,
-    "allow_scale_up_to_half": false,
-    "rollback_on_gate_fail": true
-  },
-  "risk_budget": {
-    "enabled": true,
-    "base_risk_budget_pct": 100.0,
-    "hard_daily_stop_r": 2.0,
-    "hard_weekly_stop_r": 6.0,
-    "sector_exposure_cap_pct": 35.0
   },
   "notifications": {
     "telegram_bot_token_env": "TELEGRAM_BOT_TOKEN",
