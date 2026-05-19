@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-19T07:26:03.742432",
+  "generated_at": "2026-05-19T07:42:04.317670",
   "signals": {
-    "generated_at": "2026-05-19T07:26:02.606338",
+    "generated_at": "2026-05-19T07:42:03.146206",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 6025.0,
         "volume": 20009100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-19 07:25:56.269943",
+        "ingested_at": "2026-05-19 07:42:02.592345",
         "ret_1d": 0.0041666666666666,
         "ret_5d": 0.0299145299145298,
         "ret_20d": -0.0511811023622047,
@@ -104,7 +104,7 @@
         "close": 3120.0,
         "volume": 88323100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-19 07:25:56.269943",
+        "ingested_at": "2026-05-19 07:42:02.592345",
         "ret_1d": 0.0129870129870128,
         "ret_5d": 0.0576271186440677,
         "ret_20d": 0.0064516129032257,
@@ -259,8 +259,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-05-19T07:26:02.612873",
-    "run_id": "20260519_072542",
+    "generated_at": "2026-05-19T07:42:03.152427",
+    "run_id": "20260519_074148",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -285,7 +285,7 @@
       "kill_switch": "clear"
     },
     "score_funnel": {
-      "generated_at": "2026-05-19T07:26:02.520516",
+      "generated_at": "2026-05-19T07:42:03.004437",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -423,6 +423,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260519.json",
+      "run_id": "20260519_074148",
+      "started_at": "2026-05-19T07:41:48.844318",
+      "ended_at": "2026-05-19T07:42:03.648150",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260519.json",
       "run_id": "20260519_072542",
