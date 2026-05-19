@@ -43,9 +43,6 @@ jobs:
         # Ingestion, Feature Computation, Scoring, and Report Generation
         python -m src.cli run-daily
 
-    - name: Generate Paper Fills
-      run: |
-        python -m src.cli paper-fills
 
     - name: Export Static UI Data
       env:
