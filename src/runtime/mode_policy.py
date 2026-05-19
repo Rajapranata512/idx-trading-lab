@@ -15,11 +15,13 @@ def supported_modes() -> list[str]:
 
 def active_modes(settings: Settings) -> list[str]:
     active: list[str] = []
-    for raw_mode in settings.pipeline.active_modes:
+    # Use execution_mode_priority as the source of active modes since active_modes is not in PipelineSettings
+    raw_modes = getattr(settings.pipeline, "active_modes", settings.risk.execution_mode_priority)
+    for raw_mode in raw_modes:
         mode = str(raw_mode).strip().lower()
         if mode in SUPPORTED_MODES and mode not in active:
             active.append(mode)
-    return active or ["swing", "t1"]
+    return active or list(SUPPORTED_MODES)
 
 
 def inactive_modes(settings: Settings) -> list[str]:
