@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-03-05T02:02:43.956698",
+  "timeframe": "5m",
+  "thresholds": {
+    "min_live_score": 70.0,
+    "position_lot": 100,
+    "max_positions": 3,
+    "max_positions_intraday": 3
+  },
+  "counts": {
+    "rank_candidates": 0,
+    "before_score_filter": 0,
+    "after_score_filter": 0,
+    "before_size_filter": 0,
+    "after_size_filter": 0,
+    "execution_plan_count": 0,
+    "signal_count": 0
+  }
+}

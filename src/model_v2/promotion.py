@@ -120,3 +120,29 @@ def check_promotion_gate(
         "summary": summary,
         "fold_details": fold_details,
     }
+
+
+def evaluate_and_update_model_v2_promotion(settings: Any) -> dict[str, Any]:
+    """Stub implementation to unblock the daily pipeline."""
+    return {
+        "status": "disabled",
+        "message": "Promotion logic stubbed",
+        "rollout_pct": 0,
+        "live_active": False,
+    }
+
+
+def apply_model_v2_rollout_selection(
+    filtered_combined: Any,
+    settings: Any,
+    promotion_info: dict[str, Any],
+    shadow_csv_path: str,
+) -> tuple[Any, Any, dict[str, Any]]:
+    """Stub implementation to unblock the daily pipeline."""
+    return filtered_combined, filtered_combined.copy(), {
+        "status": "skipped",
+        "message": "Rollout stubbed",
+        "rollout_pct": 0,
+        "live_active": False,
+    }
+

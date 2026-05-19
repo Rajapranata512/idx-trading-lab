@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-03-06T04:07:49.845413",
+  "run_id": "20260306_110732",
+  "window_days": 90,
+  "baseline": {
+    "swing_insample": {
+      "WinRate": 71.89189189189189,
+      "ProfitFactor": 3.3928833390409716,
+      "Expectancy": 0.09399770639725366,
+      "Trades": 185,
+      "CAGR": 101.67173237179253,
+      "MaxDD": -15.874205426641913
+    },
+    "swing_walk_forward_oos": {
+      "WinRate": 56.20437956204379,
+      "ProfitFactor": 1.8629300945828349,
+      "Expectancy": 0.031280861802943996,
+      "Trades": 137,
+      "CAGR": 26.205812862041043,
+      "MaxDD": -5.175460334821838
+    },
+    "quality_status": "pass",
+    "quality_pass": true
+  },
+  "notes": "Baseline snapshot frozen for 30-60-90 roadmap tracking.",
+  "last_seen_run_id": "20260505_141204",
+  "last_seen_at": "2026-05-05T07:14:40.988230"
+}

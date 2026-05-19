@@ -1,0 +1,39 @@
+{
+  "status": "ok",
+  "started_at": "2026-03-05T02:02:42.081132",
+  "finished_at": "2026-03-05T02:02:43.957521",
+  "timeframe": "5m",
+  "poll_seconds": 60,
+  "consecutive_errors": 0,
+  "result": {
+    "generated_at": "2026-03-05T02:02:43.957521",
+    "timeframe": "5m",
+    "ingest": {
+      "rows": 6,
+      "rows_new": 6,
+      "tickers": 2,
+      "source": "csv_intraday_fallback",
+      "timeframe": "5m",
+      "max_timestamp": "2026-03-04T09:10:00",
+      "min_timestamp": "2026-03-04T09:00:00",
+      "out_path": "data/raw/prices_intraday.csv"
+    },
+    "features": {
+      "rows": 0,
+      "out_path": "data/processed/features_intraday.parquet",
+      "timeframe": "5m",
+      "eligible_tickers": 0,
+      "skipped_tickers": [
+        "BBCA",
+        "TLKM"
+      ],
+      "min_bars_per_ticker": 20
+    },
+    "signals": {
+      "signal_path": "reports\\intraday_signal.json",
+      "execution_count": 0,
+      "signal_count": 0
+    },
+    "funnel_path": "reports\\intraday_signal_funnel.json"
+  }
+}

@@ -1,9 +1,15 @@
 from src.model_v2.shadow import run_model_v2_shadow
 from src.model_v2.train import maybe_auto_train_model_v2
-from src.model_v2.promotion import check_promotion_gate
+from src.model_v2.promotion import (
+    check_promotion_gate,
+    evaluate_and_update_model_v2_promotion,
+    apply_model_v2_rollout_selection,
+)
 
 __all__ = [
     "run_model_v2_shadow",
     "maybe_auto_train_model_v2",
     "check_promotion_gate",
+    "evaluate_and_update_model_v2_promotion",
+    "apply_model_v2_rollout_selection",
 ]

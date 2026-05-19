@@ -1,7 +1,7 @@
 [
   {
-    "ts": "2026-05-05T09:25:02.977351",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:12:04.143344",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "start_run",
     "extra": {
@@ -9,8 +9,20 @@
     }
   },
   {
-    "ts": "2026-05-05T09:25:02.981605",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:12:04.152059",
+    "run_id": "20260505_141204",
+    "level": "INFO",
+    "message": "live_config_lock_checked",
+    "extra": {
+      "status": "unchanged",
+      "changed": false,
+      "changed_keys": [],
+      "path": "reports\\live_config_lock.json"
+    }
+  },
+  {
+    "ts": "2026-05-05T07:12:04.156637",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "universe_update_done",
     "extra": {
@@ -21,7 +33,7 @@
       "universe_path": "data\\reference\\universe_lq45_idx30.csv",
       "state_path": "reports\\universe_update_state.json",
       "updated": false,
-      "attempted_at": "2026-05-05T09:25:02.977351",
+      "attempted_at": "2026-05-05T07:12:04.152059",
       "last_success_at": "",
       "counts": {
         "lq45": 0,
@@ -36,8 +48,8 @@
     }
   },
   {
-    "ts": "2026-05-05T09:25:32.434836",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:12:11.781710",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "ingest_done",
     "extra": {
@@ -53,8 +65,29 @@
     }
   },
   {
-    "ts": "2026-05-05T09:25:32.826401",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:12:11.929800",
+    "run_id": "20260505_141204",
+    "level": "INFO",
+    "message": "data_quality_evaluated",
+    "extra": {
+      "status": "pass",
+      "quality_pass": true,
+      "reason_codes": [],
+      "stats": {
+        "rows_total": 22913,
+        "ticker_total": 44,
+        "max_data_date": "2026-05-05",
+        "stale_days": 0,
+        "missing_rows": 0,
+        "duplicate_rows": 0,
+        "missing_tickers_count": 0,
+        "outlier_rows": 2
+      }
+    }
+  },
+  {
+    "ts": "2026-05-05T07:12:13.589837",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "features_done",
     "extra": {
@@ -63,81 +96,103 @@
     }
   },
   {
-    "ts": "2026-05-05T09:25:32.828875",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:12:13.768655",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "volatility_recalibration_done",
     "extra": {
       "enabled": true,
       "forced": false,
-      "status": "skipped_interval",
-      "message": "Last successful recalibration still within 7 days interval",
-      "updated": false,
-      "attempted_at": "2026-05-05T09:25:32.826401",
-      "last_success_at": "2026-04-28T09:25:48.070069",
+      "status": "updated",
+      "message": "Volatility reference targets recalibrated",
+      "updated": true,
+      "attempted_at": "2026-05-05T07:12:13.589837",
+      "last_success_at": "2026-05-05T07:12:13.589837",
       "state_path": "reports\\volatility_recalibration_state.json",
       "features_path": "data/processed/features.parquet",
       "samples": {
-        "rows_total": 0,
-        "rows_window": 0,
-        "atr_rows": 0,
-        "realized_rows": 0,
+        "rows_total": 22913,
+        "rows_window": 7559,
+        "atr_rows": 7559,
+        "realized_rows": 7559,
         "lookback_days": 252
       },
       "old_targets": {
-        "volatility_reference_atr_pct": 3.4885,
-        "volatility_reference_realized_pct": 2.3542
+        "volatility_reference_atr_pct": 3.43,
+        "volatility_reference_realized_pct": 2.2725
       },
       "new_targets": {
-        "volatility_reference_atr_pct": 3.4885,
-        "volatility_reference_realized_pct": 2.3542
-      }
+        "volatility_reference_atr_pct": 3.4985,
+        "volatility_reference_realized_pct": 2.3813
+      },
+      "quantiles": {
+        "atr_q": 0.5,
+        "realized_q": 0.5,
+        "raw_atr_pct": 3.4985,
+        "raw_realized_pct": 2.3813
+      },
+      "bounds": {
+        "atr_pct": [
+          1.5,
+          8.0
+        ],
+        "realized_pct": [
+          0.8,
+          6.0
+        ]
+      },
+      "delta": {
+        "atr_pct": 0.0685,
+        "realized_pct": 0.1088,
+        "min_delta_pct": 0.05
+      },
+      "settings_path": "config/settings.json"
     }
   },
   {
-    "ts": "2026-05-05T09:26:46.045823",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:13:44.233296",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "event_risk_update_done",
     "extra": {
       "enabled": true,
       "forced": false,
-      "status": "updated",
-      "message": "Event-risk blacklist updated successfully",
+      "status": "failed_no_rows",
+      "message": "No rows fetched from event-risk sources; keeping existing blacklist file",
       "blacklist_path": "data\\reference\\event_risk_blacklist.csv",
       "state_path": "reports\\event_risk_update_state.json",
-      "updated": true,
-      "attempted_at": "2026-05-05T09:25:32.828875",
-      "last_success_at": "2026-05-05T09:25:32.828875",
+      "updated": false,
+      "attempted_at": "2026-05-05T07:12:13.768655",
+      "last_success_at": "2026-03-26T02:35:07.107072",
       "counts": {
-        "rows": 367,
-        "tickers": 367,
-        "status_counts": {
-          "SUSPEND": 367
-        }
+        "rows": 0,
+        "tickers": 0,
+        "status_counts": {}
       },
       "errors": [
-        "UMA: The read operation timed out"
+        "SUSPEND: The read operation timed out",
+        "UMA: The read operation timed out",
+        "MATERIAL: The read operation timed out"
       ],
       "source_status": {
-        "SUSPEND": "ok",
+        "SUSPEND": "error",
         "UMA": "error",
-        "MATERIAL": "ok"
+        "MATERIAL": "error"
       }
     }
   },
   {
-    "ts": "2026-05-05T09:26:46.219326",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:13:44.421012",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "event_risk_filtered",
     "extra": {
       "enabled": true,
       "status": "ok",
-      "message": "Event-risk filter applied",
+      "message": "No active event-risk entries",
       "path": "data/reference/event_risk_blacklist.csv",
-      "as_of_date": "2026-05-05",
-      "active_events": 3,
+      "as_of_date": "",
+      "active_events": 0,
       "excluded_count": 0,
       "excluded_tickers": [],
       "excluded_t1": 0,
@@ -145,51 +200,29 @@
     }
   },
   {
-    "ts": "2026-05-05T09:26:46.548193",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:31.614748",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "model_v2_shadow_done",
     "extra": {
-      "status": "ok",
-      "message": "Model v2 shadow inference completed",
+      "status": "empty",
+      "message": "No shadow signals",
       "shadow_csv_path": "reports\\model_v2_shadow_signals.csv",
       "shadow_json_path": "reports\\model_v2_shadow_signals.json",
       "ab_test_path": "reports\\model_v2_ab_test.json",
-      "rows": 2,
       "train": {
         "status": "updated",
-        "message": "Model v2 trained for modes: t1, swing",
+        "message": "Model v2 trained for modes: swing",
         "updated": true,
         "state_path": "reports/model_v2_state.json",
         "model_dir": "models/model_v2",
         "modes": {
-          "t1": {
-            "status": "trained",
-            "rows": 20970,
-            "train_rows": 20970,
-            "positive_rate": 0.3436814496900334,
-            "auc_train": 0.5624,
-            "features": [
-              "score",
-              "ret_1d",
-              "ret_5d",
-              "ret_20d",
-              "atr_pct",
-              "vol_20d",
-              "avg_vol_20d",
-              "close",
-              "ma_20",
-              "ma_50"
-            ],
-            "artifact_path": "models\\model_v2\\t1.joblib",
-            "metadata_path": "models\\model_v2\\t1.meta.json"
-          },
           "swing": {
             "status": "trained",
-            "rows": 7460,
-            "train_rows": 7460,
-            "positive_rate": 0.4250670241286863,
-            "auc_train": 0.546,
+            "rows": 7573,
+            "train_rows": 7573,
+            "positive_rate": 0.32166908754786744,
+            "auc_train": 0.5948,
             "features": [
               "score",
               "ret_1d",
@@ -200,8 +233,78 @@
               "avg_vol_20d",
               "close",
               "ma_20",
-              "ma_50"
+              "ma_50",
+              "ma_slope_20",
+              "ma_slope_50",
+              "dist_ma_20",
+              "dist_ma_50",
+              "vol_ratio",
+              "ret_5d_20d_ratio",
+              "high_low_range",
+              "close_position",
+              "volume_ratio_20d",
+              "rsi_14",
+              "rsi_slope",
+              "mfi_14",
+              "obv_slope",
+              "rank_ret_20d",
+              "rank_vol_20d",
+              "turnover_ratio_20d",
+              "dist_high_20",
+              "dist_low_20",
+              "ma_gap_20_50",
+              "ma_stack_bullish",
+              "market_breadth_ma20_pct",
+              "market_breadth_ma50_pct",
+              "market_avg_ret20_pct",
+              "market_median_atr_pct",
+              "relative_ret_20d"
             ],
+            "model_type": "logreg",
+            "cv_auc": 0.5278,
+            "model_comparison": {
+              "logreg": 0.5278,
+              "lightgbm": 0.4824,
+              "xgboost": 0.4687
+            },
+            "calibration": {
+              "calibrated": true,
+              "ece": 0.187434
+            },
+            "available_models": [
+              "logreg",
+              "lightgbm",
+              "xgboost"
+            ],
+            "label_strategy": "ranked_expected_return_top_65pct",
+            "thresholds_by_regime": {
+              "default": 0.55,
+              "risk_on": 0.7,
+              "risk_off": 0.625
+            },
+            "return_profile": {
+              "overall": {
+                "mean_return_r": -0.151834,
+                "positive_mean_r": 0.72319,
+                "negative_mean_r": -0.855313,
+                "sample_count": 7573
+              },
+              "by_regime": {
+                "risk_off": {
+                  "mean_return_r": -0.187659,
+                  "positive_mean_r": 0.684128,
+                  "negative_mean_r": -0.852582,
+                  "sample_count": 2184
+                },
+                "risk_on": {
+                  "mean_return_r": -0.137314,
+                  "positive_mean_r": 0.738381,
+                  "negative_mean_r": -0.856456,
+                  "sample_count": 5389
+                }
+              }
+            },
+            "target_rank_positive_cutoff": 0.65,
             "artifact_path": "models\\model_v2\\swing.joblib",
             "metadata_path": "models\\model_v2\\swing.meta.json"
           }
@@ -209,113 +312,15 @@
         "errors": []
       },
       "infer": {
-        "status": "ok",
-        "message": "Shadow inference completed",
-        "modes": {
-          "t1": {
-            "rows": 2,
-            "source": "model",
-            "threshold": 0.52,
-            "metadata": {
-              "saved_at": "2026-05-05T09:26:46.402021",
-              "train_rows": 20970,
-              "positive_rate": 0.3436814496900334,
-              "auc_train": 0.5624,
-              "features": [
-                "score",
-                "ret_1d",
-                "ret_5d",
-                "ret_20d",
-                "atr_pct",
-                "vol_20d",
-                "avg_vol_20d",
-                "close",
-                "ma_20",
-                "ma_50"
-              ],
-              "mode": "t1",
-              "horizon_days": 1,
-              "trained_at": "2026-05-05T09:26:46.266583"
-            }
-          }
-        },
-        "rows": 2
-      },
-      "ab_test": {
-        "max_positions": 3,
-        "v1_top": [
-          "BBNI",
-          "ISAT"
-        ],
-        "v2_top": [
-          "ISAT",
-          "BBNI"
-        ],
-        "overlap_count": 2,
-        "overlap_tickers": [
-          "BBNI",
-          "ISAT"
-        ],
-        "only_v1": [],
-        "only_v2": [],
-        "jaccard_overlap": 1.0,
-        "v1_avg_score": 99.465,
-        "v2_avg_p_win": 0.4697
+        "status": "empty",
+        "message": "No candidates for shadow inference",
+        "modes": {}
       }
     }
   },
   {
-    "ts": "2026-05-05T09:26:46.551363",
-    "run_id": "20260505_102502",
-    "level": "INFO",
-    "message": "model_v2_promotion_evaluated",
-    "extra": {
-      "enabled": true,
-      "status": "ok",
-      "message": "Model v2 promotion state evaluated",
-      "updated_at": "2026-05-05T09:26:46.548193",
-      "state_path": "reports/model_v2_promotion_state.json",
-      "live_active": false,
-      "stage_index": 0,
-      "rollout_pct": 0,
-      "rollout_levels_pct": [
-        0,
-        30,
-        60,
-        100
-      ],
-      "consecutive_passes": 0,
-      "reason": "criteria_not_met",
-      "previous_stage_index": 0,
-      "previous_rollout_pct": 0,
-      "reconciliation_status": "no_signals",
-      "reconciliation_metrics": {
-        "samples": 0,
-        "expectancy_r": 0.0,
-        "profit_factor_r": 0.0,
-        "entry_match_rate_pct": 0.0
-      },
-      "checks": {
-        "pass_checks": {
-          "status_ok": false,
-          "samples_ok": false,
-          "expectancy_ok": true,
-          "profit_factor_ok": false,
-          "entry_match_ok": false
-        },
-        "rollback_checks": {
-          "rollback_status_error": false,
-          "rollback_expectancy_bad": false,
-          "rollback_pf_bad": false
-        },
-        "pass_now": false,
-        "rollback_now": false
-      }
-    }
-  },
-  {
-    "ts": "2026-05-05T09:26:46.558532",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:31.633628",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "report_done",
     "extra": {
@@ -324,30 +329,34 @@
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.858024",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:39.758161",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "backtest_done",
     "extra": {
       "metrics": {
         "t1": {
-          "WinRate": 40.134529147982065,
-          "ProfitFactor": 0.670924588107346,
-          "Expectancy": -0.006273956597359418,
-          "Trades": 446,
-          "CAGR": -4.655686269950032,
-          "MaxDD": -8.678031945402912
+          "WinRate": 0.0,
+          "ProfitFactor": 0.0,
+          "Expectancy": 0.0,
+          "Trades": 0,
+          "CAGR": 0.0,
+          "MaxDD": 0.0
         },
         "swing": {
-          "WinRate": 59.75103734439834,
-          "ProfitFactor": 1.9123327294065837,
-          "Expectancy": 0.041793516780785446,
-          "Trades": 241,
-          "CAGR": 36.521820726273816,
-          "MaxDD": -9.779937268267675
+          "WinRate": 97.53086419753086,
+          "ProfitFactor": 80.74205304187745,
+          "Expectancy": 0.3158407174940206,
+          "Trades": 81,
+          "CAGR": 940.4571473255295,
+          "MaxDD": -0.9602144938780706
         }
       },
       "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "gate_pass_promotion": {
         "t1": false,
         "swing": false
       },
@@ -358,15 +367,15 @@
         "status": "risk_off",
         "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok",
         "values": {
-          "breadth_ma50_pct": 25.0,
-          "breadth_ma20_pct": 27.27272727272727,
-          "avg_ret20_pct": 1.5549893091452676,
-          "median_atr_pct": 3.7190305022290175,
+          "breadth_ma50_pct": 22.727272727272727,
+          "breadth_ma20_pct": 22.727272727272727,
+          "avg_ret20_pct": 1.5243384371442654,
+          "median_atr_pct": 3.6016857162444578,
           "sample_tickers": 44
         },
         "thresholds": {
-          "min_breadth_ma50_pct": 45.0,
-          "min_breadth_ma20_pct": 50.0,
+          "min_breadth_ma50_pct": 35.0,
+          "min_breadth_ma20_pct": 30.0,
           "min_avg_ret20_pct": 0.0,
           "max_median_atr_pct": 8.0
         },
@@ -379,25 +388,149 @@
       },
       "kill_switch": {
         "enabled": true,
-        "status": "triggered",
+        "status": "clear",
         "as_of_date": "2026-05-05",
-        "active": true,
-        "active_modes": [
-          "swing",
-          "t1"
-        ],
-        "triggered_modes_today": [
-          "swing",
-          "t1"
-        ],
-        "cooldown_until": "2026-05-08",
+        "active": false,
+        "active_modes": [],
+        "triggered_modes_today": [],
+        "cooldown_until": "",
         "state_path": "reports\\kill_switch_state.json"
+      },
+      "model_v2_promotion": {
+        "enabled": true,
+        "shadow_mode": true,
+        "required_for_live": false,
+        "gate": {
+          "min_oos_trades": 120,
+          "min_profit_factor": 1.2,
+          "min_expectancy": 0.0,
+          "max_drawdown_pct": 15.0
+        },
+        "gate_pass": {
+          "t1": false,
+          "swing": false
+        },
+        "modes": {
+          "t1": {
+            "passed": false,
+            "reasons": [
+              "Total OOS trades (0) < minimum (120)",
+              "Median ProfitFactor (0.0000) < minimum (1.20)",
+              "Median Expectancy (0.000000) <= minimum (0.0000)",
+              "Profitable folds (0%) < minimum (60%)"
+            ],
+            "summary": {
+              "total_oos_trades": 0,
+              "median_profit_factor": 0.0,
+              "median_expectancy": 0.0,
+              "worst_max_drawdown_pct": 0.0,
+              "profitable_fold_pct": 0.0,
+              "n_folds": 3,
+              "n_folds_profitable": 0
+            },
+            "fold_details": [
+              {
+                "fold": 1,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 2,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 3,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              }
+            ]
+          },
+          "swing": {
+            "passed": false,
+            "reasons": [
+              "Median ProfitFactor (1.0774) < minimum (1.20)"
+            ],
+            "summary": {
+              "total_oos_trades": 126,
+              "median_profit_factor": 1.0774,
+              "median_expectancy": 0.002299,
+              "worst_max_drawdown_pct": 4.91,
+              "profitable_fold_pct": 0.6667,
+              "n_folds": 3,
+              "n_folds_profitable": 2
+            },
+            "fold_details": [
+              {
+                "fold": 1,
+                "trades": 50,
+                "profit_factor": 6.1278,
+                "expectancy": 0.12165,
+                "max_dd_pct": 1.58,
+                "profitable": true
+              },
+              {
+                "fold": 2,
+                "trades": 42,
+                "profit_factor": 1.0774,
+                "expectancy": 0.002299,
+                "max_dd_pct": 1.61,
+                "profitable": true
+              },
+              {
+                "fold": 3,
+                "trades": 34,
+                "profit_factor": 0.8576,
+                "expectancy": -0.007798,
+                "max_dd_pct": 4.91,
+                "profitable": false
+              }
+            ]
+          }
+        }
+      },
+      "quality": {
+        "pass": true,
+        "status": "pass",
+        "reason_codes": [],
+        "checks": {
+          "stale_ok": true,
+          "missing_ok": true,
+          "duplicate_ok": true,
+          "missing_tickers_ok": true,
+          "outlier_ok": true
+        },
+        "stats": {
+          "rows_total": 22913,
+          "ticker_total": 44,
+          "max_data_date": "2026-05-05",
+          "stale_days": 0,
+          "missing_rows": 0,
+          "duplicate_rows": 0,
+          "missing_tickers_count": 0,
+          "outlier_rows": 2
+        },
+        "message": "Data quality checks passed."
+      },
+      "cost_stress": {
+        "worst_case_swing_pf": 75.005471,
+        "worst_case_swing_expectancy": 0.30535,
+        "passes_stress_gate": true
       }
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.862795",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:39.770536",
+    "run_id": "20260505_141204",
     "level": "WARN",
     "message": "live_gate_blocked",
     "extra": {
@@ -407,16 +540,130 @@
       },
       "gate_components": {
         "t1": {
+          "mode_enabled": false,
           "model_gate_ok": false,
           "regime_ok": false,
-          "kill_switch_ok": false,
-          "final_ok": false
+          "kill_switch_ok": true,
+          "promotion_required": false,
+          "promotion_gate_ok": true,
+          "final_ok": false,
+          "quality_ok": true
         },
         "swing": {
-          "model_gate_ok": true,
+          "mode_enabled": true,
+          "model_gate_ok": false,
           "regime_ok": false,
-          "kill_switch_ok": false,
-          "final_ok": false
+          "kill_switch_ok": true,
+          "promotion_required": false,
+          "promotion_gate_ok": true,
+          "final_ok": false,
+          "quality_ok": true
+        }
+      },
+      "gate_pass_promotion": {
+        "t1": false,
+        "swing": false
+      },
+      "model_v2_promotion": {
+        "enabled": true,
+        "shadow_mode": true,
+        "required_for_live": false,
+        "gate": {
+          "min_oos_trades": 120,
+          "min_profit_factor": 1.2,
+          "min_expectancy": 0.0,
+          "max_drawdown_pct": 15.0
+        },
+        "gate_pass": {
+          "t1": false,
+          "swing": false
+        },
+        "modes": {
+          "t1": {
+            "passed": false,
+            "reasons": [
+              "Total OOS trades (0) < minimum (120)",
+              "Median ProfitFactor (0.0000) < minimum (1.20)",
+              "Median Expectancy (0.000000) <= minimum (0.0000)",
+              "Profitable folds (0%) < minimum (60%)"
+            ],
+            "summary": {
+              "total_oos_trades": 0,
+              "median_profit_factor": 0.0,
+              "median_expectancy": 0.0,
+              "worst_max_drawdown_pct": 0.0,
+              "profitable_fold_pct": 0.0,
+              "n_folds": 3,
+              "n_folds_profitable": 0
+            },
+            "fold_details": [
+              {
+                "fold": 1,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 2,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 3,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              }
+            ]
+          },
+          "swing": {
+            "passed": false,
+            "reasons": [
+              "Median ProfitFactor (1.0774) < minimum (1.20)"
+            ],
+            "summary": {
+              "total_oos_trades": 126,
+              "median_profit_factor": 1.0774,
+              "median_expectancy": 0.002299,
+              "worst_max_drawdown_pct": 4.91,
+              "profitable_fold_pct": 0.6667,
+              "n_folds": 3,
+              "n_folds_profitable": 2
+            },
+            "fold_details": [
+              {
+                "fold": 1,
+                "trades": 50,
+                "profit_factor": 6.1278,
+                "expectancy": 0.12165,
+                "max_dd_pct": 1.58,
+                "profitable": true
+              },
+              {
+                "fold": 2,
+                "trades": 42,
+                "profit_factor": 1.0774,
+                "expectancy": 0.002299,
+                "max_dd_pct": 1.61,
+                "profitable": true
+              },
+              {
+                "fold": 3,
+                "trades": 34,
+                "profit_factor": 0.8576,
+                "expectancy": -0.007798,
+                "max_dd_pct": 4.91,
+                "profitable": false
+              }
+            ]
+          }
         }
       },
       "regime": {
@@ -426,15 +673,15 @@
         "status": "risk_off",
         "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok",
         "values": {
-          "breadth_ma50_pct": 25.0,
-          "breadth_ma20_pct": 27.27272727272727,
-          "avg_ret20_pct": 1.5549893091452676,
-          "median_atr_pct": 3.7190305022290175,
+          "breadth_ma50_pct": 22.727272727272727,
+          "breadth_ma20_pct": 22.727272727272727,
+          "avg_ret20_pct": 1.5243384371442654,
+          "median_atr_pct": 3.6016857162444578,
           "sample_tickers": 44
         },
         "thresholds": {
-          "min_breadth_ma50_pct": 45.0,
-          "min_breadth_ma20_pct": 50.0,
+          "min_breadth_ma50_pct": 35.0,
+          "min_breadth_ma20_pct": 30.0,
           "min_avg_ret20_pct": 0.0,
           "max_median_atr_pct": 8.0
         },
@@ -447,35 +694,41 @@
       },
       "kill_switch": {
         "enabled": true,
-        "status": "triggered",
+        "status": "clear",
         "as_of_date": "2026-05-05",
-        "active": true,
-        "active_modes": [
-          "swing",
-          "t1"
-        ],
-        "triggered_modes_today": [
-          "swing",
-          "t1"
-        ],
-        "cooldown_until": "2026-05-08",
+        "active": false,
+        "active_modes": [],
+        "triggered_modes_today": [],
+        "cooldown_until": "",
         "state_path": "reports\\kill_switch_state.json"
       }
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.863448",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:39.775933",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "signal_snapshot_written",
     "extra": {
-      "path": "reports\\snapshots\\signals_20260505_102502.json",
+      "path": "reports\\snapshots\\signals_20260505_141204.json",
       "signal_count": 0
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.914519",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:39.911060",
+    "run_id": "20260505_141204",
+    "level": "INFO",
+    "message": "paper_fill_generation_done",
+    "extra": {
+      "status": "no_signals",
+      "generated_count": 0,
+      "pending_count": 0,
+      "trade_count_total": 0
+    }
+  },
+  {
+    "ts": "2026-05-05T07:14:40.015019",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "live_reconciliation_done",
     "extra": {
@@ -486,8 +739,48 @@
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.917556",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:40.018677",
+    "run_id": "20260505_141204",
+    "level": "INFO",
+    "message": "closed_loop_retrain_evaluated",
+    "extra": {
+      "status": "skipped_no_trigger",
+      "triggered": false,
+      "fills_in_window": 0,
+      "new_fills_since_last_trigger": 0,
+      "live_samples": 0,
+      "reasons": [],
+      "train_status": ""
+    }
+  },
+  {
+    "ts": "2026-05-05T07:14:40.018677",
+    "run_id": "20260505_141204",
+    "level": "INFO",
+    "message": "risk_budget_evaluated",
+    "extra": {
+      "status": "paper_only",
+      "risk_budget_pct": 0.0,
+      "effective_risk_per_trade_pct": 0.0,
+      "rollout_phase": "paper",
+      "paper_mode": "paper"
+    }
+  },
+  {
+    "ts": "2026-05-05T07:14:40.028739",
+    "run_id": "20260505_141204",
+    "level": "INFO",
+    "message": "n8n_summary_written",
+    "extra": {
+      "path": "reports\\n8n_last_summary.json",
+      "status": "BLOCKED_BY_GATE",
+      "action": "NO_TRADE",
+      "trade_ready": false
+    }
+  },
+  {
+    "ts": "2026-05-05T07:14:40.039063",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "signal_funnel_written",
     "extra": {
@@ -496,64 +789,41 @@
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.917556",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:40.915889",
+    "run_id": "20260505_141204",
     "level": "INFO",
-    "message": "telegram_skipped",
+    "message": "telegram_done",
     "extra": {
-      "ok": null
+      "ok": true
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.961214",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:40.983328",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "weekly_kpi_generated",
     "extra": {
       "status": "ok",
-      "message": "Weekly KPI dashboard generated",
-      "json_path": "reports\\weekly_kpi.json",
-      "markdown_path": "reports\\weekly_kpi.md",
-      "payload": {
-        "generated_at": "2026-05-05T09:26:47.960706",
-        "lookback_days": 7,
-        "run_stats": {
-          "runs_total": 3,
-          "runs_failed": 0,
-          "runs_live_allowed": 0,
-          "runs_risk_blocked": 3,
-          "setup_errors": 0,
-          "error_rate_pct": 0.0
-        },
-        "event_risk_update": {
-          "ok_count": 3,
-          "error_count": 0
-        },
-        "strategy_snapshot": {
-          "swing_profit_factor": 1.9123327294065837,
-          "swing_expectancy": 0.041793516780785446,
-          "swing_max_dd_pct": -9.779937268267675,
-          "swing_trades": 241
-        },
-        "live_reconciliation": {
-          "status": "no_signals",
-          "entry_match_rate_pct": 0.0,
-          "signal_execution_rate_pct": 0.0,
-          "live_win_rate_pct": 0.0,
-          "live_expectancy_r": 0.0,
-          "live_profit_factor_r": 0.0,
-          "live_samples": 0
-        }
-      }
+      "json_path": "reports\\weekly_kpi.json"
     }
   },
   {
-    "ts": "2026-05-05T09:26:47.962726",
-    "run_id": "20260505_102502",
+    "ts": "2026-05-05T07:14:40.988230",
+    "run_id": "20260505_141204",
     "level": "INFO",
     "message": "beginner_coaching_written",
     "extra": {
       "path": "reports\\beginner_coaching.md"
+    }
+  },
+  {
+    "ts": "2026-05-05T07:14:40.994668",
+    "run_id": "20260505_141204",
+    "level": "INFO",
+    "message": "kpi_baseline_90d_updated",
+    "extra": {
+      "status": "existing",
+      "path": "reports\\kpi_baseline_90d.json"
     }
   }
 ]

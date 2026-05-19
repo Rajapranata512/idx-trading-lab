@@ -2,8 +2,15 @@ name: IDX Trading Lab - Daily Pipeline
 
 on:
   schedule:
-    # Run everyday at 10:00 UTC (17:00 WIB - After IDX market close)
-    - cron: '0 10 * * 1-5'
+    # Run everyday at 08:00 UTC (15:00 WIB - Right at IDX market close)
+    - cron: '0 8 * * 1-5'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/daily-run.yml'
+      - 'src/**'
+      - 'scripts/**'
+      - 'config/**'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 permissions:

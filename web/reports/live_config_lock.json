@@ -1,0 +1,133 @@
+{
+  "created_at": "2026-03-06T04:07:32.510037",
+  "updated_at": "2026-05-05T07:12:04.143344",
+  "run_id": "20260505_141204",
+  "locked_config": {
+    "pipeline": {
+      "active_modes": [
+        "swing"
+      ],
+      "min_live_score_t1": 999.0,
+      "min_live_score_swing": 70.0,
+      "min_avg_volume_20d": 500000.0,
+      "top_n_combined": 20
+    },
+    "risk": {
+      "risk_per_trade_pct": 0.5,
+      "max_positions": 3,
+      "max_positions_t1": 1,
+      "max_positions_swing": 3,
+      "daily_loss_stop_r": 1.5,
+      "max_position_exposure_pct": 20.0
+    },
+    "regime": {
+      "enabled": true,
+      "min_breadth_ma50_pct": 35.0,
+      "min_breadth_ma20_pct": 30.0,
+      "min_avg_ret20_pct": 0.0,
+      "max_median_atr_pct": 8.0
+    },
+    "guardrail": {
+      "kill_switch_enabled": true,
+      "rolling_trades": 80,
+      "min_rolling_trades": 50,
+      "min_rolling_pf": 1.05,
+      "min_rolling_expectancy": 0.0,
+      "cooldown_days": 3
+    },
+    "kpi_gates": {
+      "gate_b_swing_profit_factor_min": 1.25,
+      "gate_b_swing_expectancy_min": 0.0,
+      "gate_b_swing_max_dd_pct_max": 12.0
+    },
+    "rollout": {
+      "phase": "paper",
+      "micro_live_multiplier": 0.25,
+      "allow_scale_up_to_half": false
+    },
+    "risk_budget": {
+      "enabled": true,
+      "base_risk_budget_pct": 100.0,
+      "hard_daily_stop_r": 2.0,
+      "hard_weekly_stop_r": 6.0,
+      "sector_exposure_cap_pct": 35.0
+    }
+  },
+  "changes": [
+    {
+      "changed_at": "2026-03-17T05:13:09.406739",
+      "run_id": "20260317_121309",
+      "changed_keys": [
+        "pipeline.active_modes"
+      ],
+      "old_values": {
+        "pipeline.active_modes": null
+      },
+      "new_values": {
+        "pipeline.active_modes": [
+          "swing"
+        ]
+      }
+    },
+    {
+      "changed_at": "2026-03-17T06:10:37.497233",
+      "run_id": "20260317_131037",
+      "changed_keys": [
+        "pipeline.active_modes"
+      ],
+      "old_values": {
+        "pipeline.active_modes": [
+          "swing"
+        ]
+      },
+      "new_values": {
+        "pipeline.active_modes": null
+      }
+    },
+    {
+      "changed_at": "2026-03-17T06:46:26.997676",
+      "run_id": "20260317_134626",
+      "changed_keys": [
+        "pipeline.active_modes"
+      ],
+      "old_values": {
+        "pipeline.active_modes": null
+      },
+      "new_values": {
+        "pipeline.active_modes": [
+          "swing"
+        ]
+      }
+    },
+    {
+      "changed_at": "2026-03-17T06:54:12.248591",
+      "run_id": "20260317_135412",
+      "changed_keys": [
+        "pipeline.active_modes"
+      ],
+      "old_values": {
+        "pipeline.active_modes": [
+          "swing"
+        ]
+      },
+      "new_values": {
+        "pipeline.active_modes": null
+      }
+    },
+    {
+      "changed_at": "2026-03-25T02:38:30.414250",
+      "run_id": "20260325_093830",
+      "changed_keys": [
+        "pipeline.active_modes"
+      ],
+      "old_values": {
+        "pipeline.active_modes": null
+      },
+      "new_values": {
+        "pipeline.active_modes": [
+          "swing"
+        ]
+      }
+    }
+  ]
+}
