@@ -18,3 +18,7 @@ models/
 config/settings.local.json
 .DS_Store
 data/live/trade_fills.csv
+
+# Allow web static exports (needed by Vercel frontend)
+!web/reports/
+!web/public_*.json

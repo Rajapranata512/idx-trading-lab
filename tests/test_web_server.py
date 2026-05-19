@@ -74,21 +74,24 @@ def http_call(base_url: str, path: str, method: str = "GET", data: bytes | None 
         return exc.code, dict(exc.headers), exc.read().decode("utf-8")
 
 
-def test_root_serves_premium_dashboard(monkeypatch, tmp_path: Path) -> None:
+def test_root_serves_standard_dashboard(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.delenv("IDX_WEB_USERNAME", raising=False)
     monkeypatch.delenv("IDX_WEB_PASSWORD", raising=False)
 
     with running_server(tmp_path) as base_url:
         status_root, _, body_root = http_call(base_url, "/")
         status_index, _, body_index = http_call(base_url, "/index.html")
+        status_premium, _, body_premium = http_call(base_url, "/premium-dashboard.html")
         status_legacy, _, body_legacy = http_call(base_url, "/legacy-console.html")
         status_ops_login, _, body_ops_login = http_call(base_url, "/ops-login.html")
         status_ops_report, _, body_ops_report = http_call(base_url, "/ops-report.html")
 
     assert status_root == 200
-    assert body_root == "premium-home"
+    assert body_root == "legacy-home"
     assert status_index == 200
-    assert body_index == "premium-home"
+    assert body_index == "legacy-home"
+    assert status_premium == 200
+    assert body_premium == "premium-home"
     assert status_legacy == 404
     assert "Page not found" in body_legacy
     assert status_ops_login == 200

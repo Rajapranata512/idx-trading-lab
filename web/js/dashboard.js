@@ -39,7 +39,30 @@ async function loadAll(){
   ]);
   S.data={backtest:bt,kpi:kpi,funnel:fun,shadow:shd,promo:prm,recon:rec,topT1:t1,topSwing:sw,eventActive:ev};
   const gen=bt?.generated_at||'';
-  $('#dataFreshness').innerHTML=`<div class="freshness-dot"></div><span>${gen?gen.slice(0,16):'No data'}</span>`;
+  // ── Data Freshness Warning ──
+  let freshnessClass='freshness-dot';
+  let staleWarning='';
+  if(gen){
+    const genDate=new Date(gen);
+    const now=new Date();
+    const ageDays=Math.floor((now-genDate)/(1000*60*60*24));
+    if(ageDays>7){
+      freshnessClass='freshness-dot stale-critical';
+      staleWarning=`<div class="stale-banner stale-critical-bg" id="staleBanner">⚠️ Data terakhir diupdate <strong>${ageDays} hari lalu</strong> (${gen.slice(0,10)}). Pipeline harian mungkin berhenti. Jangan gunakan sinyal ini untuk keputusan trading.</div>`;
+    }else if(ageDays>1){
+      freshnessClass='freshness-dot stale-warning';
+      staleWarning=`<div class="stale-banner stale-warning-bg" id="staleBanner">⚠️ Data sudah <strong>${ageDays} hari</strong> tidak diperbarui (${gen.slice(0,10)}). Sinyal mungkin tidak akurat.</div>`;
+    }
+  }else{
+    staleWarning='<div class="stale-banner stale-critical-bg" id="staleBanner">❌ Tidak ada data tersedia. Pastikan pipeline harian berjalan.</div>';
+  }
+  // Remove old banner if exists, then inject new one
+  document.getElementById('staleBanner')?.remove();
+  if(staleWarning){
+    const main=$('#mainContent');
+    if(main) main.insertAdjacentHTML('afterbegin',staleWarning);
+  }
+  $('#dataFreshness').innerHTML=`<div class="${freshnessClass}"></div><span>${gen?gen.slice(0,16):'No data'}</span>`;
   const st=$('#systemStatus');
   const regime=bt?.regime;
   if(regime){

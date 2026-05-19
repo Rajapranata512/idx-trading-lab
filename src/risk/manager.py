@@ -178,6 +178,34 @@ def propose_trade_plan(picks: pd.DataFrame, risk: RiskSettings) -> pd.DataFrame:
         max_shares = max_shares.fillna(0.0).clip(lower=0.0).astype(int)
         shares = pd.concat([shares, max_shares], axis=1).min(axis=1).astype(int)
 
+    # --- ARB (Auto Reject Bawah) protection ---
+    # In IDX, when a stock hits ARB it drops ~7%/day with ZERO buyers.
+    # Your stop loss becomes unexecutable.  This caps position size so that
+    # even a multi-day ARB worst case stays within a tolerable loss boundary.
+    arb_protection_enabled = bool(getattr(risk, "arb_protection_enabled", True))
+    arb_max_days = max(1, int(getattr(risk, "arb_max_days", 3)))
+    arb_daily_pct = max(0.01, float(getattr(risk, "arb_daily_limit_pct", 7.0)))
+    # Cumulative worst-case loss factor: (1 - 0.07)^3 ≈ 0.804 → ~19.6% loss
+    arb_worst_case_factor = 1.0 - ((1.0 - arb_daily_pct / 100.0) ** arb_max_days)
+    arb_worst_case_risk_per_share = entry * arb_worst_case_factor
+    # Cap: worst-case loss per position ≤ 2× normal risk budget
+    arb_max_loss_budget = base_risk_budget * 2.0
+    if arb_protection_enabled:
+        arb_max_shares = (arb_max_loss_budget / (arb_worst_case_risk_per_share + 1e-9)).fillna(0.0)
+        arb_max_shares = ((arb_max_shares // lot_size) * lot_size).clip(lower=0).astype(int)
+        shares = pd.concat([shares, arb_max_shares], axis=1).min(axis=1).astype(int)
+
+    # --- Liquidity participation rate cap ---
+    # Position must not exceed X% of average daily volume so you can
+    # actually exit without moving the market against yourself.
+    max_participation_pct = float(getattr(risk, "max_participation_rate_pct", 0.0))
+    avg_vol_col = "avg_vol_20d" if "avg_vol_20d" in df.columns else None
+    if max_participation_pct > 0 and avg_vol_col is not None:
+        avg_vol = _to_float_series(df[avg_vol_col], index=df.index).clip(lower=1.0)
+        max_liq_shares = (avg_vol * (max_participation_pct / 100.0)).fillna(0.0)
+        max_liq_shares = ((max_liq_shares // lot_size) * lot_size).clip(lower=0).astype(int)
+        shares = pd.concat([shares, max_liq_shares], axis=1).min(axis=1).astype(int)
+
     tp1 = entry + (risk.tp1_r_multiple * risk_per_share)
     tp2 = entry + (risk.tp2_r_multiple * risk_per_share)
 
@@ -202,6 +230,10 @@ def propose_trade_plan(picks: pd.DataFrame, risk: RiskSettings) -> pd.DataFrame:
     df["vol_target_regime_cap_raw"] = round(float(market_regime_cap_raw), 4)
     df["vol_target_realized_weight"] = round(float(realized_weight_effective), 4)
     df["vol_target_ref_realized_pct"] = round(float(ref_realized_pct), 4)
+    # ARB protection metadata
+    df["arb_protection_enabled"] = arb_protection_enabled
+    df["arb_worst_case_loss_pct"] = round(arb_worst_case_factor * 100.0, 2)
+    df["arb_worst_case_idr"] = (shares * entry * arb_worst_case_factor).round(0)
 
     # Per-mode cap; final execution still capped globally by max_positions.
     if {"mode", "score"} <= set(df.columns):

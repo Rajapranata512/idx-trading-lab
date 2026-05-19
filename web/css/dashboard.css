@@ -468,3 +468,29 @@ img{max-width:100%}
   .topbar{padding:0 16px}
   .grid-4{grid-template-columns:1fr}
 }
+
+/* ═══ DATA FRESHNESS WARNING ═════════════ */
+.stale-banner{
+  padding:14px 24px;
+  font-size:0.88rem;
+  font-weight:500;
+  line-height:1.5;
+  border-bottom:1px solid transparent;
+  animation:slideDown 0.3s var(--ease);
+  position:relative;
+  z-index:40;
+}
+.stale-warning-bg{
+  background:linear-gradient(90deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05));
+  border-bottom-color:rgba(245,158,11,0.2);
+  color:var(--warning);
+}
+.stale-critical-bg{
+  background:linear-gradient(90deg, rgba(239,68,68,0.18), rgba(239,68,68,0.06));
+  border-bottom-color:rgba(239,68,68,0.25);
+  color:var(--danger);
+}
+.stale-banner strong{font-weight:700}
+.freshness-dot.stale-warning{background:var(--warning);animation:pulse 1.5s ease-in-out infinite}
+.freshness-dot.stale-critical{background:var(--danger);animation:pulse 1s ease-in-out infinite}
+@keyframes slideDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}

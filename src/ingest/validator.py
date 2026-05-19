@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime
+import logging
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import List
 
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 CANONICAL_COLS = [
     "date",
@@ -37,6 +41,8 @@ class ValidationResult:
     rows: int
     tickers: int
     max_date: pd.Timestamp | None
+    quarantined_tickers: list[str] = field(default_factory=list)
+    anomaly_details: list[dict] = field(default_factory=list)
 
 
 def _canonicalize(df: pd.DataFrame, source: str) -> pd.DataFrame:
@@ -57,6 +63,53 @@ def _canonicalize(df: pd.DataFrame, source: str) -> pd.DataFrame:
     dfx["ingested_at"] = datetime.utcnow()
     dfx = dfx[CANONICAL_COLS].sort_values(["ticker", "date"]).reset_index(drop=True)
     return dfx
+
+
+def _detect_corporate_action_anomaly(
+    df: pd.DataFrame,
+    threshold_pct: float = 25.0,
+    quarantine_days: int = 3,
+) -> tuple[list[str], list[dict]]:
+    """Detect suspicious daily price jumps that may indicate corporate actions.
+
+    Returns a tuple of (quarantined_ticker_list, anomaly_detail_records).
+    Tickers with a single-day absolute price change exceeding *threshold_pct*
+    are flagged.  In IDX, stock splits (e.g. 1:5) cause an apparent -80% drop
+    while reverse splits cause an apparent +100% jump.  Both corrupt technical
+    indicators and produce false trading signals.
+    """
+    if df.empty or "close" not in df.columns:
+        return [], []
+
+    work = df.sort_values(["ticker", "date"]).copy()
+    work["prev_close"] = work.groupby("ticker")["close"].shift(1)
+    valid = work["prev_close"].notna() & (work["prev_close"] > 0)
+    work = work[valid].copy()
+    if work.empty:
+        return [], []
+
+    work["daily_change_pct"] = (
+        ((work["close"] - work["prev_close"]) / work["prev_close"]).abs() * 100.0
+    )
+    anomalies = work[work["daily_change_pct"] > threshold_pct].copy()
+    if anomalies.empty:
+        return [], []
+
+    details: list[dict] = []
+    for _, row in anomalies.iterrows():
+        details.append({
+            "ticker": str(row["ticker"]),
+            "date": str(row["date"])[:10],
+            "close": float(row["close"]),
+            "prev_close": float(row["prev_close"]),
+            "change_pct": round(float(row["daily_change_pct"]), 2),
+            "quarantine_until": (
+                pd.Timestamp(row["date"]) + timedelta(days=quarantine_days)
+            ).strftime("%Y-%m-%d"),
+        })
+
+    quarantined = sorted(set(str(row["ticker"]) for _, row in anomalies.iterrows()))
+    return quarantined, details
 
 
 def validate_prices(
@@ -106,11 +159,27 @@ def validate_prices(
         if age_days > max_staleness_days:
             raise ValueError(f"Data is stale by {age_days} days (> {max_staleness_days})")
 
+    # Corporate action anomaly detection (non-blocking warning).
+    quarantined, anomaly_details = _detect_corporate_action_anomaly(
+        dfx,
+        threshold_pct=25.0,
+        quarantine_days=3,
+    )
+    if quarantined:
+        logger.warning(
+            "Corporate action anomaly detected for %d ticker(s): %s. "
+            "These tickers are quarantined and should be excluded from scoring.",
+            len(quarantined),
+            ", ".join(quarantined),
+        )
+
     result = ValidationResult(
         ok=True,
         rows=len(dfx),
         tickers=int(dfx["ticker"].nunique()) if not dfx.empty else 0,
         max_date=max_date if pd.notna(max_date) else None,
+        quarantined_tickers=quarantined,
+        anomaly_details=anomaly_details,
     )
     return dfx, result
 

@@ -51,8 +51,9 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         
-        # Add generated reports and web public JSONs
-        git add data/ reports/ web/public_*.json
+        # Add generated reports, web static data, AND web/reports/ for Vercel
+        # Use --force to override .gitignore rules for report files
+        git add --force data/ reports/ web/public_*.json web/reports/
         
         # Only commit if there are changes
         if ! git diff-index --quiet HEAD; then
@@ -60,4 +61,17 @@ jobs:
           git push
         else
           echo "No changes to commit"
+        fi
+
+    - name: Notify on Failure
+      if: failure()
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+        if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d text="⚠️ IDX Trading Lab Daily Pipeline FAILED on $(date -u +'%Y-%m-%d %H:%M UTC'). Check GitHub Actions for details." \
+            -d parse_mode="HTML" || true
         fi

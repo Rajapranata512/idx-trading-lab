@@ -446,7 +446,11 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
 
     def _handle_static(self, path: str) -> None:
         srv = self._server()
-        if path in ("", "/", "/index.html", "/premium-dashboard", "/premium-dashboard.html"):
+        if path in ("", "/", "/index.html"):
+            candidate = self._server().static_dir / "index.html"
+            self._serve_file(candidate)
+            return
+        if path in ("/premium-dashboard", "/premium-dashboard.html"):
             self._serve_file(self._premium_entrypoint())
             return
         if path in ("/legacy-console", "/legacy-console.html"):
@@ -469,8 +473,9 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             self._send_json({"error": "Page not found"}, status=HTTPStatus.NOT_FOUND)
             return
 
-        # Frontend routing fallback: return the premium dashboard entry point.
-        self._serve_file(self._premium_entrypoint())
+        # Frontend routing fallback: return the standard index entry point.
+        candidate = self._server().static_dir / "index.html"
+        self._serve_file(candidate)
 
 
 def start_web_server(

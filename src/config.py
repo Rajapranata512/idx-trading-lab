@@ -181,6 +181,14 @@ class RiskSettings(BaseModel):
     volatility_auto_recalibration_max_realized_pct: float = 6.0
     volatility_auto_recalibration_min_delta_pct: float = 0.05
     max_position_exposure_pct: float = 20.0
+    # ARB (Auto Reject Bawah) protection: cap position size so worst-case
+    # multi-day ARB scenario stays within tolerable loss bounds.
+    arb_protection_enabled: bool = True
+    arb_max_days: int = 3            # assume stuck in ARB for up to N days
+    arb_daily_limit_pct: float = 7.0 # IDX daily lower limit is ~7%
+    # Liquidity participation rate cap: position size must not exceed
+    # X% of the ticker's average daily volume to ensure exit liquidity.
+    max_participation_rate_pct: float = 5.0
 
 
 class BacktestSettings(BaseModel):
