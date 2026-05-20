@@ -21,8 +21,8 @@ const fmtIDR=n=>n==null?'—':'Rp'+Number(n).toLocaleString('id-ID');
 const scoreClass=s=>s>=95?'high':s>=80?'mid':'low';
 const scoreBadge=s=>s>=95?'success':s>=80?'warning':'danger';
 
-async function fetchJSON(p){try{const r=await fetch(p);if(!r.ok)return null;return r.json();}catch{return null;}}
-async function fetchCSV(p){return new Promise(r=>{Papa.parse(p,{download:true,header:true,dynamicTyping:true,skipEmptyLines:true,complete:d=>r(d.data),error:()=>r([])});});}
+async function fetchJSON(p){try{const r=await fetch(p + '?t=' + Date.now());if(!r.ok)return null;return r.json();}catch{return null;}}
+async function fetchCSV(p){return new Promise(r=>{Papa.parse(p + '?t=' + Date.now(),{download:true,header:true,dynamicTyping:true,skipEmptyLines:true,complete:d=>r(d.data),error:()=>r([])});});}
 
 function toast(msg,type='info'){
   const c=$('#toastContainer'),t=document.createElement('div');

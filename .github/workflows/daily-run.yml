@@ -52,8 +52,9 @@ jobs:
 
     - name: Commit and Push Results
       run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
+        # Use a custom email to prevent Vercel from ignoring github-actions[bot] commits by default
+        git config --local user.email "pipeline@idxtradinglab.local"
+        git config --local user.name "IDX Lab Pipeline"
         
         # Add generated reports, web static data, AND web/reports/ for Vercel
         # Use --force to override .gitignore rules for report files
