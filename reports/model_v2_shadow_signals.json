@@ -1,38 +1,54 @@
 {
-  "generated_at": "2026-05-20T02:04:49.161098",
-  "run_id": "20260520_020424",
+  "generated_at": "2026-05-20T12:29:16.249742",
+  "run_id": "20260520_122856",
   "signals": [
     {
-      "ticker": "TLKM",
+      "ticker": "MAPI",
       "mode": "t1",
-      "score": 100.0,
+      "score": 99.65,
       "shadow_rank": 1,
-      "shadow_p_win": 0.8126,
-      "shadow_expected_r": 1.0315,
+      "shadow_p_win": 0.798,
+      "shadow_expected_r": 0.995,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 3120.0,
-      "stop": 2944.58,
-      "tp1": 3295.42,
-      "tp2": 3470.85,
+      "entry": 1480.0,
+      "stop": 1391.88,
+      "tp1": 1568.12,
+      "tp2": 1656.24,
+      "size": 400
+    },
+    {
+      "ticker": "CPIN",
+      "mode": "t1",
+      "score": 99.55,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.7952,
+      "shadow_expected_r": 0.988,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 4170.0,
+      "stop": 3919.46,
+      "tp1": 4420.54,
+      "tp2": 4671.07,
       "size": 100
     },
     {
-      "ticker": "ASII",
+      "ticker": "UNVR",
       "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.7991,
-      "shadow_expected_r": 0.9978,
+      "score": 99.87,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.7487,
+      "shadow_expected_r": 0.8718,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 6025.0,
-      "stop": 5661.93,
-      "tp1": 6388.07,
-      "tp2": 6751.15,
-      "size": 100
+      "entry": 1795.0,
+      "stop": 1658.78,
+      "tp1": 1931.22,
+      "tp2": 2067.44,
+      "size": 300
     }
   ],
   "infer": {
@@ -40,14 +56,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 2,
+        "rows": 3,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 2
+    "rows": 3
   },
   "train": {
     "status": "skipped_no_update",
@@ -58,7 +74,7 @@
     "modes": {
       "t1": {
         "status": "skipped_min_rows",
-        "rows": 44,
+        "rows": 88,
         "min_rows": 180
       },
       "swing": {
