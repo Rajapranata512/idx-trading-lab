@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-19T12:45:04.638160",
+  "generated_at": "2026-05-20T02:04:50.899305",
   "signals": {
-    "generated_at": "2026-05-19T12:45:03.392319",
+    "generated_at": "2026-05-20T02:04:49.237045",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 6025.0,
         "volume": 20009100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-19 12:45:02.816507",
+        "ingested_at": "2026-05-20 02:04:43.633638",
         "ret_1d": 0.0041666666666666,
         "ret_5d": 0.0299145299145298,
         "ret_20d": -0.0511811023622047,
@@ -104,7 +104,7 @@
         "close": 3120.0,
         "volume": 88323100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-19 12:45:02.816507",
+        "ingested_at": "2026-05-20 02:04:43.633638",
         "ret_1d": 0.0129870129870128,
         "ret_5d": 0.0576271186440677,
         "ret_20d": 0.0064516129032257,
@@ -259,8 +259,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-05-19T12:45:03.399657",
-    "run_id": "20260519_124447",
+    "generated_at": "2026-05-20T02:04:49.244109",
+    "run_id": "20260520_020424",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -285,7 +285,7 @@
       "kill_switch": "clear"
     },
     "score_funnel": {
-      "generated_at": "2026-05-19T12:45:03.244827",
+      "generated_at": "2026-05-20T02:04:49.094075",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -353,7 +353,7 @@
         "reason": "UMA atas Saham PT Asuransi Bina Dana Arta Tbk. (ABDA)",
         "start_date": "2026-05-06",
         "end_date": "2026-05-20",
-        "updated_at": "2026-05-19",
+        "updated_at": "2026-05-20",
         "source": "idx_announcement_uma"
       },
       {
@@ -362,7 +362,7 @@
         "reason": "Penghentian Sementara Perdagangan Saham PT Bukit Darmo Property Tbk (BKDP)",
         "start_date": "2026-05-12",
         "end_date": "2026-05-26",
-        "updated_at": "2026-05-19",
+        "updated_at": "2026-05-20",
         "source": "idx_announcement_suspend"
       },
       {
@@ -371,7 +371,7 @@
         "reason": "UMA atas Saham PT Sinergi Inti Plastindo Tbk. (ESIP)",
         "start_date": "2026-05-07",
         "end_date": "2026-05-21",
-        "updated_at": "2026-05-19",
+        "updated_at": "2026-05-20",
         "source": "idx_announcement_uma"
       },
       {
@@ -380,17 +380,17 @@
         "reason": "Penghentian Sementara Perdagangan Saham PT DMS Propertindo Tbk. (KOTA)",
         "start_date": "2026-05-06",
         "end_date": "2026-05-20",
-        "updated_at": "2026-05-19",
+        "updated_at": "2026-05-20",
         "source": "idx_announcement_suspend"
       },
       {
-        "ticker": "LUCK",
-        "status": "MATERIAL",
-        "reason": "Public Expose Material Submission - Annual [ LUCK ]",
+        "ticker": "SGRO",
+        "status": "UMA",
+        "reason": "UMA atas Saham PT Prime Agri Resources Tbk. (SGRO)",
         "start_date": "2026-05-19",
         "end_date": "2026-06-02",
-        "updated_at": "2026-05-19",
-        "source": "idx_announcement_material"
+        "updated_at": "2026-05-20",
+        "source": "idx_announcement_uma"
       }
     ],
     "excluded_items": []
@@ -423,6 +423,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260520.json",
+      "run_id": "20260520_020424",
+      "started_at": "2026-05-20T02:04:24.644009",
+      "ended_at": "2026-05-20T02:04:50.251278",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260519.json",
       "run_id": "20260519_124447",

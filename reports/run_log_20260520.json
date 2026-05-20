@@ -1,0 +1,459 @@
+[
+  {
+    "ts": "2026-05-20T02:04:24.644009",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:24.644693",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "universe_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "skipped_no_source",
+      "message": "Universe source URLs are empty; keeping existing universe file",
+      "universe_path": "data/reference/universe_lq45_idx30.csv",
+      "state_path": "reports/universe_update_state.json",
+      "updated": false,
+      "attempted_at": "2026-05-20T02:04:24.644029",
+      "last_success_at": "",
+      "counts": {
+        "lq45": 0,
+        "idx30": 0,
+        "combined": 0
+      },
+      "errors": [],
+      "source_status": {
+        "LQ45": "no_url",
+        "IDX30": "no_url"
+      }
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:43.628639",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 924,
+      "rows_new": 880,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-05-19",
+      "min_data_date": "2026-04-20",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:43.960205",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 924,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:43.975695",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "volatility_recalibration_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "failed_insufficient_samples",
+      "message": "Insufficient rows for recalibration (atr=352, realized=44, min=200)",
+      "updated": false,
+      "attempted_at": "2026-05-20T02:04:43.960232",
+      "last_success_at": "",
+      "state_path": "reports/volatility_recalibration_state.json",
+      "features_path": "data/processed/features.parquet",
+      "samples": {
+        "rows_total": 924,
+        "rows_window": 924,
+        "atr_rows": 352,
+        "realized_rows": 44,
+        "lookback_days": 252
+      },
+      "old_targets": {
+        "volatility_reference_atr_pct": 3.4885,
+        "volatility_reference_realized_pct": 2.3542
+      },
+      "new_targets": {
+        "volatility_reference_atr_pct": 3.4885,
+        "volatility_reference_realized_pct": 2.3542
+      }
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.021263",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "event_risk_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "updated",
+      "message": "Event-risk blacklist updated successfully",
+      "blacklist_path": "data/reference/event_risk_blacklist.csv",
+      "state_path": "reports/event_risk_update_state.json",
+      "updated": true,
+      "attempted_at": "2026-05-20T02:04:43.975728",
+      "last_success_at": "2026-05-20T02:04:43.975728",
+      "counts": {
+        "rows": 891,
+        "tickers": 567,
+        "status_counts": {
+          "UMA": 523,
+          "SUSPEND": 368
+        }
+      },
+      "errors": [],
+      "source_status": {
+        "SUSPEND": "ok",
+        "UMA": "ok",
+        "MATERIAL": "ok"
+      }
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.094718",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "event_risk_filtered",
+    "extra": {
+      "enabled": true,
+      "status": "ok",
+      "message": "Event-risk filter applied",
+      "path": "data/reference/event_risk_blacklist.csv",
+      "as_of_date": "2026-05-19",
+      "active_events": 5,
+      "excluded_count": 0,
+      "excluded_tickers": [],
+      "excluded_t1": 0,
+      "excluded_swing": 0
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.168611",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "model_v2_shadow_done",
+    "extra": {
+      "status": "ok",
+      "message": "Model v2 shadow inference completed",
+      "shadow_csv_path": "reports/model_v2_shadow_signals.csv",
+      "shadow_json_path": "reports/model_v2_shadow_signals.json",
+      "ab_test_path": "reports/model_v2_ab_test.json",
+      "rows": 2,
+      "train": {
+        "status": "skipped_no_update",
+        "message": "No mode met minimum train rows or training failed",
+        "updated": false,
+        "state_path": "reports/model_v2_state.json",
+        "model_dir": "models/model_v2",
+        "modes": {
+          "t1": {
+            "status": "skipped_min_rows",
+            "rows": 44,
+            "min_rows": 180
+          },
+          "swing": {
+            "status": "skipped_min_rows",
+            "rows": 0,
+            "min_rows": 180
+          }
+        },
+        "errors": []
+      },
+      "infer": {
+        "status": "ok",
+        "message": "Shadow inference completed",
+        "modes": {
+          "t1": {
+            "rows": 2,
+            "source": "fallback",
+            "threshold": 0.52,
+            "thresholds_by_regime": {},
+            "metadata": {}
+          }
+        },
+        "rows": 2
+      },
+      "ab_test": {
+        "max_positions": 3,
+        "v1_top": [
+          "ASII",
+          "TLKM"
+        ],
+        "v2_top": [
+          "TLKM",
+          "ASII"
+        ],
+        "overlap_count": 2,
+        "overlap_tickers": [
+          "ASII",
+          "TLKM"
+        ],
+        "only_v1": [],
+        "only_v2": [],
+        "jaccard_overlap": 1.0,
+        "v1_avg_score": 100.0,
+        "v2_avg_p_win": 0.8058
+      }
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.168827",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "model_v2_promotion_evaluated",
+    "extra": {
+      "status": "ok",
+      "message": "Evaluated promotion criteria.",
+      "rollout_pct": 0,
+      "live_active": false,
+      "consecutive_passes": 0
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.177153",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports/daily_report.html",
+      "signal_path": "reports/daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.236156",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 0.0,
+          "ProfitFactor": 0.0,
+          "Expectancy": 0.0,
+          "Trades": 0,
+          "CAGR": 0.0,
+          "MaxDD": 0.0
+        },
+        "swing": {
+          "WinRate": 0.0,
+          "ProfitFactor": 0.0,
+          "Expectancy": 0.0,
+          "Trades": 0,
+          "CAGR": 0.0,
+          "MaxDD": 0.0
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-05-19",
+        "pass": false,
+        "status": "risk_off",
+        "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
+        "values": {
+          "breadth_ma50_pct": 0.0,
+          "breadth_ma20_pct": 11.363636363636363,
+          "avg_ret20_pct": -12.850330812977488,
+          "median_atr_pct": 3.8196945401210085,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": false,
+          "breadth_ma20_ok": false,
+          "avg_ret20_ok": false,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "clear",
+        "as_of_date": "2026-05-19",
+        "active": false,
+        "active_modes": [],
+        "triggered_modes_today": [],
+        "cooldown_until": "",
+        "state_path": "reports/kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.238558",
+    "run_id": "20260520_020424",
+    "level": "WARN",
+    "message": "live_gate_blocked",
+    "extra": {
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "gate_components": {
+        "t1": {
+          "model_gate_ok": false,
+          "regime_ok": false,
+          "kill_switch_ok": true,
+          "final_ok": false
+        },
+        "swing": {
+          "model_gate_ok": false,
+          "regime_ok": false,
+          "kill_switch_ok": true,
+          "final_ok": false
+        }
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-05-19",
+        "pass": false,
+        "status": "risk_off",
+        "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
+        "values": {
+          "breadth_ma50_pct": 0.0,
+          "breadth_ma20_pct": 11.363636363636363,
+          "avg_ret20_pct": -12.850330812977488,
+          "median_atr_pct": 3.8196945401210085,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": false,
+          "breadth_ma20_ok": false,
+          "avg_ret20_ok": false,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "clear",
+        "as_of_date": "2026-05-19",
+        "active": false,
+        "active_modes": [],
+        "triggered_modes_today": [],
+        "cooldown_until": "",
+        "state_path": "reports/kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.239226",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "signal_snapshot_written",
+    "extra": {
+      "path": "reports/snapshots/signals_20260520_020424.json",
+      "signal_count": 0
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.243635",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "live_reconciliation_done",
+    "extra": {
+      "status": "no_signals",
+      "message": "Snapshot files found, but all have zero executable signals",
+      "json_path": "reports/live_reconciliation.json",
+      "details_csv_path": "reports/live_reconciliation_details.csv"
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:49.244410",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "signal_funnel_written",
+    "extra": {
+      "path": "reports/signal_funnel_live.json",
+      "post_gate_signals": 0
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:50.248495",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "telegram_done",
+    "extra": {
+      "ok": true
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:50.251139",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "weekly_kpi_generated",
+    "extra": {
+      "status": "ok",
+      "message": "Weekly KPI dashboard generated",
+      "json_path": "reports/weekly_kpi.json",
+      "markdown_path": "reports/weekly_kpi.md",
+      "payload": {
+        "generated_at": "2026-05-20T02:04:50.249369",
+        "lookback_days": 7,
+        "run_stats": {
+          "runs_total": 3,
+          "runs_failed": 0,
+          "runs_live_allowed": 0,
+          "runs_risk_blocked": 3,
+          "setup_errors": 0,
+          "error_rate_pct": 0.0
+        },
+        "event_risk_update": {
+          "ok_count": 3,
+          "error_count": 0
+        },
+        "strategy_snapshot": {
+          "swing_profit_factor": 0.0,
+          "swing_expectancy": 0.0,
+          "swing_max_dd_pct": 0.0,
+          "swing_trades": 0
+        },
+        "live_reconciliation": {
+          "status": "no_signals",
+          "entry_match_rate_pct": 0.0,
+          "signal_execution_rate_pct": 0.0,
+          "live_win_rate_pct": 0.0,
+          "live_expectancy_r": 0.0,
+          "live_profit_factor_r": 0.0,
+          "live_samples": 0
+        }
+      }
+    }
+  },
+  {
+    "ts": "2026-05-20T02:04:50.251278",
+    "run_id": "20260520_020424",
+    "level": "INFO",
+    "message": "beginner_coaching_written",
+    "extra": {
+      "path": "reports/beginner_coaching.md"
+    }
+  }
+]
