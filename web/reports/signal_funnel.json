@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T12:29:16.164835",
+  "generated_at": "2026-05-21T12:48:58.129308",
   "thresholds": {
     "min_live_score_t1": 95.0,
     "min_live_score_swing": 68.0,
@@ -48,8 +48,8 @@
     "status": "ok",
     "message": "Event-risk filter applied",
     "path": "data/reference/event_risk_blacklist.csv",
-    "as_of_date": "2026-05-20",
-    "active_events": 7,
+    "as_of_date": "2026-05-21",
+    "active_events": 4,
     "excluded_count": 0,
     "excluded_tickers": [],
     "excluded_t1": 0,
