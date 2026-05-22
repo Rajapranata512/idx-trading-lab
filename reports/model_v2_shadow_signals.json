@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-05-21T12:48:58.211489",
-  "run_id": "20260521_124838",
+  "generated_at": "2026-05-22T12:25:52.229143",
+  "run_id": "20260522_122540",
   "signals": [
     {
       "ticker": "MAPI",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 1,
-      "shadow_p_win": 0.8115,
-      "shadow_expected_r": 1.0288,
+      "shadow_p_win": 0.821,
+      "shadow_expected_r": 1.0525,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1485.0,
-      "stop": 1401.03,
-      "tp1": 1568.97,
-      "tp2": 1652.94,
+      "entry": 1505.0,
+      "stop": 1424.17,
+      "tp1": 1585.83,
+      "tp2": 1666.66,
       "size": 400
     },
     {
@@ -23,32 +23,16 @@
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 2,
-      "shadow_p_win": 0.805,
-      "shadow_expected_r": 1.0125,
+      "shadow_p_win": 0.8004,
+      "shadow_expected_r": 1.001,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 4270.0,
-      "stop": 4020.22,
-      "tp1": 4519.78,
-      "tp2": 4769.57,
+      "entry": 4350.0,
+      "stop": 4089.49,
+      "tp1": 4610.51,
+      "tp2": 4871.03,
       "size": 100
-    },
-    {
-      "ticker": "TLKM",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.7917,
-      "shadow_expected_r": 0.9792,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 3000.0,
-      "stop": 2812.52,
-      "tp1": 3187.48,
-      "tp2": 3374.97,
-      "size": 200
     }
   ],
   "infer": {
@@ -56,14 +40,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 3,
+        "rows": 2,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 3
+    "rows": 2
   },
   "train": {
     "status": "skipped_no_update",
@@ -74,7 +58,7 @@
     "modes": {
       "t1": {
         "status": "skipped_min_rows",
-        "rows": 132,
+        "rows": 176,
         "min_rows": 180
       },
       "swing": {
