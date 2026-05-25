@@ -1,18 +1,94 @@
 {
-  "last_success_at": "",
-  "updated": false,
+  "last_success_at": "2026-05-25T10:43:02.055311",
+  "updated": true,
   "modes": {
     "t1": {
-      "status": "skipped_min_rows",
-      "rows": 176,
-      "min_rows": 180
+      "status": "trained",
+      "rows": 220,
+      "train_rows": 220,
+      "positive_rate": 0.32272727272727275,
+      "auc_train": 0.7995,
+      "features": [
+        "score",
+        "ret_1d",
+        "ret_5d",
+        "ret_20d",
+        "atr_pct",
+        "vol_20d",
+        "avg_vol_20d",
+        "close",
+        "ma_20",
+        "ma_50",
+        "ma_slope_20",
+        "ma_slope_50",
+        "dist_ma_20",
+        "dist_ma_50",
+        "vol_ratio",
+        "ret_5d_20d_ratio",
+        "high_low_range",
+        "close_position",
+        "volume_ratio_20d",
+        "rsi_14",
+        "rsi_slope",
+        "mfi_14",
+        "obv_slope",
+        "rank_ret_20d",
+        "rank_vol_20d",
+        "turnover_ratio_20d",
+        "dist_high_20",
+        "dist_low_20",
+        "ma_gap_20_50",
+        "ma_stack_bullish",
+        "market_breadth_ma20_pct",
+        "market_breadth_ma50_pct",
+        "market_avg_ret20_pct",
+        "market_median_atr_pct",
+        "relative_ret_20d"
+      ],
+      "model_type": "logreg",
+      "cv_auc": 0.541,
+      "model_comparison": {
+        "logreg": 0.541,
+        "xgboost": 0.5,
+        "lightgbm": 0.4845
+      },
+      "calibration": {
+        "calibrated": true,
+        "ece": 0.273312
+      },
+      "available_models": [
+        "logreg",
+        "xgboost",
+        "lightgbm"
+      ],
+      "label_strategy": "binary_positive_net_return",
+      "thresholds_by_regime": {
+        "default": 0.52
+      },
+      "return_profile": {
+        "overall": {
+          "mean_return_r": -0.186147,
+          "positive_mean_r": 0.301261,
+          "negative_mean_r": -0.418401,
+          "sample_count": 220
+        },
+        "by_regime": {
+          "risk_off": {
+            "mean_return_r": -0.186147,
+            "positive_mean_r": 0.301261,
+            "negative_mean_r": -0.418401,
+            "sample_count": 220
+          }
+        }
+      },
+      "target_rank_positive_cutoff": null,
+      "artifact_path": "models/model_v2/t1.joblib",
+      "metadata_path": "models/model_v2/t1.meta.json"
     },
     "swing": {
       "status": "skipped_min_rows",
       "rows": 0,
       "min_rows": 180
     }
-  },
-  "last_attempt_at": "2026-05-22T12:25:52.154913",
-  "errors": []
+  }
 }
