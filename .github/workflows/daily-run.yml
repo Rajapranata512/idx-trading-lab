@@ -2,8 +2,12 @@ name: IDX Trading Lab - Daily Pipeline
 
 on:
   schedule:
-    # Run everyday at 10:00 UTC (17:00 WIB - After IDX market close)
-    - cron: '0 10 * * 1-5'
+    # Run after IDX market close, with retries for delayed EOD provider updates.
+    # Avoid minute 00 because GitHub Actions schedules can be delayed or dropped
+    # during high-load periods at the start of each hour.
+    - cron: '15 10 * * 1-5' # 17:15 WIB
+    - cron: '15 11 * * 1-5' # 18:15 WIB retry
+    - cron: '30 12 * * 1-5' # 19:30 WIB fallback
   push:
     branches: [main]
     paths:
@@ -15,6 +19,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: idx-trading-lab-daily-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   run-pipeline:
@@ -37,6 +45,7 @@ jobs:
 
     - name: Run Daily Pipeline
       env:
+        EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: |
