@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-26T16:15:27.540833",
+  "generated_at": "2026-05-27T13:48:10.800532",
   "signals": {
-    "generated_at": "2026-05-26T16:15:26.328000",
+    "generated_at": "2026-05-27T13:48:09.621409",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 1930.0,
         "volume": 40107000.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-26 16:15:25.723738",
+        "ingested_at": "2026-05-27 13:48:03.875937",
         "ret_1d": -0.0025839793281653,
         "ret_5d": 0.0812324929971988,
         "ret_20d": 0.0489130434782609,
@@ -104,7 +104,7 @@
         "close": 4480.0,
         "volume": 10649900.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-26 16:15:25.723738",
+        "ingested_at": "2026-05-27 13:48:03.875937",
         "ret_1d": 0.018181818181818,
         "ret_5d": 0.0873786407766989,
         "ret_20d": 0.1007371007371007,
@@ -183,7 +183,7 @@
         "close": 1760.0,
         "volume": 16040300.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-26 16:15:25.723738",
+        "ingested_at": "2026-05-27 13:48:03.875937",
         "ret_1d": -0.0056497175141242,
         "ret_5d": 0.0202898550724637,
         "ret_20d": 0.1578947368421053,
@@ -262,7 +262,7 @@
         "close": 6875.0,
         "volume": 3354100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-26 16:15:25.723738",
+        "ingested_at": "2026-05-27 13:48:03.875937",
         "ret_1d": -0.0316901408450703,
         "ret_5d": 0.0185185185185186,
         "ret_20d": -0.0036231884057971,
@@ -341,7 +341,7 @@
         "close": 1500.0,
         "volume": 24203700.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-26 16:15:25.723738",
+        "ingested_at": "2026-05-27 13:48:03.875937",
         "ret_1d": 0.0033444816053511,
         "ret_5d": 0.0135135135135135,
         "ret_20d": 0.1278195488721805,
@@ -420,7 +420,7 @@
         "close": 3840.0,
         "volume": 25818200.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-26 16:15:25.723738",
+        "ingested_at": "2026-05-27 13:48:03.875937",
         "ret_1d": -0.012853470437018,
         "ret_5d": 0.0105263157894737,
         "ret_20d": 0.032258064516129,
@@ -575,8 +575,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-05-26T16:15:26.340045",
-    "run_id": "20260526_161518",
+    "generated_at": "2026-05-27T13:48:09.633007",
+    "run_id": "20260527_134756",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -601,7 +601,7 @@
       "kill_switch": "clear"
     },
     "score_funnel": {
-      "generated_at": "2026-05-26T16:15:26.205095",
+      "generated_at": "2026-05-27T13:48:09.503073",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -669,7 +669,7 @@
         "reason": "Penghentian Sementara Perdagangan Saham PT Bukit Darmo Property Tbk (BKDP)",
         "start_date": "2026-05-12",
         "end_date": "2026-05-26",
-        "updated_at": "2026-05-26",
+        "updated_at": "2026-05-27",
         "source": "idx_announcement_suspend"
       },
       {
@@ -678,7 +678,7 @@
         "reason": "UMA atas Saham PT Charlie Hospital Semarang Tbk. (RSCH)",
         "start_date": "2026-05-25",
         "end_date": "2026-06-08",
-        "updated_at": "2026-05-26",
+        "updated_at": "2026-05-27",
         "source": "idx_announcement_uma"
       },
       {
@@ -687,7 +687,7 @@
         "reason": "UMA atas Saham PT Prime Agri Resources Tbk. (SGRO)",
         "start_date": "2026-05-19",
         "end_date": "2026-06-02",
-        "updated_at": "2026-05-26",
+        "updated_at": "2026-05-27",
         "source": "idx_announcement_uma"
       }
     ],
@@ -721,6 +721,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260527.json",
+      "run_id": "20260527_134756",
+      "started_at": "2026-05-27T13:47:56.290863",
+      "ended_at": "2026-05-27T13:48:10.189769",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260526.json",
       "run_id": "20260526_161518",
@@ -888,33 +915,6 @@
       "run_id": "20260522_122540",
       "started_at": "2026-05-22T12:25:40.499741",
       "ended_at": "2026-05-22T12:25:52.838189",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 18,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260521.json",
-      "run_id": "20260521_124838",
-      "started_at": "2026-05-21T12:48:38.686334",
-      "ended_at": "2026-05-21T12:48:58.839830",
       "source": "yfinance_fallback",
       "signals": 0,
       "error_count": 0,
