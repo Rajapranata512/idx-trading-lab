@@ -1,86 +1,22 @@
 {
-  "generated_at": "2026-05-28T16:37:38.470903",
-  "run_id": "20260528_163726",
+  "generated_at": "2026-05-29T13:33:21.467210",
+  "run_id": "20260529_133305",
   "signals": [
-    {
-      "ticker": "CPIN",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 1,
-      "shadow_p_win": 0.802,
-      "shadow_expected_r": 1.005,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 4480.0,
-      "stop": 4213.94,
-      "tp1": 4746.06,
-      "tp2": 5012.11,
-      "size": 100
-    },
-    {
-      "ticker": "MAPI",
-      "mode": "t1",
-      "score": 95.81,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.7971,
-      "shadow_expected_r": 0.9928,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 1500.0,
-      "stop": 1427.55,
-      "tp1": 1572.45,
-      "tp2": 1644.9,
-      "size": 400
-    },
-    {
-      "ticker": "BBNI",
-      "mode": "t1",
-      "score": 95.58,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.7866,
-      "shadow_expected_r": 0.9665,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 3840.0,
-      "stop": 3645.14,
-      "tp1": 4034.86,
-      "tp2": 4229.72,
-      "size": 100
-    },
     {
       "ticker": "BRIS",
       "mode": "t1",
       "score": 100.0,
-      "shadow_rank": 4,
+      "shadow_rank": 1,
       "shadow_p_win": 0.75,
       "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1930.0,
-      "stop": 1760.89,
-      "tp1": 2099.11,
-      "tp2": 2268.22,
-      "size": 300
-    },
-    {
-      "ticker": "UNVR",
-      "mode": "t1",
-      "score": 96.32,
-      "shadow_rank": 5,
-      "shadow_p_win": 0.727,
-      "shadow_expected_r": 0.8175,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 1760.0,
-      "stop": 1635.29,
-      "tp1": 1884.71,
-      "tp2": 2009.42,
-      "size": 300
+      "entry": 1980.0,
+      "stop": 1828.89,
+      "tp1": 2131.11,
+      "tp2": 2282.23,
+      "size": 200
     }
   ],
   "infer": {
@@ -88,14 +24,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 5,
+        "rows": 1,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 5
+    "rows": 1
   },
   "train": {
     "status": "skipped_interval",
