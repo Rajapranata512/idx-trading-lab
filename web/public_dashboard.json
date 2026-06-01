@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-29T16:13:03.997044",
+  "generated_at": "2026-06-01T16:19:05.168660",
   "signals": {
-    "generated_at": "2026-05-29T16:13:02.827672",
+    "generated_at": "2026-06-01T16:19:03.370943",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 1980.0,
         "volume": 35759700.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-05-29 16:13:02.211514",
+        "ingested_at": "2026-06-01 16:18:54.819873",
         "ret_1d": 0.0259067357512954,
         "ret_5d": 0.1154929577464789,
         "ret_20d": 0.1154929577464789,
@@ -80,17 +80,17 @@
         "risk_budget_base": 60000.0,
         "risk_budget_effective": 45000.0,
         "vol_target_multiplier": 0.75,
-        "vol_target_multiplier_market": 0.8058,
-        "vol_target_multiplier_asset": 0.7742,
-        "vol_target_multiplier_asset_atr": 0.9142,
-        "vol_target_multiplier_asset_realized": 0.6033,
-        "vol_target_market_vol_index": 1.241,
+        "vol_target_multiplier_market": 0.8564,
+        "vol_target_multiplier_asset": 0.8227,
+        "vol_target_multiplier_asset_atr": 0.9693,
+        "vol_target_multiplier_asset_realized": 0.6433,
+        "vol_target_market_vol_index": 1.1677,
         "vol_target_market_regime": "high",
         "vol_target_regime_cap_enabled": true,
         "vol_target_regime_cap": 0.75,
         "vol_target_regime_cap_raw": 0.75,
         "vol_target_realized_weight": 0.4,
-        "vol_target_ref_realized_pct": 2.3542,
+        "vol_target_ref_realized_pct": 2.5104,
         "arb_protection_enabled": true,
         "arb_worst_case_loss_pct": 19.56,
         "arb_worst_case_idr": 77475.0
@@ -180,8 +180,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-05-29T16:13:02.843860",
-    "run_id": "20260529_161254",
+    "generated_at": "2026-06-01T16:19:03.384793",
+    "run_id": "20260601_161842",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -206,7 +206,7 @@
       "kill_switch": "clear"
     },
     "score_funnel": {
-      "generated_at": "2026-05-29T16:13:02.704371",
+      "generated_at": "2026-06-01T16:19:02.880321",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -228,7 +228,7 @@
           "rank_candidates": 10,
           "after_score_filter": 1,
           "after_event_risk": 1,
-          "small_size_before_filter": 4,
+          "small_size_before_filter": 3,
           "dropped_by_score": 9,
           "dropped_by_event_risk": 0
         },
@@ -256,7 +256,7 @@
         "message": "Event-risk filter applied",
         "path": "data/reference/event_risk_blacklist.csv",
         "as_of_date": "2026-05-29",
-        "active_events": 4,
+        "active_events": 3,
         "excluded_count": 0,
         "excluded_tickers": [],
         "excluded_t1": 0,
@@ -265,25 +265,16 @@
     }
   },
   "event_risk": {
-    "active_total": 4,
+    "active_total": 3,
     "excluded_total": 0,
     "active_items": [
-      {
-        "ticker": "GHON",
-        "status": "MATERIAL",
-        "reason": "Public Expose Material Submission - Annual [ GHON ]",
-        "start_date": "2026-05-29",
-        "end_date": "2026-06-12",
-        "updated_at": "2026-05-29",
-        "source": "idx_announcement_material"
-      },
       {
         "ticker": "JSKY",
         "status": "SUSPEND",
         "reason": "Penghentian Sementara Perdagangan Efek PT Sky Energy Indonesia Tbk. (JSKY)",
         "start_date": "2026-05-26",
         "end_date": "2026-06-09",
-        "updated_at": "2026-05-29",
+        "updated_at": "2026-06-01",
         "source": "idx_announcement_suspend"
       },
       {
@@ -292,7 +283,7 @@
         "reason": "UMA atas Saham PT Charlie Hospital Semarang Tbk. (RSCH)",
         "start_date": "2026-05-25",
         "end_date": "2026-06-08",
-        "updated_at": "2026-05-29",
+        "updated_at": "2026-06-01",
         "source": "idx_announcement_uma"
       },
       {
@@ -301,7 +292,7 @@
         "reason": "UMA atas Saham PT Prime Agri Resources Tbk. (SGRO)",
         "start_date": "2026-05-19",
         "end_date": "2026-06-02",
-        "updated_at": "2026-05-29",
+        "updated_at": "2026-06-01",
         "source": "idx_announcement_uma"
       }
     ],
@@ -335,6 +326,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260601.json",
+      "run_id": "20260601_161842",
+      "started_at": "2026-06-01T16:18:42.065723",
+      "ended_at": "2026-06-01T16:19:04.535276",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260529.json",
       "run_id": "20260529_161254",
@@ -523,33 +541,6 @@
       "status_category_label": "Protective warning",
       "status_tone": "protective",
       "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260527.json",
-      "run_id": "20260527_143508",
-      "started_at": "2026-05-27T14:35:08.041217",
-      "ended_at": "2026-05-27T14:35:16.940194",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 18,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
     }
   ],
   "report": {
@@ -629,7 +620,7 @@
   "kpi": {
     "signal_total": 0,
     "execution_total": 0,
-    "event_active_total": 4,
+    "event_active_total": 3,
     "event_excluded_total": 0,
     "signal_avg_score": 0.0,
     "gate_pass": {
