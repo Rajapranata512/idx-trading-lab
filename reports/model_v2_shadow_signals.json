@@ -1,37 +1,11 @@
 {
-  "generated_at": "2026-06-01T18:21:49.339332",
-  "run_id": "20260601_182141",
-  "signals": [
-    {
-      "ticker": "BRIS",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 1,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 1980.0,
-      "stop": 1828.89,
-      "tp1": 2131.11,
-      "tp2": 2282.23,
-      "size": 200
-    }
-  ],
+  "generated_at": "2026-06-02T14:22:19.874644",
+  "run_id": "20260602_142206",
+  "signals": [],
   "infer": {
-    "status": "ok",
-    "message": "Shadow inference completed",
-    "modes": {
-      "t1": {
-        "rows": 1,
-        "source": "fallback",
-        "threshold": 0.52,
-        "thresholds_by_regime": {},
-        "metadata": {}
-      }
-    },
-    "rows": 1
+    "status": "empty",
+    "message": "No candidates for shadow inference",
+    "modes": {}
   },
   "train": {
     "status": "skipped_interval",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-01T18:21:49.309977",
+  "generated_at": "2026-06-02T14:22:19.860536",
   "thresholds": {
     "min_live_score_t1": 95.0,
     "min_live_score_swing": 68.0,
@@ -19,10 +19,10 @@
   "modes": {
     "t1": {
       "rank_candidates": 10,
-      "after_score_filter": 1,
-      "after_event_risk": 1,
-      "small_size_before_filter": 4,
-      "dropped_by_score": 9,
+      "after_score_filter": 0,
+      "after_event_risk": 0,
+      "small_size_before_filter": 3,
+      "dropped_by_score": 10,
       "dropped_by_event_risk": 0
     },
     "swing": {
@@ -35,21 +35,21 @@
     }
   },
   "combined": {
-    "before_size_filter": 1,
+    "before_size_filter": 0,
     "dropped_by_size_filter": 0,
-    "after_size_filter": 1,
-    "after_top_n_combined": 1,
-    "execution_plan_count": 1,
-    "signal_count": 1,
-    "avg_roundtrip_cost_est_pct": 0.56
+    "after_size_filter": 0,
+    "after_top_n_combined": 0,
+    "execution_plan_count": 0,
+    "signal_count": 0,
+    "avg_roundtrip_cost_est_pct": NaN
   },
   "event_risk": {
     "enabled": true,
     "status": "ok",
     "message": "Event-risk filter applied",
     "path": "data/reference/event_risk_blacklist.csv",
-    "as_of_date": "2026-05-29",
-    "active_events": 3,
+    "as_of_date": "",
+    "active_events": 4,
     "excluded_count": 0,
     "excluded_tickers": [],
     "excluded_t1": 0,
