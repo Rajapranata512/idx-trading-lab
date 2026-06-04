@@ -1,9 +1,5 @@
 {
-<<<<<<< Updated upstream
-  "generated_at": "2026-06-03T15:55:46.348667",
-=======
-  "generated_at": "2026-06-04T02:49:43.064724",
->>>>>>> Stashed changes
+  "generated_at": "2026-06-04T02:52:07.216942",
   "signals": {
     "generated_at": "2026-06-03T15:55:45.171418",
     "total": 0,
@@ -170,7 +166,7 @@
         "after_top_n_combined": 0,
         "execution_plan_count": 0,
         "signal_count": 0,
-        "avg_roundtrip_cost_est_pct": NaN
+        "avg_roundtrip_cost_est_pct": null
       },
       "event_risk": {
         "enabled": true,
