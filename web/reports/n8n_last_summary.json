@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 {
   "generated_at": "2026-05-05T07:14:40.021930",
   "run_id": "20260505_141204",
@@ -575,3 +576,56 @@
     }
   ]
 }
+=======
+﻿{
+    "ok":  false,
+    "status":  "SETUP_ERROR",
+    "message":  "C:\\Users\\ACER\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\pydantic\\_internal\\_fields.py:132: UserWarning: Field \"model_dir\" in ModelV2Settings has conflict with protected namespace \"model_\".",
+    "attempts":  1,
+    "exit_code":  99,
+    "run_id":  "",
+    "generated_at":  "2026-06-03 16:25:02",
+    "signal_count":  0,
+    "gate_t1":  false,
+    "gate_swing":  false,
+    "gate_model_t1":  false,
+    "gate_model_swing":  false,
+    "regime_ok":  true,
+    "regime_status":  "unknown",
+    "regime_reason":  "",
+    "kill_switch_active":  false,
+    "kill_switch_modes":  [
+
+                          ],
+    "kill_switch_status":  "unknown",
+    "kill_switch_cooldown_until":  "",
+    "universe_update_status":  "",
+    "universe_update_message":  "",
+    "event_risk_update_status":  "",
+    "event_risk_update_message":  "",
+    "event_risk_update_updated":  false,
+    "event_risk_update_rows":  0,
+    "volatility_recalibration_status":  "",
+    "volatility_recalibration_message":  "",
+    "volatility_recalibration_updated":  false,
+    "volatility_recalibration_atr_ref":  0,
+    "volatility_recalibration_realized_ref":  0,
+    "event_risk_status":  "",
+    "event_risk_excluded_count":  0,
+    "vol_target_market_regime":  "",
+    "vol_target_regime_cap":  0,
+    "vol_target_market_vol_index":  0,
+    "vol_target_multiplier_avg":  0,
+    "vol_target_multiplier_min":  0,
+    "vol_target_multiplier_max":  0,
+    "data_max_date":  "",
+    "data_age_days":  -1,
+    "missing_tickers_count":  0,
+    "allowed_modes":  [
+
+                      ],
+    "trade_ready":  false,
+    "action":  "NO_TRADE",
+    "action_reason":  "Environment/setup issue"
+}
+>>>>>>> Stashed changes
