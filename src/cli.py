@@ -37,10 +37,8 @@ def _ensure_parent(path: str | Path) -> None:
 
 
 def _write_json(path: str | Path, payload: dict[str, Any]) -> str:
-    out = Path(path)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
-    return str(out)
+    from src.utils import atomic_write_json
+    return atomic_write_json(path, payload)
 
 
 def _load_universe(path: str) -> list[str]:
@@ -295,7 +293,7 @@ def score_step(settings: Settings) -> dict[str, Any]:
             "execution_plan_count": execution_count,
             "signal_count": int(len(signal_df)),
             "avg_roundtrip_cost_est_pct": round(
-                float(pd.to_numeric(combined_plan.get("est_roundtrip_cost_pct", pd.Series(dtype=float)), errors="coerce").mean() or 0.0),
+                0.0 if pd.isna(m := pd.to_numeric(combined_plan.get("est_roundtrip_cost_pct", pd.Series(dtype=float)), errors="coerce").mean()) else float(m),
                 4,
             ),
         },
