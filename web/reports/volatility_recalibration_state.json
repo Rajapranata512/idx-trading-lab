@@ -1,32 +1,32 @@
 {
-  "last_attempt_at": "2026-06-01T16:18:55.171331",
-  "last_success_at": "2026-06-01T16:18:55.171331",
+  "last_attempt_at": "2026-06-08T16:33:53.099952",
+  "last_success_at": "2026-06-08T16:33:53.099952",
   "status": "updated",
   "message": "Volatility reference targets recalibrated",
   "new_targets": {
-    "volatility_reference_atr_pct": 3.699,
-    "volatility_reference_realized_pct": 2.5104
+    "volatility_reference_atr_pct": 3.9022,
+    "volatility_reference_realized_pct": 2.6299
   },
   "old_targets": {
     "volatility_reference_atr_pct": 3.4885,
     "volatility_reference_realized_pct": 2.3542
   },
   "delta": {
-    "atr_pct": 0.2105,
-    "realized_pct": 0.1562,
+    "atr_pct": 0.4137,
+    "realized_pct": 0.2757,
     "min_delta_pct": 0.05
   },
   "quantiles": {
     "atr_q": 0.5,
     "realized_q": 0.5,
-    "raw_atr_pct": 3.699,
-    "raw_realized_pct": 2.5104
+    "raw_atr_pct": 3.9022,
+    "raw_realized_pct": 2.6299
   },
   "samples": {
-    "rows_total": 1276,
-    "rows_window": 1276,
-    "atr_rows": 704,
-    "realized_rows": 396,
+    "rows_total": 1496,
+    "rows_window": 1496,
+    "atr_rows": 924,
+    "realized_rows": 612,
     "lookback_days": 252
   },
   "settings_path": "config/settings.json"

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-08T14:53:41.685004",
-  "run_id": "20260608_145330",
+  "generated_at": "2026-06-08T16:33:54.056865",
+  "run_id": "20260608_163343",
   "signals": [],
   "infer": {
     "status": "empty",
@@ -8,17 +8,18 @@
     "modes": {}
   },
   "train": {
-    "status": "skipped_interval",
-    "message": "Last model_v2 training still within 7 days interval",
-    "updated": false,
+    "status": "updated",
+    "message": "Model v2 trained for modes: t1",
+    "updated": true,
     "state_path": "reports/model_v2_state.json",
+    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
-        "rows": 396,
-        "train_rows": 396,
-        "positive_rate": 0.22727272727272727,
-        "auc_train": 0.7519,
+        "rows": 616,
+        "train_rows": 616,
+        "positive_rate": 0.2012987012987013,
+        "auc_train": 0.9999,
         "features": [
           "score",
           "ret_1d",
@@ -56,21 +57,21 @@
           "market_median_atr_pct",
           "relative_ret_20d"
         ],
-        "model_type": "logreg",
-        "cv_auc": 0.6678,
+        "model_type": "lightgbm",
+        "cv_auc": 0.528,
         "model_comparison": {
-          "logreg": 0.6678,
-          "lightgbm": 0.5532,
-          "xgboost": 0.5022
+          "lightgbm": 0.528,
+          "xgboost": 0.3957,
+          "logreg": 0.385
         },
         "calibration": {
           "calibrated": true,
-          "ece": 0.195816
+          "ece": 0.051964
         },
         "available_models": [
-          "logreg",
           "lightgbm",
-          "xgboost"
+          "xgboost",
+          "logreg"
         ],
         "label_strategy": "binary_positive_net_return",
         "thresholds_by_regime": {
@@ -78,17 +79,17 @@
         },
         "return_profile": {
           "overall": {
-            "mean_return_r": -0.180876,
-            "positive_mean_r": 0.292624,
-            "negative_mean_r": -0.32014,
-            "sample_count": 396
+            "mean_return_r": -0.255025,
+            "positive_mean_r": 0.277316,
+            "negative_mean_r": -0.389192,
+            "sample_count": 616
           },
           "by_regime": {
             "risk_off": {
-              "mean_return_r": -0.180876,
-              "positive_mean_r": 0.292624,
-              "negative_mean_r": -0.32014,
-              "sample_count": 396
+              "mean_return_r": -0.255025,
+              "positive_mean_r": 0.277316,
+              "negative_mean_r": -0.389192,
+              "sample_count": 616
             }
           }
         },
@@ -101,6 +102,7 @@
         "rows": 0,
         "min_rows": 180
       }
-    }
+    },
+    "errors": []
   }
 }
