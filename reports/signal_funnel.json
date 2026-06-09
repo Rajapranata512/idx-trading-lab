@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-08T16:33:53.175426",
+  "generated_at": "2026-06-09T12:51:03.726421",
   "thresholds": {
     "min_live_score_t1": 95.0,
     "min_live_score_swing": 68.0,
@@ -21,7 +21,7 @@
       "rank_candidates": 10,
       "after_score_filter": 0,
       "after_event_risk": 0,
-      "small_size_before_filter": 1,
+      "small_size_before_filter": 4,
       "dropped_by_score": 10,
       "dropped_by_event_risk": 0
     },
@@ -49,7 +49,7 @@
     "message": "Event-risk filter applied",
     "path": "data/reference/event_risk_blacklist.csv",
     "as_of_date": "",
-    "active_events": 2,
+    "active_events": 3,
     "excluded_count": 0,
     "excluded_tickers": [],
     "excluded_t1": 0,

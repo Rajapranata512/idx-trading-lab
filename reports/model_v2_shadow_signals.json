@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-08T16:33:54.056865",
-  "run_id": "20260608_163343",
+  "generated_at": "2026-06-09T12:51:03.743393",
+  "run_id": "20260609_125050",
   "signals": [],
   "infer": {
     "status": "empty",
@@ -8,11 +8,10 @@
     "modes": {}
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -102,7 +101,6 @@
         "rows": 0,
         "min_rows": 180
       }
-    },
-    "errors": []
+    }
   }
 }
