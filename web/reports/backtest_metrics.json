@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-09T15:33:14.269898",
+  "generated_at": "2026-06-10T13:49:11.251977",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -87,15 +87,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-06-09",
+    "as_of_date": "2026-06-10",
     "pass": false,
     "status": "risk_off",
     "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
     "values": {
       "breadth_ma50_pct": 0.0,
-      "breadth_ma20_pct": 4.545454545454546,
-      "avg_ret20_pct": -18.035636774729003,
-      "median_atr_pct": 5.362984881360292,
+      "breadth_ma20_pct": 15.909090909090908,
+      "avg_ret20_pct": -17.07095181439798,
+      "median_atr_pct": 5.347332513351042,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -144,7 +144,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "clear",
-    "as_of_date": "2026-06-09",
+    "as_of_date": "2026-06-10",
     "active": false,
     "active_modes": [],
     "triggered_modes_today": [],
