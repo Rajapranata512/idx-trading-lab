@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-10T14:31:28.354486",
+  "generated_at": "2026-06-10T16:12:43.769057",
   "signals": {
-    "generated_at": "2026-06-10T14:31:27.082114",
+    "generated_at": "2026-06-10T16:12:42.292272",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 7925.0,
         "volume": 12874800.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-10 14:31:26.638845",
+        "ingested_at": "2026-06-10 16:12:41.843264",
         "ret_1d": 0.0819112627986349,
         "ret_5d": 0.1083916083916083,
         "ret_20d": -0.1120448179271709,
@@ -104,7 +104,7 @@
         "close": 4260.0,
         "volume": 359183100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-10 14:31:26.638845",
+        "ingested_at": "2026-06-10 16:12:41.843264",
         "ret_1d": 0.0415647921760391,
         "ret_5d": 0.0518518518518518,
         "ret_20d": 0.0047169811320755,
@@ -259,8 +259,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-06-10T14:31:27.103977",
-    "run_id": "20260610_143118",
+    "generated_at": "2026-06-10T16:12:42.314312",
+    "run_id": "20260610_161233",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -285,7 +285,7 @@
       "kill_switch": "clear"
     },
     "score_funnel": {
-      "generated_at": "2026-06-10T14:31:26.976817",
+      "generated_at": "2026-06-10T16:12:42.185752",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -405,6 +405,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260610.json",
+      "run_id": "20260610_161233",
+      "started_at": "2026-06-10T16:12:33.756182",
+      "ended_at": "2026-06-10T16:12:43.028274",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 18,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260610.json",
       "run_id": "20260610_143118",
@@ -572,33 +599,6 @@
       "run_id": "20260608_145330",
       "started_at": "2026-06-08T14:53:30.841201",
       "ended_at": "2026-06-08T14:53:42.425384",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 18,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260608.json",
-      "run_id": "20260608_142206",
-      "started_at": "2026-06-08T14:22:06.927894",
-      "ended_at": "2026-06-08T14:22:20.710815",
       "source": "yfinance_fallback",
       "signals": 0,
       "error_count": 0,
