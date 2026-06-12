@@ -1,22 +1,38 @@
 {
-  "generated_at": "2026-06-11T16:34:17.270037",
-  "run_id": "20260611_163402",
+  "generated_at": "2026-06-12T13:44:12.319001",
+  "run_id": "20260612_134348",
   "signals": [
     {
-      "ticker": "BMRI",
+      "ticker": "HRUM",
       "mode": "t1",
-      "score": 99.63,
+      "score": 98.78,
       "shadow_rank": 1,
-      "shadow_p_win": 0.7592,
-      "shadow_expected_r": 0.898,
+      "shadow_p_win": 0.7378,
+      "shadow_expected_r": 0.8445,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 4250.0,
-      "stop": 3947.76,
-      "tp1": 4552.24,
-      "tp2": 4854.49,
-      "size": 100
+      "entry": 785.0,
+      "stop": 670.7,
+      "tp1": 899.3,
+      "tp2": 1013.6,
+      "size": 200
+    },
+    {
+      "ticker": "NCKL",
+      "mode": "t1",
+      "score": 96.5,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.715,
+      "shadow_expected_r": 0.7875,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 890.0,
+      "stop": 771.3,
+      "tp1": 1008.7,
+      "tp2": 1127.41,
+      "size": 200
     }
   ],
   "infer": {
@@ -24,14 +40,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 1,
+        "rows": 2,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 1
+    "rows": 2
   },
   "train": {
     "status": "skipped_interval",
