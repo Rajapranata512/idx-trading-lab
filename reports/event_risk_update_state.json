@@ -1,15 +1,14 @@
 {
-  "last_attempt_at": "2026-06-12T13:43:59.010133",
-  "last_success_at": "2026-06-12T13:43:59.010133",
+  "last_attempt_at": "2026-06-15T16:06:32.380736",
+  "last_success_at": "2026-06-15T16:06:32.380736",
   "status": "updated",
   "message": "Event-risk blacklist updated successfully",
   "counts": {
-    "rows": 894,
-    "tickers": 572,
+    "rows": 892,
+    "tickers": 570,
     "status_counts": {
       "UMA": 523,
-      "SUSPEND": 370,
-      "MATERIAL": 1
+      "SUSPEND": 369
     }
   },
   "errors": [],
