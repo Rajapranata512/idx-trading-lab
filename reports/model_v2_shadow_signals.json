@@ -1,65 +1,33 @@
 {
-  "generated_at": "2026-06-16T15:23:41.845926",
-  "run_id": "20260616_152319",
+  "generated_at": "2026-06-16T16:04:38.485473",
+  "run_id": "20260616_160427",
   "signals": [
-    {
-      "ticker": "TOWR",
-      "mode": "t1",
-      "score": 95.59,
-      "shadow_rank": 1,
-      "shadow_p_win": 0.9277,
-      "shadow_expected_r": 0.2786,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "model",
-      "entry": 390.0,
-      "stop": 349.29,
-      "tp1": 430.71,
-      "tp2": 471.43,
-      "size": 1000
-    },
-    {
-      "ticker": "BBTN",
-      "mode": "t1",
-      "score": 95.19,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.8553,
-      "shadow_expected_r": 0.2285,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "model",
-      "entry": 1290.0,
-      "stop": 1155.54,
-      "tp1": 1424.46,
-      "tp2": 1558.92,
-      "size": 300
-    },
     {
       "ticker": "HRUM",
       "mode": "t1",
       "score": 100.0,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.8091,
-      "shadow_expected_r": 0.1966,
+      "shadow_rank": 1,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
-      "shadow_model_source": "model",
+      "shadow_model_source": "fallback",
       "entry": 830.0,
       "stop": 710.29,
       "tp1": 949.71,
       "tp2": 1069.41,
-      "size": 300
+      "size": 200
     },
     {
       "ticker": "BBNI",
       "mode": "t1",
       "score": 97.59,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.7809,
-      "shadow_expected_r": 0.177,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.7259,
+      "shadow_expected_r": 0.8147,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
-      "shadow_model_source": "model",
+      "shadow_model_source": "fallback",
       "entry": 3800.0,
       "stop": 3472.98,
       "tp1": 4127.02,
@@ -70,17 +38,49 @@
       "ticker": "TLKM",
       "mode": "t1",
       "score": 96.49,
-      "shadow_rank": 5,
-      "shadow_p_win": 0.7701,
-      "shadow_expected_r": 0.1696,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.7149,
+      "shadow_expected_r": 0.7872,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
-      "shadow_model_source": "model",
+      "shadow_model_source": "fallback",
       "entry": 2930.0,
       "stop": 2621.86,
       "tp1": 3238.14,
       "tp2": 3546.28,
       "size": 100
+    },
+    {
+      "ticker": "TOWR",
+      "mode": "t1",
+      "score": 95.59,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.7059,
+      "shadow_expected_r": 0.7648,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 390.0,
+      "stop": 349.29,
+      "tp1": 430.71,
+      "tp2": 471.43,
+      "size": 800
+    },
+    {
+      "ticker": "BBTN",
+      "mode": "t1",
+      "score": 95.19,
+      "shadow_rank": 5,
+      "shadow_p_win": 0.7019,
+      "shadow_expected_r": 0.7547,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 1290.0,
+      "stop": 1155.54,
+      "tp1": 1424.46,
+      "tp2": 1558.92,
+      "size": 200
     }
   ],
   "infer": {
@@ -89,104 +89,19 @@
     "modes": {
       "t1": {
         "rows": 5,
-        "source": "model",
+        "source": "fallback",
         "threshold": 0.52,
-        "thresholds_by_regime": {
-          "default": 0.52
-        },
-        "metadata": {
-          "saved_at": "2026-06-16T15:23:41.807827",
-          "train_rows": 836,
-          "positive_rate": 0.32177033492822965,
-          "auc_train": 0.7277,
-          "features": [
-            "score",
-            "ret_1d",
-            "ret_5d",
-            "ret_20d",
-            "atr_pct",
-            "vol_20d",
-            "avg_vol_20d",
-            "close",
-            "ma_20",
-            "ma_50",
-            "ma_slope_20",
-            "ma_slope_50",
-            "dist_ma_20",
-            "dist_ma_50",
-            "vol_ratio",
-            "ret_5d_20d_ratio",
-            "high_low_range",
-            "close_position",
-            "volume_ratio_20d",
-            "rsi_14",
-            "rsi_slope",
-            "mfi_14",
-            "obv_slope",
-            "rank_ret_20d",
-            "rank_vol_20d",
-            "turnover_ratio_20d",
-            "dist_high_20",
-            "dist_low_20",
-            "ma_gap_20_50",
-            "ma_stack_bullish",
-            "market_breadth_ma20_pct",
-            "market_breadth_ma50_pct",
-            "market_avg_ret20_pct",
-            "market_median_atr_pct",
-            "relative_ret_20d"
-          ],
-          "model_type": "logreg",
-          "cv_auc": 0.5878,
-          "model_comparison": {
-            "logreg": 0.5878,
-            "lightgbm": 0.5784,
-            "xgboost": 0.4901
-          },
-          "calibration": {
-            "calibrated": true,
-            "ece": 0.183976
-          },
-          "available_models": [
-            "logreg",
-            "lightgbm",
-            "xgboost"
-          ],
-          "label_strategy": "binary_positive_net_return",
-          "thresholds_by_regime": {
-            "default": 0.52
-          },
-          "return_profile": {
-            "overall": {
-              "mean_return_r": -0.140757,
-              "positive_mean_r": 0.328689,
-              "negative_mean_r": -0.363475,
-              "sample_count": 836
-            },
-            "by_regime": {
-              "risk_off": {
-                "mean_return_r": -0.140757,
-                "positive_mean_r": 0.328689,
-                "negative_mean_r": -0.363475,
-                "sample_count": 836
-              }
-            }
-          },
-          "target_rank_positive_cutoff": null,
-          "mode": "t1",
-          "horizon_days": 1,
-          "trained_at": "2026-06-16T15:23:40.899519"
-        }
+        "thresholds_by_regime": {},
+        "metadata": {}
       }
     },
     "rows": 5
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -276,7 +191,6 @@
         "rows": 0,
         "min_rows": 180
       }
-    },
-    "errors": []
+    }
   }
 }
