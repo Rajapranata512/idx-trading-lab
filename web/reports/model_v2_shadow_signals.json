@@ -1,33 +1,65 @@
 {
-  "generated_at": "2026-06-15T16:22:48.961486",
-  "run_id": "20260615_162240",
+  "generated_at": "2026-06-16T15:23:41.845926",
+  "run_id": "20260616_152319",
   "signals": [
+    {
+      "ticker": "TOWR",
+      "mode": "t1",
+      "score": 95.59,
+      "shadow_rank": 1,
+      "shadow_p_win": 0.9277,
+      "shadow_expected_r": 0.2786,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "model",
+      "entry": 390.0,
+      "stop": 349.29,
+      "tp1": 430.71,
+      "tp2": 471.43,
+      "size": 1000
+    },
+    {
+      "ticker": "BBTN",
+      "mode": "t1",
+      "score": 95.19,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.8553,
+      "shadow_expected_r": 0.2285,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "model",
+      "entry": 1290.0,
+      "stop": 1155.54,
+      "tp1": 1424.46,
+      "tp2": 1558.92,
+      "size": 300
+    },
     {
       "ticker": "HRUM",
       "mode": "t1",
       "score": 100.0,
-      "shadow_rank": 1,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.8091,
+      "shadow_expected_r": 0.1966,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
-      "shadow_model_source": "fallback",
+      "shadow_model_source": "model",
       "entry": 830.0,
       "stop": 710.29,
       "tp1": 949.71,
       "tp2": 1069.41,
-      "size": 200
+      "size": 300
     },
     {
       "ticker": "BBNI",
       "mode": "t1",
       "score": 97.59,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.7259,
-      "shadow_expected_r": 0.8147,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.7809,
+      "shadow_expected_r": 0.177,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
-      "shadow_model_source": "fallback",
+      "shadow_model_source": "model",
       "entry": 3800.0,
       "stop": 3472.98,
       "tp1": 4127.02,
@@ -38,49 +70,17 @@
       "ticker": "TLKM",
       "mode": "t1",
       "score": 96.49,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.7149,
-      "shadow_expected_r": 0.7872,
+      "shadow_rank": 5,
+      "shadow_p_win": 0.7701,
+      "shadow_expected_r": 0.1696,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
-      "shadow_model_source": "fallback",
+      "shadow_model_source": "model",
       "entry": 2930.0,
       "stop": 2621.86,
       "tp1": 3238.14,
       "tp2": 3546.28,
       "size": 100
-    },
-    {
-      "ticker": "TOWR",
-      "mode": "t1",
-      "score": 95.59,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.7059,
-      "shadow_expected_r": 0.7648,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 390.0,
-      "stop": 349.29,
-      "tp1": 430.71,
-      "tp2": 471.43,
-      "size": 800
-    },
-    {
-      "ticker": "BBTN",
-      "mode": "t1",
-      "score": 95.19,
-      "shadow_rank": 5,
-      "shadow_p_win": 0.7019,
-      "shadow_expected_r": 0.7547,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 1290.0,
-      "stop": 1155.54,
-      "tp1": 1424.46,
-      "tp2": 1558.92,
-      "size": 200
     }
   ],
   "infer": {
@@ -89,26 +89,111 @@
     "modes": {
       "t1": {
         "rows": 5,
-        "source": "fallback",
+        "source": "model",
         "threshold": 0.52,
-        "thresholds_by_regime": {},
-        "metadata": {}
+        "thresholds_by_regime": {
+          "default": 0.52
+        },
+        "metadata": {
+          "saved_at": "2026-06-16T15:23:41.807827",
+          "train_rows": 836,
+          "positive_rate": 0.32177033492822965,
+          "auc_train": 0.7277,
+          "features": [
+            "score",
+            "ret_1d",
+            "ret_5d",
+            "ret_20d",
+            "atr_pct",
+            "vol_20d",
+            "avg_vol_20d",
+            "close",
+            "ma_20",
+            "ma_50",
+            "ma_slope_20",
+            "ma_slope_50",
+            "dist_ma_20",
+            "dist_ma_50",
+            "vol_ratio",
+            "ret_5d_20d_ratio",
+            "high_low_range",
+            "close_position",
+            "volume_ratio_20d",
+            "rsi_14",
+            "rsi_slope",
+            "mfi_14",
+            "obv_slope",
+            "rank_ret_20d",
+            "rank_vol_20d",
+            "turnover_ratio_20d",
+            "dist_high_20",
+            "dist_low_20",
+            "ma_gap_20_50",
+            "ma_stack_bullish",
+            "market_breadth_ma20_pct",
+            "market_breadth_ma50_pct",
+            "market_avg_ret20_pct",
+            "market_median_atr_pct",
+            "relative_ret_20d"
+          ],
+          "model_type": "logreg",
+          "cv_auc": 0.5878,
+          "model_comparison": {
+            "logreg": 0.5878,
+            "lightgbm": 0.5784,
+            "xgboost": 0.4901
+          },
+          "calibration": {
+            "calibrated": true,
+            "ece": 0.183976
+          },
+          "available_models": [
+            "logreg",
+            "lightgbm",
+            "xgboost"
+          ],
+          "label_strategy": "binary_positive_net_return",
+          "thresholds_by_regime": {
+            "default": 0.52
+          },
+          "return_profile": {
+            "overall": {
+              "mean_return_r": -0.140757,
+              "positive_mean_r": 0.328689,
+              "negative_mean_r": -0.363475,
+              "sample_count": 836
+            },
+            "by_regime": {
+              "risk_off": {
+                "mean_return_r": -0.140757,
+                "positive_mean_r": 0.328689,
+                "negative_mean_r": -0.363475,
+                "sample_count": 836
+              }
+            }
+          },
+          "target_rank_positive_cutoff": null,
+          "mode": "t1",
+          "horizon_days": 1,
+          "trained_at": "2026-06-16T15:23:40.899519"
+        }
       }
     },
     "rows": 5
   },
   "train": {
-    "status": "skipped_interval",
-    "message": "Last model_v2 training still within 7 days interval",
-    "updated": false,
+    "status": "updated",
+    "message": "Model v2 trained for modes: t1",
+    "updated": true,
     "state_path": "reports/model_v2_state.json",
+    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
-        "rows": 616,
-        "train_rows": 616,
-        "positive_rate": 0.2012987012987013,
-        "auc_train": 0.9999,
+        "rows": 836,
+        "train_rows": 836,
+        "positive_rate": 0.32177033492822965,
+        "auc_train": 0.7277,
         "features": [
           "score",
           "ret_1d",
@@ -146,21 +231,21 @@
           "market_median_atr_pct",
           "relative_ret_20d"
         ],
-        "model_type": "lightgbm",
-        "cv_auc": 0.528,
+        "model_type": "logreg",
+        "cv_auc": 0.5878,
         "model_comparison": {
-          "lightgbm": 0.528,
-          "xgboost": 0.3957,
-          "logreg": 0.385
+          "logreg": 0.5878,
+          "lightgbm": 0.5784,
+          "xgboost": 0.4901
         },
         "calibration": {
           "calibrated": true,
-          "ece": 0.051964
+          "ece": 0.183976
         },
         "available_models": [
+          "logreg",
           "lightgbm",
-          "xgboost",
-          "logreg"
+          "xgboost"
         ],
         "label_strategy": "binary_positive_net_return",
         "thresholds_by_regime": {
@@ -168,17 +253,17 @@
         },
         "return_profile": {
           "overall": {
-            "mean_return_r": -0.255025,
-            "positive_mean_r": 0.277316,
-            "negative_mean_r": -0.389192,
-            "sample_count": 616
+            "mean_return_r": -0.140757,
+            "positive_mean_r": 0.328689,
+            "negative_mean_r": -0.363475,
+            "sample_count": 836
           },
           "by_regime": {
             "risk_off": {
-              "mean_return_r": -0.255025,
-              "positive_mean_r": 0.277316,
-              "negative_mean_r": -0.389192,
-              "sample_count": 616
+              "mean_return_r": -0.140757,
+              "positive_mean_r": 0.328689,
+              "negative_mean_r": -0.363475,
+              "sample_count": 836
             }
           }
         },
@@ -191,6 +276,7 @@
         "rows": 0,
         "min_rows": 180
       }
-    }
+    },
+    "errors": []
   }
 }

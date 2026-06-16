@@ -1,13 +1,13 @@
 {
-  "last_success_at": "2026-06-08T16:33:53.189818",
+  "last_success_at": "2026-06-16T15:23:40.899519",
   "updated": true,
   "modes": {
     "t1": {
       "status": "trained",
-      "rows": 616,
-      "train_rows": 616,
-      "positive_rate": 0.2012987012987013,
-      "auc_train": 0.9999,
+      "rows": 836,
+      "train_rows": 836,
+      "positive_rate": 0.32177033492822965,
+      "auc_train": 0.7277,
       "features": [
         "score",
         "ret_1d",
@@ -45,21 +45,21 @@
         "market_median_atr_pct",
         "relative_ret_20d"
       ],
-      "model_type": "lightgbm",
-      "cv_auc": 0.528,
+      "model_type": "logreg",
+      "cv_auc": 0.5878,
       "model_comparison": {
-        "lightgbm": 0.528,
-        "xgboost": 0.3957,
-        "logreg": 0.385
+        "logreg": 0.5878,
+        "lightgbm": 0.5784,
+        "xgboost": 0.4901
       },
       "calibration": {
         "calibrated": true,
-        "ece": 0.051964
+        "ece": 0.183976
       },
       "available_models": [
+        "logreg",
         "lightgbm",
-        "xgboost",
-        "logreg"
+        "xgboost"
       ],
       "label_strategy": "binary_positive_net_return",
       "thresholds_by_regime": {
@@ -67,17 +67,17 @@
       },
       "return_profile": {
         "overall": {
-          "mean_return_r": -0.255025,
-          "positive_mean_r": 0.277316,
-          "negative_mean_r": -0.389192,
-          "sample_count": 616
+          "mean_return_r": -0.140757,
+          "positive_mean_r": 0.328689,
+          "negative_mean_r": -0.363475,
+          "sample_count": 836
         },
         "by_regime": {
           "risk_off": {
-            "mean_return_r": -0.255025,
-            "positive_mean_r": 0.277316,
-            "negative_mean_r": -0.389192,
-            "sample_count": 616
+            "mean_return_r": -0.140757,
+            "positive_mean_r": 0.328689,
+            "negative_mean_r": -0.363475,
+            "sample_count": 836
           }
         }
       },
