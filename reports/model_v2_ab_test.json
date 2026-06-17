@@ -1,26 +1,26 @@
 {
-  "generated_at": "2026-06-16T17:28:30.491975",
-  "run_id": "20260616_172822",
+  "generated_at": "2026-06-17T13:59:34.132414",
+  "run_id": "20260617_135916",
   "max_positions": 3,
   "v1_top": [
-    "HRUM",
-    "BBNI",
-    "TLKM"
+    "TOWR",
+    "NCKL",
+    "BBNI"
   ],
   "v2_top": [
-    "HRUM",
-    "BBNI",
-    "TLKM"
+    "TOWR",
+    "NCKL",
+    "BBNI"
   ],
   "overlap_count": 3,
   "overlap_tickers": [
     "BBNI",
-    "HRUM",
-    "TLKM"
+    "NCKL",
+    "TOWR"
   ],
   "only_v1": [],
   "only_v2": [],
   "jaccard_overlap": 1.0,
-  "v1_avg_score": 98.0267,
-  "v2_avg_p_win": 0.7303
+  "v1_avg_score": 99.5367,
+  "v2_avg_p_win": 0.7454
 }

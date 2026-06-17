@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T17:28:30.569389",
+  "generated_at": "2026-06-17T13:59:34.215968",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,12 +14,12 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 40.0,
-      "ProfitFactor": 0.49642905683316496,
-      "Expectancy": -0.009030049492532832,
+      "WinRate": 30.0,
+      "ProfitFactor": 0.451036041033117,
+      "Expectancy": -0.010172595426548152,
       "Trades": 10,
-      "CAGR": -6.029670502285178,
-      "MaxDD": -0.46170761592744325
+      "CAGR": -6.764680175422566,
+      "MaxDD": -0.47795087407956915
     },
     "swing": {
       "WinRate": 0.0,
@@ -87,15 +87,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-06-15",
+    "as_of_date": "2026-06-17",
     "pass": false,
     "status": "risk_off",
     "reason": "Failed checks: breadth_ma50_ok, avg_ret20_ok",
     "values": {
       "breadth_ma50_pct": 0.0,
-      "breadth_ma20_pct": 52.27272727272727,
-      "avg_ret20_pct": -11.11033975868376,
-      "median_atr_pct": 5.230218427861374,
+      "breadth_ma20_pct": 56.81818181818182,
+      "avg_ret20_pct": -8.694998097111434,
+      "median_atr_pct": 5.156083025063969,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -126,8 +126,8 @@
       "t1": {
         "trades_recent": 10,
         "rolling_window": 80,
-        "rolling_pf": 0.4964290596015578,
-        "rolling_expectancy": -0.009030049492532832,
+        "rolling_pf": 0.45103604346713233,
+        "rolling_expectancy": -0.010172595426548152,
         "triggered": false,
         "reason": "insufficient_recent_trades"
       },
@@ -144,7 +144,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "clear",
-    "as_of_date": "2026-06-15",
+    "as_of_date": "2026-06-17",
     "active": false,
     "active_modes": [],
     "triggered_modes_today": [],
