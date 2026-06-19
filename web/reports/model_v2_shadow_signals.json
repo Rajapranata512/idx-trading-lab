@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-18T15:58:28.573385",
-  "run_id": "20260618_155820",
+  "generated_at": "2026-06-19T13:49:49.091829",
+  "run_id": "20260619_134930",
   "signals": [
     {
-      "ticker": "TOWR",
+      "ticker": "MBMA",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 1,
@@ -12,43 +12,27 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 398.0,
-      "stop": 355.98,
-      "tp1": 440.02,
-      "tp2": 482.05,
-      "size": 800
-    },
-    {
-      "ticker": "NCKL",
-      "mode": "t1",
-      "score": 97.09,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.7209,
-      "shadow_expected_r": 0.8022,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 910.0,
-      "stop": 789.56,
-      "tp1": 1030.44,
-      "tp2": 1150.88,
-      "size": 200
-    },
-    {
-      "ticker": "MBMA",
-      "mode": "t1",
-      "score": 96.71,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.7171,
-      "shadow_expected_r": 0.7928,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 535.0,
-      "stop": 452.27,
-      "tp1": 617.73,
-      "tp2": 700.46,
+      "entry": 540.0,
+      "stop": 458.18,
+      "tp1": 621.82,
+      "tp2": 703.64,
       "size": 300
+    },
+    {
+      "ticker": "HRUM",
+      "mode": "t1",
+      "score": 97.96,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.7296,
+      "shadow_expected_r": 0.824,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 825.0,
+      "stop": 707.18,
+      "tp1": 942.82,
+      "tp2": 1060.63,
+      "size": 200
     }
   ],
   "infer": {
@@ -56,14 +40,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 3,
+        "rows": 2,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 3
+    "rows": 2
   },
   "train": {
     "status": "skipped_interval",
