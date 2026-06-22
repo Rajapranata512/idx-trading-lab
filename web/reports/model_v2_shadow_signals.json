@@ -1,38 +1,70 @@
 {
-  "generated_at": "2026-06-19T15:46:42.297646",
-  "run_id": "20260619_154635",
+  "generated_at": "2026-06-22T15:32:44.818297",
+  "run_id": "20260622_153224",
   "signals": [
     {
-      "ticker": "MBMA",
+      "ticker": "TOWR",
       "mode": "t1",
-      "score": 100.0,
+      "score": 98.49,
       "shadow_rank": 1,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
+      "shadow_p_win": 0.7349,
+      "shadow_expected_r": 0.8372,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 540.0,
-      "stop": 458.18,
-      "tp1": 621.82,
-      "tp2": 703.64,
+      "entry": 370.0,
+      "stop": 328.07,
+      "tp1": 411.93,
+      "tp2": 453.86,
+      "size": 800
+    },
+    {
+      "ticker": "ESSA",
+      "mode": "t1",
+      "score": 98.42,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.7342,
+      "shadow_expected_r": 0.8355,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 645.0,
+      "stop": 544.95,
+      "tp1": 745.05,
+      "tp2": 845.09,
       "size": 300
     },
     {
       "ticker": "HRUM",
       "mode": "t1",
-      "score": 97.96,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.7296,
-      "shadow_expected_r": 0.824,
+      "score": 97.8,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.728,
+      "shadow_expected_r": 0.82,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 825.0,
-      "stop": 707.18,
-      "tp1": 942.82,
-      "tp2": 1060.63,
+      "entry": 840.0,
+      "stop": 719.17,
+      "tp1": 960.83,
+      "tp2": 1081.66,
       "size": 200
+    },
+    {
+      "ticker": "MBMA",
+      "mode": "t1",
+      "score": 95.02,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.7002,
+      "shadow_expected_r": 0.7505,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 505.0,
+      "stop": 423.31,
+      "tp1": 586.69,
+      "tp2": 668.38,
+      "size": 300
     }
   ],
   "infer": {
@@ -40,14 +72,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 2,
+        "rows": 4,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 2
+    "rows": 4
   },
   "train": {
     "status": "skipped_interval",
