@@ -1,85 +1,37 @@
 {
-  "generated_at": "2026-06-23T15:29:33.728959",
-  "run_id": "20260623_152920",
+  "generated_at": "2026-06-24T12:29:36.899884",
+  "run_id": "20260624_122916",
   "signals": [
-    {
-      "ticker": "ESSA",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 1,
-      "shadow_p_win": 0.8086,
-      "shadow_expected_r": 0.1752,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "model",
-      "entry": 660.0,
-      "stop": 564.24,
-      "tp1": 755.76,
-      "tp2": 851.52,
-      "size": 400
-    },
-    {
-      "ticker": "KLBF",
-      "mode": "t1",
-      "score": 98.08,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.7332,
-      "shadow_expected_r": 0.1277,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "model",
-      "entry": 760.0,
-      "stop": 687.34,
-      "tp1": 832.66,
-      "tp2": 905.31,
-      "size": 700
-    },
-    {
-      "ticker": "MIKA",
-      "mode": "t1",
-      "score": 97.9,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.6912,
-      "shadow_expected_r": 0.1012,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "model",
-      "entry": 1590.0,
-      "stop": 1426.25,
-      "tp1": 1753.75,
-      "tp2": 1917.49,
-      "size": 300
-    },
     {
       "ticker": "AKRA",
       "mode": "t1",
       "score": 100.0,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.6079,
-      "shadow_expected_r": 0.0486,
+      "shadow_rank": 1,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
-      "shadow_model_source": "model",
+      "shadow_model_source": "fallback",
       "entry": 1275.0,
-      "stop": 1155.79,
-      "tp1": 1394.21,
-      "tp2": 1513.42,
-      "size": 400
+      "stop": 1156.45,
+      "tp1": 1393.55,
+      "tp2": 1512.1,
+      "size": 300
     },
     {
-      "ticker": "MBMA",
+      "ticker": "KLBF",
       "mode": "t1",
       "score": 100.0,
-      "shadow_rank": 5,
-      "shadow_p_win": 0.3879,
-      "shadow_expected_r": -0.0903,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "entry": 535.0,
-      "stop": 453.86,
-      "tp1": 616.14,
-      "tp2": 697.29,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 765.0,
+      "stop": 692.53,
+      "tp1": 837.47,
+      "tp2": 909.93,
       "size": 500
     }
   ],
@@ -88,105 +40,20 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 5,
-        "source": "model",
+        "rows": 2,
+        "source": "fallback",
         "threshold": 0.52,
-        "thresholds_by_regime": {
-          "default": 0.52
-        },
-        "metadata": {
-          "saved_at": "2026-06-23T15:29:33.707333",
-          "train_rows": 1056,
-          "positive_rate": 0.3134469696969697,
-          "auc_train": 0.9992,
-          "features": [
-            "score",
-            "ret_1d",
-            "ret_5d",
-            "ret_20d",
-            "atr_pct",
-            "vol_20d",
-            "avg_vol_20d",
-            "close",
-            "ma_20",
-            "ma_50",
-            "ma_slope_20",
-            "ma_slope_50",
-            "dist_ma_20",
-            "dist_ma_50",
-            "vol_ratio",
-            "ret_5d_20d_ratio",
-            "high_low_range",
-            "close_position",
-            "volume_ratio_20d",
-            "rsi_14",
-            "rsi_slope",
-            "mfi_14",
-            "obv_slope",
-            "rank_ret_20d",
-            "rank_vol_20d",
-            "turnover_ratio_20d",
-            "dist_high_20",
-            "dist_low_20",
-            "ma_gap_20_50",
-            "ma_stack_bullish",
-            "market_breadth_ma20_pct",
-            "market_breadth_ma50_pct",
-            "market_avg_ret20_pct",
-            "market_median_atr_pct",
-            "relative_ret_20d"
-          ],
-          "model_type": "lightgbm",
-          "cv_auc": 0.5335,
-          "model_comparison": {
-            "lightgbm": 0.5335,
-            "xgboost": 0.4996,
-            "logreg": 0.4785
-          },
-          "calibration": {
-            "calibrated": true,
-            "ece": 0.178628
-          },
-          "available_models": [
-            "lightgbm",
-            "xgboost",
-            "logreg"
-          ],
-          "label_strategy": "binary_positive_net_return",
-          "thresholds_by_regime": {
-            "default": 0.52
-          },
-          "return_profile": {
-            "overall": {
-              "mean_return_r": -0.13726,
-              "positive_mean_r": 0.296049,
-              "negative_mean_r": -0.335088,
-              "sample_count": 1056
-            },
-            "by_regime": {
-              "risk_off": {
-                "mean_return_r": -0.13726,
-                "positive_mean_r": 0.296049,
-                "negative_mean_r": -0.335088,
-                "sample_count": 1056
-              }
-            }
-          },
-          "target_rank_positive_cutoff": null,
-          "mode": "t1",
-          "horizon_days": 1,
-          "trained_at": "2026-06-23T15:29:32.829696"
-        }
+        "thresholds_by_regime": {},
+        "metadata": {}
       }
     },
-    "rows": 5
+    "rows": 2
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -276,7 +143,6 @@
         "rows": 0,
         "min_rows": 180
       }
-    },
-    "errors": []
+    }
   }
 }

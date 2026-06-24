@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-23T15:29:33.823096",
+  "generated_at": "2026-06-24T12:29:36.980268",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,12 +14,12 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 33.33333333333333,
-      "ProfitFactor": 0.5017682893740806,
-      "Expectancy": -0.007916088673627761,
-      "Trades": 12,
-      "CAGR": -5.3834166253767695,
-      "MaxDD": -0.3212111662704394
+      "WinRate": 30.76923076923077,
+      "ProfitFactor": 0.37198825737266156,
+      "Expectancy": -0.012423927996586637,
+      "Trades": 13,
+      "CAGR": -8.36348509540411,
+      "MaxDD": -0.5201241759576634
     },
     "swing": {
       "WinRate": 0.0,
@@ -87,15 +87,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-06-23",
+    "as_of_date": "2026-06-24",
     "pass": false,
     "status": "risk_off",
     "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
     "values": {
       "breadth_ma50_pct": 0.0,
-      "breadth_ma20_pct": 43.18181818181818,
-      "avg_ret20_pct": -5.2694950767723325,
-      "median_atr_pct": 5.245388147981108,
+      "breadth_ma20_pct": 25.0,
+      "avg_ret20_pct": -9.072831041818365,
+      "median_atr_pct": 5.182103350499519,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -124,10 +124,10 @@
     "triggered_modes": [],
     "modes": {
       "t1": {
-        "trades_recent": 12,
+        "trades_recent": 13,
         "rolling_window": 80,
-        "rolling_pf": 0.5017682920058187,
-        "rolling_expectancy": -0.007916088673627761,
+        "rolling_pf": 0.3719882588190826,
+        "rolling_expectancy": -0.012423927996586637,
         "triggered": false,
         "reason": "insufficient_recent_trades"
       },
@@ -144,7 +144,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "clear",
-    "as_of_date": "2026-06-23",
+    "as_of_date": "2026-06-24",
     "active": false,
     "active_modes": [],
     "triggered_modes_today": [],
