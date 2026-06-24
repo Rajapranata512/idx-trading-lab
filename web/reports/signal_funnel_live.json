@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-24T12:29:37.013472",
-  "run_id": "20260624_122916",
+  "generated_at": "2026-06-24T13:30:25.235861",
+  "run_id": "20260624_133008",
   "gate_pass": {
     "t1": false,
     "swing": false
@@ -25,7 +25,7 @@
     "kill_switch": "clear"
   },
   "score_funnel": {
-    "generated_at": "2026-06-24T12:29:36.872763",
+    "generated_at": "2026-06-24T13:30:25.086475",
     "thresholds": {
       "min_live_score_t1": 95.0,
       "min_live_score_swing": 68.0,
