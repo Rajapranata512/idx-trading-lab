@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-24T15:15:53.379321",
-  "run_id": "20260624_151539",
+  "generated_at": "2026-06-25T12:33:34.735495",
+  "run_id": "20260625_123318",
   "signals": [
     {
       "ticker": "AKRA",
@@ -12,10 +12,10 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1275.0,
-      "stop": 1156.45,
-      "tp1": 1393.55,
-      "tp2": 1512.1,
+      "entry": 1290.0,
+      "stop": 1170.63,
+      "tp1": 1409.37,
+      "tp2": 1528.74,
       "size": 300
     },
     {
@@ -28,11 +28,43 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 765.0,
-      "stop": 692.53,
-      "tp1": 837.47,
-      "tp2": 909.93,
+      "entry": 780.0,
+      "stop": 703.42,
+      "tp1": 856.58,
+      "tp2": 933.15,
       "size": 500
+    },
+    {
+      "ticker": "MIKA",
+      "mode": "t1",
+      "score": 100.0,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 1735.0,
+      "stop": 1554.98,
+      "tp1": 1915.02,
+      "tp2": 2095.03,
+      "size": 200
+    },
+    {
+      "ticker": "ASII",
+      "mode": "t1",
+      "score": 96.17,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.7117,
+      "shadow_expected_r": 0.7792,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 4920.0,
+      "stop": 4522.09,
+      "tp1": 5317.91,
+      "tp2": 5715.81,
+      "size": 100
     }
   ],
   "infer": {
@@ -40,14 +72,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 2,
+        "rows": 4,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 2
+    "rows": 4
   },
   "train": {
     "status": "skipped_interval",

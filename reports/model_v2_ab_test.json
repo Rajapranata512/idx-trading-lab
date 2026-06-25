@@ -1,19 +1,22 @@
 {
-  "generated_at": "2026-06-24T15:15:53.384926",
-  "run_id": "20260624_151539",
+  "generated_at": "2026-06-25T12:33:34.742897",
+  "run_id": "20260625_123318",
   "max_positions": 3,
   "v1_top": [
     "AKRA",
-    "KLBF"
+    "KLBF",
+    "MIKA"
   ],
   "v2_top": [
     "AKRA",
-    "KLBF"
+    "KLBF",
+    "MIKA"
   ],
-  "overlap_count": 2,
+  "overlap_count": 3,
   "overlap_tickers": [
     "AKRA",
-    "KLBF"
+    "KLBF",
+    "MIKA"
   ],
   "only_v1": [],
   "only_v2": [],
