@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-25T15:22:18.209713",
-  "run_id": "20260625_152210",
+  "generated_at": "2026-06-26T12:26:30.073361",
+  "run_id": "20260626_122617",
   "signals": [
     {
       "ticker": "AKRA",
@@ -12,10 +12,10 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1290.0,
-      "stop": 1170.63,
-      "tp1": 1409.37,
-      "tp2": 1528.74,
+      "entry": 1270.0,
+      "stop": 1152.01,
+      "tp1": 1387.99,
+      "tp2": 1505.97,
       "size": 300
     },
     {
@@ -28,10 +28,10 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 780.0,
-      "stop": 703.42,
-      "tp1": 856.58,
-      "tp2": 933.15,
+      "entry": 790.0,
+      "stop": 715.32,
+      "tp1": 864.68,
+      "tp2": 939.36,
       "size": 500
     },
     {
@@ -44,27 +44,27 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1735.0,
-      "stop": 1554.98,
-      "tp1": 1915.02,
-      "tp2": 2095.03,
+      "entry": 1700.0,
+      "stop": 1524.99,
+      "tp1": 1875.01,
+      "tp2": 2050.03,
       "size": 200
     },
     {
-      "ticker": "ASII",
+      "ticker": "TOWR",
       "mode": "t1",
-      "score": 96.17,
+      "score": 96.19,
       "shadow_rank": 4,
-      "shadow_p_win": 0.7117,
-      "shadow_expected_r": 0.7792,
+      "shadow_p_win": 0.7119,
+      "shadow_expected_r": 0.7797,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 4920.0,
-      "stop": 4522.09,
-      "tp1": 5317.91,
-      "tp2": 5715.81,
-      "size": 100
+      "entry": 374.0,
+      "stop": 330.39,
+      "tp1": 417.61,
+      "tp2": 461.22,
+      "size": 900
     }
   ],
   "infer": {
