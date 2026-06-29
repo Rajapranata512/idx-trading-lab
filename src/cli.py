@@ -27,6 +27,7 @@ from src.report import (
 from src.report.render_report import render_html_report, write_signal_json
 from src.risk import maybe_auto_recalibrate_volatility_targets, maybe_auto_update_event_risk
 from src.risk.manager import apply_global_position_limit, propose_trade_plan
+from src.strategy.market_filter import evaluate_market_filter
 from src.strategy import rank_all_modes, score_history_modes
 from src.universe import maybe_auto_update_universe
 from src.utils import JsonRunLogger
@@ -178,8 +179,22 @@ def score_step(settings: Settings) -> dict[str, Any]:
         top_n_per_mode=settings.pipeline.top_n_per_mode,
     )
 
-    plan_t1 = propose_trade_plan(top_t1_raw, settings.risk)
-    plan_swing = propose_trade_plan(top_swing_raw, settings.risk)
+    # --- Market Filter (Defensive Mode) ---
+    mf_result = None
+    if getattr(settings.risk, 'market_filter_enabled', True):
+        mf_result = evaluate_market_filter(
+            features=feats,
+            defensive_breadth_ma50_threshold=float(getattr(settings.risk, 'market_filter_defensive_breadth_ma50', 40.0)),
+            defensive_breadth_ma20_threshold=float(getattr(settings.risk, 'market_filter_defensive_breadth_ma20', 45.0)),
+            severe_breadth_ma50_threshold=float(getattr(settings.risk, 'market_filter_severe_breadth_ma50', 25.0)),
+            defensive_position_mult=float(getattr(settings.risk, 'market_filter_defensive_position_mult', 0.5)),
+            severe_position_mult=float(getattr(settings.risk, 'market_filter_severe_position_mult', 0.25)),
+            defensive_score_boost=float(getattr(settings.risk, 'market_filter_defensive_score_boost', 5.0)),
+            severe_score_boost=float(getattr(settings.risk, 'market_filter_severe_score_boost', 10.0)),
+        )
+
+    plan_t1 = propose_trade_plan(top_t1_raw, settings.risk, market_filter_result=mf_result)
+    plan_swing = propose_trade_plan(top_swing_raw, settings.risk, market_filter_result=mf_result)
     lot_size = int(settings.risk.position_lot)
     t1_small_size_pre = int((plan_t1["size"] < lot_size).sum()) if "size" in plan_t1.columns else 0
     swing_small_size_pre = int((plan_swing["size"] < lot_size).sum()) if "size" in plan_swing.columns else 0
@@ -187,6 +202,12 @@ def score_step(settings: Settings) -> dict[str, Any]:
     # Live execution guardrails by mode-specific minimum score.
     min_score_t1 = float(settings.pipeline.min_live_score_t1)
     min_score_swing = float(settings.pipeline.min_live_score_swing)
+
+    # Apply market filter score boost (raise min score thresholds in defensive mode)
+    if mf_result is not None and mf_result.min_score_boost > 0:
+        min_score_t1 = min(100.0, min_score_t1 + mf_result.min_score_boost)
+        min_score_swing = min(100.0, min_score_swing + mf_result.min_score_boost)
+
     t1_before_score = int(len(plan_t1))
     swing_before_score = int(len(plan_swing))
     if "score" in plan_t1.columns:
@@ -298,6 +319,17 @@ def score_step(settings: Settings) -> dict[str, Any]:
             ),
         },
         "event_risk": event_risk_info,
+        "market_filter": {
+            "enabled": mf_result is not None,
+            "is_defensive": mf_result.is_defensive if mf_result else False,
+            "breadth_ma20_pct": round(mf_result.breadth_ma20_pct, 2) if mf_result else 0.0,
+            "breadth_ma50_pct": round(mf_result.breadth_ma50_pct, 2) if mf_result else 0.0,
+            "position_size_multiplier": round(mf_result.position_size_multiplier, 4) if mf_result else 1.0,
+            "min_score_boost": round(mf_result.min_score_boost, 2) if mf_result else 0.0,
+            "effective_min_score_t1": min_score_t1,
+            "effective_min_score_swing": min_score_swing,
+            "reason": mf_result.reason if mf_result else "",
+        },
     }
     signal_funnel_path = _write_json(reports_dir / "signal_funnel.json", signal_funnel)
     return {

@@ -9,6 +9,7 @@ import pandas as pd
 
 from src.config import Settings
 from src.utils import atomic_write_json, atomic_write_text
+from src.risk.trailing_stop import compute_trailing_stops_df
 
 REQUIRED_FILLS_SCHEMA = [
     "executed_at",
@@ -209,7 +210,8 @@ def _load_signal_snapshots(snapshot_dir: str | Path, lookback_days: int) -> tupl
             )
     if not rows:
         return pd.DataFrame(), meta
-    return pd.DataFrame(rows).sort_values(["signal_time", "score"], ascending=[False, False]).reset_index(drop=True), meta
+    df = pd.DataFrame(rows).sort_values(["signal_time", "score"], ascending=[False, False]).reset_index(drop=True)
+    return df, meta
 
 
 def _load_fills(fills_path: str | Path, lookback_days: int) -> pd.DataFrame:
@@ -403,6 +405,9 @@ def _match_entries_to_signals(
                 "realized_r": round(_safe_float(entry.get("realized_r"), float("nan")), 4),
                 "pnl_idr": round(_safe_float(entry.get("pnl_idr"), 0.0), 2),
                 "liq_bucket": str(pick.get("liq_bucket", "")),
+                "high_since_entry": round(_safe_float(pick.get("high_since_entry"), 0.0), 2),
+                "trailing_stop": round(_safe_float(pick.get("trailing_stop"), 0.0), 2),
+                "trailing_status": str(pick.get("trailing_status", "")),
             }
         )
 
@@ -578,6 +583,24 @@ def reconcile_live_signals(
     active_fills_path = fills_path or cfg.fills_csv_path
 
     signals, snapshot_meta = _load_signal_snapshots(cfg.signal_snapshot_dir, active_lookback)
+    
+    if getattr(settings.risk, "trailing_stop_enabled", True) and not signals.empty:
+        try:
+            prices = pd.read_csv(settings.data.canonical_prices_path)
+            # rename signal_time to date for the trailing stop computation
+            temp_signals = signals.rename(columns={"signal_time": "date"})
+            temp_signals = compute_trailing_stops_df(
+                temp_signals, 
+                prices,
+                trail_pct=float(getattr(settings.risk, "trailing_stop_trail_pct", 0.025)),
+                atr_trail_multiple=float(getattr(settings.risk, "trailing_stop_atr_multiple", 1.5))
+            )
+            signals["high_since_entry"] = temp_signals["high_since_entry"]
+            signals["trailing_stop"] = temp_signals["trailing_stop"]
+            signals["trailing_status"] = temp_signals["trailing_status"]
+        except Exception:
+            pass
+
     schema_error = ""
     try:
         fills = _load_fills(active_fills_path, active_lookback)
