@@ -1,33 +1,17 @@
 {
-  "generated_at": "2026-06-29T03:19:17.531673",
-  "run_id": "20260629_101412",
+  "generated_at": "2026-06-29T03:54:24.204494",
+  "run_id": "20260629_035415",
   "signals": [
-    {
-      "ticker": "KLBF",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 1,
-      "shadow_p_win": 0.4572,
-      "shadow_expected_r": -0.0386,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "entry": 805.0,
-      "stop": 732.73,
-      "tp1": 877.27,
-      "tp2": 949.55,
-      "size": 600
-    },
     {
       "ticker": "MIKA",
       "mode": "t1",
       "score": 100.0,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.4571,
-      "shadow_expected_r": -0.0387,
+      "shadow_rank": 1,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
       "entry": 1710.0,
       "stop": 1540.91,
       "tp1": 1879.09,
@@ -35,15 +19,31 @@
       "size": 200
     },
     {
+      "ticker": "KLBF",
+      "mode": "t1",
+      "score": 100.0,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 805.0,
+      "stop": 732.73,
+      "tp1": 877.27,
+      "tp2": 949.55,
+      "size": 600
+    },
+    {
       "ticker": "TOWR",
       "mode": "t1",
       "score": 98.17,
       "shadow_rank": 3,
-      "shadow_p_win": 0.4561,
-      "shadow_expected_r": -0.0393,
+      "shadow_p_win": 0.7317,
+      "shadow_expected_r": 0.8292,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
       "entry": 378.0,
       "stop": 336.27,
       "tp1": 419.73,
@@ -55,11 +55,11 @@
       "mode": "t1",
       "score": 95.92,
       "shadow_rank": 4,
-      "shadow_p_win": 0.4169,
-      "shadow_expected_r": -0.0616,
+      "shadow_p_win": 0.7244,
+      "shadow_expected_r": 0.811,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
       "entry": 376.0,
       "stop": 349.52,
       "tp1": 402.48,
@@ -73,126 +73,19 @@
     "modes": {
       "t1": {
         "rows": 4,
-        "source": "model",
+        "source": "fallback",
         "threshold": 0.52,
-        "thresholds_by_regime": {
-          "default": 0.52
-        },
-        "metadata": {
-          "saved_at": "2026-06-29T03:17:13.644195",
-          "train_rows": 20717,
-          "positive_rate": 0.34309986967224987,
-          "auc_train": 0.6454,
-          "features": [
-            "score",
-            "ret_1d",
-            "ret_5d",
-            "ret_20d",
-            "atr_pct",
-            "vol_20d",
-            "avg_vol_20d",
-            "close",
-            "ma_20",
-            "ma_50",
-            "ma_slope_20",
-            "ma_slope_50",
-            "dist_ma_20",
-            "dist_ma_50",
-            "vol_ratio",
-            "ret_5d_20d_ratio",
-            "high_low_range",
-            "close_position",
-            "volume_ratio_20d",
-            "rsi_14",
-            "rsi_slope",
-            "mfi_14",
-            "obv_slope",
-            "rank_ret_20d",
-            "rank_vol_20d",
-            "turnover_ratio_20d",
-            "dist_high_20",
-            "dist_low_20",
-            "ma_gap_20_50",
-            "ma_stack_bullish",
-            "market_breadth_ma20_pct",
-            "market_breadth_ma50_pct",
-            "market_avg_ret20_pct",
-            "market_median_atr_pct",
-            "relative_ret_20d"
-          ],
-          "model_type": "lightgbm_optuna",
-          "cv_auc": 0.5614,
-          "model_comparison": {
-            "lightgbm_optuna": 0.5614,
-            "xgboost_optuna": 0.5546,
-            "logreg": 0.5512,
-            "xgboost": 0.5497,
-            "lightgbm": 0.5477
-          },
-          "calibration": {
-            "calibrated": true,
-            "ece": 0.173479
-          },
-          "available_models": [
-            "lightgbm_optuna",
-            "xgboost_optuna",
-            "logreg",
-            "xgboost",
-            "lightgbm"
-          ],
-          "label_strategy": "binary_positive_net_return",
-          "thresholds_by_regime": {
-            "default": 0.52
-          },
-          "return_profile": {
-            "overall": {
-              "mean_return_r": -0.100733,
-              "positive_mean_r": 0.269015,
-              "negative_mean_r": -0.293853,
-              "sample_count": 20717
-            },
-            "by_regime": {
-              "risk_off": {
-                "mean_return_r": -0.100891,
-                "positive_mean_r": 0.270636,
-                "negative_mean_r": -0.299159,
-                "sample_count": 13237
-              },
-              "risk_on": {
-                "mean_return_r": -0.100454,
-                "positive_mean_r": 0.266031,
-                "negative_mean_r": -0.284654,
-                "sample_count": 7480
-              }
-            }
-          },
-          "target_rank_positive_cutoff": null,
-          "optuna_used": true,
-          "optuna_trials": 25,
-          "optuna_best_params": {
-            "n_estimators": 500,
-            "max_depth": 3,
-            "learning_rate": 0.010543593286909828,
-            "subsample": 0.9565358620704201,
-            "colsample_bytree": 0.526169717206479,
-            "min_child_samples": 18,
-            "reg_alpha": 0.05295009491849824,
-            "reg_lambda": 0.051391008797163636
-          },
-          "mode": "t1",
-          "horizon_days": 1,
-          "trained_at": "2026-06-29T03:14:24.165968"
-        }
+        "thresholds_by_regime": {},
+        "metadata": {}
       }
     },
     "rows": 4
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1, swing",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -397,7 +290,6 @@
         "artifact_path": "models\\model_v2\\swing.joblib",
         "metadata_path": "models\\model_v2\\swing.meta.json"
       }
-    },
-    "errors": []
+    }
   }
 }

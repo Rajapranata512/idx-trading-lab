@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-29T03:26:30.455206",
+  "generated_at": "2026-06-29T03:54:29.618964",
   "signals": {
-    "generated_at": "2026-06-29T03:19:26.074080",
+    "generated_at": "2026-06-29T03:54:28.130644",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 1710.0,
         "volume": 714300.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-29 03:14:18.256039",
+        "ingested_at": "2026-06-29 03:54:22.808678",
         "ret_1d": 0.0058823529411764,
         "ret_5d": 0.0926517571884983,
         "ret_20d": 0.0363636363636363,
@@ -104,7 +104,7 @@
         "close": 805.0,
         "volume": 8328800.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-29 03:14:18.256039",
+        "ingested_at": "2026-06-29 03:54:22.808678",
         "ret_1d": 0.018987341772152,
         "ret_5d": 0.1838235294117647,
         "ret_20d": 0.0125786163522012,
@@ -183,7 +183,7 @@
         "close": 6800.0,
         "volume": 1296500.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-29 03:14:18.256039",
+        "ingested_at": "2026-06-29 03:54:22.808678",
         "ret_1d": 0.0303030303030302,
         "ret_5d": 0.0342205323193915,
         "ret_20d": -0.0109090909090908,
@@ -262,7 +262,7 @@
         "close": 378.0,
         "volume": 5708900.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-29 03:14:18.256039",
+        "ingested_at": "2026-06-29 03:54:22.808678",
         "ret_1d": 0.0106951871657754,
         "ret_5d": 0.0216216216216216,
         "ret_20d": -0.0307692307692307,
@@ -341,7 +341,7 @@
         "close": 6775.0,
         "volume": 250000.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-29 03:14:18.256039",
+        "ingested_at": "2026-06-29 03:54:22.808678",
         "ret_1d": 0.0074349442379182,
         "ret_5d": 0.0074349442379182,
         "ret_20d": -0.0073260073260073,
@@ -420,7 +420,7 @@
         "close": 376.0,
         "volume": 3621800.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-06-29 03:14:18.256039",
+        "ingested_at": "2026-06-29 03:54:22.808678",
         "ret_1d": 0.0053475935828877,
         "ret_5d": 0.0053475935828877,
         "ret_20d": -0.0693069306930692,
@@ -551,7 +551,7 @@
         "t1"
       ],
       "cooldown_until": "2026-07-02",
-      "state_path": "reports\\kill_switch_state.json"
+      "state_path": "reports/kill_switch_state.json"
     },
     "model_v2_promotion": {},
     "mode_activation": {
@@ -579,8 +579,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-06-29T03:19:26.176703",
-    "run_id": "20260629_101412",
+    "generated_at": "2026-06-29T03:54:28.171338",
+    "run_id": "20260629_035415",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -605,7 +605,7 @@
       "kill_switch": "triggered"
     },
     "score_funnel": {
-      "generated_at": "2026-06-29T03:14:23.966499",
+      "generated_at": "2026-06-29T03:54:24.099896",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -745,9 +745,9 @@
   "runs": [
     {
       "file": "run_log_20260629.json",
-      "run_id": "20260629_101412",
-      "started_at": "2026-06-29T03:14:12.330220",
-      "ended_at": "2026-06-29T03:19:26.257074",
+      "run_id": "20260629_035415",
+      "started_at": "2026-06-29T03:54:15.212152",
+      "ended_at": "2026-06-29T03:54:28.936440",
       "source": "yfinance_fallback",
       "signals": 0,
       "error_count": 0,
