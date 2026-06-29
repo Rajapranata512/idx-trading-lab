@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-29T02:32:54.873979",
+  "generated_at": "2026-06-29T03:19:26.060111",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,20 +14,20 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 33.33333333333333,
-      "ProfitFactor": 0.3660895127366049,
-      "Expectancy": -0.011968890385522185,
-      "Trades": 15,
-      "CAGR": -8.143602048076348,
-      "MaxDD": -0.5575553983188083
+      "WinRate": 43.19852941176471,
+      "ProfitFactor": 0.7919727303045354,
+      "Expectancy": -0.0036937605088766387,
+      "Trades": 1088,
+      "CAGR": -2.7846103127509902,
+      "MaxDD": -15.433632439392717
     },
     "swing": {
-      "WinRate": 0.0,
-      "ProfitFactor": 0.0,
-      "Expectancy": 0.0,
-      "Trades": 0,
-      "CAGR": 0.0,
-      "MaxDD": 0.0
+      "WinRate": 63.7065637065637,
+      "ProfitFactor": 1.9519688436707257,
+      "Expectancy": 0.051190194107585824,
+      "Trades": 518,
+      "CAGR": 46.37512670785981,
+      "MaxDD": -20.424499223047544
     }
   },
   "walk_forward": {
@@ -53,35 +53,1009 @@
         80.0
       ]
     },
-    "n_folds": 0,
+    "n_folds": 14,
     "modes": {
       "t1": {
         "summary": {
-          "WinRate": 0.0,
-          "ProfitFactor": 0.0,
-          "Expectancy": 0.0,
-          "Trades": 0,
-          "CAGR": 0.0,
-          "MaxDD": 0.0
+          "WinRate": 33.16129032258065,
+          "ProfitFactor": 0.5367137089180116,
+          "Expectancy": -0.007214769362692063,
+          "Trades": 775,
+          "CAGR": -5.31255977667181,
+          "MaxDD": -15.728548333335118
         },
-        "folds": [],
-        "threshold_stats": {},
+        "folds": [
+          {
+            "fold": 1,
+            "train_start": "2021-07-28",
+            "train_end": "2022-08-08",
+            "test_start": "2022-08-24",
+            "test_end": "2022-11-18",
+            "selected_threshold": 85.0,
+            "train_metrics": {
+              "WinRate": 42.4,
+              "ProfitFactor": 1.0539511884257113,
+              "Expectancy": 0.0006379400237857439,
+              "Trades": 250,
+              "CAGR": 0.46720686070576,
+              "MaxDD": -1.3071944505396715
+            },
+            "oos_metrics": {
+              "WinRate": 41.935483870967744,
+              "ProfitFactor": 0.7481791267762974,
+              "Expectancy": -0.003263446600557982,
+              "Trades": 62,
+              "CAGR": -2.4072893959915964,
+              "MaxDD": -0.907850393377262
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 2,
+            "train_start": "2021-10-28",
+            "train_end": "2022-11-04",
+            "test_start": "2022-11-21",
+            "test_end": "2023-02-16",
+            "selected_threshold": 85.0,
+            "train_metrics": {
+              "WinRate": 42.62948207171315,
+              "ProfitFactor": 0.948520568521171,
+              "Expectancy": -0.0006162763427675674,
+              "Trades": 251,
+              "CAGR": -0.47511892705252023,
+              "MaxDD": -1.4121100404613245
+            },
+            "oos_metrics": {
+              "WinRate": 27.419354838709676,
+              "ProfitFactor": 0.2794147233208246,
+              "Expectancy": -0.01041084943663358,
+              "Trades": 62,
+              "CAGR": -7.458766335621892,
+              "MaxDD": -1.9688417298323768
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 3,
+            "train_start": "2022-01-26",
+            "train_end": "2023-02-02",
+            "test_start": "2023-02-17",
+            "test_end": "2023-05-30",
+            "selected_threshold": 97.0,
+            "train_metrics": {
+              "WinRate": 40.723981900452486,
+              "ProfitFactor": 0.868520699390273,
+              "Expectancy": -0.0016126020505565605,
+              "Trades": 221,
+              "CAGR": -1.218492953931083,
+              "MaxDD": -2.6248832439189687
+            },
+            "oos_metrics": {
+              "WinRate": 23.404255319148938,
+              "ProfitFactor": 0.32507958541705645,
+              "Expectancy": -0.010245875230011624,
+              "Trades": 47,
+              "CAGR": -7.310095664886484,
+              "MaxDD": -1.564608706008732
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 4,
+            "train_start": "2022-05-09",
+            "train_end": "2023-05-15",
+            "test_start": "2023-05-31",
+            "test_end": "2023-09-05",
+            "selected_threshold": 97.0,
+            "train_metrics": {
+              "WinRate": 35.609756097560975,
+              "ProfitFactor": 0.5439655367756804,
+              "Expectancy": -0.0061095965439430374,
+              "Trades": 205,
+              "CAGR": -4.499801539061588,
+              "MaxDD": -3.8840553611817126
+            },
+            "oos_metrics": {
+              "WinRate": 45.614035087719294,
+              "ProfitFactor": 1.3390655125602255,
+              "Expectancy": 0.0033203417853907287,
+              "Trades": 57,
+              "CAGR": 2.4858786058601368,
+              "MaxDD": -0.9629179575707993
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 5,
+            "train_start": "2022-08-09",
+            "train_end": "2023-08-22",
+            "test_start": "2023-09-06",
+            "test_end": "2023-12-04",
+            "selected_threshold": 97.0,
+            "train_metrics": {
+              "WinRate": 33.65853658536586,
+              "ProfitFactor": 0.5589773630615185,
+              "Expectancy": -0.006007088919099125,
+              "Trades": 205,
+              "CAGR": -4.4268524633024775,
+              "MaxDD": -4.151629305024342
+            },
+            "oos_metrics": {
+              "WinRate": 34.61538461538461,
+              "ProfitFactor": 0.47179898775449425,
+              "Expectancy": -0.01010966625453009,
+              "Trades": 52,
+              "CAGR": -7.238375473213399,
+              "MaxDD": -2.025575716432392
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 6,
+            "train_start": "2022-11-07",
+            "train_end": "2023-11-20",
+            "test_start": "2023-12-05",
+            "test_end": "2024-03-08",
+            "selected_threshold": 97.0,
+            "train_metrics": {
+              "WinRate": 34.31372549019608,
+              "ProfitFactor": 0.6034040270704762,
+              "Expectancy": -0.005571579471328691,
+              "Trades": 204,
+              "CAGR": -4.1142449127164475,
+              "MaxDD": -3.390687016132855
+            },
+            "oos_metrics": {
+              "WinRate": 41.66666666666667,
+              "ProfitFactor": 0.5627368343167497,
+              "Expectancy": -0.0051208062986411685,
+              "Trades": 48,
+              "CAGR": -3.7271638480103397,
+              "MaxDD": -0.9060520931891093
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 7,
+            "train_start": "2023-02-03",
+            "train_end": "2024-02-23",
+            "test_start": "2024-03-13",
+            "test_end": "2024-06-27",
+            "selected_threshold": 97.0,
+            "train_metrics": {
+              "WinRate": 35.43689320388349,
+              "ProfitFactor": 0.5977651573478424,
+              "Expectancy": -0.005734010962976836,
+              "Trades": 206,
+              "CAGR": -4.232084339155895,
+              "MaxDD": -3.7669648919125236
+            },
+            "oos_metrics": {
+              "WinRate": 33.92857142857143,
+              "ProfitFactor": 0.4468751175933087,
+              "Expectancy": -0.00931744077954635,
+              "Trades": 56,
+              "CAGR": -6.695581578419462,
+              "MaxDD": -1.7332025976581653
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 8,
+            "train_start": "2023-05-16",
+            "train_end": "2024-06-11",
+            "test_start": "2024-06-28",
+            "test_end": "2024-09-25",
+            "selected_threshold": 97.0,
+            "train_metrics": {
+              "WinRate": 37.61467889908257,
+              "ProfitFactor": 0.6088993732511486,
+              "Expectancy": -0.0057396555536571026,
+              "Trades": 218,
+              "CAGR": -4.237770194447343,
+              "MaxDD": -4.412501443658353
+            },
+            "oos_metrics": {
+              "WinRate": 26.41509433962264,
+              "ProfitFactor": 0.32637800194224437,
+              "Expectancy": -0.009770031315802036,
+              "Trades": 53,
+              "CAGR": -6.99886231736283,
+              "MaxDD": -1.542799148874452
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 9,
+            "train_start": "2023-08-23",
+            "train_end": "2024-09-10",
+            "test_start": "2024-09-26",
+            "test_end": "2024-12-24",
+            "selected_threshold": 97.0,
+            "train_metrics": {
+              "WinRate": 35.37735849056604,
+              "ProfitFactor": 0.48835573109806013,
+              "Expectancy": -0.007916868506544848,
+              "Trades": 212,
+              "CAGR": -5.792245126002782,
+              "MaxDD": -5.873321289961131
+            },
+            "oos_metrics": {
+              "WinRate": 23.076923076923077,
+              "ProfitFactor": 0.3239926311940169,
+              "Expectancy": -0.01301852325869958,
+              "Trades": 39,
+              "CAGR": -9.159987827650584,
+              "MaxDD": -1.5133578276052086
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 10,
+            "train_start": "2023-11-21",
+            "train_end": "2024-12-10",
+            "test_start": "2024-12-27",
+            "test_end": "2025-04-10",
+            "selected_threshold": 85.0,
+            "train_metrics": {
+              "WinRate": 34.26294820717131,
+              "ProfitFactor": 0.41706028756738944,
+              "Expectancy": -0.009067684962946816,
+              "Trades": 251,
+              "CAGR": -6.608866706263006,
+              "MaxDD": -6.880717918537593
+            },
+            "oos_metrics": {
+              "WinRate": 28.333333333333332,
+              "ProfitFactor": 0.37374374301199964,
+              "Expectancy": -0.0130069946249055,
+              "Trades": 60,
+              "CAGR": -9.235188258372284,
+              "MaxDD": -2.3333139295809846
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 11,
+            "train_start": "2024-02-26",
+            "train_end": "2025-03-18",
+            "test_start": "2025-04-11",
+            "test_end": "2025-07-21",
+            "selected_threshold": 85.0,
+            "train_metrics": {
+              "WinRate": 30.241935483870968,
+              "ProfitFactor": 0.4275658794172002,
+              "Expectancy": -0.009456854724270125,
+              "Trades": 248,
+              "CAGR": -6.8829985500846735,
+              "MaxDD": -7.015431401268319
+            },
+            "oos_metrics": {
+              "WinRate": 40.98360655737705,
+              "ProfitFactor": 0.9816976483123775,
+              "Expectancy": -0.00021632915694176248,
+              "Trades": 61,
+              "CAGR": -0.17060034335876217,
+              "MaxDD": -0.5858938709025486
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 12,
+            "train_start": "2024-06-12",
+            "train_end": "2025-07-07",
+            "test_start": "2025-07-22",
+            "test_end": "2025-10-20",
+            "selected_threshold": 85.0,
+            "train_metrics": {
+              "WinRate": 30.89430894308943,
+              "ProfitFactor": 0.46203947465271006,
+              "Expectancy": -0.008649222481636167,
+              "Trades": 246,
+              "CAGR": -6.315293558558832,
+              "MaxDD": -6.334413966950255
+            },
+            "oos_metrics": {
+              "WinRate": 33.87096774193548,
+              "ProfitFactor": 0.6803264704010784,
+              "Expectancy": -0.004986744173694759,
+              "Trades": 62,
+              "CAGR": -3.657842518608978,
+              "MaxDD": -1.0283577115489386
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 13,
+            "train_start": "2024-09-11",
+            "train_end": "2025-10-06",
+            "test_start": "2025-10-21",
+            "test_end": "2026-01-22",
+            "selected_threshold": 85.0,
+            "train_metrics": {
+              "WinRate": 32.926829268292686,
+              "ProfitFactor": 0.5824180473735513,
+              "Expectancy": -0.006666979545283418,
+              "Trades": 246,
+              "CAGR": -4.9088371649625095,
+              "MaxDD": -5.305181212523117
+            },
+            "oos_metrics": {
+              "WinRate": 33.87096774193548,
+              "ProfitFactor": 0.5877569624815824,
+              "Expectancy": -0.007340684134046887,
+              "Trades": 62,
+              "CAGR": -5.330570625047515,
+              "MaxDD": -1.765163704618767
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 14,
+            "train_start": "2024-12-11",
+            "train_end": "2026-01-07",
+            "test_start": "2026-01-23",
+            "test_end": "2026-05-04",
+            "selected_threshold": 95.0,
+            "train_metrics": {
+              "WinRate": 33.91304347826087,
+              "ProfitFactor": 0.6039851719994003,
+              "Expectancy": -0.006554914476929262,
+              "Trades": 230,
+              "CAGR": -4.8287600503945205,
+              "MaxDD": -5.100446557770306
+            },
+            "oos_metrics": {
+              "WinRate": 24.074074074074073,
+              "ProfitFactor": 0.44713092803569926,
+              "Expectancy": -0.010641015528476105,
+              "Trades": 54,
+              "CAGR": -7.60885041440228,
+              "MaxDD": -1.7124087058884123
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          }
+        ],
+        "threshold_stats": {
+          "median": 96.0,
+          "mean": 91.71428571428571,
+          "min": 85.0,
+          "max": 97.0
+        },
         "regime_threshold_stats": {},
-        "stability": {}
+        "stability": {
+          "threshold_std": 5.836199,
+          "threshold_range": 12.0,
+          "oos_expectancy_std": 0.004644,
+          "oos_profit_factor_std": 0.286286
+        }
       },
       "swing": {
         "summary": {
-          "WinRate": 0.0,
-          "ProfitFactor": 0.0,
-          "Expectancy": 0.0,
-          "Trades": 0,
-          "CAGR": 0.0,
-          "MaxDD": 0.0
+          "WinRate": 45.00907441016334,
+          "ProfitFactor": 1.1566514891919577,
+          "Expectancy": 0.006523851963893272,
+          "Trades": 551,
+          "CAGR": 4.846621483907176,
+          "MaxDD": -14.643653298598716
         },
-        "folds": [],
-        "threshold_stats": {},
+        "folds": [
+          {
+            "fold": 1,
+            "train_start": "2021-07-28",
+            "train_end": "2022-08-08",
+            "test_start": "2022-08-24",
+            "test_end": "2022-11-18",
+            "selected_threshold": 55.0,
+            "train_metrics": {
+              "WinRate": 40.5940594059406,
+              "ProfitFactor": 0.9972816354114385,
+              "Expectancy": -0.00012007831390538939,
+              "Trades": 202,
+              "CAGR": -0.27659020478252305,
+              "MaxDD": -11.272032377796812
+            },
+            "oos_metrics": {
+              "WinRate": 42.5531914893617,
+              "ProfitFactor": 0.809662247831325,
+              "Expectancy": -0.00557140635509865,
+              "Trades": 47,
+              "CAGR": -4.094153758788965,
+              "MaxDD": -2.795941201791004
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 2,
+            "train_start": "2021-10-28",
+            "train_end": "2022-11-04",
+            "test_start": "2022-11-21",
+            "test_end": "2023-02-16",
+            "selected_threshold": 55.0,
+            "train_metrics": {
+              "WinRate": 39.130434782608695,
+              "ProfitFactor": 0.9025960292871608,
+              "Expectancy": -0.004320390004216988,
+              "Trades": 230,
+              "CAGR": -3.362870001018392,
+              "MaxDD": -12.676559562124993
+            },
+            "oos_metrics": {
+              "WinRate": 15.151515151515152,
+              "ProfitFactor": 0.08856578337942436,
+              "Expectancy": -0.042662675947345845,
+              "Trades": 33,
+              "CAGR": -26.910119490855998,
+              "MaxDD": -4.176049698206407
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 3,
+            "train_start": "2022-01-26",
+            "train_end": "2023-02-02",
+            "test_start": "2023-02-17",
+            "test_end": "2023-05-30",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 37.362637362637365,
+              "ProfitFactor": 0.7913621579412414,
+              "Expectancy": -0.009496008989198237,
+              "Trades": 182,
+              "CAGR": -7.044042068452095,
+              "MaxDD": -13.337849194613458
+            },
+            "oos_metrics": {
+              "WinRate": 32.35294117647059,
+              "ProfitFactor": 0.11692328402011136,
+              "Expectancy": -0.045781672090071494,
+              "Trades": 34,
+              "CAGR": -28.606608998784022,
+              "MaxDD": -4.822300678719535
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 4,
+            "train_start": "2022-05-09",
+            "train_end": "2023-05-15",
+            "test_start": "2023-05-31",
+            "test_end": "2023-09-05",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 31.32530120481928,
+              "ProfitFactor": 0.33219108758301885,
+              "Expectancy": -0.02966956748284949,
+              "Trades": 166,
+              "CAGR": -20.042746015538594,
+              "MaxDD": -13.969453235942819
+            },
+            "oos_metrics": {
+              "WinRate": 37.2093023255814,
+              "ProfitFactor": 0.660158903813567,
+              "Expectancy": -0.009696079873389576,
+              "Trades": 43,
+              "CAGR": -6.974004325479211,
+              "MaxDD": -2.5931073165801415
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 5,
+            "train_start": "2022-08-09",
+            "train_end": "2023-08-22",
+            "test_start": "2023-09-06",
+            "test_end": "2023-12-04",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 37.03703703703704,
+              "ProfitFactor": 0.38960714697569376,
+              "Expectancy": -0.023507340209661037,
+              "Trades": 162,
+              "CAGR": -16.24550630313114,
+              "MaxDD": -12.411644732274878
+            },
+            "oos_metrics": {
+              "WinRate": 51.28205128205128,
+              "ProfitFactor": 1.7116976086558167,
+              "Expectancy": 0.024350787045581603,
+              "Trades": 39,
+              "CAGR": 19.416055837020618,
+              "MaxDD": -2.7224460824449035
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 6,
+            "train_start": "2022-11-07",
+            "train_end": "2023-11-20",
+            "test_start": "2023-12-05",
+            "test_end": "2024-03-08",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 43.31210191082803,
+              "ProfitFactor": 0.7502609646902045,
+              "Expectancy": -0.008792823402097525,
+              "Trades": 157,
+              "CAGR": -6.47603282818503,
+              "MaxDD": -9.646357113964237
+            },
+            "oos_metrics": {
+              "WinRate": 67.3076923076923,
+              "ProfitFactor": 0.8217919704007312,
+              "Expectancy": -0.013068882944066216,
+              "Trades": 52,
+              "CAGR": -9.58123267480807,
+              "MaxDD": -9.189006223759224
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 7,
+            "train_start": "2023-02-03",
+            "train_end": "2024-02-23",
+            "test_start": "2024-03-13",
+            "test_end": "2024-06-27",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 51.7948717948718,
+              "ProfitFactor": 0.9603737375184862,
+              "Expectancy": -0.0017725507342973036,
+              "Trades": 195,
+              "CAGR": -1.5196518972166229,
+              "MaxDD": -9.189006223882807
+            },
+            "oos_metrics": {
+              "WinRate": 62.5,
+              "ProfitFactor": 2.3400983158619537,
+              "Expectancy": 0.035747642482846294,
+              "Trades": 48,
+              "CAGR": 30.138325259254728,
+              "MaxDD": -2.70463629818699
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 8,
+            "train_start": "2023-05-16",
+            "train_end": "2024-06-11",
+            "test_start": "2024-06-28",
+            "test_end": "2024-09-25",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 60.0,
+              "ProfitFactor": 1.5457773233486787,
+              "Expectancy": 0.018980514650788267,
+              "Trades": 215,
+              "CAGR": 15.132636233078012,
+              "MaxDD": -9.18900622433439
+            },
+            "oos_metrics": {
+              "WinRate": 41.37931034482759,
+              "ProfitFactor": 0.5206322085240652,
+              "Expectancy": -0.013365614297256573,
+              "Trades": 29,
+              "CAGR": -9.334809810332,
+              "MaxDD": -1.4368125854499805
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 9,
+            "train_start": "2023-08-23",
+            "train_end": "2024-09-10",
+            "test_start": "2024-09-26",
+            "test_end": "2024-12-24",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 59.375,
+              "ProfitFactor": 1.391008240145234,
+              "Expectancy": 0.015586974803249073,
+              "Trades": 192,
+              "CAGR": 12.203715896301581,
+              "MaxDD": -9.189006224350578
+            },
+            "oos_metrics": {
+              "WinRate": 13.793103448275861,
+              "ProfitFactor": 0.11788996008344901,
+              "Expectancy": -0.04922525293599379,
+              "Trades": 29,
+              "CAGR": -30.26310311614958,
+              "MaxDD": -4.200201092739126
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 10,
+            "train_start": "2023-11-21",
+            "train_end": "2024-12-10",
+            "test_start": "2024-12-27",
+            "test_end": "2025-04-10",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 50.27624309392266,
+              "ProfitFactor": 0.9194842959419034,
+              "Expectancy": -0.003587366925973587,
+              "Trades": 181,
+              "CAGR": -2.8300482281118255,
+              "MaxDD": -9.189006223800703
+            },
+            "oos_metrics": {
+              "WinRate": 17.647058823529413,
+              "ProfitFactor": 0.040073274726253,
+              "Expectancy": -0.062416762132871964,
+              "Trades": 17,
+              "CAGR": -36.009940522575924,
+              "MaxDD": -3.1385661066120627
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 11,
+            "train_start": "2024-02-26",
+            "train_end": "2025-03-18",
+            "test_start": "2025-04-11",
+            "test_end": "2025-07-21",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 38.88888888888889,
+              "ProfitFactor": 0.6764132798069621,
+              "Expectancy": -0.012907516296489178,
+              "Trades": 144,
+              "CAGR": -9.312918057799424,
+              "MaxDD": -13.100268601265133
+            },
+            "oos_metrics": {
+              "WinRate": 74.0,
+              "ProfitFactor": 4.745666081772666,
+              "Expectancy": 0.10733220018427841,
+              "Trades": 50,
+              "CAGR": 120.70715701913754,
+              "MaxDD": -2.879802150895473
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 12,
+            "train_start": "2024-06-12",
+            "train_end": "2025-07-07",
+            "test_start": "2025-07-22",
+            "test_end": "2025-10-20",
+            "selected_threshold": 60.0,
+            "train_metrics": {
+              "WinRate": 38.759689922480625,
+              "ProfitFactor": 1.0199878344867794,
+              "Expectancy": 0.0009025807748625513,
+              "Trades": 129,
+              "CAGR": 0.5189262488152213,
+              "MaxDD": -11.000753630585859
+            },
+            "oos_metrics": {
+              "WinRate": 47.16981132075472,
+              "ProfitFactor": 3.3372374606707655,
+              "Expectancy": 0.07786000226488987,
+              "Trades": 53,
+              "CAGR": 77.33451135688863,
+              "MaxDD": -1.742517966514217
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 13,
+            "train_start": "2024-09-11",
+            "train_end": "2025-10-06",
+            "test_start": "2025-10-21",
+            "test_end": "2026-01-22",
+            "selected_threshold": 65.0,
+            "train_metrics": {
+              "WinRate": 53.2258064516129,
+              "ProfitFactor": 2.7519354665442513,
+              "Expectancy": 0.06782488560842173,
+              "Trades": 124,
+              "CAGR": 65.6327789013055,
+              "MaxDD": -6.842075658400456
+            },
+            "oos_metrics": {
+              "WinRate": 59.523809523809526,
+              "ProfitFactor": 3.866818354130889,
+              "Expectancy": 0.03966888947893551,
+              "Trades": 42,
+              "CAGR": 33.89104940685843,
+              "MaxDD": -1.4112020944135657
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          },
+          {
+            "fold": 14,
+            "train_start": "2024-12-11",
+            "train_end": "2026-01-07",
+            "test_start": "2026-01-23",
+            "test_end": "2026-05-04",
+            "selected_threshold": 65.0,
+            "train_metrics": {
+              "WinRate": 55.26315789473685,
+              "ProfitFactor": 2.960116367564511,
+              "Expectancy": 0.06564439161455134,
+              "Trades": 152,
+              "CAGR": 63.142348374634174,
+              "MaxDD": -3.730680216572261
+            },
+            "oos_metrics": {
+              "WinRate": 14.285714285714285,
+              "ProfitFactor": 0.08057773613628132,
+              "Expectancy": -0.08660496798664939,
+              "Trades": 35,
+              "CAGR": -47.173251352519266,
+              "MaxDD": -8.713260114238034
+            },
+            "regime_thresholds": {},
+            "oos_regime_aware_metrics": {
+              "WinRate": 0.0,
+              "ProfitFactor": 0.0,
+              "Expectancy": 0.0,
+              "Trades": 0,
+              "CAGR": 0.0,
+              "MaxDD": 0.0
+            },
+            "oos_regime_breakdown": {}
+          }
+        ],
+        "threshold_stats": {
+          "median": 60.0,
+          "mean": 60.0,
+          "min": 55.0,
+          "max": 65.0
+        },
         "regime_threshold_stats": {},
-        "stability": {}
+        "stability": {
+          "threshold_std": 2.672612,
+          "threshold_range": 10.0,
+          "oos_expectancy_std": 0.052849,
+          "oos_profit_factor_std": 1.526149
+        }
       }
     }
   },
@@ -92,10 +1066,10 @@
     "status": "risk_off",
     "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
     "values": {
-      "breadth_ma50_pct": 0.0,
-      "breadth_ma20_pct": 31.818181818181817,
-      "avg_ret20_pct": -8.098133772825493,
-      "median_atr_pct": 4.963512820989527,
+      "breadth_ma50_pct": 11.363636363636363,
+      "breadth_ma20_pct": 29.545454545454547,
+      "avg_ret20_pct": -8.116698654310532,
+      "median_atr_pct": 5.04327587656429,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -120,36 +1094,42 @@
       "min_rolling_expectancy": 0.0,
       "cooldown_days": 3
     },
-    "triggered": false,
-    "triggered_modes": [],
+    "triggered": true,
+    "triggered_modes": [
+      "t1"
+    ],
     "modes": {
       "t1": {
-        "trades_recent": 15,
+        "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.3660895140292225,
-        "rolling_expectancy": -0.011968890385522185,
-        "triggered": false,
-        "reason": "insufficient_recent_trades"
+        "rolling_pf": 0.8818017770805338,
+        "rolling_expectancy": -0.002181734250126653,
+        "triggered": true,
+        "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
       "swing": {
-        "trades_recent": 0,
+        "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.0,
-        "rolling_expectancy": 0.0,
+        "rolling_pf": 2.0331585344433263,
+        "rolling_expectancy": 0.04466591683155892,
         "triggered": false,
-        "reason": "insufficient_recent_trades"
+        "reason": "healthy_recent_performance"
       }
     }
   },
   "kill_switch": {
     "enabled": true,
-    "status": "clear",
+    "status": "triggered",
     "as_of_date": "2026-06-29",
-    "active": false,
-    "active_modes": [],
-    "triggered_modes_today": [],
-    "cooldown_until": "",
-    "state_path": "reports/kill_switch_state.json"
+    "active": true,
+    "active_modes": [
+      "t1"
+    ],
+    "triggered_modes_today": [
+      "t1"
+    ],
+    "cooldown_until": "2026-07-02",
+    "state_path": "reports\\kill_switch_state.json"
   },
   "gate_pass_insample": {
     "t1": false,
@@ -167,7 +1147,7 @@
     "t1": {
       "model_gate_ok": false,
       "regime_ok": false,
-      "kill_switch_ok": true,
+      "kill_switch_ok": false,
       "final_ok": false
     },
     "swing": {
