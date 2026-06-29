@@ -254,6 +254,7 @@ class ModelV2Settings(BaseModel):
     horizon_days_swing: int = 10
     min_prob_threshold_t1: float = 0.52
     min_prob_threshold_swing: float = 0.55
+    optuna_trials: int = 25
     class PromotionSettings(BaseModel):
         enabled: bool = True
         state_path: str = "reports/model_v2_promotion_state.json"

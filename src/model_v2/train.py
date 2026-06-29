@@ -31,6 +31,13 @@ try:
 except ImportError:
     _HAS_XGB = False
 
+try:
+    import optuna  # type: ignore
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
+    _HAS_OPTUNA = True
+except ImportError:
+    _HAS_OPTUNA = False
+
 # ---------------------------------------------------------------------------
 # V2 feature list — expanded from 10 → 25 features.
 # All features are lagged (computed on current bar from past data only).
@@ -312,60 +319,166 @@ def _build_logreg_pipeline() -> Pipeline:
     )
 
 
-def _build_lgb_pipeline() -> Pipeline | None:
-    """LightGBM pipeline (anti-overfit config)."""
+def _build_lgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None:
+    """LightGBM pipeline. Uses Optuna-tuned params if provided, else defaults."""
     if not _HAS_LGB:
         return None
+    default_params = {
+        "n_estimators": 300,
+        "max_depth": 5,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_samples": 20,
+        "reg_alpha": 0.1,
+        "reg_lambda": 1.0,
+        "class_weight": "balanced",
+        "verbose": -1,
+        "n_jobs": 1,
+    }
+    if params:
+        default_params.update(params)
     return Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="median")),
-            (
-                "clf",
-                lgb.LGBMClassifier(
-                    n_estimators=300,
-                    max_depth=5,
-                    learning_rate=0.05,
-                    subsample=0.8,
-                    colsample_bytree=0.8,
-                    min_child_samples=20,
-                    reg_alpha=0.1,
-                    reg_lambda=1.0,
-                    class_weight="balanced",
-                    verbose=-1,
-                    n_jobs=1,
-                ),
-            ),
+            ("clf", lgb.LGBMClassifier(**default_params)),
         ]
     )
 
 
-def _build_xgb_pipeline() -> Pipeline | None:
-    """XGBoost pipeline (anti-overfit config)."""
+def _build_xgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None:
+    """XGBoost pipeline. Uses Optuna-tuned params if provided, else defaults."""
     if not _HAS_XGB:
         return None
+    default_params = {
+        "n_estimators": 300,
+        "max_depth": 5,
+        "learning_rate": 0.05,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "min_child_weight": 5,
+        "reg_alpha": 0.1,
+        "reg_lambda": 1.0,
+        "scale_pos_weight": 1.0,
+        "use_label_encoder": False,
+        "eval_metric": "logloss",
+        "verbosity": 0,
+        "n_jobs": 1,
+    }
+    if params:
+        default_params.update(params)
     return Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="median")),
-            (
-                "clf",
-                xgb.XGBClassifier(
-                    n_estimators=300,
-                    max_depth=5,
-                    learning_rate=0.05,
-                    subsample=0.8,
-                    colsample_bytree=0.8,
-                    min_child_weight=5,
-                    reg_alpha=0.1,
-                    reg_lambda=1.0,
-                    scale_pos_weight=1.0,
-                    use_label_encoder=False,
-                    eval_metric="logloss",
-                    verbosity=0,
-                    n_jobs=1,
-                ),
-            ),
+            ("clf", xgb.XGBClassifier(**default_params)),
         ]
     )
+
+
+# ---------------------------------------------------------------------------
+# Optuna hyperparameter search — finds best params via time-based CV AUC
+# ---------------------------------------------------------------------------
+def _optuna_lgb_objective(
+    trial: Any,
+    X: pd.DataFrame,
+    y: pd.Series,
+    dates: pd.Series,
+    sample_weight: pd.Series | None,
+) -> float:
+    """Optuna objective for LightGBM hyperparameter search."""
+    params = {
+        "n_estimators": trial.suggest_int("n_estimators", 100, 600, step=50),
+        "max_depth": trial.suggest_int("max_depth", 3, 8),
+        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
+        "subsample": trial.suggest_float("subsample", 0.6, 1.0),
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.5, 1.0),
+        "min_child_samples": trial.suggest_int("min_child_samples", 10, 50),
+        "reg_alpha": trial.suggest_float("reg_alpha", 1e-3, 10.0, log=True),
+        "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 10.0, log=True),
+    }
+    pipe = _build_lgb_pipeline(params)
+    if pipe is None:
+        return 0.0
+    return _time_cv_auc(pipe, X, y, dates, sample_weight=sample_weight, n_splits=3)
+
+
+def _optuna_xgb_objective(
+    trial: Any,
+    X: pd.DataFrame,
+    y: pd.Series,
+    dates: pd.Series,
+    sample_weight: pd.Series | None,
+) -> float:
+    """Optuna objective for XGBoost hyperparameter search."""
+    params = {
+        "n_estimators": trial.suggest_int("n_estimators", 100, 600, step=50),
+        "max_depth": trial.suggest_int("max_depth", 3, 8),
+        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
+        "subsample": trial.suggest_float("subsample", 0.6, 1.0),
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.5, 1.0),
+        "min_child_weight": trial.suggest_int("min_child_weight", 3, 15),
+        "reg_alpha": trial.suggest_float("reg_alpha", 1e-3, 10.0, log=True),
+        "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 10.0, log=True),
+    }
+    pipe = _build_xgb_pipeline(params)
+    if pipe is None:
+        return 0.0
+    return _time_cv_auc(pipe, X, y, dates, sample_weight=sample_weight, n_splits=3)
+
+
+def _optuna_search(
+    X: pd.DataFrame,
+    y: pd.Series,
+    dates: pd.Series,
+    sample_weight: pd.Series | None,
+    n_trials: int = 25,
+) -> list[tuple[str, Pipeline, float, dict[str, Any]]]:
+    """Run Optuna search for LightGBM and XGBoost, return tuned pipelines.
+
+    Returns a list of (name, fitted_pipeline, cv_auc, best_params) tuples.
+    """
+    if not _HAS_OPTUNA:
+        return []
+
+    results: list[tuple[str, Pipeline, float, dict[str, Any]]] = []
+
+    # --- LightGBM Optuna search ---
+    if _HAS_LGB:
+        try:
+            study_lgb = optuna.create_study(direction="maximize")
+            study_lgb.optimize(
+                lambda trial: _optuna_lgb_objective(trial, X, y, dates, sample_weight),
+                n_trials=n_trials,
+                show_progress_bar=False,
+            )
+            best_lgb_params = study_lgb.best_params
+            best_lgb_pipe = _build_lgb_pipeline(best_lgb_params)
+            if best_lgb_pipe is not None:
+                results.append(
+                    ("lightgbm_optuna", best_lgb_pipe, study_lgb.best_value, best_lgb_params)
+                )
+        except Exception:
+            pass
+
+    # --- XGBoost Optuna search ---
+    if _HAS_XGB:
+        try:
+            study_xgb = optuna.create_study(direction="maximize")
+            study_xgb.optimize(
+                lambda trial: _optuna_xgb_objective(trial, X, y, dates, sample_weight),
+                n_trials=n_trials,
+                show_progress_bar=False,
+            )
+            best_xgb_params = study_xgb.best_params
+            best_xgb_pipe = _build_xgb_pipeline(best_xgb_params)
+            if best_xgb_pipe is not None:
+                results.append(
+                    ("xgboost_optuna", best_xgb_pipe, study_xgb.best_value, best_xgb_params)
+                )
+        except Exception:
+            pass
+
+    return results
 
 
 def _time_cv_auc(
@@ -431,8 +544,11 @@ def _train_one_mode(
 ) -> tuple[Any, dict[str, Any]]:
     """Train multiple candidate models, pick best by time-based CV AUC.
 
-    Returns the best fitted pipeline + metadata.  Falls back to LogReg
-    if LightGBM/XGBoost are unavailable or fail.
+    Uses Optuna hyperparameter auto-tuning when available to search for
+    the best LightGBM/XGBoost configuration.  Falls back to static
+    parameters (and ultimately to LogReg) when Optuna is not installed.
+
+    Returns the best fitted pipeline + metadata.
     """
     prepared = _prepare_training_frame(train_df=train_df, mode=mode, settings=settings)
     x = _build_feature_frame(prepared)
@@ -442,8 +558,9 @@ def _train_one_mode(
         raise ValueError("Need at least 2 classes for training")
 
     dates = prepared["date"] if "date" in prepared.columns else pd.Series(range(len(prepared)))
+    n_optuna_trials = int(getattr(settings.model_v2, "optuna_trials", 25))
 
-    # --- Build candidate pipelines ---
+    # --- Build candidate pipelines (static defaults) ---
     candidates: list[tuple[str, Pipeline]] = [("logreg", _build_logreg_pipeline())]
     lgb_pipe = _build_lgb_pipeline()
     if lgb_pipe is not None:
@@ -452,7 +569,7 @@ def _train_one_mode(
     if xgb_pipe is not None:
         candidates.append(("xgboost", xgb_pipe))
 
-    # --- Evaluate each via time-based CV ---
+    # --- Evaluate static candidates via time-based CV ---
     results: list[tuple[str, Pipeline, float]] = []
     for name, pipe in candidates:
         try:
@@ -460,6 +577,26 @@ def _train_one_mode(
             results.append((name, pipe, cv_auc))
         except Exception:
             continue
+
+    # --- Optuna hyperparameter search (if available) ---
+    optuna_best_params: dict[str, Any] = {}
+    optuna_used = False
+    if _HAS_OPTUNA and n_optuna_trials > 0 and len(x) >= 100:
+        try:
+            optuna_results = _optuna_search(
+                X=x,
+                y=y,
+                dates=dates,
+                sample_weight=sample_weight,
+                n_trials=n_optuna_trials,
+            )
+            for name, pipe, cv_auc, best_params in optuna_results:
+                results.append((name, pipe, cv_auc))
+                optuna_best_params[name] = best_params
+            if optuna_results:
+                optuna_used = True
+        except Exception:
+            pass
 
     if not results:
         raise ValueError("All candidate models failed during CV evaluation")
@@ -517,6 +654,9 @@ def _train_one_mode(
         "thresholds_by_regime": thresholds_by_regime,
         "return_profile": return_profile,
         "target_rank_positive_cutoff": SWING_POSITIVE_RANK_CUTOFF if str(mode).lower() == "swing" else None,
+        "optuna_used": optuna_used,
+        "optuna_trials": n_optuna_trials if optuna_used else 0,
+        "optuna_best_params": optuna_best_params.get(winner_name, {}),
     }
     return calibrated_model, metadata
 
