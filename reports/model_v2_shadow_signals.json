@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-26T15:08:11.021363",
-  "run_id": "20260626_150756",
+  "generated_at": "2026-06-29T02:32:54.792480",
+  "run_id": "20260629_023242",
   "signals": [
     {
-      "ticker": "AKRA",
+      "ticker": "MIKA",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 1,
@@ -12,11 +12,11 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1270.0,
-      "stop": 1152.01,
-      "tp1": 1387.99,
-      "tp2": 1505.97,
-      "size": 300
+      "entry": 1700.0,
+      "stop": 1533.2,
+      "tp1": 1866.8,
+      "tp2": 2033.6,
+      "size": 200
     },
     {
       "ticker": "KLBF",
@@ -28,43 +28,43 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 790.0,
-      "stop": 715.32,
-      "tp1": 864.68,
-      "tp2": 939.36,
-      "size": 500
+      "entry": 800.0,
+      "stop": 727.8,
+      "tp1": 872.2,
+      "tp2": 944.4,
+      "size": 600
     },
     {
-      "ticker": "MIKA",
+      "ticker": "SIDO",
       "mode": "t1",
-      "score": 100.0,
+      "score": 97.3,
       "shadow_rank": 3,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
+      "shadow_p_win": 0.742,
+      "shadow_expected_r": 0.855,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1700.0,
-      "stop": 1524.99,
-      "tp1": 1875.01,
-      "tp2": 2050.03,
-      "size": 200
+      "entry": 380.0,
+      "stop": 353.67,
+      "tp1": 406.33,
+      "tp2": 432.66,
+      "size": 1600
     },
     {
       "ticker": "TOWR",
       "mode": "t1",
-      "score": 96.19,
+      "score": 96.58,
       "shadow_rank": 4,
-      "shadow_p_win": 0.7119,
-      "shadow_expected_r": 0.7797,
+      "shadow_p_win": 0.7158,
+      "shadow_expected_r": 0.7895,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
       "entry": 374.0,
-      "stop": 330.39,
-      "tp1": 417.61,
-      "tp2": 461.22,
-      "size": 900
+      "stop": 332.36,
+      "tp1": 415.64,
+      "tp2": 457.27,
+      "size": 1000
     }
   ],
   "infer": {
