@@ -1,7 +1,7 @@
 [
   {
-    "ts": "2026-06-29T03:48:04.043535",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:14:12.330220",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "start_run",
     "extra": {
@@ -9,8 +9,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:04.050755",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:14:12.335216",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "universe_update_done",
     "extra": {
@@ -21,7 +21,7 @@
       "universe_path": "data\\reference\\universe_lq45_idx30.csv",
       "state_path": "reports\\universe_update_state.json",
       "updated": false,
-      "attempted_at": "2026-06-29T03:48:04.043535",
+      "attempted_at": "2026-06-29T03:14:12.330220",
       "last_success_at": "",
       "counts": {
         "lq45": 0,
@@ -36,8 +36,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:13.229562",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:14:18.140743",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "ingest_done",
     "extra": {
@@ -53,8 +53,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:14.809095",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:14:19.763078",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "features_done",
     "extra": {
@@ -63,8 +63,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:14.814094",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:14:19.767081",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "volatility_recalibration_done",
     "extra": {
@@ -73,7 +73,7 @@
       "status": "skipped_interval",
       "message": "Last successful recalibration still within 7 days interval",
       "updated": false,
-      "attempted_at": "2026-06-29T03:48:14.809095",
+      "attempted_at": "2026-06-29T03:14:19.763078",
       "last_success_at": "2026-06-23T15:29:32.759528",
       "state_path": "reports\\volatility_recalibration_state.json",
       "features_path": "data/processed/features.parquet",
@@ -95,32 +95,40 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:14.814094",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:14:23.727785",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "event_risk_update_done",
     "extra": {
       "enabled": true,
       "forced": false,
-      "status": "skipped_interval",
-      "message": "Last successful update still within 8 hours interval",
+      "status": "updated",
+      "message": "Event-risk blacklist updated successfully",
       "blacklist_path": "data\\reference\\event_risk_blacklist.csv",
       "state_path": "reports\\event_risk_update_state.json",
-      "updated": false,
-      "attempted_at": "2026-06-29T03:48:14.814094",
+      "updated": true,
+      "attempted_at": "2026-06-29T03:14:19.767081",
       "last_success_at": "2026-06-29T03:14:19.767081",
       "counts": {
-        "rows": 0,
-        "tickers": 0,
-        "status_counts": {}
+        "rows": 895,
+        "tickers": 571,
+        "status_counts": {
+          "UMA": 524,
+          "SUSPEND": 370,
+          "MATERIAL": 1
+        }
       },
       "errors": [],
-      "source_status": {}
+      "source_status": {
+        "SUSPEND": "ok",
+        "UMA": "ok",
+        "MATERIAL": "ok"
+      }
     }
   },
   {
-    "ts": "2026-06-29T03:48:15.165599",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:14:23.971495",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "event_risk_filtered",
     "extra": {
@@ -137,8 +145,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:15.456916",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:17.540875",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "model_v2_shadow_done",
     "extra": {
@@ -147,12 +155,13 @@
       "shadow_csv_path": "reports\\model_v2_shadow_signals.csv",
       "shadow_json_path": "reports\\model_v2_shadow_signals.json",
       "ab_test_path": "reports\\model_v2_ab_test.json",
-      "rows": 2,
+      "rows": 4,
       "train": {
-        "status": "skipped_interval",
-        "message": "Last model_v2 training still within 7 days interval",
-        "updated": false,
+        "status": "updated",
+        "message": "Model v2 trained for modes: t1, swing",
+        "updated": true,
         "state_path": "reports/model_v2_state.json",
+        "model_dir": "models/model_v2",
         "modes": {
           "t1": {
             "status": "trained",
@@ -357,14 +366,15 @@
             "artifact_path": "models\\model_v2\\swing.joblib",
             "metadata_path": "models\\model_v2\\swing.meta.json"
           }
-        }
+        },
+        "errors": []
       },
       "infer": {
         "status": "ok",
         "message": "Shadow inference completed",
         "modes": {
           "t1": {
-            "rows": 2,
+            "rows": 4,
             "source": "model",
             "threshold": 0.52,
             "thresholds_by_regime": {
@@ -477,34 +487,37 @@
             }
           }
         },
-        "rows": 2
+        "rows": 4
       },
       "ab_test": {
         "max_positions": 3,
         "v1_top": [
           "MIKA",
-          "KLBF"
+          "KLBF",
+          "TOWR"
         ],
         "v2_top": [
           "KLBF",
-          "MIKA"
+          "MIKA",
+          "TOWR"
         ],
-        "overlap_count": 2,
+        "overlap_count": 3,
         "overlap_tickers": [
           "KLBF",
-          "MIKA"
+          "MIKA",
+          "TOWR"
         ],
         "only_v1": [],
         "only_v2": [],
         "jaccard_overlap": 1.0,
-        "v1_avg_score": 100.0,
-        "v2_avg_p_win": 0.4572
+        "v1_avg_score": 99.39,
+        "v2_avg_p_win": 0.4568
       }
     }
   },
   {
-    "ts": "2026-06-29T03:48:15.459933",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:17.542871",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "model_v2_promotion_evaluated",
     "extra": {
@@ -516,8 +529,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:15.474355",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:17.553896",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "report_done",
     "extra": {
@@ -526,8 +539,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.303372",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.072074",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "backtest_done",
     "extra": {
@@ -596,8 +609,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.311501",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.079073",
+    "run_id": "20260629_101412",
     "level": "WARN",
     "message": "live_gate_blocked",
     "extra": {
@@ -662,18 +675,18 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.315071",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.083960",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "signal_snapshot_written",
     "extra": {
-      "path": "reports\\snapshots\\signals_20260629_104804.json",
+      "path": "reports\\snapshots\\signals_20260629_101412.json",
       "signal_count": 0
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.428185",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.175284",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "live_reconciliation_done",
     "extra": {
@@ -684,8 +697,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.432189",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.178715",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "signal_funnel_written",
     "extra": {
@@ -694,8 +707,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.432189",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.178715",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "telegram_skipped",
     "extra": {
@@ -703,8 +716,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.501958",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.256070",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "weekly_kpi_generated",
     "extra": {
@@ -713,7 +726,7 @@
       "json_path": "reports\\weekly_kpi.json",
       "markdown_path": "reports\\weekly_kpi.md",
       "payload": {
-        "generated_at": "2026-06-29T03:48:22.496953",
+        "generated_at": "2026-06-29T03:19:26.251421",
         "lookback_days": 7,
         "run_stats": {
           "runs_total": 14,
@@ -746,8 +759,8 @@
     }
   },
   {
-    "ts": "2026-06-29T03:48:22.502956",
-    "run_id": "20260629_104804",
+    "ts": "2026-06-29T03:19:26.257074",
+    "run_id": "20260629_101412",
     "level": "INFO",
     "message": "beginner_coaching_written",
     "extra": {

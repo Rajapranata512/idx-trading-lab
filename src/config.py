@@ -189,19 +189,6 @@ class RiskSettings(BaseModel):
     # Liquidity participation rate cap: position size must not exceed
     # X% of the ticker's average daily volume to ensure exit liquidity.
     max_participation_rate_pct: float = 5.0
-    # Trailing Stop Adaptif: automatically move stop-loss up as price rises
-    trailing_stop_enabled: bool = True
-    trailing_stop_trail_pct: float = 0.025  # 2.5% trail below highest high
-    trailing_stop_atr_multiple: float = 1.5  # ATR-based trail distance
-    # Market Filter (Defensive Mode): reduce exposure when market is bearish
-    market_filter_enabled: bool = True
-    market_filter_defensive_breadth_ma50: float = 40.0
-    market_filter_defensive_breadth_ma20: float = 45.0
-    market_filter_severe_breadth_ma50: float = 25.0
-    market_filter_defensive_position_mult: float = 0.5
-    market_filter_severe_position_mult: float = 0.25
-    market_filter_defensive_score_boost: float = 5.0
-    market_filter_severe_score_boost: float = 10.0
 
 
 class BacktestSettings(BaseModel):

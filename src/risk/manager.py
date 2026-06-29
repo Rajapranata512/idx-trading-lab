@@ -3,7 +3,6 @@ from __future__ import annotations
 import pandas as pd
 
 from src.config import RiskSettings
-from src.strategy.market_filter import MarketFilterResult
 
 
 def _to_float_series(values: object, index: pd.Index) -> pd.Series:
@@ -39,11 +38,7 @@ def _market_regime_label(
     return "stress"
 
 
-def propose_trade_plan(
-    picks: pd.DataFrame,
-    risk: RiskSettings,
-    market_filter_result: MarketFilterResult | None = None,
-) -> pd.DataFrame:
+def propose_trade_plan(picks: pd.DataFrame, risk: RiskSettings) -> pd.DataFrame:
     """Create trade levels and size for conservative risk profile."""
     if picks.empty:
         return picks.copy()
@@ -239,24 +234,6 @@ def propose_trade_plan(
     df["arb_protection_enabled"] = arb_protection_enabled
     df["arb_worst_case_loss_pct"] = round(arb_worst_case_factor * 100.0, 2)
     df["arb_worst_case_idr"] = (shares * entry * arb_worst_case_factor).round(0)
-
-    # --- Market Filter (Defensive Mode) position size reduction ---
-    mf_multiplier = 1.0
-    mf_reason = ""
-    mf_defensive = False
-    if market_filter_result is not None:
-        mf_multiplier = market_filter_result.position_size_multiplier
-        mf_reason = market_filter_result.reason
-        mf_defensive = market_filter_result.is_defensive
-        if mf_multiplier < 1.0:
-            reduced_shares = (shares.astype(float) * mf_multiplier).astype(int)
-            # Re-align to lot size
-            reduced_shares = ((reduced_shares // lot_size) * lot_size).clip(lower=0).astype(int)
-            shares = reduced_shares
-
-    df["market_filter_defensive"] = mf_defensive
-    df["market_filter_position_mult"] = round(mf_multiplier, 4)
-    df["market_filter_reason"] = mf_reason
 
     # Per-mode cap; final execution still capped globally by max_positions.
     if {"mode", "score"} <= set(df.columns):
