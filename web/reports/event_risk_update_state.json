@@ -1,15 +1,14 @@
 {
-  "last_attempt_at": "2026-06-29T03:14:19.767081",
-  "last_success_at": "2026-06-29T03:14:19.767081",
+  "last_attempt_at": "2026-06-29T14:19:16.526582",
+  "last_success_at": "2026-06-29T14:19:16.526582",
   "status": "updated",
   "message": "Event-risk blacklist updated successfully",
   "counts": {
-    "rows": 895,
+    "rows": 894,
     "tickers": 571,
     "status_counts": {
       "UMA": 524,
-      "SUSPEND": 370,
-      "MATERIAL": 1
+      "SUSPEND": 370
     }
   },
   "errors": [],
@@ -18,5 +17,5 @@
     "UMA": "ok",
     "MATERIAL": "ok"
   },
-  "blacklist_path": "data\\reference\\event_risk_blacklist.csv"
+  "blacklist_path": "data/reference/event_risk_blacklist.csv"
 }
