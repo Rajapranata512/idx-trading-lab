@@ -1,26 +1,23 @@
 {
-  "generated_at": "2026-06-30T15:06:15.517600",
-  "run_id": "20260630_150606",
+  "generated_at": "2026-07-01T12:47:10.938600",
+  "run_id": "20260701_124653",
   "max_positions": 3,
   "v1_top": [
     "MIKA",
-    "CPIN",
-    "KLBF"
+    "MBMA"
   ],
   "v2_top": [
     "MIKA",
-    "CPIN",
-    "KLBF"
+    "MBMA"
   ],
-  "overlap_count": 3,
+  "overlap_count": 2,
   "overlap_tickers": [
-    "CPIN",
-    "KLBF",
+    "MBMA",
     "MIKA"
   ],
   "only_v1": [],
   "only_v2": [],
   "jaccard_overlap": 1.0,
-  "v1_avg_score": 98.5967,
-  "v2_avg_p_win": 0.736
+  "v1_avg_score": 98.855,
+  "v2_avg_p_win": 0.7386
 }
