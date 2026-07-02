@@ -1,23 +1,26 @@
 {
-  "generated_at": "2026-07-01T15:18:04.181719",
-  "run_id": "20260701_151755",
+  "generated_at": "2026-07-02T12:21:25.033214",
+  "run_id": "20260702_122108",
   "max_positions": 3,
   "v1_top": [
-    "MIKA",
-    "MBMA"
+    "MBMA",
+    "ISAT",
+    "INTP"
   ],
   "v2_top": [
-    "MIKA",
-    "MBMA"
-  ],
-  "overlap_count": 2,
-  "overlap_tickers": [
+    "INTP",
     "MBMA",
-    "MIKA"
+    "ISAT"
+  ],
+  "overlap_count": 3,
+  "overlap_tickers": [
+    "INTP",
+    "ISAT",
+    "MBMA"
   ],
   "only_v1": [],
   "only_v2": [],
   "jaccard_overlap": 1.0,
-  "v1_avg_score": 98.855,
-  "v2_avg_p_win": 0.7386
+  "v1_avg_score": 99.4133,
+  "v2_avg_p_win": 0.7513
 }
