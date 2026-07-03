@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-07-02T14:35:04.784593",
-  "run_id": "20260702_143455",
+  "generated_at": "2026-07-03T12:20:01.152183",
+  "run_id": "20260703_121947",
   "signals": [
     {
-      "ticker": "INTP",
+      "ticker": "ANTM",
       "mode": "t1",
-      "score": 98.24,
+      "score": 100.0,
       "shadow_rank": 1,
-      "shadow_p_win": 0.754,
-      "shadow_expected_r": 0.885,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 4220.0,
-      "stop": 3930.85,
-      "tp1": 4509.15,
-      "tp2": 4798.3,
+      "entry": 2930.0,
+      "stop": 2573.59,
+      "tp1": 3286.41,
+      "tp2": 3642.81,
       "size": 100
     },
     {
-      "ticker": "MBMA",
+      "ticker": "ISAT",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 2,
@@ -28,27 +28,43 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 520.0,
-      "stop": 442.36,
-      "tp1": 597.64,
-      "tp2": 675.27,
-      "size": 500
+      "entry": 1985.0,
+      "stop": 1791.39,
+      "tp1": 2178.61,
+      "tp2": 2372.21,
+      "size": 200
     },
     {
-      "ticker": "ISAT",
+      "ticker": "NCKL",
       "mode": "t1",
-      "score": 100.0,
+      "score": 97.95,
       "shadow_rank": 3,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
+      "shadow_p_win": 0.7295,
+      "shadow_expected_r": 0.8238,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1825.0,
-      "stop": 1651.12,
-      "tp1": 1998.88,
-      "tp2": 2172.77,
-      "size": 200
+      "entry": 860.0,
+      "stop": 758.0,
+      "tp1": 962.0,
+      "tp2": 1064.0,
+      "size": 300
+    },
+    {
+      "ticker": "MBMA",
+      "mode": "t1",
+      "score": 97.89,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.7289,
+      "shadow_expected_r": 0.8222,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 520.0,
+      "stop": 442.91,
+      "tp1": 597.09,
+      "tp2": 674.18,
+      "size": 400
     }
   ],
   "infer": {
@@ -56,14 +72,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 3,
+        "rows": 4,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 3
+    "rows": 4
   },
   "train": {
     "status": "skipped_interval",
