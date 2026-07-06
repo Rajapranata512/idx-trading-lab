@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-03T14:37:15.032686",
-  "run_id": "20260703_143702",
+  "generated_at": "2026-07-06T14:05:46.648738",
+  "run_id": "20260706_140055",
   "gate_pass": {
     "t1": false,
     "swing": false
   },
   "allowed_modes": [],
   "pre_gate": {
-    "combined_plan_count": 4,
+    "combined_plan_count": 5,
     "execution_plan_count": 1,
-    "signal_count": 4,
+    "signal_count": 5,
     "by_mode": {
-      "t1": 4
+      "t1": 5
     }
   },
   "post_gate": {
@@ -25,7 +25,7 @@
     "kill_switch": "triggered"
   },
   "score_funnel": {
-    "generated_at": "2026-07-03T14:37:10.823031",
+    "generated_at": "2026-07-06T14:01:16.917908",
     "thresholds": {
       "min_live_score_t1": 95.0,
       "min_live_score_swing": 68.0,
@@ -47,26 +47,26 @@
         "rank_candidates": 10,
         "after_score_filter": 6,
         "after_event_risk": 6,
-        "small_size_before_filter": 3,
+        "small_size_before_filter": 1,
         "dropped_by_score": 4,
         "dropped_by_event_risk": 0
       },
       "swing": {
-        "rank_candidates": 5,
+        "rank_candidates": 6,
         "after_score_filter": 0,
         "after_event_risk": 0,
         "small_size_before_filter": 2,
-        "dropped_by_score": 5,
+        "dropped_by_score": 6,
         "dropped_by_event_risk": 0
       }
     },
     "combined": {
       "before_size_filter": 6,
-      "dropped_by_size_filter": 2,
-      "after_size_filter": 4,
-      "after_top_n_combined": 4,
+      "dropped_by_size_filter": 1,
+      "after_size_filter": 5,
+      "after_top_n_combined": 5,
       "execution_plan_count": 1,
-      "signal_count": 4,
+      "signal_count": 5,
       "avg_roundtrip_cost_est_pct": 0.56
     },
     "event_risk": {
@@ -74,7 +74,7 @@
       "status": "ok",
       "message": "Event-risk filter applied",
       "path": "data/reference/event_risk_blacklist.csv",
-      "as_of_date": "2026-07-03",
+      "as_of_date": "2026-07-06",
       "active_events": 3,
       "excluded_count": 0,
       "excluded_tickers": [],

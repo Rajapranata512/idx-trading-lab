@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-07-03T14:37:10.931262",
-  "run_id": "20260703_143702",
+  "generated_at": "2026-07-06T14:05:42.907571",
+  "run_id": "20260706_140055",
   "signals": [
     {
       "ticker": "ANTM",
       "mode": "t1",
-      "score": 100.0,
+      "score": 99.73,
       "shadow_rank": 1,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
+      "shadow_p_win": 0.4499,
+      "shadow_expected_r": -0.0428,
       "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 2930.0,
-      "stop": 2573.59,
-      "tp1": 3286.41,
-      "tp2": 3642.81,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 2940.0,
+      "stop": 2593.34,
+      "tp1": 3286.66,
+      "tp2": 3633.33,
       "size": 100
     },
     {
@@ -23,48 +23,64 @@
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 2,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
+      "shadow_p_win": 0.4443,
+      "shadow_expected_r": -0.046,
       "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 1985.0,
-      "stop": 1791.39,
-      "tp1": 2178.61,
-      "tp2": 2372.21,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 1885.0,
+      "stop": 1688.79,
+      "tp1": 2081.21,
+      "tp2": 2277.41,
       "size": 200
     },
     {
-      "ticker": "NCKL",
+      "ticker": "AKRA",
       "mode": "t1",
-      "score": 97.95,
+      "score": 96.47,
       "shadow_rank": 3,
-      "shadow_p_win": 0.7295,
-      "shadow_expected_r": 0.8238,
+      "shadow_p_win": 0.4142,
+      "shadow_expected_r": -0.0631,
       "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 860.0,
-      "stop": 758.0,
-      "tp1": 962.0,
-      "tp2": 1064.0,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 1300.0,
+      "stop": 1191.53,
+      "tp1": 1408.47,
+      "tp2": 1516.94,
+      "size": 400
+    },
+    {
+      "ticker": "BBTN",
+      "mode": "t1",
+      "score": 98.54,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.3604,
+      "shadow_expected_r": -0.0937,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 1165.0,
+      "stop": 1054.64,
+      "tp1": 1275.36,
+      "tp2": 1385.71,
       "size": 300
     },
     {
-      "ticker": "MBMA",
+      "ticker": "BRIS",
       "mode": "t1",
-      "score": 97.89,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.7289,
-      "shadow_expected_r": 0.8222,
+      "score": 100.0,
+      "shadow_rank": 5,
+      "shadow_p_win": 0.3521,
+      "shadow_expected_r": -0.0984,
       "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 520.0,
-      "stop": 442.91,
-      "tp1": 597.09,
-      "tp2": 674.18,
-      "size": 400
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "entry": 1835.0,
+      "stop": 1667.71,
+      "tp1": 2002.29,
+      "tp2": 2169.57,
+      "size": 200
     }
   ],
   "infer": {
@@ -72,27 +88,134 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 4,
-        "source": "fallback",
+        "rows": 5,
+        "source": "model",
         "threshold": 0.52,
-        "thresholds_by_regime": {},
-        "metadata": {}
+        "thresholds_by_regime": {
+          "default": 0.52
+        },
+        "metadata": {
+          "saved_at": "2026-07-06T14:03:24.667913",
+          "train_rows": 20717,
+          "positive_rate": 0.34435487763672346,
+          "auc_train": 0.682,
+          "features": [
+            "score",
+            "ret_1d",
+            "ret_5d",
+            "ret_20d",
+            "atr_pct",
+            "vol_20d",
+            "avg_vol_20d",
+            "close",
+            "ma_20",
+            "ma_50",
+            "ma_slope_20",
+            "ma_slope_50",
+            "dist_ma_20",
+            "dist_ma_50",
+            "vol_ratio",
+            "ret_5d_20d_ratio",
+            "high_low_range",
+            "close_position",
+            "volume_ratio_20d",
+            "rsi_14",
+            "rsi_slope",
+            "mfi_14",
+            "obv_slope",
+            "rank_ret_20d",
+            "rank_vol_20d",
+            "turnover_ratio_20d",
+            "dist_high_20",
+            "dist_low_20",
+            "ma_gap_20_50",
+            "ma_stack_bullish",
+            "market_breadth_ma20_pct",
+            "market_breadth_ma50_pct",
+            "market_avg_ret20_pct",
+            "market_median_atr_pct",
+            "relative_ret_20d"
+          ],
+          "model_type": "lightgbm_optuna",
+          "cv_auc": 0.5591,
+          "model_comparison": {
+            "lightgbm_optuna": 0.5591,
+            "logreg": 0.5551,
+            "xgboost_optuna": 0.5529,
+            "lightgbm": 0.5444,
+            "xgboost": 0.5407
+          },
+          "calibration": {
+            "calibrated": true,
+            "ece": 0.156161
+          },
+          "available_models": [
+            "lightgbm_optuna",
+            "logreg",
+            "xgboost_optuna",
+            "lightgbm",
+            "xgboost"
+          ],
+          "label_strategy": "binary_positive_net_return",
+          "thresholds_by_regime": {
+            "default": 0.52
+          },
+          "return_profile": {
+            "overall": {
+              "mean_return_r": -0.100287,
+              "positive_mean_r": 0.268786,
+              "negative_mean_r": -0.29413,
+              "sample_count": 20717
+            },
+            "by_regime": {
+              "risk_off": {
+                "mean_return_r": -0.100146,
+                "positive_mean_r": 0.269751,
+                "negative_mean_r": -0.298481,
+                "sample_count": 13457
+              },
+              "risk_on": {
+                "mean_return_r": -0.100548,
+                "positive_mean_r": 0.266925,
+                "negative_mean_r": -0.286227,
+                "sample_count": 7260
+              }
+            }
+          },
+          "target_rank_positive_cutoff": null,
+          "optuna_used": true,
+          "optuna_trials": 25,
+          "optuna_best_params": {
+            "n_estimators": 450,
+            "max_depth": 3,
+            "learning_rate": 0.023837650341460185,
+            "subsample": 0.7225229742276208,
+            "colsample_bytree": 0.5635439467287424,
+            "min_child_samples": 37,
+            "reg_alpha": 0.026581306299182934,
+            "reg_lambda": 0.09741065114242761
+          },
+          "mode": "t1",
+          "horizon_days": 1,
+          "trained_at": "2026-07-06T14:01:17.005437"
+        }
       }
     },
-    "rows": 4
+    "rows": 5
   },
   "train": {
-    "status": "skipped_interval",
-    "message": "Last model_v2 training still within 7 days interval",
-    "updated": false,
+    "status": "updated",
+    "message": "Model v2 trained for modes: t1, swing",
+    "updated": true,
     "state_path": "reports/model_v2_state.json",
+    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
         "rows": 20717,
         "train_rows": 20717,
-        "positive_rate": 0.34309986967224987,
-        "auc_train": 0.6454,
+        "positive_rate": 0.34435487763672346,
+        "auc_train": 0.682,
         "features": [
           "score",
           "ret_1d",
@@ -131,24 +254,24 @@
           "relative_ret_20d"
         ],
         "model_type": "lightgbm_optuna",
-        "cv_auc": 0.5614,
+        "cv_auc": 0.5591,
         "model_comparison": {
-          "lightgbm_optuna": 0.5614,
-          "xgboost_optuna": 0.5546,
-          "logreg": 0.5512,
-          "xgboost": 0.5497,
-          "lightgbm": 0.5477
+          "lightgbm_optuna": 0.5591,
+          "logreg": 0.5551,
+          "xgboost_optuna": 0.5529,
+          "lightgbm": 0.5444,
+          "xgboost": 0.5407
         },
         "calibration": {
           "calibrated": true,
-          "ece": 0.173479
+          "ece": 0.156161
         },
         "available_models": [
           "lightgbm_optuna",
-          "xgboost_optuna",
           "logreg",
-          "xgboost",
-          "lightgbm"
+          "xgboost_optuna",
+          "lightgbm",
+          "xgboost"
         ],
         "label_strategy": "binary_positive_net_return",
         "thresholds_by_regime": {
@@ -156,23 +279,23 @@
         },
         "return_profile": {
           "overall": {
-            "mean_return_r": -0.100733,
-            "positive_mean_r": 0.269015,
-            "negative_mean_r": -0.293853,
+            "mean_return_r": -0.100287,
+            "positive_mean_r": 0.268786,
+            "negative_mean_r": -0.29413,
             "sample_count": 20717
           },
           "by_regime": {
             "risk_off": {
-              "mean_return_r": -0.100891,
-              "positive_mean_r": 0.270636,
-              "negative_mean_r": -0.299159,
-              "sample_count": 13237
+              "mean_return_r": -0.100146,
+              "positive_mean_r": 0.269751,
+              "negative_mean_r": -0.298481,
+              "sample_count": 13457
             },
             "risk_on": {
-              "mean_return_r": -0.100454,
-              "positive_mean_r": 0.266031,
-              "negative_mean_r": -0.284654,
-              "sample_count": 7480
+              "mean_return_r": -0.100548,
+              "positive_mean_r": 0.266925,
+              "negative_mean_r": -0.286227,
+              "sample_count": 7260
             }
           }
         },
@@ -180,24 +303,24 @@
         "optuna_used": true,
         "optuna_trials": 25,
         "optuna_best_params": {
-          "n_estimators": 500,
+          "n_estimators": 450,
           "max_depth": 3,
-          "learning_rate": 0.010543593286909828,
-          "subsample": 0.9565358620704201,
-          "colsample_bytree": 0.526169717206479,
-          "min_child_samples": 18,
-          "reg_alpha": 0.05295009491849824,
-          "reg_lambda": 0.051391008797163636
+          "learning_rate": 0.023837650341460185,
+          "subsample": 0.7225229742276208,
+          "colsample_bytree": 0.5635439467287424,
+          "min_child_samples": 37,
+          "reg_alpha": 0.026581306299182934,
+          "reg_lambda": 0.09741065114242761
         },
-        "artifact_path": "models\\model_v2\\t1.joblib",
-        "metadata_path": "models\\model_v2\\t1.meta.json"
+        "artifact_path": "models/model_v2/t1.joblib",
+        "metadata_path": "models/model_v2/t1.meta.json"
       },
       "swing": {
         "status": "trained",
-        "rows": 7258,
-        "train_rows": 7258,
-        "positive_rate": 0.3228162028106917,
-        "auc_train": 0.59,
+        "rows": 7158,
+        "train_rows": 7158,
+        "positive_rate": 0.3222967309304275,
+        "auc_train": 0.7814,
         "features": [
           "score",
           "ret_1d",
@@ -235,61 +358,71 @@
           "market_median_atr_pct",
           "relative_ret_20d"
         ],
-        "model_type": "logreg",
-        "cv_auc": 0.5162,
+        "model_type": "lightgbm_optuna",
+        "cv_auc": 0.515,
         "model_comparison": {
-          "logreg": 0.5162,
-          "xgboost_optuna": 0.4966,
-          "lightgbm_optuna": 0.4945,
-          "lightgbm": 0.4791,
-          "xgboost": 0.4762
+          "lightgbm_optuna": 0.515,
+          "logreg": 0.5095,
+          "xgboost_optuna": 0.5011,
+          "xgboost": 0.4898,
+          "lightgbm": 0.4792
         },
         "calibration": {
           "calibrated": true,
-          "ece": 0.198697
+          "ece": 0.277453
         },
         "available_models": [
+          "lightgbm_optuna",
           "logreg",
           "xgboost_optuna",
-          "lightgbm_optuna",
-          "lightgbm",
-          "xgboost"
+          "xgboost",
+          "lightgbm"
         ],
         "label_strategy": "ranked_expected_return_top_65pct",
         "thresholds_by_regime": {
           "default": 0.55,
-          "risk_on": 0.65,
-          "risk_off": 0.675
+          "risk_on": 0.7,
+          "risk_off": 0.7
         },
         "return_profile": {
           "overall": {
-            "mean_return_r": -0.123753,
-            "positive_mean_r": 0.747929,
-            "negative_mean_r": -0.837304,
-            "sample_count": 7258
+            "mean_return_r": -0.127376,
+            "positive_mean_r": 0.748315,
+            "negative_mean_r": -0.843002,
+            "sample_count": 7158
           },
           "by_regime": {
             "risk_off": {
-              "mean_return_r": -0.141274,
-              "positive_mean_r": 0.732794,
-              "negative_mean_r": -0.844618,
-              "sample_count": 3086
+              "mean_return_r": -0.143695,
+              "positive_mean_r": 0.730533,
+              "negative_mean_r": -0.846536,
+              "sample_count": 3101
             },
             "risk_on": {
-              "mean_return_r": -0.110792,
-              "positive_mean_r": 0.758942,
-              "negative_mean_r": -0.831821,
-              "sample_count": 4172
+              "mean_return_r": -0.114903,
+              "positive_mean_r": 0.761692,
+              "negative_mean_r": -0.840266,
+              "sample_count": 4057
             }
           }
         },
         "target_rank_positive_cutoff": 0.65,
         "optuna_used": true,
         "optuna_trials": 25,
-        "optuna_best_params": {},
-        "artifact_path": "models\\model_v2\\swing.joblib",
-        "metadata_path": "models\\model_v2\\swing.meta.json"
+        "optuna_best_params": {
+          "n_estimators": 250,
+          "max_depth": 4,
+          "learning_rate": 0.01801746294031929,
+          "subsample": 0.9986259533660818,
+          "colsample_bytree": 0.9963916606488326,
+          "min_child_samples": 21,
+          "reg_alpha": 9.370894690966397,
+          "reg_lambda": 0.3676734236526604
+        },
+        "artifact_path": "models/model_v2/swing.joblib",
+        "metadata_path": "models/model_v2/swing.meta.json"
       }
-    }
+    },
+    "errors": []
   }
 }
