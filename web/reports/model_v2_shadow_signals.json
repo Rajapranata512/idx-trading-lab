@@ -1,33 +1,33 @@
 {
-  "generated_at": "2026-07-06T14:05:42.907571",
-  "run_id": "20260706_140055",
+  "generated_at": "2026-07-06T14:38:59.241743",
+  "run_id": "20260706_143850",
   "signals": [
     {
-      "ticker": "ANTM",
+      "ticker": "BRIS",
       "mode": "t1",
-      "score": 99.73,
+      "score": 100.0,
       "shadow_rank": 1,
-      "shadow_p_win": 0.4499,
-      "shadow_expected_r": -0.0428,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "entry": 2940.0,
-      "stop": 2593.34,
-      "tp1": 3286.66,
-      "tp2": 3633.33,
-      "size": 100
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 1835.0,
+      "stop": 1667.71,
+      "tp1": 2002.29,
+      "tp2": 2169.57,
+      "size": 200
     },
     {
       "ticker": "ISAT",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 2,
-      "shadow_p_win": 0.4443,
-      "shadow_expected_r": -0.046,
+      "shadow_p_win": 0.75,
+      "shadow_expected_r": 0.875,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
       "entry": 1885.0,
       "stop": 1688.79,
       "tp1": 2081.21,
@@ -35,31 +35,31 @@
       "size": 200
     },
     {
-      "ticker": "AKRA",
+      "ticker": "ANTM",
       "mode": "t1",
-      "score": 96.47,
+      "score": 99.73,
       "shadow_rank": 3,
-      "shadow_p_win": 0.4142,
-      "shadow_expected_r": -0.0631,
+      "shadow_p_win": 0.7473,
+      "shadow_expected_r": 0.8682,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "entry": 1300.0,
-      "stop": 1191.53,
-      "tp1": 1408.47,
-      "tp2": 1516.94,
-      "size": 400
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 2940.0,
+      "stop": 2593.34,
+      "tp1": 3286.66,
+      "tp2": 3633.33,
+      "size": 100
     },
     {
       "ticker": "BBTN",
       "mode": "t1",
       "score": 98.54,
       "shadow_rank": 4,
-      "shadow_p_win": 0.3604,
-      "shadow_expected_r": -0.0937,
+      "shadow_p_win": 0.7354,
+      "shadow_expected_r": 0.8385,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
       "entry": 1165.0,
       "stop": 1054.64,
       "tp1": 1275.36,
@@ -67,20 +67,20 @@
       "size": 300
     },
     {
-      "ticker": "BRIS",
+      "ticker": "AKRA",
       "mode": "t1",
-      "score": 100.0,
+      "score": 96.47,
       "shadow_rank": 5,
-      "shadow_p_win": 0.3521,
-      "shadow_expected_r": -0.0984,
+      "shadow_p_win": 0.7147,
+      "shadow_expected_r": 0.7867,
       "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "entry": 1835.0,
-      "stop": 1667.71,
-      "tp1": 2002.29,
-      "tp2": 2169.57,
-      "size": 200
+      "shadow_recommended": true,
+      "shadow_model_source": "fallback",
+      "entry": 1300.0,
+      "stop": 1191.53,
+      "tp1": 1408.47,
+      "tp2": 1516.94,
+      "size": 400
     }
   ],
   "infer": {
@@ -89,126 +89,19 @@
     "modes": {
       "t1": {
         "rows": 5,
-        "source": "model",
+        "source": "fallback",
         "threshold": 0.52,
-        "thresholds_by_regime": {
-          "default": 0.52
-        },
-        "metadata": {
-          "saved_at": "2026-07-06T14:03:24.667913",
-          "train_rows": 20717,
-          "positive_rate": 0.34435487763672346,
-          "auc_train": 0.682,
-          "features": [
-            "score",
-            "ret_1d",
-            "ret_5d",
-            "ret_20d",
-            "atr_pct",
-            "vol_20d",
-            "avg_vol_20d",
-            "close",
-            "ma_20",
-            "ma_50",
-            "ma_slope_20",
-            "ma_slope_50",
-            "dist_ma_20",
-            "dist_ma_50",
-            "vol_ratio",
-            "ret_5d_20d_ratio",
-            "high_low_range",
-            "close_position",
-            "volume_ratio_20d",
-            "rsi_14",
-            "rsi_slope",
-            "mfi_14",
-            "obv_slope",
-            "rank_ret_20d",
-            "rank_vol_20d",
-            "turnover_ratio_20d",
-            "dist_high_20",
-            "dist_low_20",
-            "ma_gap_20_50",
-            "ma_stack_bullish",
-            "market_breadth_ma20_pct",
-            "market_breadth_ma50_pct",
-            "market_avg_ret20_pct",
-            "market_median_atr_pct",
-            "relative_ret_20d"
-          ],
-          "model_type": "lightgbm_optuna",
-          "cv_auc": 0.5591,
-          "model_comparison": {
-            "lightgbm_optuna": 0.5591,
-            "logreg": 0.5551,
-            "xgboost_optuna": 0.5529,
-            "lightgbm": 0.5444,
-            "xgboost": 0.5407
-          },
-          "calibration": {
-            "calibrated": true,
-            "ece": 0.156161
-          },
-          "available_models": [
-            "lightgbm_optuna",
-            "logreg",
-            "xgboost_optuna",
-            "lightgbm",
-            "xgboost"
-          ],
-          "label_strategy": "binary_positive_net_return",
-          "thresholds_by_regime": {
-            "default": 0.52
-          },
-          "return_profile": {
-            "overall": {
-              "mean_return_r": -0.100287,
-              "positive_mean_r": 0.268786,
-              "negative_mean_r": -0.29413,
-              "sample_count": 20717
-            },
-            "by_regime": {
-              "risk_off": {
-                "mean_return_r": -0.100146,
-                "positive_mean_r": 0.269751,
-                "negative_mean_r": -0.298481,
-                "sample_count": 13457
-              },
-              "risk_on": {
-                "mean_return_r": -0.100548,
-                "positive_mean_r": 0.266925,
-                "negative_mean_r": -0.286227,
-                "sample_count": 7260
-              }
-            }
-          },
-          "target_rank_positive_cutoff": null,
-          "optuna_used": true,
-          "optuna_trials": 25,
-          "optuna_best_params": {
-            "n_estimators": 450,
-            "max_depth": 3,
-            "learning_rate": 0.023837650341460185,
-            "subsample": 0.7225229742276208,
-            "colsample_bytree": 0.5635439467287424,
-            "min_child_samples": 37,
-            "reg_alpha": 0.026581306299182934,
-            "reg_lambda": 0.09741065114242761
-          },
-          "mode": "t1",
-          "horizon_days": 1,
-          "trained_at": "2026-07-06T14:01:17.005437"
-        }
+        "thresholds_by_regime": {},
+        "metadata": {}
       }
     },
     "rows": 5
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1, swing",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -422,7 +315,6 @@
         "artifact_path": "models/model_v2/swing.joblib",
         "metadata_path": "models/model_v2/swing.meta.json"
       }
-    },
-    "errors": []
+    }
   }
 }
