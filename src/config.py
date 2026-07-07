@@ -156,6 +156,22 @@ class EventRiskSettings(BaseModel):
     auto_update: EventRiskAutoUpdateSettings = Field(default_factory=EventRiskAutoUpdateSettings)
 
 
+class ProfitQualitySettings(BaseModel):
+    enabled: bool = True
+    profile_path: str = "reports/ticker_edge_profile.csv"
+    report_path: str = "reports/profit_quality_gate.json"
+    min_expected_r: float = 0.05
+    min_ticker_samples: int = 5
+    strong_sample_size: int = 20
+    min_ticker_expectancy_r: float = -0.05
+    min_ticker_profit_factor_r: float = 0.85
+    block_negative_edge: bool = True
+    gate_without_live_edge: bool = False
+    gate_with_model_probability: bool = True
+    score_adjustment_weight: float = 10.0
+    max_score_adjustment: float = 12.0
+
+
 class PipelineSettings(BaseModel):
     min_avg_volume_20d: float = 200000
     top_n_per_mode: int = 10
@@ -164,6 +180,7 @@ class PipelineSettings(BaseModel):
     min_live_score_t1: float = 95.0
     min_live_score_swing: float = 65.0
     event_risk: EventRiskSettings = Field(default_factory=EventRiskSettings)
+    profit_quality: ProfitQualitySettings = Field(default_factory=ProfitQualitySettings)
 
 
 class RiskSettings(BaseModel):

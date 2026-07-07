@@ -94,9 +94,24 @@
                      "active_modes":  [
                                           "swing",
                                           "t1"
-                                      ],
+                     ],
                      "min_live_score_t1":  99,
                      "min_live_score_swing":  72,
+                     "profit_quality":  {
+                                            "enabled":  true,
+                                            "profile_path":  "reports/ticker_edge_profile.csv",
+                                            "report_path":  "reports/profit_quality_gate.json",
+                                            "min_expected_r":  0.05,
+                                            "min_ticker_samples":  5,
+                                            "strong_sample_size":  20,
+                                            "min_ticker_expectancy_r":  -0.05,
+                                            "min_ticker_profit_factor_r":  0.85,
+                                            "block_negative_edge":  true,
+                                            "gate_without_live_edge":  false,
+                                            "gate_with_model_probability":  true,
+                                            "score_adjustment_weight":  10.0,
+                                            "max_score_adjustment":  12.0
+                                        },
                      "event_risk":  {
                                         "enabled":  true,
                                         "blacklist_csv_path":  "data/reference/event_risk_blacklist.csv",

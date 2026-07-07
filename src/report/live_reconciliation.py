@@ -132,10 +132,40 @@ def write_signal_snapshot(
             "liq_bucket",
             "est_slippage_pct",
             "est_roundtrip_cost_pct",
+            "profit_quality_score",
+            "ev_p_win",
+            "ev_reward_r",
+            "ev_loss_r",
+            "ev_cost_r",
+            "ev_expected_r",
+            "edge_samples",
+            "edge_confidence",
+            "edge_expectancy_r",
+            "edge_profit_factor_r",
+            "profit_quality_action",
+            "profit_quality_reason",
         ]
         cols = [c for c in keep_cols if c in signals.columns]
         out = signals[cols].copy()
-        for c in ["score", "entry", "stop", "tp1", "tp2", "est_slippage_pct", "est_roundtrip_cost_pct"]:
+        for c in [
+            "score",
+            "entry",
+            "stop",
+            "tp1",
+            "tp2",
+            "est_slippage_pct",
+            "est_roundtrip_cost_pct",
+            "profit_quality_score",
+            "ev_p_win",
+            "ev_reward_r",
+            "ev_loss_r",
+            "ev_cost_r",
+            "ev_expected_r",
+            "edge_samples",
+            "edge_confidence",
+            "edge_expectancy_r",
+            "edge_profit_factor_r",
+        ]:
             if c in out.columns:
                 out[c] = pd.to_numeric(out[c], errors="coerce").round(6)
         if "size" in out.columns:

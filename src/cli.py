@@ -27,6 +27,7 @@ from src.report import (
 from src.report.render_report import render_html_report, write_signal_json
 from src.risk import maybe_auto_recalibrate_volatility_targets, maybe_auto_update_event_risk
 from src.risk.manager import apply_global_position_limit, propose_trade_plan
+from src.risk.profit_quality import apply_profit_quality_gate
 from src.strategy import rank_all_modes, score_history_modes
 from src.universe import maybe_auto_update_universe
 from src.utils import JsonRunLogger
@@ -356,11 +357,19 @@ def score_step(settings: Settings) -> dict[str, Any]:
         size_removed = int((combined_plan["size"] < lot_size).sum())
         combined_plan = combined_plan[combined_plan["size"] >= lot_size].copy()
     combined_after_size = int(len(combined_plan))
-    combined_plan = combined_plan.sort_values("score", ascending=False).head(
+    combined_plan = _apply_liquidity_cost_estimate(combined_plan, settings)
+    combined_before_profit_quality = int(len(combined_plan))
+    combined_plan, profit_quality_info = apply_profit_quality_gate(
+        combined_plan,
+        settings=settings,
+        stage="score",
+    )
+    combined_after_profit_quality = int(len(combined_plan))
+    sort_col = "profit_quality_score" if "profit_quality_score" in combined_plan.columns else "score"
+    combined_plan = combined_plan.sort_values(sort_col, ascending=False).head(
         settings.pipeline.top_n_combined
     ).reset_index(drop=True)
     combined_after_topn = int(len(combined_plan))
-    combined_plan = _apply_liquidity_cost_estimate(combined_plan, settings)
     mode_caps = {
         "t1": int(settings.risk.max_positions_t1),
         "swing": int(settings.risk.max_positions_swing),
@@ -394,6 +403,18 @@ def score_step(settings: Settings) -> dict[str, Any]:
         "liq_bucket",
         "est_slippage_pct",
         "est_roundtrip_cost_pct",
+        "profit_quality_score",
+        "ev_p_win",
+        "ev_reward_r",
+        "ev_loss_r",
+        "ev_cost_r",
+        "ev_expected_r",
+        "edge_samples",
+        "edge_confidence",
+        "edge_expectancy_r",
+        "edge_profit_factor_r",
+        "profit_quality_action",
+        "profit_quality_reason",
     ]
     signal_df = combined_plan[[c for c in signal_cols if c in combined_plan.columns]].copy()
     signal_path = write_signal_json(signal_df, str(reports_dir / "daily_signal.json"))
@@ -441,8 +462,12 @@ def score_step(settings: Settings) -> dict[str, Any]:
                 0.0 if pd.isna(m := pd.to_numeric(combined_plan.get("est_roundtrip_cost_pct", pd.Series(dtype=float)), errors="coerce").mean()) else float(m),
                 4,
             ),
+            "before_profit_quality_gate": combined_before_profit_quality,
+            "after_profit_quality_gate": combined_after_profit_quality,
+            "dropped_by_profit_quality": max(0, combined_before_profit_quality - combined_after_profit_quality),
         },
         "event_risk": event_risk_info,
+        "profit_quality": profit_quality_info,
     }
     signal_funnel_path = _write_json(reports_dir / "signal_funnel.json", signal_funnel)
     return {
@@ -454,6 +479,7 @@ def score_step(settings: Settings) -> dict[str, Any]:
         "signal_funnel": signal_funnel,
         "signal_funnel_path": signal_funnel_path,
         "event_risk": event_risk_info,
+        "profit_quality": profit_quality_info,
     }
 
 
@@ -1225,6 +1251,18 @@ def run_daily(
             "shadow_recommended",
             "model_v2_live_selected",
             "model_v2_rollout_pct",
+            "profit_quality_score",
+            "ev_p_win",
+            "ev_reward_r",
+            "ev_loss_r",
+            "ev_cost_r",
+            "ev_expected_r",
+            "edge_samples",
+            "edge_confidence",
+            "edge_expectancy_r",
+            "edge_profit_factor_r",
+            "profit_quality_action",
+            "profit_quality_reason",
         ]
         signal_df = pd.DataFrame(columns=signal_cols)
         rollout_info: dict[str, Any] = {
@@ -1232,6 +1270,12 @@ def run_daily(
             "message": "Rollout not evaluated",
             "rollout_pct": int(promotion_info.get("rollout_pct", 0) or 0),
             "live_active": bool(promotion_info.get("live_active", False)),
+        }
+        profit_quality_live_info: dict[str, Any] = {
+            "status": "not_applied",
+            "stage": "live_gate",
+            "input_count": 0,
+            "output_count": 0,
         }
         if not allowed_modes:
             empty_signals = pd.DataFrame(
@@ -1245,6 +1289,12 @@ def run_daily(
                 "rollout_pct": int(promotion_info.get("rollout_pct", 0) or 0),
                 "live_active": bool(promotion_info.get("live_active", False)),
                 "selected_count": 0,
+            }
+            profit_quality_live_info = {
+                "status": "blocked_by_live_gate",
+                "stage": "live_gate",
+                "input_count": 0,
+                "output_count": 0,
             }
             logger.event(
                 "WARN",
@@ -1287,6 +1337,55 @@ def run_daily(
             else:
                 signal_df = filtered_combined[[c for c in signal_cols if c in filtered_combined.columns]].copy()
 
+            profit_quality_live_info = {
+                "status": "not_applied",
+                "stage": "live_gate",
+                "input_count": int(len(filtered_combined)),
+                "output_count": int(len(filtered_combined)),
+            }
+            if not filtered_combined.empty:
+                filtered_combined, profit_quality_live_info = apply_profit_quality_gate(
+                    filtered_combined,
+                    settings=settings,
+                    stage="live_gate",
+                )
+                profit_cols = [
+                    "profit_quality_score",
+                    "ev_p_win",
+                    "ev_reward_r",
+                    "ev_loss_r",
+                    "ev_cost_r",
+                    "ev_expected_r",
+                    "edge_samples",
+                    "edge_confidence",
+                    "edge_expectancy_r",
+                    "edge_profit_factor_r",
+                    "profit_quality_action",
+                    "profit_quality_reason",
+                ]
+                if not filtered_execution.empty and {"ticker", "mode"} <= set(filtered_execution.columns):
+                    keep_keys = filtered_combined[["ticker", "mode"]].drop_duplicates().copy()
+                    keep_keys["ticker"] = keep_keys["ticker"].astype(str).str.upper().str.strip()
+                    keep_keys["mode"] = keep_keys["mode"].astype(str).str.lower().str.strip()
+                    filtered_execution["ticker"] = filtered_execution["ticker"].astype(str).str.upper().str.strip()
+                    filtered_execution["mode"] = filtered_execution["mode"].astype(str).str.lower().str.strip()
+                    filtered_execution = filtered_execution.merge(keep_keys, on=["ticker", "mode"], how="inner")
+                    available_profit_cols = [c for c in profit_cols if c in filtered_combined.columns]
+                    if available_profit_cols:
+                        filtered_execution = filtered_execution.drop(
+                            columns=[c for c in available_profit_cols if c in filtered_execution.columns],
+                            errors="ignore",
+                        )
+                        filtered_execution = filtered_execution.merge(
+                            filtered_combined[["ticker", "mode", *available_profit_cols]].drop_duplicates(["ticker", "mode"]),
+                            on=["ticker", "mode"],
+                            how="left",
+                        )
+                if bool(promotion_info.get("live_active", False)) and not filtered_execution.empty:
+                    signal_df = filtered_execution[[c for c in signal_cols if c in filtered_execution.columns]].copy()
+                else:
+                    signal_df = filtered_combined[[c for c in signal_cols if c in filtered_combined.columns]].copy()
+
             # Apply Kelly Dynamic Sizing for V2 signals globally
             from src.risk.kelly_sizing import apply_dynamic_sizing
             
@@ -1324,6 +1423,7 @@ def run_daily(
                 allowed_modes=allowed_modes,
                 signal_count=int(len(signal_df)),
                 rollout=rollout_info,
+                profit_quality=profit_quality_live_info,
             )
 
         snapshot_info: dict[str, Any] = {"status": "ok", "path": "", "signal_count": int(len(signal_df))}
@@ -1397,6 +1497,7 @@ def run_daily(
                 "regime": bt.get("regime", {}).get("status", ""),
                 "kill_switch": bt.get("kill_switch", {}).get("status", ""),
             },
+            "profit_quality": profit_quality_live_info,
         }
         if "signal_funnel" in score_info:
             live_funnel_payload["score_funnel"] = score_info["signal_funnel"]
@@ -1471,6 +1572,7 @@ def run_daily(
             "model_v2_shadow": shadow_info,
             "model_v2_promotion": promotion_info,
             "model_v2_rollout": rollout_info,
+            "profit_quality": profit_quality_live_info,
             "weekly_kpi": weekly_kpi_info,
             "beginner_note_path": beginner_note_path,
             "signal_snapshot": snapshot_info,
