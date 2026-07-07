@@ -373,7 +373,11 @@ def maybe_generate_paper_fills(
 
     final_df = existing.copy()
     if new_rows:
-        final_df = pd.concat([final_df, pd.DataFrame(new_rows)], ignore_index=True, sort=False)
+        new_df = pd.DataFrame(new_rows)
+        if final_df.empty:
+            final_df = new_df
+        else:
+            final_df = pd.concat([final_df, new_df], ignore_index=True, sort=False)
         if "executed_at" in final_df.columns:
             final_df = final_df.sort_values(["executed_at", "ticker", "mode"], ascending=[True, True, True]).reset_index(drop=True)
         _write_fills_csv(settings.reconciliation.fills_csv_path, final_df)

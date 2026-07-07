@@ -6,8 +6,11 @@ from pathlib import Path
 from typing import Any, get_type_hints
 
 try:
-    from pydantic import BaseModel, Field
+    from pydantic import BaseModel, ConfigDict, Field
 except Exception:
+    def ConfigDict(**kwargs: Any) -> dict[str, Any]:
+        return dict(kwargs)
+
     class BaseModel:
         """Small fallback for environments without pydantic installed."""
 
@@ -74,12 +77,35 @@ class UniverseAutoUpdateSettings(BaseModel):
     idx30: UniverseSourceSettings = Field(default_factory=UniverseSourceSettings)
 
 
+class IntradaySettings(BaseModel):
+    enabled: bool = False
+    timeframe: str = "5m"
+    lookback_minutes: int = 300
+    poll_seconds: int = 30
+    max_rows_per_ticker: int = 500
+    canonical_prices_path: str = "data/raw/prices_intraday.csv"
+    fallback_csv_path: str = "data/raw/prices_intraday.sample.csv"
+    allow_sample_fallback: bool = True
+    websocket_enabled: bool = False
+    websocket_url: str = ""
+    websocket_subscribe_payload: str = ""
+    websocket_timeout_seconds: int = 10
+    reconnect_max_attempts: int = 4
+    reconnect_backoff_seconds: int = 1
+    reconnect_max_backoff_seconds: int = 30
+    auto_refresh_web_seconds: int = 20
+    min_avg_volume_20bars: float = 100000
+    min_live_score: float = 30.0
+    top_n: int = 10
+
+
 class DataSettings(BaseModel):
     timezone: str = "Asia/Jakarta"
     canonical_prices_path: str = "data/raw/prices_daily.csv"
     fallback_csv_path: str = "data/raw/prices_daily.sample.csv"
     universe_csv_path: str = "data/reference/universe_lq45_idx30.csv"
     provider: ProviderSettings
+    intraday: IntradaySettings = Field(default_factory=IntradaySettings)
     universe_auto_update: UniverseAutoUpdateSettings = Field(default_factory=UniverseAutoUpdateSettings)
 
 
@@ -134,6 +160,7 @@ class PipelineSettings(BaseModel):
     min_avg_volume_20d: float = 200000
     top_n_per_mode: int = 10
     top_n_combined: int = 20
+    active_modes: list[str] = Field(default_factory=lambda: ["t1", "swing"])
     min_live_score_t1: float = 95.0
     min_live_score_swing: float = 65.0
     event_risk: EventRiskSettings = Field(default_factory=EventRiskSettings)
@@ -242,6 +269,8 @@ class NotificationSettings(BaseModel):
 
 
 class ModelV2Settings(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     enabled: bool = True
     shadow_mode: bool = True
     auto_train_enabled: bool = True
@@ -255,6 +284,14 @@ class ModelV2Settings(BaseModel):
     min_prob_threshold_t1: float = 0.52
     min_prob_threshold_swing: float = 0.55
     optuna_trials: int = 25
+    closed_loop_retrain_enabled: bool = False
+    closed_loop_state_path: str = "reports/model_v2_closed_loop_state.json"
+    closed_loop_min_hours_between_retrain: int = 24
+    closed_loop_min_live_samples: int = 30
+    closed_loop_min_new_fills: int = 5
+    closed_loop_min_profit_factor_r: float = 1.05
+    closed_loop_min_expectancy_r: float = 0.0
+
     class PromotionSettings(BaseModel):
         enabled: bool = True
         state_path: str = "reports/model_v2_promotion_state.json"
@@ -293,7 +330,19 @@ class ReconciliationSettings(BaseModel):
     fail_on_error: bool = False
 
 
+class PaperTradingSettings(BaseModel):
+    enabled: bool = False
+    mode: str = "disabled"
+    auto_fill_enabled: bool = False
+    slippage_pct: float = 0.1
+    buy_fee_pct: float = 0.15
+    sell_fee_pct: float = 0.25
+    state_path: str = "reports/paper_trading_state.json"
+
+
 class Settings(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     data: DataSettings
     pipeline: PipelineSettings
     risk: RiskSettings
@@ -304,6 +353,7 @@ class Settings(BaseModel):
     model_v2: ModelV2Settings = Field(default_factory=ModelV2Settings)
     coaching: CoachingSettings = Field(default_factory=CoachingSettings)
     reconciliation: ReconciliationSettings = Field(default_factory=ReconciliationSettings)
+    paper_trading: PaperTradingSettings = Field(default_factory=PaperTradingSettings)
     notifications: NotificationSettings
 
     @classmethod

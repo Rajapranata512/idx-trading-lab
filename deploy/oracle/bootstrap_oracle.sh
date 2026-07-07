@@ -87,7 +87,7 @@ Type=simple
 User=${APP_USER}
 WorkingDirectory=${APP_DIR}
 EnvironmentFile=-/etc/default/idx-trading-lab
-ExecStart=${APP_DIR}/.venv/bin/python -m src.cli --settings ${SETTINGS_PATH} serve-web --host 127.0.0.1 --port ${WEB_PORT}
+ExecStart=${APP_DIR}/.venv/bin/python -m src.web.server --settings ${SETTINGS_PATH} --host 127.0.0.1 --port ${WEB_PORT}
 Restart=always
 RestartSec=5
 
@@ -105,7 +105,7 @@ Type=simple
 User=${APP_USER}
 WorkingDirectory=${APP_DIR}
 EnvironmentFile=-/etc/default/idx-trading-lab
-ExecStart=${APP_DIR}/.venv/bin/python -m src.cli --settings ${SETTINGS_PATH} run-intraday-daemon
+ExecStart=${APP_DIR}/.venv/bin/python -m src.intraday.daemon --settings ${SETTINGS_PATH}
 Restart=always
 RestartSec=8
 

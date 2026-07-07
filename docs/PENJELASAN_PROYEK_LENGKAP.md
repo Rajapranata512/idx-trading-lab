@@ -529,14 +529,14 @@ python -m src.cli paper-fills
 python -m src.cli weekly-kpi
 python -m src.cli reconcile-live
 python -m src.cli run-daily
-python -m src.cli serve-web --host 127.0.0.1 --port 8080
+python -m src.web.server --settings config/settings.json --host 127.0.0.1 --port 8080
 ```
 
 Untuk operasional harian, perintah yang paling umum adalah:
 
 ```powershell
 python -m src.cli run-daily
-python -m src.cli serve-web --host 127.0.0.1 --port 8080
+python -m src.web.server --settings config/settings.json --host 127.0.0.1 --port 8080
 ```
 
 ## 15. Kelebihan Proyek

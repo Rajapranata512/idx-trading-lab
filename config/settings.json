@@ -28,6 +28,27 @@
         "query_params": {}
       }
     },
+    "intraday": {
+      "enabled": false,
+      "timeframe": "5m",
+      "lookback_minutes": 300,
+      "poll_seconds": 30,
+      "max_rows_per_ticker": 500,
+      "canonical_prices_path": "data/raw/prices_intraday.csv",
+      "fallback_csv_path": "data/raw/prices_intraday.sample.csv",
+      "allow_sample_fallback": true,
+      "websocket_enabled": false,
+      "websocket_url": "",
+      "websocket_subscribe_payload": "",
+      "websocket_timeout_seconds": 10,
+      "reconnect_max_attempts": 4,
+      "reconnect_backoff_seconds": 1,
+      "reconnect_max_backoff_seconds": 30,
+      "auto_refresh_web_seconds": 20,
+      "min_avg_volume_20bars": 100000,
+      "min_live_score": 30.0,
+      "top_n": 10
+    },
     "provider": {
       "kind": "rest",
       "yfinance_fallback_enabled": true,
@@ -66,6 +87,10 @@
     "min_avg_volume_20d": 500000,
     "top_n_per_mode": 10,
     "top_n_combined": 20,
+    "active_modes": [
+      "t1",
+      "swing"
+    ],
     "min_live_score_t1": 95.0,
     "min_live_score_swing": 68.0,
     "event_risk": {
@@ -164,8 +189,8 @@
     "account_size_idr": 10000000,
     "risk_per_trade_pct": 0.6,
     "max_positions": 3,
-    "max_positions_t1": 1,
-    "max_positions_swing": 3,
+    "max_positions_t1": 2,
+    "max_positions_swing": 2,
     "execution_mode_priority": [
       "swing",
       "t1"
@@ -176,13 +201,13 @@
     "tp1_r_multiple": 1.0,
     "tp2_r_multiple": 2.0,
     "volatility_targeting_enabled": true,
-    "volatility_reference_atr_pct": 3.4885,
+    "volatility_reference_atr_pct": 4.0088,
     "volatility_floor_multiplier": 0.5,
     "volatility_cap_multiplier": 1.15,
     "volatility_targeting_mode": "hybrid",
     "volatility_market_weight": 0.55,
     "volatility_use_realized_vol": true,
-    "volatility_reference_realized_pct": 2.3542,
+    "volatility_reference_realized_pct": 2.9309,
     "volatility_realized_weight": 0.4,
     "volatility_market_regime_cap_enabled": true,
     "volatility_market_regime_calm_threshold": 0.85,
@@ -273,6 +298,13 @@
     "horizon_days_swing": 10,
     "min_prob_threshold_t1": 0.52,
     "min_prob_threshold_swing": 0.55,
+    "closed_loop_retrain_enabled": false,
+    "closed_loop_state_path": "reports/model_v2_closed_loop_state.json",
+    "closed_loop_min_hours_between_retrain": 24,
+    "closed_loop_min_live_samples": 30,
+    "closed_loop_min_new_fills": 5,
+    "closed_loop_min_profit_factor_r": 1.05,
+    "closed_loop_min_expectancy_r": 0.0,
     "promotion": {
       "enabled": true,
       "state_path": "reports/model_v2_promotion_state.json",
@@ -311,6 +343,15 @@
     "details_csv_path": "reports/live_reconciliation_details.csv",
     "unmatched_entries_csv_path": "reports/live_reconciliation_unmatched_entries.csv",
     "fail_on_error": false
+  },
+  "paper_trading": {
+    "enabled": false,
+    "mode": "disabled",
+    "auto_fill_enabled": false,
+    "slippage_pct": 0.1,
+    "buy_fee_pct": 0.15,
+    "sell_fee_pct": 0.25,
+    "state_path": "reports/paper_trading_state.json"
   },
   "notifications": {
     "telegram_bot_token_env": "TELEGRAM_BOT_TOKEN",

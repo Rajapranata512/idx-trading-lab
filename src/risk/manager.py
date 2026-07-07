@@ -167,8 +167,33 @@ def propose_trade_plan(picks: pd.DataFrame, risk: RiskSettings) -> pd.DataFrame:
         vol_multiplier = vol_multiplier.clip(lower=floor_mult, upper=market_regime_cap_applied).fillna(floor_mult)
 
     risk_budget = base_risk_budget * vol_multiplier
+    
+    # Kelly Criterion Modifier based on ML probability
+    if "shadow_p_win" in df.columns:
+        p_win = _to_float_series(df["shadow_p_win"], index=df.index).fillna(0.0)
+        expected_r = _to_float_series(df.get("shadow_expected_r"), index=df.index).fillna(1.5)
+        expected_r = expected_r.clip(lower=0.5)
+        
+        # Kelly fraction = p - (1-p)/R
+        kelly_f = (p_win - (1.0 - p_win) / expected_r).clip(lower=0.0)
+        
+        # Scale Kelly f to a reasonable multiplier (0 to 2.5x)
+        # Assuming baseline is around 0.5 for a decent trade, we normalize around 0.15 kelly
+        kelly_multiplier = (kelly_f / 0.15).clip(lower=0.1, upper=2.5)
+        
+        # Apply Kelly sizing to risk budget
+        risk_budget = risk_budget * kelly_multiplier
+        df["kelly_f"] = kelly_f.round(3)
+        df["kelly_multiplier"] = kelly_multiplier.round(2)
+        df["sizing_method"] = "volatility + kelly"
+    else:
+        df["sizing_method"] = "volatility"
+
     raw_shares = (risk_budget / (risk_per_share + 1e-9)).fillna(0.0)
     shares = ((raw_shares // lot_size) * lot_size).astype(int).clip(lower=0)
+    
+    if market_regime_cap_enabled and market_regime_label == "stress":
+        shares = shares * 0
 
     max_position_pct = float(getattr(risk, "max_position_exposure_pct", 0.0))
     if max_position_pct > 0:
@@ -188,10 +213,20 @@ def propose_trade_plan(picks: pd.DataFrame, risk: RiskSettings) -> pd.DataFrame:
     # Cumulative worst-case loss factor: (1 - 0.07)^3 ≈ 0.804 → ~19.6% loss
     arb_worst_case_factor = 1.0 - ((1.0 - arb_daily_pct / 100.0) ** arb_max_days)
     arb_worst_case_risk_per_share = entry * arb_worst_case_factor
-    # Cap: worst-case loss per position ≤ 2× normal risk budget
-    arb_max_loss_budget = base_risk_budget * 2.0
+    # Cap worst-case loss using risk budget, exposure budget, and one-lot floor.
+    min_lot_arb_loss = entry * lot_size * arb_worst_case_factor
+    arb_exposure_loss_budget = float(risk.account_size_idr) * (max_position_pct / 100.0) * arb_worst_case_factor
+    arb_max_loss_budget = pd.concat(
+        [
+            pd.Series(base_risk_budget * 2.0, index=df.index),
+            pd.Series(arb_exposure_loss_budget, index=df.index),
+            min_lot_arb_loss,
+        ],
+        axis=1,
+    ).max(axis=1)
     if arb_protection_enabled:
-        arb_max_shares = (arb_max_loss_budget / (arb_worst_case_risk_per_share + 1e-9)).fillna(0.0)
+        arb_max_shares = (arb_max_loss_budget / arb_worst_case_risk_per_share.clip(lower=1e-9)).fillna(0.0)
+        arb_max_shares = arb_max_shares + 1e-6
         arb_max_shares = ((arb_max_shares // lot_size) * lot_size).clip(lower=0).astype(int)
         shares = pd.concat([shares, arb_max_shares], axis=1).min(axis=1).astype(int)
 
@@ -213,6 +248,7 @@ def propose_trade_plan(picks: pd.DataFrame, risk: RiskSettings) -> pd.DataFrame:
     df["stop"] = stop.round(2)
     df["tp1"] = tp1.round(2)
     df["tp2"] = tp2.round(2)
+    df["trailing_stop_rule"] = "If Close >= TP1 -> Stop Loss = Entry (Break-Even)"
     df["risk_per_share"] = risk_per_share.round(2)
     df["size"] = shares
     df["position_value"] = (shares * entry).round(0)

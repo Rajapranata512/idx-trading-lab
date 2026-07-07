@@ -80,6 +80,151 @@ def _merge_with_existing_prices(out_path: str, incoming: pd.DataFrame) -> pd.Dat
     return merged
 
 
+def _evaluate_data_quality(
+    settings: Settings,
+    ingest_info: dict[str, Any] | None = None,
+    max_staleness_days: int = 5,
+) -> dict[str, Any]:
+    """Write and return an operational quality gate report for canonical prices."""
+    ingest_info = ingest_info or {}
+    path = Path(settings.data.canonical_prices_path)
+    reason_codes: list[str] = []
+    checks: dict[str, bool] = {
+        "stale_ok": False,
+        "missing_ok": False,
+        "duplicate_ok": False,
+        "missing_tickers_ok": False,
+        "outlier_ok": False,
+    }
+    stats: dict[str, Any] = {
+        "rows_total": 0,
+        "ticker_total": 0,
+        "max_data_date": "",
+        "stale_days": None,
+        "missing_rows": 0,
+        "duplicate_rows": 0,
+        "missing_tickers_count": int(ingest_info.get("missing_tickers_count", 0) or 0),
+        "outlier_rows": 0,
+    }
+
+    if not path.exists():
+        payload = {
+            "generated_at": datetime.utcnow().isoformat(),
+            "status": "blocked",
+            "pass": False,
+            "reason_codes": ["missing_price_file"],
+            "checks": checks,
+            "stats": stats,
+            "message": f"Canonical price file not found: {path}",
+        }
+        _write_json("reports/data_quality_report.json", payload)
+        return payload
+
+    try:
+        df = pd.read_csv(path)
+    except Exception as exc:
+        payload = {
+            "generated_at": datetime.utcnow().isoformat(),
+            "status": "blocked",
+            "pass": False,
+            "reason_codes": ["read_error"],
+            "checks": checks,
+            "stats": stats,
+            "message": f"Could not read canonical prices: {exc}",
+        }
+        _write_json("reports/data_quality_report.json", payload)
+        return payload
+
+    required = ["date", "ticker", "open", "high", "low", "close", "volume"]
+    missing_cols = [col for col in required if col not in df.columns]
+    if missing_cols:
+        payload = {
+            "generated_at": datetime.utcnow().isoformat(),
+            "status": "blocked",
+            "pass": False,
+            "reason_codes": ["missing_columns"],
+            "checks": checks,
+            "stats": stats,
+            "message": "Canonical price data is missing required columns: " + ", ".join(missing_cols),
+        }
+        _write_json("reports/data_quality_report.json", payload)
+        return payload
+
+    work = df[required].copy()
+    work["date"] = pd.to_datetime(work["date"], errors="coerce")
+    work["ticker"] = work["ticker"].astype(str).str.upper().str.strip()
+    for col in ["open", "high", "low", "close", "volume"]:
+        work[col] = pd.to_numeric(work[col], errors="coerce")
+
+    stats["rows_total"] = int(len(work))
+    stats["ticker_total"] = int(work["ticker"].nunique()) if not work.empty else 0
+    null_rows = int(work[["date", "ticker", "open", "high", "low", "close", "volume"]].isna().any(axis=1).sum())
+    non_positive_rows = int(
+        (
+            (work[["open", "high", "low", "close"]] <= 0).any(axis=1)
+            | (work["volume"] < 0)
+        ).sum()
+    )
+    ohlc_bad_rows = int(
+        (
+            work["high"].lt(work[["open", "close", "low"]].max(axis=1))
+            | work["low"].gt(work[["open", "close", "high"]].min(axis=1))
+        ).sum()
+    )
+    stats["missing_rows"] = int(null_rows + non_positive_rows + ohlc_bad_rows)
+    if stats["missing_rows"] > 0:
+        reason_codes.append("missing_or_invalid_rows")
+    checks["missing_ok"] = stats["missing_rows"] == 0
+
+    duplicate_rows = int(work.duplicated(subset=["ticker", "date"], keep=False).sum())
+    stats["duplicate_rows"] = duplicate_rows
+    if duplicate_rows > 0:
+        reason_codes.append("duplicate_rows")
+    checks["duplicate_ok"] = duplicate_rows == 0
+
+    max_date = work["date"].max()
+    if pd.notna(max_date):
+        max_day = pd.Timestamp(max_date).date()
+        stats["max_data_date"] = max_day.isoformat()
+        stale_days = int((datetime.utcnow().date() - max_day).days)
+        stats["stale_days"] = stale_days
+        checks["stale_ok"] = stale_days <= max(0, int(max_staleness_days))
+        if not checks["stale_ok"]:
+            reason_codes.append("stale_data")
+    else:
+        reason_codes.append("missing_data_date")
+
+    if stats["missing_tickers_count"] > 0:
+        reason_codes.append("missing_tickers")
+    checks["missing_tickers_ok"] = stats["missing_tickers_count"] == 0
+
+    outlier_mask = pd.Series([False] * len(work), index=work.index)
+    if not work.empty:
+        sorted_work = work.sort_values(["ticker", "date"]).copy()
+        sorted_work["prev_close"] = sorted_work.groupby("ticker")["close"].shift(1)
+        outlier_mask = (
+            sorted_work["prev_close"].gt(0)
+            & (((sorted_work["close"] - sorted_work["prev_close"]) / sorted_work["prev_close"]).abs() > 0.25)
+        )
+        stats["outlier_rows"] = int(outlier_mask.sum())
+    if stats["outlier_rows"] > 0:
+        reason_codes.append("price_outliers")
+    checks["outlier_ok"] = stats["outlier_rows"] == 0
+
+    passed = bool(all(checks.values()))
+    payload = {
+        "generated_at": datetime.utcnow().isoformat(),
+        "status": "pass" if passed else "blocked",
+        "pass": passed,
+        "reason_codes": reason_codes,
+        "checks": checks,
+        "stats": stats,
+        "message": "Data quality checks passed." if passed else "Data quality checks blocked run: " + ", ".join(reason_codes),
+    }
+    _write_json("reports/data_quality_report.json", payload)
+    return payload
+
+
 def ingest_daily(
     settings: Settings,
     start_date: str | None = None,
@@ -948,6 +1093,11 @@ def run_daily(
         ingest_info = ingest_daily(settings)
         logger.event("INFO", "ingest_done", **ingest_info)
 
+        quality_info = _evaluate_data_quality(settings=settings, ingest_info=ingest_info)
+        logger.event("INFO" if quality_info.get("pass") else "ERROR", "data_quality_evaluated", **quality_info)
+        if not bool(quality_info.get("pass", False)):
+            raise RuntimeError(quality_info.get("message", "Data quality gate blocked run"))
+
         feat_info = compute_features_step(settings)
         logger.event("INFO", "features_done", **feat_info)
 
@@ -1137,6 +1287,34 @@ def run_daily(
             else:
                 signal_df = filtered_combined[[c for c in signal_cols if c in filtered_combined.columns]].copy()
 
+            # Apply Kelly Dynamic Sizing for V2 signals globally
+            from src.risk.kelly_sizing import apply_dynamic_sizing
+            
+            if "shadow_p_win" in filtered_combined.columns:
+                filtered_combined = apply_dynamic_sizing(
+                    filtered_combined,
+                    account_size=settings.risk.account_size_idr,
+                    risk_per_trade_pct=settings.risk.risk_per_trade_pct,
+                    lot_size=settings.risk.position_lot,
+                )
+                if "dyn_lots" in filtered_combined.columns:
+                    filtered_combined["size"] = (filtered_combined["dyn_lots"] * settings.risk.position_lot).astype(int)
+                    filtered_combined["sizing_method"] = filtered_combined["sizing_reason"]
+
+            if "shadow_p_win" in filtered_execution.columns:
+                filtered_execution = apply_dynamic_sizing(
+                    filtered_execution,
+                    account_size=settings.risk.account_size_idr,
+                    risk_per_trade_pct=settings.risk.risk_per_trade_pct,
+                    lot_size=settings.risk.position_lot,
+                )
+                if "dyn_lots" in filtered_execution.columns:
+                    filtered_execution["size"] = (filtered_execution["dyn_lots"] * settings.risk.position_lot).astype(int)
+                    filtered_execution["sizing_method"] = filtered_execution["sizing_reason"]
+                    
+                # Re-sync signal_df after sizing changes
+                signal_df = filtered_execution[[c for c in signal_cols if c in filtered_execution.columns]].copy()
+
             filtered_combined.to_csv("reports/daily_report.csv", index=False)
             filtered_execution.to_csv("reports/execution_plan.csv", index=False)
             write_signal_json(signal_df, "reports/daily_signal.json")
@@ -1287,6 +1465,7 @@ def run_daily(
             "backtest": bt,
             "event_risk": event_risk_info,
             "event_risk_update": event_risk_update,
+            "data_quality": quality_info,
             "volatility_recalibration": vol_recalibration,
             "universe_update": universe_update,
             "model_v2_shadow": shadow_info,

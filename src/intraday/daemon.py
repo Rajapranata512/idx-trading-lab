@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import argparse
 import time
 from datetime import datetime
 from pathlib import Path
@@ -73,3 +74,18 @@ def run_intraday_daemon(
             break
         time.sleep(sleep_sec)
 
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="IDX Trading Lab intraday daemon")
+    parser.add_argument("--settings", default="config/settings.json")
+    parser.add_argument("--max-loops", type=int, default=0)
+    return parser
+
+
+def main() -> None:
+    args = _build_parser().parse_args()
+    run_intraday_daemon(settings_path=args.settings, max_loops=args.max_loops)
+
+
+if __name__ == "__main__":
+    main()

@@ -57,7 +57,7 @@ Contoh:
 ```powershell
 $env:IDX_WEB_USERNAME="ops"
 $env:IDX_WEB_PASSWORD="ganti-password-kuat"
-.\.venv\Scripts\python.exe -m src.cli --settings config/settings.json serve-web --host 127.0.0.1 --port 8080
+.\.venv\Scripts\python.exe -m src.web.server --settings config/settings.json --host 127.0.0.1 --port 8080
 ```
 
 Kenapa `127.0.0.1`:
