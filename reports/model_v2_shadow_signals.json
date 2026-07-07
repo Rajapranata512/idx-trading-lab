@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-07-06T15:58:21.292996",
-  "run_id": "20260706_155810",
+  "generated_at": "2026-07-07T08:12:05.638897",
+  "run_id": "20260707_081149",
   "signals": [
     {
-      "ticker": "BRIS",
+      "ticker": "ANTM",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 1,
@@ -12,75 +12,43 @@
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1835.0,
-      "stop": 1667.71,
-      "tp1": 2002.29,
-      "tp2": 2169.57,
-      "size": 200
-    },
-    {
-      "ticker": "ISAT",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.75,
-      "shadow_expected_r": 0.875,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 1885.0,
-      "stop": 1688.79,
-      "tp1": 2081.21,
-      "tp2": 2277.41,
-      "size": 200
-    },
-    {
-      "ticker": "ANTM",
-      "mode": "t1",
-      "score": 99.73,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.7473,
-      "shadow_expected_r": 0.8682,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 2940.0,
-      "stop": 2593.34,
-      "tp1": 3286.66,
-      "tp2": 3633.33,
+      "entry": 2950.0,
+      "stop": 2620.96,
+      "tp1": 3279.04,
+      "tp2": 3608.09,
       "size": 100
     },
     {
-      "ticker": "BBTN",
+      "ticker": "MDKA",
       "mode": "t1",
-      "score": 98.54,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.7354,
-      "shadow_expected_r": 0.8385,
+      "score": 97.11,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.7211,
+      "shadow_expected_r": 0.8028,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1165.0,
-      "stop": 1054.64,
-      "tp1": 1275.36,
-      "tp2": 1385.71,
-      "size": 300
+      "entry": 2700.0,
+      "stop": 2296.38,
+      "tp1": 3103.62,
+      "tp2": 3507.25,
+      "size": 100
     },
     {
-      "ticker": "AKRA",
+      "ticker": "MBMA",
       "mode": "t1",
-      "score": 96.47,
-      "shadow_rank": 5,
-      "shadow_p_win": 0.7147,
-      "shadow_expected_r": 0.7867,
+      "score": 95.65,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.7065,
+      "shadow_expected_r": 0.7662,
       "shadow_threshold": 0.52,
       "shadow_recommended": true,
       "shadow_model_source": "fallback",
-      "entry": 1300.0,
-      "stop": 1191.53,
-      "tp1": 1408.47,
-      "tp2": 1516.94,
-      "size": 400
+      "entry": 510.0,
+      "stop": 437.78,
+      "tp1": 582.22,
+      "tp2": 654.43,
+      "size": 500
     }
   ],
   "infer": {
@@ -88,14 +56,14 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 5,
+        "rows": 3,
         "source": "fallback",
         "threshold": 0.52,
         "thresholds_by_regime": {},
         "metadata": {}
       }
     },
-    "rows": 5
+    "rows": 3
   },
   "train": {
     "status": "skipped_interval",

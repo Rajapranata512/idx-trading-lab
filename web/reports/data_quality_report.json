@@ -1,47 +1,27 @@
 {
-  "generated_at": "2026-05-05T07:12:11.781710",
-  "status": "pass",
+  "generated_at": "2026-07-07T08:11:58.446591",
+  "status": "warning",
   "pass": true,
-  "path": "data\\raw\\prices_daily.csv",
   "reason_codes": [],
+  "warning_codes": [
+    "price_outliers"
+  ],
   "checks": {
     "stale_ok": true,
     "missing_ok": true,
     "duplicate_ok": true,
     "missing_tickers_ok": true,
-    "outlier_ok": true
-  },
-  "thresholds": {
-    "max_stale_days": 3,
-    "max_missing_rows": 0,
-    "max_duplicate_rows": 0,
-    "max_missing_tickers": 0,
-    "outlier_ret_1d_pct": 25.0,
-    "max_outlier_rows": 25
+    "outlier_ok": false
   },
   "stats": {
-    "rows_total": 22913,
+    "rows_total": 51533,
     "ticker_total": 44,
-    "max_data_date": "2026-05-05",
+    "max_data_date": "2026-07-07",
     "stale_days": 0,
     "missing_rows": 0,
     "duplicate_rows": 0,
     "missing_tickers_count": 0,
-    "outlier_rows": 2
+    "outlier_rows": 1
   },
-  "outlier_samples": [
-    {
-      "date": "2026-02-20",
-      "ticker": "BBCA",
-      "close": 10050.0,
-      "ret_1d_pct": 40.0697
-    },
-    {
-      "date": "2026-02-23",
-      "ticker": "BBCA",
-      "close": 7300.0,
-      "ret_1d_pct": -28.7805
-    }
-  ],
-  "message": "Data quality checks passed."
+  "message": "Data quality checks passed with warnings: price_outliers"
 }

@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-07-07T08:11:58.446591",
+  "status": "warning",
+  "pass": true,
+  "reason_codes": [],
+  "warning_codes": [
+    "price_outliers"
+  ],
+  "checks": {
+    "stale_ok": true,
+    "missing_ok": true,
+    "duplicate_ok": true,
+    "missing_tickers_ok": true,
+    "outlier_ok": false
+  },
+  "stats": {
+    "rows_total": 51533,
+    "ticker_total": 44,
+    "max_data_date": "2026-07-07",
+    "stale_days": 0,
+    "missing_rows": 0,
+    "duplicate_rows": 0,
+    "missing_tickers_count": 0,
+    "outlier_rows": 1
+  },
+  "message": "Data quality checks passed with warnings: price_outliers"
+}

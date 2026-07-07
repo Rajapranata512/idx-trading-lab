@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-07-07T08:12:05.495262",
+  "stage": "score",
+  "status": "ok",
+  "enabled": true,
+  "input_count": 3,
+  "output_count": 3,
+  "blocked_count": 0,
+  "watch_count": 3,
+  "pass_count": 0,
+  "profile_path": "reports/ticker_edge_profile.csv",
+  "profile_rows": 0,
+  "thresholds": {
+    "min_expected_r": 0.05,
+    "min_ticker_samples": 5,
+    "strong_sample_size": 20,
+    "min_ticker_expectancy_r": -0.05,
+    "min_ticker_profit_factor_r": 0.85,
+    "gate_without_live_edge": false,
+    "gate_with_model_probability": true
+  },
+  "blocked_preview": [],
+  "action_counts": {
+    "watch": 3
+  }
+}
