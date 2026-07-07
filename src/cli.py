@@ -90,6 +90,7 @@ def _evaluate_data_quality(
     ingest_info = ingest_info or {}
     path = Path(settings.data.canonical_prices_path)
     reason_codes: list[str] = []
+    warning_codes: list[str] = []
     checks: dict[str, bool] = {
         "stale_ok": False,
         "missing_ok": False,
@@ -114,6 +115,7 @@ def _evaluate_data_quality(
             "status": "blocked",
             "pass": False,
             "reason_codes": ["missing_price_file"],
+            "warning_codes": [],
             "checks": checks,
             "stats": stats,
             "message": f"Canonical price file not found: {path}",
@@ -129,6 +131,7 @@ def _evaluate_data_quality(
             "status": "blocked",
             "pass": False,
             "reason_codes": ["read_error"],
+            "warning_codes": [],
             "checks": checks,
             "stats": stats,
             "message": f"Could not read canonical prices: {exc}",
@@ -144,6 +147,7 @@ def _evaluate_data_quality(
             "status": "blocked",
             "pass": False,
             "reason_codes": ["missing_columns"],
+            "warning_codes": [],
             "checks": checks,
             "stats": stats,
             "message": "Canonical price data is missing required columns: " + ", ".join(missing_cols),
@@ -209,18 +213,34 @@ def _evaluate_data_quality(
         )
         stats["outlier_rows"] = int(outlier_mask.sum())
     if stats["outlier_rows"] > 0:
-        reason_codes.append("price_outliers")
+        warning_codes.append("price_outliers")
     checks["outlier_ok"] = stats["outlier_rows"] == 0
 
-    passed = bool(all(checks.values()))
+    hard_checks = [
+        checks["stale_ok"],
+        checks["missing_ok"],
+        checks["duplicate_ok"],
+        checks["missing_tickers_ok"],
+    ]
+    passed = bool(all(hard_checks))
+    status = "pass" if passed and not warning_codes else "warning" if passed else "blocked"
+    if passed:
+        message = (
+            "Data quality checks passed."
+            if not warning_codes
+            else "Data quality checks passed with warnings: " + ", ".join(warning_codes)
+        )
+    else:
+        message = "Data quality checks blocked run: " + ", ".join(reason_codes)
     payload = {
         "generated_at": datetime.utcnow().isoformat(),
-        "status": "pass" if passed else "blocked",
+        "status": status,
         "pass": passed,
         "reason_codes": reason_codes,
+        "warning_codes": warning_codes,
         "checks": checks,
         "stats": stats,
-        "message": "Data quality checks passed." if passed else "Data quality checks blocked run: " + ", ".join(reason_codes),
+        "message": message,
     }
     _write_json("reports/data_quality_report.json", payload)
     return payload

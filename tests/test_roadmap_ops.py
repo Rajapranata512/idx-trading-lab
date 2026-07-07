@@ -101,3 +101,27 @@ def test_evaluate_data_quality_blocks_problematic_dataset(tmp_path, monkeypatch)
     assert "stale_data" in report["reason_codes"]
     assert "duplicate_rows" in report["reason_codes"]
     assert "missing_tickers" in report["reason_codes"]
+
+
+def test_evaluate_data_quality_warns_but_allows_price_outliers(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "data/raw").mkdir(parents=True, exist_ok=True)
+    today = datetime.utcnow().date()
+    rows = ["date,ticker,open,high,low,close,volume"]
+    for idx in range(6):
+        d = today - timedelta(days=(5 - idx))
+        close = 10000 + idx
+        if idx == 4:
+            close = 14000
+        rows.append(f"{d:%Y-%m-%d},BBCA,{close},{close+50},{close-50},{close},{1000000+idx}")
+        rows.append(f"{d:%Y-%m-%d},TLKM,{3500+idx},{3520+idx},{3480+idx},{3510+idx},{2000000+idx}")
+    prices_path = "data/raw/prices_daily.csv"
+    (tmp_path / prices_path).write_text("\n".join(rows), encoding="utf-8")
+    settings = load_settings(_write_settings(tmp_path, prices_path))
+
+    report = _evaluate_data_quality(settings=settings, ingest_info={"missing_tickers_count": 0})
+    assert report["status"] == "warning"
+    assert report["pass"] is True
+    assert report["reason_codes"] == []
+    assert "price_outliers" in report["warning_codes"]
+    assert report["checks"]["outlier_ok"] is False
