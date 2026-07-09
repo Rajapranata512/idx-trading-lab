@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T14:46:08.601196",
+  "generated_at": "2026-07-09T14:00:44.368536",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,19 +14,19 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 43.03912647861692,
-      "ProfitFactor": 0.7485450695608015,
-      "Expectancy": -0.004610019392095256,
-      "Trades": 1099,
-      "CAGR": -3.456077522036305,
-      "MaxDD": -16.524434582841778
+      "WinRate": 43.0,
+      "ProfitFactor": 0.7484722340275006,
+      "Expectancy": -0.004607610906585356,
+      "Trades": 1100,
+      "CAGR": -3.454293160873645,
+      "MaxDD": -16.529344662334886
     },
     "swing": {
       "WinRate": 63.51351351351351,
-      "ProfitFactor": 1.962949326314818,
-      "Expectancy": 0.05146276494354625,
+      "ProfitFactor": 1.9586414842576378,
+      "Expectancy": 0.05134522255667736,
       "Trades": 518,
-      "CAGR": 46.67936537548489,
+      "CAGR": 46.54902236390625,
       "MaxDD": -20.421764283430345
     }
   },
@@ -1061,15 +1061,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-07-08",
+    "as_of_date": "2026-07-09",
     "pass": false,
     "status": "risk_off",
     "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok",
     "values": {
-      "breadth_ma50_pct": 6.8181818181818175,
+      "breadth_ma50_pct": 9.090909090909092,
       "breadth_ma20_pct": 36.36363636363637,
-      "avg_ret20_pct": 0.9811184664056845,
-      "median_atr_pct": 4.421147265333191,
+      "avg_ret20_pct": 0.4732633808023768,
+      "median_atr_pct": 4.416740931746169,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -1102,8 +1102,8 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.4393936460835437,
-        "rolling_expectancy": -0.015623719544187792,
+        "rolling_pf": 0.4380973357491711,
+        "rolling_expectancy": -0.015673618264475966,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
@@ -1120,7 +1120,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-07-08",
+    "as_of_date": "2026-07-09",
     "active": true,
     "active_modes": [
       "t1"
@@ -1128,7 +1128,7 @@
     "triggered_modes_today": [
       "t1"
     ],
-    "cooldown_until": "2026-07-11",
+    "cooldown_until": "2026-07-12",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {
