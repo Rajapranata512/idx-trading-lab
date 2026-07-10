@@ -1,29 +1,26 @@
 {
-  "generated_at": "2026-07-09T15:39:40.224875",
-  "run_id": "20260709_153930",
+  "generated_at": "2026-07-10T12:37:16.731421",
+  "run_id": "20260710_123703",
   "max_positions": 3,
   "v1_top": [
+    "INTP",
     "MEDC",
-    "BBTN",
-    "BBCA"
+    "BBNI"
   ],
   "v2_top": [
+    "INTP",
     "MEDC",
-    "BBTN",
-    "ASII"
+    "BBNI"
   ],
-  "overlap_count": 2,
+  "overlap_count": 3,
   "overlap_tickers": [
-    "BBTN",
+    "BBNI",
+    "INTP",
     "MEDC"
   ],
-  "only_v1": [
-    "BBCA"
-  ],
-  "only_v2": [
-    "ASII"
-  ],
-  "jaccard_overlap": 0.5,
-  "v1_avg_score": 99.1133,
-  "v2_avg_p_win": 0.7419
+  "only_v1": [],
+  "only_v2": [],
+  "jaccard_overlap": 1.0,
+  "v1_avg_score": 98.1767,
+  "v2_avg_p_win": 0.7471
 }

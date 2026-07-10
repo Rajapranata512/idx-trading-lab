@@ -1,6 +1,6 @@
 # Live Reconciliation KPI
 
-- generated_at: 2026-07-09T15:39:44.397281
+- generated_at: 2026-07-10T12:37:20.846890
 - status: no_signals
 - message: Snapshot files found, but all have zero executable signals
 - lookback_days: 45
