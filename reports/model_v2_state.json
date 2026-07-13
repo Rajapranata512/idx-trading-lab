@@ -1,13 +1,13 @@
 {
-  "last_success_at": "2026-07-06T14:01:17.005437",
+  "last_success_at": "2026-07-13T15:18:43.445484",
   "updated": true,
   "modes": {
     "t1": {
       "status": "trained",
       "rows": 20717,
       "train_rows": 20717,
-      "positive_rate": 0.34435487763672346,
-      "auc_train": 0.682,
+      "positive_rate": 0.3458512332866728,
+      "auc_train": 0.6413,
       "features": [
         "score",
         "ret_1d",
@@ -46,22 +46,22 @@
         "relative_ret_20d"
       ],
       "model_type": "lightgbm_optuna",
-      "cv_auc": 0.5591,
+      "cv_auc": 0.5592,
       "model_comparison": {
-        "lightgbm_optuna": 0.5591,
-        "logreg": 0.5551,
-        "xgboost_optuna": 0.5529,
-        "lightgbm": 0.5444,
-        "xgboost": 0.5407
+        "lightgbm_optuna": 0.5592,
+        "xgboost_optuna": 0.5564,
+        "logreg": 0.5473,
+        "lightgbm": 0.5467,
+        "xgboost": 0.5415
       },
       "calibration": {
         "calibrated": true,
-        "ece": 0.156161
+        "ece": 0.168569
       },
       "available_models": [
         "lightgbm_optuna",
-        "logreg",
         "xgboost_optuna",
+        "logreg",
         "lightgbm",
         "xgboost"
       ],
@@ -71,23 +71,23 @@
       },
       "return_profile": {
         "overall": {
-          "mean_return_r": -0.100287,
-          "positive_mean_r": 0.268786,
-          "negative_mean_r": -0.29413,
+          "mean_return_r": -0.100046,
+          "positive_mean_r": 0.267631,
+          "negative_mean_r": -0.294438,
           "sample_count": 20717
         },
         "by_regime": {
           "risk_off": {
-            "mean_return_r": -0.100146,
-            "positive_mean_r": 0.269751,
-            "negative_mean_r": -0.298481,
-            "sample_count": 13457
+            "mean_return_r": -0.099299,
+            "positive_mean_r": 0.268139,
+            "negative_mean_r": -0.297981,
+            "sample_count": 13677
           },
           "risk_on": {
-            "mean_return_r": -0.100548,
-            "positive_mean_r": 0.266925,
-            "negative_mean_r": -0.286227,
-            "sample_count": 7260
+            "mean_return_r": -0.101497,
+            "positive_mean_r": 0.266601,
+            "negative_mean_r": -0.287711,
+            "sample_count": 7040
           }
         }
       },
@@ -95,24 +95,24 @@
       "optuna_used": true,
       "optuna_trials": 25,
       "optuna_best_params": {
-        "n_estimators": 450,
+        "n_estimators": 100,
         "max_depth": 3,
-        "learning_rate": 0.023837650341460185,
-        "subsample": 0.7225229742276208,
-        "colsample_bytree": 0.5635439467287424,
-        "min_child_samples": 37,
-        "reg_alpha": 0.026581306299182934,
-        "reg_lambda": 0.09741065114242761
+        "learning_rate": 0.04372456332828734,
+        "subsample": 0.8649017013193531,
+        "colsample_bytree": 0.5613832828575068,
+        "min_child_samples": 14,
+        "reg_alpha": 0.16983633873392298,
+        "reg_lambda": 0.0010390909324655665
       },
       "artifact_path": "models/model_v2/t1.joblib",
       "metadata_path": "models/model_v2/t1.meta.json"
     },
     "swing": {
       "status": "trained",
-      "rows": 7158,
-      "train_rows": 7158,
-      "positive_rate": 0.3222967309304275,
-      "auc_train": 0.7814,
+      "rows": 7063,
+      "train_rows": 7063,
+      "positive_rate": 0.3222426730850913,
+      "auc_train": 0.7982,
       "features": [
         "score",
         "ret_1d",
@@ -150,51 +150,51 @@
         "market_median_atr_pct",
         "relative_ret_20d"
       ],
-      "model_type": "lightgbm_optuna",
-      "cv_auc": 0.515,
+      "model_type": "xgboost_optuna",
+      "cv_auc": 0.5141,
       "model_comparison": {
-        "lightgbm_optuna": 0.515,
-        "logreg": 0.5095,
-        "xgboost_optuna": 0.5011,
-        "xgboost": 0.4898,
-        "lightgbm": 0.4792
+        "xgboost_optuna": 0.5141,
+        "logreg": 0.5094,
+        "lightgbm_optuna": 0.5035,
+        "lightgbm": 0.4886,
+        "xgboost": 0.4816
       },
       "calibration": {
         "calibrated": true,
-        "ece": 0.277453
+        "ece": 0.122257
       },
       "available_models": [
-        "lightgbm_optuna",
-        "logreg",
         "xgboost_optuna",
-        "xgboost",
-        "lightgbm"
+        "logreg",
+        "lightgbm_optuna",
+        "lightgbm",
+        "xgboost"
       ],
       "label_strategy": "ranked_expected_return_top_65pct",
       "thresholds_by_regime": {
         "default": 0.55,
-        "risk_on": 0.7,
-        "risk_off": 0.7
+        "risk_on": 0.6,
+        "risk_off": 0.55
       },
       "return_profile": {
         "overall": {
-          "mean_return_r": -0.127376,
-          "positive_mean_r": 0.748315,
-          "negative_mean_r": -0.843002,
-          "sample_count": 7158
+          "mean_return_r": -0.127072,
+          "positive_mean_r": 0.747548,
+          "negative_mean_r": -0.843346,
+          "sample_count": 7063
         },
         "by_regime": {
           "risk_off": {
-            "mean_return_r": -0.143695,
-            "positive_mean_r": 0.730533,
-            "negative_mean_r": -0.846536,
-            "sample_count": 3101
+            "mean_return_r": -0.145251,
+            "positive_mean_r": 0.727429,
+            "negative_mean_r": -0.844098,
+            "sample_count": 3128
           },
           "risk_on": {
-            "mean_return_r": -0.114903,
-            "positive_mean_r": 0.761692,
-            "negative_mean_r": -0.840266,
-            "sample_count": 4057
+            "mean_return_r": -0.112622,
+            "positive_mean_r": 0.763192,
+            "negative_mean_r": -0.842738,
+            "sample_count": 3935
           }
         }
       },
@@ -202,14 +202,14 @@
       "optuna_used": true,
       "optuna_trials": 25,
       "optuna_best_params": {
-        "n_estimators": 250,
-        "max_depth": 4,
-        "learning_rate": 0.01801746294031929,
-        "subsample": 0.9986259533660818,
-        "colsample_bytree": 0.9963916606488326,
-        "min_child_samples": 21,
-        "reg_alpha": 9.370894690966397,
-        "reg_lambda": 0.3676734236526604
+        "n_estimators": 100,
+        "max_depth": 6,
+        "learning_rate": 0.010097684206181817,
+        "subsample": 0.8481289301555419,
+        "colsample_bytree": 0.5012392867351658,
+        "min_child_weight": 3,
+        "reg_alpha": 9.446167048943904,
+        "reg_lambda": 0.07471213420145031
       },
       "artifact_path": "models/model_v2/swing.joblib",
       "metadata_path": "models/model_v2/swing.meta.json"

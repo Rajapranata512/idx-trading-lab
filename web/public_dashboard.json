@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-13T13:31:12.932300",
+  "generated_at": "2026-07-13T15:23:23.329303",
   "signals": {
-    "generated_at": "2026-07-13T13:31:11.530446",
+    "generated_at": "2026-07-13T15:23:21.879666",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 1530.0,
         "volume": 44784100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0443686006825938,
         "ret_5d": 0.0889679715302491,
         "ret_20d": 0.0,
@@ -106,7 +106,7 @@
         "close": 25900.0,
         "volume": 5522400.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0571428571428571,
         "ret_5d": 0.0882352941176469,
         "ret_20d": 0.1511111111111112,
@@ -187,7 +187,7 @@
         "close": 3530.0,
         "volume": 51536900.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0321637426900585,
         "ret_5d": 0.0762195121951219,
         "ret_20d": -0.0084269662921347,
@@ -268,7 +268,7 @@
         "close": 1185.0,
         "volume": 38855600.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0085106382978723,
         "ret_5d": 0.0675675675675675,
         "ret_20d": -0.0326530612244897,
@@ -349,7 +349,7 @@
         "close": 2450.0,
         "volume": 49509600.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0251046025104602,
         "ret_5d": 0.0652173913043479,
         "ret_20d": 0.0745614035087718,
@@ -430,7 +430,7 @@
         "close": 770.0,
         "volume": 4435300.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0266666666666666,
         "ret_5d": 0.0620689655172412,
         "ret_20d": -0.019108280254777,
@@ -513,7 +513,7 @@
         "close": 1200.0,
         "volume": 12819200.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0572687224669603,
         "ret_5d": 0.263157894736842,
         "ret_20d": 0.188118811881188,
@@ -594,7 +594,7 @@
         "close": 25900.0,
         "volume": 5522400.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-13 13:31:05.904366",
+        "ingested_at": "2026-07-13 15:18:42.007419",
         "ret_1d": 0.0571428571428571,
         "ret_5d": 0.0882352941176469,
         "ret_20d": 0.1511111111111112,
@@ -754,8 +754,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-07-13T13:31:11.574330",
-    "run_id": "20260713_133054",
+    "generated_at": "2026-07-13T15:23:21.933642",
+    "run_id": "20260713_151830",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -787,7 +787,7 @@
       "output_count": 0
     },
     "score_funnel": {
-      "generated_at": "2026-07-13T13:31:07.105249",
+      "generated_at": "2026-07-13T15:18:43.356720",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -847,7 +847,7 @@
         "excluded_swing": 0
       },
       "profit_quality": {
-        "generated_at": "2026-07-13T13:31:07.086459",
+        "generated_at": "2026-07-13T15:18:43.335702",
         "stage": "score",
         "status": "ok",
         "enabled": true,
@@ -915,6 +915,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260713.json",
+      "run_id": "20260713_151830",
+      "started_at": "2026-07-13T15:18:30.548357",
+      "ended_at": "2026-07-13T15:23:22.533754",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 19,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260713.json",
       "run_id": "20260713_133054",
@@ -1082,33 +1109,6 @@
       "run_id": "20260709_140005",
       "started_at": "2026-07-09T14:00:05.111490",
       "ended_at": "2026-07-09T14:00:45.030125",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 19,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok | Kill switch=triggered",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260708.json",
-      "run_id": "20260708_144555",
-      "started_at": "2026-07-08T14:45:55.682932",
-      "ended_at": "2026-07-08T14:46:09.393830",
       "source": "yfinance_fallback",
       "signals": 0,
       "error_count": 0,
