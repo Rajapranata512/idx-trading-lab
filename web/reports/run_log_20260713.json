@@ -962,5 +962,962 @@
     "extra": {
       "path": "reports/beginner_coaching.md"
     }
+  },
+  {
+    "ts": "2026-07-13T13:30:54.710001",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-07-13T13:30:54.710572",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "universe_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "skipped_no_source",
+      "message": "Universe source URLs are empty; keeping existing universe file",
+      "universe_path": "data/reference/universe_lq45_idx30.csv",
+      "state_path": "reports/universe_update_state.json",
+      "updated": false,
+      "attempted_at": "2026-07-13T13:30:54.710019",
+      "last_success_at": "",
+      "counts": {
+        "lq45": 0,
+        "idx30": 0,
+        "combined": 0
+      },
+      "errors": [],
+      "source_status": {
+        "LQ45": "no_url",
+        "IDX30": "no_url"
+      }
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:05.750545",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 51709,
+      "rows_new": 880,
+      "tickers": 44,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-07-13",
+      "min_data_date": "2021-06-30",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv"
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:05.841927",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "data_quality_evaluated",
+    "extra": {
+      "generated_at": "2026-07-13T13:31:05.840455",
+      "status": "warning",
+      "pass": true,
+      "reason_codes": [],
+      "warning_codes": [
+        "price_outliers"
+      ],
+      "checks": {
+        "stale_ok": true,
+        "missing_ok": true,
+        "duplicate_ok": true,
+        "missing_tickers_ok": true,
+        "outlier_ok": false
+      },
+      "stats": {
+        "rows_total": 51709,
+        "ticker_total": 44,
+        "max_data_date": "2026-07-13",
+        "stale_days": 0,
+        "missing_rows": 0,
+        "duplicate_rows": 0,
+        "missing_tickers_count": 0,
+        "outlier_rows": 1
+      },
+      "message": "Data quality checks passed with warnings: price_outliers"
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:06.945539",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 51709,
+      "out_path": "data/processed/features.parquet"
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:06.946787",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "volatility_recalibration_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "skipped_interval",
+      "message": "Last successful recalibration still within 7 days interval",
+      "updated": false,
+      "attempted_at": "2026-07-13T13:31:06.945582",
+      "last_success_at": "2026-07-08T12:54:24.275987",
+      "state_path": "reports/volatility_recalibration_state.json",
+      "features_path": "data/processed/features.parquet",
+      "samples": {
+        "rows_total": 0,
+        "rows_window": 0,
+        "atr_rows": 0,
+        "realized_rows": 0,
+        "lookback_days": 252
+      },
+      "old_targets": {
+        "volatility_reference_atr_pct": 4.0088,
+        "volatility_reference_realized_pct": 2.9309
+      },
+      "new_targets": {
+        "volatility_reference_atr_pct": 4.0088,
+        "volatility_reference_realized_pct": 2.9309
+      }
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:06.947374",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "event_risk_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "skipped_interval",
+      "message": "Last successful update still within 8 hours interval",
+      "blacklist_path": "data/reference/event_risk_blacklist.csv",
+      "state_path": "reports/event_risk_update_state.json",
+      "updated": false,
+      "attempted_at": "2026-07-13T13:31:06.946815",
+      "last_success_at": "2026-07-13T12:42:07.707037",
+      "counts": {
+        "rows": 0,
+        "tickers": 0,
+        "status_counts": {}
+      },
+      "errors": [],
+      "source_status": {}
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:07.106195",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "event_risk_filtered",
+    "extra": {
+      "enabled": true,
+      "status": "ok",
+      "message": "No active event-risk entries",
+      "path": "data/reference/event_risk_blacklist.csv",
+      "as_of_date": "2026-07-13",
+      "active_events": 0,
+      "excluded_count": 0,
+      "excluded_tickers": [],
+      "excluded_t1": 0,
+      "excluded_swing": 0
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:07.257890",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "model_v2_shadow_done",
+    "extra": {
+      "status": "ok",
+      "message": "Model v2 shadow inference completed",
+      "shadow_csv_path": "reports/model_v2_shadow_signals.csv",
+      "shadow_json_path": "reports/model_v2_shadow_signals.json",
+      "ab_test_path": "reports/model_v2_ab_test.json",
+      "rows": 6,
+      "train": {
+        "status": "skipped_interval",
+        "message": "Last model_v2 training still within 7 days interval",
+        "updated": false,
+        "state_path": "reports/model_v2_state.json",
+        "modes": {
+          "t1": {
+            "status": "trained",
+            "rows": 20717,
+            "train_rows": 20717,
+            "positive_rate": 0.34435487763672346,
+            "auc_train": 0.682,
+            "features": [
+              "score",
+              "ret_1d",
+              "ret_5d",
+              "ret_20d",
+              "atr_pct",
+              "vol_20d",
+              "avg_vol_20d",
+              "close",
+              "ma_20",
+              "ma_50",
+              "ma_slope_20",
+              "ma_slope_50",
+              "dist_ma_20",
+              "dist_ma_50",
+              "vol_ratio",
+              "ret_5d_20d_ratio",
+              "high_low_range",
+              "close_position",
+              "volume_ratio_20d",
+              "rsi_14",
+              "rsi_slope",
+              "mfi_14",
+              "obv_slope",
+              "rank_ret_20d",
+              "rank_vol_20d",
+              "turnover_ratio_20d",
+              "dist_high_20",
+              "dist_low_20",
+              "ma_gap_20_50",
+              "ma_stack_bullish",
+              "market_breadth_ma20_pct",
+              "market_breadth_ma50_pct",
+              "market_avg_ret20_pct",
+              "market_median_atr_pct",
+              "relative_ret_20d"
+            ],
+            "model_type": "lightgbm_optuna",
+            "cv_auc": 0.5591,
+            "model_comparison": {
+              "lightgbm_optuna": 0.5591,
+              "logreg": 0.5551,
+              "xgboost_optuna": 0.5529,
+              "lightgbm": 0.5444,
+              "xgboost": 0.5407
+            },
+            "calibration": {
+              "calibrated": true,
+              "ece": 0.156161
+            },
+            "available_models": [
+              "lightgbm_optuna",
+              "logreg",
+              "xgboost_optuna",
+              "lightgbm",
+              "xgboost"
+            ],
+            "label_strategy": "binary_positive_net_return",
+            "thresholds_by_regime": {
+              "default": 0.52
+            },
+            "return_profile": {
+              "overall": {
+                "mean_return_r": -0.100287,
+                "positive_mean_r": 0.268786,
+                "negative_mean_r": -0.29413,
+                "sample_count": 20717
+              },
+              "by_regime": {
+                "risk_off": {
+                  "mean_return_r": -0.100146,
+                  "positive_mean_r": 0.269751,
+                  "negative_mean_r": -0.298481,
+                  "sample_count": 13457
+                },
+                "risk_on": {
+                  "mean_return_r": -0.100548,
+                  "positive_mean_r": 0.266925,
+                  "negative_mean_r": -0.286227,
+                  "sample_count": 7260
+                }
+              }
+            },
+            "target_rank_positive_cutoff": null,
+            "optuna_used": true,
+            "optuna_trials": 25,
+            "optuna_best_params": {
+              "n_estimators": 450,
+              "max_depth": 3,
+              "learning_rate": 0.023837650341460185,
+              "subsample": 0.7225229742276208,
+              "colsample_bytree": 0.5635439467287424,
+              "min_child_samples": 37,
+              "reg_alpha": 0.026581306299182934,
+              "reg_lambda": 0.09741065114242761
+            },
+            "artifact_path": "models/model_v2/t1.joblib",
+            "metadata_path": "models/model_v2/t1.meta.json"
+          },
+          "swing": {
+            "status": "trained",
+            "rows": 7158,
+            "train_rows": 7158,
+            "positive_rate": 0.3222967309304275,
+            "auc_train": 0.7814,
+            "features": [
+              "score",
+              "ret_1d",
+              "ret_5d",
+              "ret_20d",
+              "atr_pct",
+              "vol_20d",
+              "avg_vol_20d",
+              "close",
+              "ma_20",
+              "ma_50",
+              "ma_slope_20",
+              "ma_slope_50",
+              "dist_ma_20",
+              "dist_ma_50",
+              "vol_ratio",
+              "ret_5d_20d_ratio",
+              "high_low_range",
+              "close_position",
+              "volume_ratio_20d",
+              "rsi_14",
+              "rsi_slope",
+              "mfi_14",
+              "obv_slope",
+              "rank_ret_20d",
+              "rank_vol_20d",
+              "turnover_ratio_20d",
+              "dist_high_20",
+              "dist_low_20",
+              "ma_gap_20_50",
+              "ma_stack_bullish",
+              "market_breadth_ma20_pct",
+              "market_breadth_ma50_pct",
+              "market_avg_ret20_pct",
+              "market_median_atr_pct",
+              "relative_ret_20d"
+            ],
+            "model_type": "lightgbm_optuna",
+            "cv_auc": 0.515,
+            "model_comparison": {
+              "lightgbm_optuna": 0.515,
+              "logreg": 0.5095,
+              "xgboost_optuna": 0.5011,
+              "xgboost": 0.4898,
+              "lightgbm": 0.4792
+            },
+            "calibration": {
+              "calibrated": true,
+              "ece": 0.277453
+            },
+            "available_models": [
+              "lightgbm_optuna",
+              "logreg",
+              "xgboost_optuna",
+              "xgboost",
+              "lightgbm"
+            ],
+            "label_strategy": "ranked_expected_return_top_65pct",
+            "thresholds_by_regime": {
+              "default": 0.55,
+              "risk_on": 0.7,
+              "risk_off": 0.7
+            },
+            "return_profile": {
+              "overall": {
+                "mean_return_r": -0.127376,
+                "positive_mean_r": 0.748315,
+                "negative_mean_r": -0.843002,
+                "sample_count": 7158
+              },
+              "by_regime": {
+                "risk_off": {
+                  "mean_return_r": -0.143695,
+                  "positive_mean_r": 0.730533,
+                  "negative_mean_r": -0.846536,
+                  "sample_count": 3101
+                },
+                "risk_on": {
+                  "mean_return_r": -0.114903,
+                  "positive_mean_r": 0.761692,
+                  "negative_mean_r": -0.840266,
+                  "sample_count": 4057
+                }
+              }
+            },
+            "target_rank_positive_cutoff": 0.65,
+            "optuna_used": true,
+            "optuna_trials": 25,
+            "optuna_best_params": {
+              "n_estimators": 250,
+              "max_depth": 4,
+              "learning_rate": 0.01801746294031929,
+              "subsample": 0.9986259533660818,
+              "colsample_bytree": 0.9963916606488326,
+              "min_child_samples": 21,
+              "reg_alpha": 9.370894690966397,
+              "reg_lambda": 0.3676734236526604
+            },
+            "artifact_path": "models/model_v2/swing.joblib",
+            "metadata_path": "models/model_v2/swing.meta.json"
+          }
+        }
+      },
+      "infer": {
+        "status": "ok",
+        "message": "Shadow inference completed",
+        "modes": {
+          "swing": {
+            "rows": 1,
+            "source": "fallback",
+            "threshold": 0.55,
+            "thresholds_by_regime": {},
+            "metadata": {}
+          },
+          "t1": {
+            "rows": 5,
+            "source": "fallback",
+            "threshold": 0.52,
+            "thresholds_by_regime": {},
+            "metadata": {}
+          }
+        },
+        "rows": 6
+      },
+      "ab_test": {
+        "max_positions": 3,
+        "v1_top": [
+          "PGAS",
+          "BBNI",
+          "MEDC"
+        ],
+        "v2_top": [
+          "ADRO",
+          "PGAS",
+          "BBNI"
+        ],
+        "overlap_count": 2,
+        "overlap_tickers": [
+          "BBNI",
+          "PGAS"
+        ],
+        "only_v1": [
+          "MEDC"
+        ],
+        "only_v2": [
+          "ADRO"
+        ],
+        "jaccard_overlap": 0.5,
+        "v1_avg_score": 97.45,
+        "v2_avg_p_win": 0.7434
+      }
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:07.258636",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "model_v2_promotion_evaluated",
+    "extra": {
+      "status": "ok",
+      "message": "Evaluated promotion criteria.",
+      "reason": "promotion_gate_failed",
+      "rollout_pct": 0,
+      "live_active": false,
+      "consecutive_passes": 0,
+      "walk_forward_gate": {
+        "passed": false,
+        "reasons": [
+          "Total OOS trades (0) < minimum (120)",
+          "Median ProfitFactor (0.0000) < minimum (1.25)",
+          "Median Expectancy (0.000000) <= minimum (0.0000)",
+          "Profitable folds (0%) < minimum (60%)"
+        ],
+        "summary": {
+          "total_oos_trades": 0,
+          "median_profit_factor": 0.0,
+          "median_expectancy": 0.0,
+          "worst_max_drawdown_pct": 0.0,
+          "profitable_fold_pct": 0.0,
+          "n_folds": 28,
+          "n_folds_profitable": 0
+        },
+        "fold_details": [
+          {
+            "fold": 1,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 2,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 3,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 4,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 5,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 6,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 7,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 8,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 9,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 10,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 11,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 12,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 13,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 14,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 15,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 16,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 17,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 18,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 19,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 20,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 21,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 22,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 23,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 24,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 25,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 26,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 27,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 28,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          }
+        ]
+      },
+      "live_gate": {
+        "status": "no_signals",
+        "samples": 0,
+        "profit_factor_r": 0.0,
+        "expectancy_r": 0.0,
+        "entry_match_rate_pct": 0.0,
+        "reason": "insufficient_live_samples"
+      }
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:07.269083",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports/daily_report.html",
+      "signal_path": "reports/daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:11.529355",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 43.103448275862064,
+          "ProfitFactor": 0.747767905644579,
+          "Expectancy": -0.004619828952200618,
+          "Trades": 1102,
+          "CAGR": -3.4631978065814084,
+          "MaxDD": -16.58631194059766
+        },
+        "swing": {
+          "WinRate": 63.339731285988485,
+          "ProfitFactor": 1.9289535023833453,
+          "Expectancy": 0.050243194721949075,
+          "Trades": 521,
+          "CAGR": 45.33689632828373,
+          "MaxDD": -20.38901820876511
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-07-13",
+        "pass": false,
+        "status": "risk_off",
+        "reason": "Failed checks: breadth_ma50_ok",
+        "values": {
+          "breadth_ma50_pct": 22.727272727272727,
+          "breadth_ma20_pct": 59.09090909090909,
+          "avg_ret20_pct": 0.9683606492950941,
+          "median_atr_pct": 4.066897323421603,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": false,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": true,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "triggered",
+        "as_of_date": "2026-07-13",
+        "active": true,
+        "active_modes": [
+          "t1"
+        ],
+        "triggered_modes_today": [
+          "t1"
+        ],
+        "cooldown_until": "2026-07-16",
+        "state_path": "reports/kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:11.531794",
+    "run_id": "20260713_133054",
+    "level": "WARN",
+    "message": "live_gate_blocked",
+    "extra": {
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "gate_components": {
+        "t1": {
+          "model_gate_ok": false,
+          "regime_ok": false,
+          "kill_switch_ok": false,
+          "final_ok": false
+        },
+        "swing": {
+          "model_gate_ok": false,
+          "regime_ok": false,
+          "kill_switch_ok": true,
+          "final_ok": false
+        }
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-07-13",
+        "pass": false,
+        "status": "risk_off",
+        "reason": "Failed checks: breadth_ma50_ok",
+        "values": {
+          "breadth_ma50_pct": 22.727272727272727,
+          "breadth_ma20_pct": 59.09090909090909,
+          "avg_ret20_pct": 0.9683606492950941,
+          "median_atr_pct": 4.066897323421603,
+          "sample_tickers": 44
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": false,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": true,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "triggered",
+        "as_of_date": "2026-07-13",
+        "active": true,
+        "active_modes": [
+          "t1"
+        ],
+        "triggered_modes_today": [
+          "t1"
+        ],
+        "cooldown_until": "2026-07-16",
+        "state_path": "reports/kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:11.532374",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "signal_snapshot_written",
+    "extra": {
+      "path": "reports/snapshots/signals_20260713_133054.json",
+      "signal_count": 0
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:11.573689",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "live_reconciliation_done",
+    "extra": {
+      "status": "no_signals",
+      "message": "Snapshot files found, but all have zero executable signals",
+      "json_path": "reports/live_reconciliation.json",
+      "details_csv_path": "reports/live_reconciliation_details.csv"
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:11.575111",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "signal_funnel_written",
+    "extra": {
+      "path": "reports/signal_funnel_live.json",
+      "post_gate_signals": 0
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:12.285729",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "telegram_done",
+    "extra": {
+      "ok": true
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:12.301109",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "weekly_kpi_generated",
+    "extra": {
+      "status": "ok",
+      "message": "Weekly KPI dashboard generated",
+      "json_path": "reports/weekly_kpi.json",
+      "markdown_path": "reports/weekly_kpi.md",
+      "payload": {
+        "generated_at": "2026-07-13T13:31:12.299276",
+        "lookback_days": 7,
+        "run_stats": {
+          "runs_total": 15,
+          "runs_failed": 0,
+          "runs_live_allowed": 0,
+          "runs_risk_blocked": 15,
+          "setup_errors": 0,
+          "error_rate_pct": 0.0
+        },
+        "event_risk_update": {
+          "ok_count": 15,
+          "error_count": 0
+        },
+        "strategy_snapshot": {
+          "swing_profit_factor": 1.9289535023833453,
+          "swing_expectancy": 0.050243194721949075,
+          "swing_max_dd_pct": -20.38901820876511,
+          "swing_trades": 521
+        },
+        "live_reconciliation": {
+          "status": "no_signals",
+          "entry_match_rate_pct": 0.0,
+          "signal_execution_rate_pct": 0.0,
+          "live_win_rate_pct": 0.0,
+          "live_expectancy_r": 0.0,
+          "live_profit_factor_r": 0.0,
+          "live_samples": 0
+        }
+      }
+    }
+  },
+  {
+    "ts": "2026-07-13T13:31:12.301240",
+    "run_id": "20260713_133054",
+    "level": "INFO",
+    "message": "beginner_coaching_written",
+    "extra": {
+      "path": "reports/beginner_coaching.md"
+    }
   }
 ]
