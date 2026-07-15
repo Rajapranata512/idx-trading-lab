@@ -18,7 +18,7 @@ from src.model_v2 import (
     evaluate_and_update_model_v2_promotion,
     run_model_v2_shadow,
 )
-from src.notify import build_daily_message, send_telegram_message
+from src.notify import build_daily_message, build_model_v2_shadow_message, send_telegram_message
 from src.report import (
     generate_weekly_kpi_dashboard,
     reconcile_live_signals,
@@ -1125,6 +1125,77 @@ def send_telegram_step(settings: Settings, run_id: str, data_status: str | None 
     )
 
 
+def _rollout_pct_from_state(settings: Settings, promotion_state_path: str | Path) -> int:
+    path = Path(promotion_state_path)
+    if not path.exists():
+        return 0
+    try:
+        state = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return 0
+    if "rollout_pct" in state:
+        try:
+            return int(state.get("rollout_pct", 0) or 0)
+        except Exception:
+            return 0
+    try:
+        idx = int(state.get("rollout_level_idx", 0) or 0)
+    except Exception:
+        idx = 0
+    levels = [int(value) for value in settings.model_v2.promotion.rollout_levels_pct]
+    if 0 <= idx < len(levels):
+        return levels[idx]
+    return 0
+
+
+def send_model_v2_shadow_telegram_step(
+    settings: Settings,
+    shadow_path: str = "reports/model_v2_shadow_signals.json",
+    promotion_state_path: str = "reports/model_v2_promotion_state.json",
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    path = Path(shadow_path)
+    if not path.exists():
+        return {
+            "ok": False,
+            "status": "missing_shadow_report",
+            "message": f"Model V2 shadow report not found: {path}",
+            "shadow_path": str(path),
+        }
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    signals = payload.get("signals", [])
+    signal_count = len(signals) if isinstance(signals, list) else 0
+    rollout_pct = _rollout_pct_from_state(settings, promotion_state_path)
+    message = build_model_v2_shadow_message(
+        payload=payload,
+        rollout_pct=rollout_pct,
+        source_label=str(path).replace("\\", "/"),
+    )
+    if dry_run:
+        return {
+            "ok": None,
+            "status": "dry_run",
+            "shadow_path": str(path),
+            "promotion_state_path": str(promotion_state_path),
+            "signal_count": int(signal_count),
+            "rollout_pct": int(rollout_pct),
+            "message": message,
+        }
+    ok = send_telegram_message(
+        message=message,
+        bot_token_env=settings.notifications.telegram_bot_token_env,
+        chat_id_env=settings.notifications.telegram_chat_id_env,
+    )
+    return {
+        "ok": bool(ok),
+        "status": "sent" if ok else "failed",
+        "shadow_path": str(path),
+        "promotion_state_path": str(promotion_state_path),
+        "signal_count": int(signal_count),
+        "rollout_pct": int(rollout_pct),
+    }
+
+
 def reconcile_live_step(
     settings: Settings,
     fills_path: str | None = None,
@@ -1713,6 +1784,10 @@ def _build_parser() -> argparse.ArgumentParser:
 
     p_notify = sub.add_parser("send-telegram", help="Send Telegram summary")
     p_notify.add_argument("--run-id", default=datetime.now().strftime("%Y%m%d_%H%M%S"))
+    p_v2_notify = sub.add_parser("send-model-v2-shadow-telegram", help="Send Model V2 shadow signal summary to Telegram")
+    p_v2_notify.add_argument("--shadow-path", default="reports/model_v2_shadow_signals.json")
+    p_v2_notify.add_argument("--promotion-state-path", default="reports/model_v2_promotion_state.json")
+    p_v2_notify.add_argument("--dry-run", action="store_true", help="Print the message without sending Telegram")
 
     p_run = sub.add_parser("run-daily", help="Execute full daily pipeline")
     p_run.add_argument("--skip-telegram", action="store_true")
@@ -1785,6 +1860,15 @@ def main() -> None:
     if args.command == "send-telegram":
         ok = send_telegram_step(settings, run_id=args.run_id)
         print(json.dumps({"ok": ok}, ensure_ascii=True, indent=2))
+        return
+    if args.command == "send-model-v2-shadow-telegram":
+        out = send_model_v2_shadow_telegram_step(
+            settings,
+            shadow_path=args.shadow_path,
+            promotion_state_path=args.promotion_state_path,
+            dry_run=args.dry_run,
+        )
+        print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "run-daily":
         out = run_daily(settings, skip_telegram=args.skip_telegram, settings_path=args.settings)

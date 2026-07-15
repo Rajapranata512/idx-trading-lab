@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.notify.telegram import send_telegram_message
+from src.notify.telegram import build_model_v2_shadow_message, send_telegram_message
 from src.report.render_report import write_signal_json
 
 
@@ -16,6 +16,48 @@ def test_send_telegram_returns_false_without_env():
         chat_id_env="MISSING_CHAT_ID",
     )
     assert ok is False
+
+
+def test_build_model_v2_shadow_message_splits_recommendations():
+    payload = {
+        "generated_at": "2026-07-15T06:39:00",
+        "signals": [
+            {
+                "ticker": "ESSA",
+                "mode": "t1",
+                "score": 98.22,
+                "shadow_p_win": 0.7322,
+                "shadow_expected_r": 0.8305,
+                "shadow_recommended": True,
+                "entry": 600,
+                "stop": 528.43,
+                "tp1": 671.57,
+            },
+            {
+                "ticker": "ARTO",
+                "mode": "swing",
+                "score": 70.36,
+                "shadow_p_win": 0.4536,
+                "shadow_expected_r": 0.134,
+                "shadow_recommended": False,
+                "entry": 1270,
+                "stop": 1098.49,
+                "tp1": 1441.51,
+            },
+        ],
+    }
+
+    message = build_model_v2_shadow_message(payload, rollout_pct=0, source_label="website Model v2 panel")
+
+    assert "IDX Model v2 Shadow Signal | pre-open" in message
+    assert "bukan final/live execution signal" in message
+    assert "Direkomendasikan V2:" in message
+    assert "Tidak direkomendasikan V2:" in message
+    assert "T1:ESSA" in message
+    assert "p(win)=0.7322" in message
+    assert "entry=600 stop=528.43 tp1=671.57" in message
+    assert "SWING:ARTO" in message
+    assert "recommended=NO" in message
 
 
 def test_signal_json_contract(tmp_path):
