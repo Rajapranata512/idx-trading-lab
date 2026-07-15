@@ -314,6 +314,30 @@
       100.0
     ]
   },
+  "model_v2_accuracy": {
+    "enabled": true,
+    "output_json_path": "reports/model_v2_accuracy_audit.json",
+    "by_ticker_path": "reports/model_v2_by_ticker.csv",
+    "by_regime_path": "reports/model_v2_by_regime.csv",
+    "threshold_candidates_path": "reports/model_v2_threshold_candidates.csv",
+    "max_candidates_per_day": 5,
+    "precision_top_k": [
+      3,
+      5
+    ],
+    "calibration_bins": 5,
+    "min_trades_per_segment": 10,
+    "probability_threshold_grid": [
+      0.45,
+      0.5,
+      0.52,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75
+    ]
+  },
   "regime": {
     "enabled": true,
     "min_breadth_ma50_pct": 45.0,

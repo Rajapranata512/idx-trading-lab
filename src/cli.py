@@ -8,7 +8,7 @@ from typing import Any
 
 import pandas as pd
 
-from src.analytics import generate_signal_accuracy_audit
+from src.analytics import generate_model_v2_accuracy_audit, generate_signal_accuracy_audit
 from src.backtest import BacktestCosts, pass_live_gate, run_backtest, run_walk_forward, simulate_mode_trades
 from src.config import Settings, load_settings
 from src.features.compute_features import compute_features
@@ -944,6 +944,11 @@ def signal_accuracy_audit_step(settings: Settings) -> dict[str, Any]:
     return generate_signal_accuracy_audit(features=feats, settings=settings)
 
 
+def model_v2_accuracy_audit_step(settings: Settings) -> dict[str, Any]:
+    feats = pd.read_parquet("data/processed/features.parquet")
+    return generate_model_v2_accuracy_audit(features=feats, settings=settings)
+
+
 def backtest_step(settings: Settings, persist_guardrail_state: bool = False) -> dict[str, Any]:
     feats = pd.read_parquet("data/processed/features.parquet")
     scored_full = score_history_modes(feats, min_avg_volume_20d=settings.pipeline.min_avg_volume_20d)
@@ -1275,6 +1280,25 @@ def run_daily(
                 signal_accuracy_info = {"status": "error", "message": str(exc)}
                 logger.event("WARN", "signal_accuracy_audit_failed", error=str(exc))
 
+        model_v2_accuracy_info: dict[str, Any] = {
+            "status": "disabled",
+            "message": "Model V2 accuracy audit disabled",
+        }
+        if settings.model_v2.enabled and settings.model_v2_accuracy.enabled:
+            try:
+                model_v2_accuracy_info = model_v2_accuracy_audit_step(settings)
+                logger.event(
+                    "INFO",
+                    "model_v2_accuracy_audit_done",
+                    status=model_v2_accuracy_info.get("status", ""),
+                    json_path=model_v2_accuracy_info.get("report_paths", {}).get("json", ""),
+                    audited_trade_count=model_v2_accuracy_info.get("input", {}).get("audited_trade_count", 0),
+                    v2_recommended_count=model_v2_accuracy_info.get("input", {}).get("v2_recommended_count", 0),
+                )
+            except Exception as exc:
+                model_v2_accuracy_info = {"status": "error", "message": str(exc)}
+                logger.event("WARN", "model_v2_accuracy_audit_failed", error=str(exc))
+
         gate_pass = bt.get("gate_pass", {})
         allowed_modes = sorted([mode for mode, ok in gate_pass.items() if bool(ok)])
         filtered_combined = pd.DataFrame()
@@ -1553,6 +1577,14 @@ def run_daily(
                 "live_expectancy_r": signal_accuracy_info.get("live_threshold", {}).get("expectancy_r", 0.0),
                 "live_profit_factor_r": signal_accuracy_info.get("live_threshold", {}).get("profit_factor_r", 0.0),
             },
+            "model_v2_accuracy": {
+                "status": model_v2_accuracy_info.get("status", ""),
+                "json_path": model_v2_accuracy_info.get("report_paths", {}).get("json", ""),
+                "audited_trade_count": model_v2_accuracy_info.get("input", {}).get("audited_trade_count", 0),
+                "v2_recommended_count": model_v2_accuracy_info.get("input", {}).get("v2_recommended_count", 0),
+                "v2_expectancy_r": model_v2_accuracy_info.get("v2_recommended", {}).get("expectancy_r", 0.0),
+                "v2_profit_factor_r": model_v2_accuracy_info.get("v2_recommended", {}).get("profit_factor_r", 0.0),
+            },
         }
         if "signal_funnel" in score_info:
             live_funnel_payload["score_funnel"] = score_info["signal_funnel"]
@@ -1629,6 +1661,7 @@ def run_daily(
             "model_v2_rollout": rollout_info,
             "profit_quality": profit_quality_live_info,
             "signal_accuracy": signal_accuracy_info,
+            "model_v2_accuracy": model_v2_accuracy_info,
             "weekly_kpi": weekly_kpi_info,
             "beginner_note_path": beginner_note_path,
             "signal_snapshot": snapshot_info,
@@ -1672,6 +1705,7 @@ def _build_parser() -> argparse.ArgumentParser:
     sub.add_parser("backtest", help="Run bar-based backtest on scored history")
     sub.add_parser("walk-forward", help="Run walk-forward out-of-sample validation")
     sub.add_parser("signal-accuracy-audit", help="Generate signal accuracy audit reports")
+    sub.add_parser("model-v2-accuracy-audit", help="Generate Model V2 accuracy audit reports")
     sub.add_parser("model-v2-promotion", help="Evaluate model_v2 promotion state (step-up / rollback)")
     p_recon = sub.add_parser("reconcile-live", help="Reconcile live fills vs signal snapshots and generate KPI report")
     p_recon.add_argument("--fills-path", default=None, help="Optional CSV path for broker fills")
@@ -1734,6 +1768,10 @@ def main() -> None:
         return
     if args.command == "signal-accuracy-audit":
         out = signal_accuracy_audit_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        return
+    if args.command == "model-v2-accuracy-audit":
+        out = model_v2_accuracy_audit_step(settings)
         print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "model-v2-promotion":

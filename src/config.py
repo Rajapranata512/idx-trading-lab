@@ -277,6 +277,21 @@ class SignalAccuracySettings(BaseModel):
     score_bucket_edges: list[float] = Field(default_factory=lambda: [0.0, 60.0, 70.0, 80.0, 90.0, 95.0, 100.0])
 
 
+class ModelV2AccuracySettings(BaseModel):
+    enabled: bool = True
+    output_json_path: str = "reports/model_v2_accuracy_audit.json"
+    by_ticker_path: str = "reports/model_v2_by_ticker.csv"
+    by_regime_path: str = "reports/model_v2_by_regime.csv"
+    threshold_candidates_path: str = "reports/model_v2_threshold_candidates.csv"
+    max_candidates_per_day: int = 5
+    precision_top_k: list[int] = Field(default_factory=lambda: [3, 5])
+    calibration_bins: int = 5
+    min_trades_per_segment: int = 10
+    probability_threshold_grid: list[float] = Field(
+        default_factory=lambda: [0.45, 0.50, 0.52, 0.55, 0.60, 0.65, 0.70, 0.75]
+    )
+
+
 class RegimeSettings(BaseModel):
     enabled: bool = True
     min_breadth_ma50_pct: float = 45.0
@@ -379,6 +394,7 @@ class Settings(BaseModel):
     backtest: BacktestSettings
     validation: ValidationSettings = Field(default_factory=ValidationSettings)
     signal_accuracy: SignalAccuracySettings = Field(default_factory=SignalAccuracySettings)
+    model_v2_accuracy: ModelV2AccuracySettings = Field(default_factory=ModelV2AccuracySettings)
     regime: RegimeSettings = Field(default_factory=RegimeSettings)
     guardrail: GuardrailSettings = Field(default_factory=GuardrailSettings)
     model_v2: ModelV2Settings = Field(default_factory=ModelV2Settings)
