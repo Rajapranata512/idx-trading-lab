@@ -263,6 +263,20 @@ class ValidationSettings(BaseModel):
     threshold_grid_swing: list[float] = Field(default_factory=lambda: [55.0, 60.0, 65.0, 70.0, 75.0, 80.0])
 
 
+class SignalAccuracySettings(BaseModel):
+    enabled: bool = True
+    output_json_path: str = "reports/signal_accuracy_audit.json"
+    by_ticker_path: str = "reports/signal_accuracy_by_ticker.csv"
+    by_regime_path: str = "reports/signal_accuracy_by_regime.csv"
+    by_score_bucket_path: str = "reports/signal_accuracy_by_score_bucket.csv"
+    max_signals_per_day: int = 5
+    precision_top_k: list[int] = Field(default_factory=lambda: [3, 5])
+    calibration_bins: int = 5
+    decay_days: list[int] = Field(default_factory=lambda: [1, 2, 3])
+    min_trades_per_segment: int = 3
+    score_bucket_edges: list[float] = Field(default_factory=lambda: [0.0, 60.0, 70.0, 80.0, 90.0, 95.0, 100.0])
+
+
 class RegimeSettings(BaseModel):
     enabled: bool = True
     min_breadth_ma50_pct: float = 45.0
@@ -300,7 +314,6 @@ class ModelV2Settings(BaseModel):
     horizon_days_swing: int = 10
     min_prob_threshold_t1: float = 0.52
     min_prob_threshold_swing: float = 0.55
-    optuna_trials: int = 25
     closed_loop_retrain_enabled: bool = False
     closed_loop_state_path: str = "reports/model_v2_closed_loop_state.json"
     closed_loop_min_hours_between_retrain: int = 24
@@ -365,6 +378,7 @@ class Settings(BaseModel):
     risk: RiskSettings
     backtest: BacktestSettings
     validation: ValidationSettings = Field(default_factory=ValidationSettings)
+    signal_accuracy: SignalAccuracySettings = Field(default_factory=SignalAccuracySettings)
     regime: RegimeSettings = Field(default_factory=RegimeSettings)
     guardrail: GuardrailSettings = Field(default_factory=GuardrailSettings)
     model_v2: ModelV2Settings = Field(default_factory=ModelV2Settings)

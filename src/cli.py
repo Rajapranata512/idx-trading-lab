@@ -8,6 +8,7 @@ from typing import Any
 
 import pandas as pd
 
+from src.analytics import generate_signal_accuracy_audit
 from src.backtest import BacktestCosts, pass_live_gate, run_backtest, run_walk_forward, simulate_mode_trades
 from src.config import Settings, load_settings
 from src.features.compute_features import compute_features
@@ -38,8 +39,10 @@ def _ensure_parent(path: str | Path) -> None:
 
 
 def _write_json(path: str | Path, payload: dict[str, Any]) -> str:
-    from src.utils import atomic_write_json
-    return atomic_write_json(path, payload)
+    out = Path(path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
+    return str(out)
 
 
 def _load_universe(path: str) -> list[str]:
@@ -479,7 +482,7 @@ def score_step(settings: Settings) -> dict[str, Any]:
             "execution_plan_count": execution_count,
             "signal_count": int(len(signal_df)),
             "avg_roundtrip_cost_est_pct": round(
-                0.0 if pd.isna(m := pd.to_numeric(combined_plan.get("est_roundtrip_cost_pct", pd.Series(dtype=float)), errors="coerce").mean()) else float(m),
+                float(pd.to_numeric(combined_plan.get("est_roundtrip_cost_pct", pd.Series(dtype=float)), errors="coerce").mean() or 0.0),
                 4,
             ),
             "before_profit_quality_gate": combined_before_profit_quality,
@@ -936,6 +939,11 @@ def walk_forward_step(settings: Settings) -> dict[str, Any]:
     return wf
 
 
+def signal_accuracy_audit_step(settings: Settings) -> dict[str, Any]:
+    feats = pd.read_parquet("data/processed/features.parquet")
+    return generate_signal_accuracy_audit(features=feats, settings=settings)
+
+
 def backtest_step(settings: Settings, persist_guardrail_state: bool = False) -> dict[str, Any]:
     feats = pd.read_parquet("data/processed/features.parquet")
     scored_full = score_history_modes(feats, min_avg_volume_20d=settings.pipeline.min_avg_volume_20d)
@@ -1248,6 +1256,25 @@ def run_daily(
             kill_switch=bt.get("kill_switch", {}),
         )
 
+        signal_accuracy_info: dict[str, Any] = {
+            "status": "disabled",
+            "message": "Signal accuracy audit disabled",
+        }
+        if settings.signal_accuracy.enabled:
+            try:
+                signal_accuracy_info = signal_accuracy_audit_step(settings)
+                logger.event(
+                    "INFO",
+                    "signal_accuracy_audit_done",
+                    status=signal_accuracy_info.get("status", ""),
+                    json_path=signal_accuracy_info.get("report_paths", {}).get("json", ""),
+                    audited_trade_count=signal_accuracy_info.get("input", {}).get("audited_trade_count", 0),
+                    live_threshold_trade_count=signal_accuracy_info.get("input", {}).get("live_threshold_trade_count", 0),
+                )
+            except Exception as exc:
+                signal_accuracy_info = {"status": "error", "message": str(exc)}
+                logger.event("WARN", "signal_accuracy_audit_failed", error=str(exc))
+
         gate_pass = bt.get("gate_pass", {})
         allowed_modes = sorted([mode for mode, ok in gate_pass.items() if bool(ok)])
         filtered_combined = pd.DataFrame()
@@ -1518,6 +1545,14 @@ def run_daily(
                 "kill_switch": bt.get("kill_switch", {}).get("status", ""),
             },
             "profit_quality": profit_quality_live_info,
+            "signal_accuracy": {
+                "status": signal_accuracy_info.get("status", ""),
+                "json_path": signal_accuracy_info.get("report_paths", {}).get("json", ""),
+                "audited_trade_count": signal_accuracy_info.get("input", {}).get("audited_trade_count", 0),
+                "live_threshold_trade_count": signal_accuracy_info.get("input", {}).get("live_threshold_trade_count", 0),
+                "live_expectancy_r": signal_accuracy_info.get("live_threshold", {}).get("expectancy_r", 0.0),
+                "live_profit_factor_r": signal_accuracy_info.get("live_threshold", {}).get("profit_factor_r", 0.0),
+            },
         }
         if "signal_funnel" in score_info:
             live_funnel_payload["score_funnel"] = score_info["signal_funnel"]
@@ -1593,6 +1628,7 @@ def run_daily(
             "model_v2_promotion": promotion_info,
             "model_v2_rollout": rollout_info,
             "profit_quality": profit_quality_live_info,
+            "signal_accuracy": signal_accuracy_info,
             "weekly_kpi": weekly_kpi_info,
             "beginner_note_path": beginner_note_path,
             "signal_snapshot": snapshot_info,
@@ -1635,6 +1671,7 @@ def _build_parser() -> argparse.ArgumentParser:
     sub.add_parser("score", help="Score T+1 and Swing picks, write reports/daily_signal.json")
     sub.add_parser("backtest", help="Run bar-based backtest on scored history")
     sub.add_parser("walk-forward", help="Run walk-forward out-of-sample validation")
+    sub.add_parser("signal-accuracy-audit", help="Generate signal accuracy audit reports")
     sub.add_parser("model-v2-promotion", help="Evaluate model_v2 promotion state (step-up / rollback)")
     p_recon = sub.add_parser("reconcile-live", help="Reconcile live fills vs signal snapshots and generate KPI report")
     p_recon.add_argument("--fills-path", default=None, help="Optional CSV path for broker fills")
@@ -1693,6 +1730,10 @@ def main() -> None:
         return
     if args.command == "walk-forward":
         out = walk_forward_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        return
+    if args.command == "signal-accuracy-audit":
+        out = signal_accuracy_audit_step(settings)
         print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "model-v2-promotion":

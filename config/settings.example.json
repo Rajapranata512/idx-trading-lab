@@ -286,6 +286,34 @@
       80.0
     ]
   },
+  "signal_accuracy": {
+    "enabled": true,
+    "output_json_path": "reports/signal_accuracy_audit.json",
+    "by_ticker_path": "reports/signal_accuracy_by_ticker.csv",
+    "by_regime_path": "reports/signal_accuracy_by_regime.csv",
+    "by_score_bucket_path": "reports/signal_accuracy_by_score_bucket.csv",
+    "max_signals_per_day": 5,
+    "precision_top_k": [
+      3,
+      5
+    ],
+    "calibration_bins": 5,
+    "decay_days": [
+      1,
+      2,
+      3
+    ],
+    "min_trades_per_segment": 3,
+    "score_bucket_edges": [
+      0.0,
+      60.0,
+      70.0,
+      80.0,
+      90.0,
+      95.0,
+      100.0
+    ]
+  },
   "regime": {
     "enabled": true,
     "min_breadth_ma50_pct": 45.0,
