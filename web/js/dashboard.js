@@ -7,6 +7,7 @@ const P={
   funnel:'./reports/signal_funnel.json',
   shadow:'./reports/model_v2_shadow_signals.json',
   promo:'./reports/model_v2_promotion_state.json',
+  accuracy:'./reports/model_v2_accuracy_audit.json',
   recon:'./reports/live_reconciliation.json',
   topT1:'./reports/top_t1.csv',
   topSwing:'./reports/top_swing.csv',
@@ -20,6 +21,10 @@ const fmtPct=n=>n==null?'—':fmt(n,2)+'%';
 const fmtIDR=n=>n==null?'—':'Rp'+Number(n).toLocaleString('id-ID');
 const scoreClass=s=>s>=95?'high':s>=80?'mid':'low';
 const scoreBadge=s=>s>=95?'success':s>=80?'warning':'danger';
+const asNum=n=>{const v=Number(n);return Number.isFinite(v)?v:null;};
+const fmtNum=(n,d=2)=>{const v=asNum(n);return v==null?'-':v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});};
+const fmtPctNum=(n,d=2)=>{const v=asNum(n);return v==null?'-':fmtNum(v,d)+'%';};
+const fmtSignedR=(n,d=4)=>{const v=asNum(n);if(v==null)return '-';return `${v>=0?'+':''}${fmtNum(v,d)}R`;};
 
 async function fetchJSON(p){try{const r=await fetch(p + '?t=' + Date.now());if(!r.ok)return null;return r.json();}catch{return null;}}
 async function fetchCSV(p){return new Promise(r=>{Papa.parse(p + '?t=' + Date.now(),{download:true,header:true,dynamicTyping:true,skipEmptyLines:true,complete:d=>r(d.data),error:()=>r([])});});}
@@ -32,12 +37,12 @@ function toast(msg,type='info'){
 
 // ── Data Loading ──
 async function loadAll(){
-  const[bt,kpi,fun,shd,prm,rec,t1,sw,ev]=await Promise.all([
+  const[bt,kpi,fun,shd,prm,acc,rec,t1,sw,ev]=await Promise.all([
     fetchJSON(P.backtest),fetchJSON(P.kpi),fetchJSON(P.funnel),
-    fetchJSON(P.shadow),fetchJSON(P.promo),fetchJSON(P.recon),
+    fetchJSON(P.shadow),fetchJSON(P.promo),fetchJSON(P.accuracy),fetchJSON(P.recon),
     fetchCSV(P.topT1),fetchCSV(P.topSwing),fetchCSV(P.eventActive)
   ]);
-  S.data={backtest:bt,kpi:kpi,funnel:fun,shadow:shd,promo:prm,recon:rec,topT1:t1,topSwing:sw,eventActive:ev};
+  S.data={backtest:bt,kpi:kpi,funnel:fun,shadow:shd,promo:prm,accuracy:acc,recon:rec,topT1:t1,topSwing:sw,eventActive:ev};
   const gen=bt?.generated_at||'';
   // ── Data Freshness Warning ──
   let freshnessClass='freshness-dot';
@@ -216,7 +221,7 @@ function renderRisk(){
 
 // ═══ PAGE: MODEL V2 ═══
 function renderModel(){
-  const sh=S.data.shadow||{},pr=S.data.promo||{};
+  const sh=S.data.shadow||{},pr=S.data.promo||{},audit=S.data.accuracy||{};
   const sigs=sh.signals||[];
   const html=`
 <div class="grid grid-3 mb-24">
@@ -241,6 +246,7 @@ function renderModel(){
     </tr>`).join('')}
   </tbody></table></div>
 </div>
+${renderAccuracyAudit(audit)}
 <div class="grid grid-2">
   <div class="card"><div class="card-header"><span class="card-title">Model Training Info</span></div>
     ${Object.entries(sh.train?.modes||{}).map(([m,v])=>`<div class="mb-16"><span class="badge badge-info">${m}</span>
@@ -328,6 +334,177 @@ function signalCard(s,mode){
     </div>
     <div class="signal-reason">${s.reason||'—'}</div>
   </div>`;
+}
+
+function firstMetric(row,keys){
+  for(const key of keys){if(row?.[key]!=null)return row[key];}
+  return null;
+}
+
+function metricTone(value,good,warn){
+  const v=asNum(value);
+  if(v==null)return 'neutral';
+  if(v>=good)return 'success';
+  if(v>=warn)return 'warning';
+  return 'danger';
+}
+
+function inverseMetricTone(value,goodMax,warnMax){
+  const v=asNum(value);
+  if(v==null)return 'neutral';
+  if(v<=goodMax)return 'success';
+  if(v<=warnMax)return 'warning';
+  return 'danger';
+}
+
+function bestThresholdRecord(thresholds){
+  const rows=Object.values(thresholds||{}).filter(Boolean);
+  rows.sort((a,b)=>{
+    const ae=asNum(a.expectancy_r),be=asNum(b.expectancy_r);
+    const ap=asNum(a.profit_factor_r),bp=asNum(b.profit_factor_r);
+    return (be??-999)-(ae??-999)||(bp??-999)-(ap??-999);
+  });
+  return rows[0]||{};
+}
+
+function auditMetric(label,value,sub,tone){
+  return`<div class="audit-metric ${tone||'neutral'}">
+    <div class="audit-label">${label}</div>
+    <div class="audit-value">${value}</div>
+    <div class="audit-sub">${sub||'&nbsp;'}</div>
+  </div>`;
+}
+
+function weakTickerRows(audit){
+  const weak=audit.false_positive_summary?.weak_groups?.ticker||[];
+  const fallback=(audit.by_ticker_preview||[]).filter(r=>
+    (asNum(r.v2_recommended_count)||0)>0 &&
+    ((asNum(r.v2_expectancy_r)||0)<0 || (asNum(r.v2_precision_pct)||0)<50)
+  );
+  const rows=(weak.length?weak:fallback).slice();
+  rows.sort((a,b)=>(asNum(firstMetric(a,['v2_expectancy_r','expectancy_r']))??999)-(asNum(firstMetric(b,['v2_expectancy_r','expectancy_r']))??999));
+  return rows.slice(0,6);
+}
+
+function weakRegimeRows(audit){
+  const weak=audit.false_positive_summary?.weak_groups?.regime||[];
+  const fallback=(audit.by_regime||[]).filter(r=>(asNum(r.v2_recommended_count)||0)>0);
+  const rows=(weak.length?weak:fallback).slice();
+  rows.sort((a,b)=>(asNum(firstMetric(a,['v2_expectancy_r','expectancy_r']))??999)-(asNum(firstMetric(b,['v2_expectancy_r','expectancy_r']))??999));
+  return rows.slice(0,6);
+}
+
+function renderWeakTickerTable(rows){
+  if(!rows.length)return emptyState('No weak ticker groups');
+  return`<div class="table-wrapper audit-table"><table class="data-table"><thead><tr>
+    <th>Ticker</th><th>Trades</th><th>Precision</th><th>E[R]</th><th>PF</th>
+  </tr></thead><tbody>${rows.map(r=>`<tr>
+    <td class="fw-700">${r.ticker||'-'}</td>
+    <td class="mono">${firstMetric(r,['v2_recommended_count','trade_count'])??0}</td>
+    <td class="mono">${fmtPctNum(firstMetric(r,['v2_precision_pct','precision_pct']))}</td>
+    <td class="mono ${asNum(firstMetric(r,['v2_expectancy_r','expectancy_r']))>=0?'text-success':'text-danger'}">${fmtSignedR(firstMetric(r,['v2_expectancy_r','expectancy_r']))}</td>
+    <td class="mono">${fmtNum(firstMetric(r,['v2_profit_factor_r','profit_factor_r']))}</td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+
+function renderWeakRegimeTable(rows){
+  if(!rows.length)return emptyState('No weak regime groups');
+  return`<div class="table-wrapper audit-table"><table class="data-table"><thead><tr>
+    <th>Mode</th><th>Regime</th><th>Trades</th><th>Precision</th><th>E[R]</th><th>PF</th>
+  </tr></thead><tbody>${rows.map(r=>`<tr>
+    <td><span class="badge badge-${r.mode==='swing'?'accent':'info'}">${(r.mode||'-').toUpperCase()}</span></td>
+    <td>${r.regime_status||r.shadow_market_regime||'-'}</td>
+    <td class="mono">${firstMetric(r,['v2_recommended_count','trade_count'])??0}</td>
+    <td class="mono">${fmtPctNum(firstMetric(r,['v2_precision_pct','precision_pct']))}</td>
+    <td class="mono ${asNum(firstMetric(r,['v2_expectancy_r','expectancy_r']))>=0?'text-success':'text-danger'}">${fmtSignedR(firstMetric(r,['v2_expectancy_r','expectancy_r']))}</td>
+    <td class="mono">${fmtNum(firstMetric(r,['v2_profit_factor_r','profit_factor_r']))}</td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+
+function renderThresholdTable(rows){
+  if(!rows.length)return emptyState('No threshold candidates');
+  return`<div class="table-wrapper audit-table"><table class="data-table"><thead><tr>
+    <th>Mode</th><th>Threshold</th><th>Trades</th><th>Precision</th><th>E[R]</th><th>PF</th>
+  </tr></thead><tbody>${rows.slice(0,8).map(r=>`<tr>
+    <td><span class="badge badge-${r.mode==='swing'?'accent':'info'}">${(r.mode||'-').toUpperCase()}</span></td>
+    <td class="mono">${fmtNum(r.threshold,2)}</td>
+    <td class="mono">${r.trade_count??0}</td>
+    <td class="mono">${fmtPctNum(r.precision_pct)}</td>
+    <td class="mono ${asNum(r.expectancy_r)>=0?'text-success':'text-danger'}">${fmtSignedR(r.expectancy_r)}</td>
+    <td class="mono">${fmtNum(r.profit_factor_r)}</td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+
+function renderCalibrationTable(rows){
+  if(!rows.length)return emptyState('No calibration bins');
+  return`<div class="table-wrapper audit-table"><table class="data-table"><thead><tr>
+    <th>Bin</th><th>Samples</th><th>Predicted</th><th>Actual</th><th>Error</th>
+  </tr></thead><tbody>${rows.map(r=>`<tr>
+    <td class="mono">${r.bin||'-'}</td>
+    <td class="mono">${r.sample_count??0}</td>
+    <td class="mono">${fmtPctNum(r.avg_predicted_p_win_pct)}</td>
+    <td class="mono">${fmtPctNum(r.actual_win_rate_pct)}</td>
+    <td class="mono ${inverseMetricTone(r.abs_error_pct,10,20)==='danger'?'text-danger':inverseMetricTone(r.abs_error_pct,10,20)==='warning'?'text-warning':'text-success'}">${fmtPctNum(r.abs_error_pct)}</td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+
+function renderFalsePositiveExamples(rows){
+  if(!rows.length)return '';
+  return`<div class="audit-panel mt-16">
+    <div class="audit-panel-title">Worst False-Positive Examples</div>
+    <div class="table-wrapper audit-table"><table class="data-table"><thead><tr>
+      <th>Date</th><th>Ticker</th><th>Mode</th><th>Score</th><th>Regime</th><th>Outcome</th><th>Realized R</th><th>MAE R</th>
+    </tr></thead><tbody>${rows.slice(0,6).map(r=>`<tr>
+      <td class="mono">${r.date||'-'}</td>
+      <td class="fw-700">${r.ticker||'-'}</td>
+      <td><span class="badge badge-${r.mode==='swing'?'accent':'info'}">${(r.mode||'-').toUpperCase()}</span></td>
+      <td class="mono">${fmtNum(r.score,2)}</td>
+      <td>${r.regime_status||'-'}</td>
+      <td>${r.outcome||'-'}</td>
+      <td class="mono text-danger">${fmtSignedR(r.realized_r)}</td>
+      <td class="mono text-danger">${fmtSignedR(r.mae_r)}</td>
+    </tr>`).join('')}</tbody></table></div>
+  </div>`;
+}
+
+function renderAccuracyAudit(audit){
+  if(!audit||!Object.keys(audit).length){
+    return`<div class="card mb-24"><div class="card-header"><span class="card-title">Model V2 Accuracy Audit</span>${badgeHtml('missing','danger')}</div>${emptyState('Model V2 accuracy audit not available')}</div>`;
+  }
+  const v2=audit.v2_recommended||{};
+  const best=bestThresholdRecord(audit.best_thresholds);
+  const calib=audit.calibration_v2_recommended||audit.calibration_all_candidates||{};
+  const fp=audit.false_positive_summary||{};
+  const input=audit.input||{};
+  const bestMode=best.mode?String(best.mode).toUpperCase():'-';
+  const bestThreshold=best.threshold!=null?`${bestMode} >= ${fmtNum(best.threshold,2)}`:'-';
+  const tickerRows=weakTickerRows(audit);
+  const regimeRows=weakRegimeRows(audit);
+  const thresholdRows=(audit.threshold_candidates_preview||[]).slice();
+  const calibrationRows=(calib.bins||[]).slice();
+  return`
+<div class="card mb-24">
+  <div class="card-header"><span class="card-title">Model V2 Accuracy Audit</span>${badgeHtml(audit.status||'missing',audit.status==='ok'?'success':'danger')}</div>
+  <div class="audit-meta">
+    Generated ${audit.generated_at?audit.generated_at.slice(0,16):'-'} | audited trades ${input.audited_trade_count??0} | V2 recommended ${input.v2_recommended_count??0}
+  </div>
+  <div class="audit-metric-grid">
+    ${auditMetric('Expectancy',fmtSignedR(v2.expectancy_r),`${v2.trade_count??0} V2 trades`,metricTone(v2.expectancy_r,0,-0.05))}
+    ${auditMetric('Profit Factor',fmtNum(v2.profit_factor_r),`precision ${fmtPctNum(v2.precision_pct)}`,metricTone(v2.profit_factor_r,1.1,0.9))}
+    ${auditMetric('Best Threshold',bestThreshold,`${fmtSignedR(best.expectancy_r)} | PF ${fmtNum(best.profit_factor_r)}`,metricTone(best.expectancy_r,0,-0.05))}
+    ${auditMetric('Calibration Error',fmtPctNum(calib.ece_pct),`source ${calib.source||'-'}`,inverseMetricTone(calib.ece_pct,10,20))}
+    ${auditMetric('False Positive',fmtPctNum(fp.negative_signal_rate_pct),`${fp.negative_signal_count??0} negative signals`,inverseMetricTone(fp.negative_signal_rate_pct,30,50))}
+  </div>
+  <div class="grid grid-2 mt-16">
+    <div class="audit-panel"><div class="audit-panel-title">Weak Tickers</div>${renderWeakTickerTable(tickerRows)}</div>
+    <div class="audit-panel"><div class="audit-panel-title">Weak Regimes</div>${renderWeakRegimeTable(regimeRows)}</div>
+  </div>
+  <div class="grid grid-2 mt-16">
+    <div class="audit-panel"><div class="audit-panel-title">Threshold Candidates</div>${renderThresholdTable(thresholdRows)}</div>
+    <div class="audit-panel"><div class="audit-panel-title">Calibration Bins</div>${renderCalibrationTable(calibrationRows)}</div>
+  </div>
+  ${renderFalsePositiveExamples(fp.worst_false_positive_examples||[])}
+</div>`;
 }
 
 function renderFunnel(fun){

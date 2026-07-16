@@ -305,6 +305,72 @@ img{max-width:100%}
 .data-table .text-warning{color:var(--warning)}
 
 /* ═══ CHARTS ═════════════════════════════ */
+/* Model V2 Accuracy Audit */
+.audit-meta{
+  margin-top:-6px;
+  margin-bottom:16px;
+  color:var(--text-muted);
+  font-size:0.78rem;
+  font-family:var(--mono);
+}
+.audit-metric-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:12px;
+}
+.audit-metric{
+  min-height:100px;
+  padding:14px;
+  border:1px solid var(--border);
+  border-left:3px solid var(--text-dim);
+  border-radius:var(--radius-sm);
+  background:rgba(255,255,255,0.025);
+}
+.audit-metric.success{border-left-color:var(--success);background:rgba(16,185,129,0.06)}
+.audit-metric.warning{border-left-color:var(--warning);background:rgba(245,158,11,0.06)}
+.audit-metric.danger{border-left-color:var(--danger);background:rgba(239,68,68,0.06)}
+.audit-metric.neutral{border-left-color:var(--text-dim)}
+.audit-label{
+  color:var(--text-muted);
+  font-size:0.7rem;
+  font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.audit-value{
+  margin-top:8px;
+  color:var(--text-primary);
+  font-family:var(--mono);
+  font-size:1.25rem;
+  font-weight:800;
+  line-height:1.2;
+  overflow-wrap:anywhere;
+}
+.audit-sub{
+  margin-top:6px;
+  color:var(--text-secondary);
+  font-size:0.76rem;
+  line-height:1.35;
+}
+.audit-panel{
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  background:rgba(255,255,255,0.02);
+  min-width:0;
+}
+.audit-panel-title{
+  margin-bottom:12px;
+  color:var(--text-secondary);
+  font-size:0.78rem;
+  font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.audit-table .data-table{font-size:0.8rem}
+.audit-table .data-table th,
+.audit-table .data-table td{padding:10px 12px}
+
 .chart-container{position:relative;width:100%;height:280px}
 .chart-container.tall{height:360px}
 
@@ -452,6 +518,7 @@ img{max-width:100%}
 /* ═══ RESPONSIVE ═════════════════════════ */
 @media(max-width:1200px){
   .grid-4{grid-template-columns:repeat(2,1fr)}
+  .audit-metric-grid{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%)}
@@ -462,11 +529,13 @@ img{max-width:100%}
   .grid-2{grid-template-columns:1fr}
   .signal-prices{grid-template-columns:repeat(2,1fr)}
   .checks-grid{grid-template-columns:1fr}
+  .audit-metric-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:600px){
   .content-area{padding:16px}
   .topbar{padding:0 16px}
   .grid-4{grid-template-columns:1fr}
+  .audit-metric-grid{grid-template-columns:1fr}
 }
 
 /* ═══ DATA FRESHNESS WARNING ═════════════ */
