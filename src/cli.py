@@ -1869,6 +1869,8 @@ def main() -> None:
             dry_run=args.dry_run,
         )
         print(json.dumps(out, ensure_ascii=True, indent=2))
+        if not args.dry_run and not bool(out.get("ok", False)):
+            raise SystemExit(1)
         return
     if args.command == "run-daily":
         out = run_daily(settings, skip_telegram=args.skip_telegram, settings_path=args.settings)

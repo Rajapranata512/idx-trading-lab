@@ -2,8 +2,9 @@ name: IDX Trading Lab - Model V2 Pre-Open Telegram
 
 on:
   schedule:
-    # One hour before regular IDX market open (08:00 WIB / 01:00 UTC), Monday-Friday.
-    - cron: '0 1 * * 1-5'
+    # Around one hour before regular IDX market open, avoiding minute 00
+    # because GitHub Actions schedules can be delayed or dropped then.
+    - cron: '5 1 * * 1-5' # 08:05 WIB
   workflow_dispatch:
 
 jobs:
