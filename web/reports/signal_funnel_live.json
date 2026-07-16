@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-15T14:18:29.262018",
-  "run_id": "20260715_141731",
+  "generated_at": "2026-07-16T02:49:47.739364",
+  "run_id": "20260716_024859",
   "gate_pass": {
     "t1": false,
     "swing": false
   },
   "allowed_modes": [],
   "pre_gate": {
-    "combined_plan_count": 3,
+    "combined_plan_count": 6,
     "execution_plan_count": 3,
-    "signal_count": 3,
+    "signal_count": 6,
     "by_mode": {
-      "t1": 2,
+      "t1": 5,
       "swing": 1
     }
   },
@@ -34,21 +34,21 @@
   "signal_accuracy": {
     "status": "ok",
     "json_path": "reports/signal_accuracy_audit.json",
-    "audited_trade_count": 11551,
-    "live_threshold_trade_count": 5082,
-    "live_expectancy_r": -0.0999,
-    "live_profit_factor_r": 0.6252
+    "audited_trade_count": 11560,
+    "live_threshold_trade_count": 5090,
+    "live_expectancy_r": -0.1002,
+    "live_profit_factor_r": 0.6241
   },
   "model_v2_accuracy": {
     "status": "ok_fallback",
     "json_path": "reports/model_v2_accuracy_audit.json",
-    "audited_trade_count": 11551,
-    "v2_recommended_count": 5954,
+    "audited_trade_count": 11560,
+    "v2_recommended_count": 5959,
     "v2_expectancy_r": -0.1005,
-    "v2_profit_factor_r": 0.5335
+    "v2_profit_factor_r": 0.5333
   },
   "score_funnel": {
-    "generated_at": "2026-07-15T14:17:47.562958",
+    "generated_at": "2026-07-16T02:49:12.935174",
     "thresholds": {
       "min_live_score_t1": 95.0,
       "min_live_score_swing": 68.0,
@@ -68,54 +68,54 @@
     "modes": {
       "t1": {
         "rank_candidates": 10,
-        "after_score_filter": 3,
-        "after_event_risk": 3,
+        "after_score_filter": 7,
+        "after_event_risk": 7,
         "small_size_before_filter": 2,
-        "dropped_by_score": 7,
+        "dropped_by_score": 3,
         "dropped_by_event_risk": 0
       },
       "swing": {
-        "rank_candidates": 10,
+        "rank_candidates": 9,
         "after_score_filter": 1,
         "after_event_risk": 1,
         "small_size_before_filter": 2,
-        "dropped_by_score": 9,
+        "dropped_by_score": 8,
         "dropped_by_event_risk": 0
       }
     },
     "combined": {
-      "before_size_filter": 4,
-      "dropped_by_size_filter": 1,
-      "after_size_filter": 3,
-      "after_top_n_combined": 3,
+      "before_size_filter": 8,
+      "dropped_by_size_filter": 2,
+      "after_size_filter": 6,
+      "after_top_n_combined": 6,
       "execution_plan_count": 3,
-      "signal_count": 3,
+      "signal_count": 6,
       "avg_roundtrip_cost_est_pct": 0.56,
-      "before_profit_quality_gate": 3,
-      "after_profit_quality_gate": 3,
+      "before_profit_quality_gate": 6,
+      "after_profit_quality_gate": 6,
       "dropped_by_profit_quality": 0
     },
     "event_risk": {
       "enabled": true,
       "status": "ok",
-      "message": "No active event-risk entries",
+      "message": "Event-risk filter applied",
       "path": "data/reference/event_risk_blacklist.csv",
-      "as_of_date": "2026-07-15",
-      "active_events": 0,
+      "as_of_date": "2026-07-16",
+      "active_events": 1,
       "excluded_count": 0,
       "excluded_tickers": [],
       "excluded_t1": 0,
       "excluded_swing": 0
     },
     "profit_quality": {
-      "generated_at": "2026-07-15T14:17:47.542966",
+      "generated_at": "2026-07-16T02:49:12.916679",
       "stage": "score",
       "status": "ok",
       "enabled": true,
-      "input_count": 3,
-      "output_count": 3,
+      "input_count": 6,
+      "output_count": 6,
       "blocked_count": 0,
-      "watch_count": 3,
+      "watch_count": 6,
       "pass_count": 0,
       "profile_path": "reports/ticker_edge_profile.csv",
       "profile_rows": 0,
