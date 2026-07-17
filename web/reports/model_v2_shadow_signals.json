@@ -1,101 +1,113 @@
 {
-  "generated_at": "2026-07-16T14:30:14.186651",
-  "run_id": "20260716_142954",
+  "generated_at": "2026-07-17T05:49:50.510759",
+  "run_id": "20260717_054552",
   "signals": [
     {
-      "ticker": "ADRO",
-      "mode": "t1",
-      "score": 96.58,
+      "ticker": "ARTO",
+      "mode": "swing",
+      "score": 71.78,
       "shadow_rank": 1,
-      "shadow_p_win": 0.7775,
-      "shadow_expected_r": 0.9438,
-      "shadow_threshold": 0.52,
+      "shadow_p_win": 0.6164,
+      "shadow_expected_r": 0.1469,
+      "shadow_threshold": 0.475,
       "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 2450.0,
-      "stop": 2311.58,
-      "tp1": 2588.42,
-      "tp2": 2726.84,
-      "size": 400
-    },
-    {
-      "ticker": "MEDC",
-      "mode": "t1",
-      "score": 98.97,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.7397,
-      "shadow_expected_r": 0.8492,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 1260.0,
-      "stop": 1148.52,
-      "tp1": 1371.48,
-      "tp2": 1482.96,
-      "size": 500
-    },
-    {
-      "ticker": "ANTM",
-      "mode": "t1",
-      "score": 98.08,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.7308,
-      "shadow_expected_r": 0.827,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 3070.0,
-      "stop": 2787.77,
-      "tp1": 3352.23,
-      "tp2": 3634.47,
-      "size": 100
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 1410.0,
+      "stop": 1233.6,
+      "tp1": 1586.4,
+      "tp2": 1762.81,
+      "size": 200
     },
     {
       "ticker": "HRUM",
       "mode": "t1",
-      "score": 96.11,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.7111,
-      "shadow_expected_r": 0.7777,
+      "score": 100.0,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.3797,
+      "shadow_expected_r": -0.0721,
       "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 790.0,
-      "stop": 713.58,
-      "tp1": 866.42,
-      "tp2": 942.84,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 830.0,
+      "stop": 752.61,
+      "tp1": 907.39,
+      "tp2": 984.78,
       "size": 700
     },
     {
-      "ticker": "INCO",
+      "ticker": "TKIM",
       "mode": "t1",
-      "score": 95.19,
-      "shadow_rank": 5,
-      "shadow_p_win": 0.7019,
-      "shadow_expected_r": 0.7547,
+      "score": 100.0,
+      "shadow_rank": 3,
+      "shadow_p_win": 0.3705,
+      "shadow_expected_r": -0.0771,
       "shadow_threshold": 0.52,
-      "shadow_recommended": true,
-      "shadow_model_source": "fallback",
-      "entry": 4890.0,
-      "stop": 4390.85,
-      "tp1": 5389.15,
-      "tp2": 5888.3,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 6100.0,
+      "stop": 5515.14,
+      "tp1": 6684.86,
+      "tp2": 7269.72,
       "size": 100
     },
     {
-      "ticker": "ARTO",
-      "mode": "swing",
-      "score": 71.76,
-      "shadow_rank": 6,
-      "shadow_p_win": 0.4676,
-      "shadow_expected_r": 0.169,
-      "shadow_threshold": 0.55,
+      "ticker": "TOWR",
+      "mode": "t1",
+      "score": 97.41,
+      "shadow_rank": 4,
+      "shadow_p_win": 0.3418,
+      "shadow_expected_r": -0.0929,
+      "shadow_threshold": 0.52,
       "shadow_recommended": false,
-      "shadow_model_source": "fallback",
-      "entry": 1305.0,
-      "stop": 1135.03,
-      "tp1": 1474.97,
-      "tp2": 1644.95,
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 406.0,
+      "stop": 373.07,
+      "tp1": 438.93,
+      "tp2": 471.85,
+      "size": 1800
+    },
+    {
+      "ticker": "BRIS",
+      "mode": "t1",
+      "score": 95.05,
+      "shadow_rank": 5,
+      "shadow_p_win": 0.3288,
+      "shadow_expected_r": -0.1,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 1865.0,
+      "stop": 1725.35,
+      "tp1": 2004.65,
+      "tp2": 2144.3,
+      "size": 400
+    },
+    {
+      "ticker": "BMRI",
+      "mode": "t1",
+      "score": 97.28,
+      "shadow_rank": 6,
+      "shadow_p_win": 0.3239,
+      "shadow_expected_r": -0.1027,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 4450.0,
+      "stop": 4180.59,
+      "tp1": 4719.41,
+      "tp2": 4988.81,
       "size": 200
     }
   ],
@@ -105,138 +117,274 @@
     "modes": {
       "swing": {
         "rows": 1,
-        "source": "fallback",
+        "source": "model",
         "threshold": 0.55,
-        "thresholds_by_regime": {},
-        "metadata": {}
+        "thresholds_by_regime": {
+          "default": 0.55,
+          "risk_on": 0.475,
+          "risk_off": 0.425
+        },
+        "metadata": {
+          "saved_at": "2026-07-17T05:49:50.464046",
+          "train_rows": 6998,
+          "fit_rows": 4223,
+          "positive_rate": 0.3199147525455837,
+          "auc_train": 0.719,
+          "features": [
+            "score",
+            "ret_1d",
+            "ret_5d",
+            "ret_20d",
+            "atr_pct",
+            "vol_20d",
+            "avg_vol_20d",
+            "close",
+            "ma_20",
+            "ma_50",
+            "ma_slope_20",
+            "ma_slope_50",
+            "dist_ma_20",
+            "dist_ma_50",
+            "vol_ratio",
+            "ret_5d_20d_ratio",
+            "high_low_range",
+            "close_position",
+            "volume_ratio_20d",
+            "rsi_14",
+            "rsi_slope",
+            "mfi_14",
+            "obv_slope",
+            "rank_ret_20d",
+            "rank_vol_20d",
+            "turnover_ratio_20d",
+            "dist_high_20",
+            "dist_low_20",
+            "ma_gap_20_50",
+            "ma_stack_bullish",
+            "market_breadth_ma20_pct",
+            "market_breadth_ma50_pct",
+            "market_avg_ret20_pct",
+            "market_median_atr_pct",
+            "relative_ret_20d"
+          ],
+          "model_type": "xgboost_optuna",
+          "cv_auc": 0.5281,
+          "model_comparison": {
+            "xgboost_optuna": 0.5281,
+            "logreg": 0.5159,
+            "lightgbm_optuna": 0.5118,
+            "xgboost": 0.4818,
+            "lightgbm": 0.4784
+          },
+          "calibration": {
+            "calibrated": false,
+            "evaluated_on_holdout": false,
+            "fit_rows": 4223,
+            "calibration_rows": 1672,
+            "test_rows": 744,
+            "purge_gap_dates": 10,
+            "ece": 0.125708,
+            "holdout_auc": 0.418
+          },
+          "available_models": [
+            "xgboost_optuna",
+            "logreg",
+            "lightgbm_optuna",
+            "xgboost",
+            "lightgbm"
+          ],
+          "label_strategy": "ranked_expected_return_top_65pct",
+          "thresholds_by_regime": {
+            "default": 0.55,
+            "risk_on": 0.475,
+            "risk_off": 0.425
+          },
+          "return_profile": {
+            "overall": {
+              "mean_return_r": -0.108073,
+              "positive_mean_r": 0.751221,
+              "negative_mean_r": -0.85019,
+              "sample_count": 4223
+            },
+            "by_regime": {
+              "risk_off": {
+                "mean_return_r": -0.186492,
+                "positive_mean_r": 0.742338,
+                "negative_mean_r": -0.882837,
+                "sample_count": 1468
+              },
+              "risk_on": {
+                "mean_return_r": -0.066287,
+                "positive_mean_r": 0.755428,
+                "negative_mean_r": -0.830995,
+                "sample_count": 2755
+              }
+            }
+          },
+          "target_rank_positive_cutoff": 0.65,
+          "optuna_used": true,
+          "optuna_trials": 25,
+          "optuna_best_params": {
+            "n_estimators": 100,
+            "max_depth": 3,
+            "learning_rate": 0.013365930474740165,
+            "subsample": 0.8687139041186221,
+            "colsample_bytree": 0.6268622681245669,
+            "min_child_weight": 12,
+            "reg_alpha": 0.08871362021381851,
+            "reg_lambda": 9.595115259072765
+          },
+          "mode": "swing",
+          "horizon_days": 10,
+          "trained_at": "2026-07-17T05:46:16.313976"
+        },
+        "ready": true,
+        "block_reason": ""
       },
       "t1": {
         "rows": 5,
-        "source": "fallback",
+        "source": "model",
         "threshold": 0.52,
-        "thresholds_by_regime": {},
-        "metadata": {}
+        "thresholds_by_regime": {
+          "default": 0.52
+        },
+        "metadata": {
+          "saved_at": "2026-07-17T05:48:07.032135",
+          "train_rows": 20717,
+          "fit_rows": 12357,
+          "positive_rate": 0.3466860888565186,
+          "auc_train": 0.6349,
+          "features": [
+            "score",
+            "ret_1d",
+            "ret_5d",
+            "ret_20d",
+            "atr_pct",
+            "vol_20d",
+            "avg_vol_20d",
+            "close",
+            "ma_20",
+            "ma_50",
+            "ma_slope_20",
+            "ma_slope_50",
+            "dist_ma_20",
+            "dist_ma_50",
+            "vol_ratio",
+            "ret_5d_20d_ratio",
+            "high_low_range",
+            "close_position",
+            "volume_ratio_20d",
+            "rsi_14",
+            "rsi_slope",
+            "mfi_14",
+            "obv_slope",
+            "rank_ret_20d",
+            "rank_vol_20d",
+            "turnover_ratio_20d",
+            "dist_high_20",
+            "dist_low_20",
+            "ma_gap_20_50",
+            "ma_stack_bullish",
+            "market_breadth_ma20_pct",
+            "market_breadth_ma50_pct",
+            "market_avg_ret20_pct",
+            "market_median_atr_pct",
+            "relative_ret_20d"
+          ],
+          "model_type": "xgboost_optuna",
+          "cv_auc": 0.5542,
+          "model_comparison": {
+            "xgboost_optuna": 0.5542,
+            "logreg": 0.5478,
+            "lightgbm_optuna": 0.5413,
+            "xgboost": 0.5353,
+            "lightgbm": 0.5322
+          },
+          "calibration": {
+            "calibrated": false,
+            "evaluated_on_holdout": false,
+            "fit_rows": 12357,
+            "calibration_rows": 4136,
+            "test_rows": 4136,
+            "purge_gap_dates": 1,
+            "ece": 0.091367,
+            "holdout_auc": 0.5444
+          },
+          "available_models": [
+            "xgboost_optuna",
+            "logreg",
+            "lightgbm_optuna",
+            "xgboost",
+            "lightgbm"
+          ],
+          "label_strategy": "binary_positive_net_return",
+          "thresholds_by_regime": {
+            "default": 0.52
+          },
+          "return_profile": {
+            "overall": {
+              "mean_return_r": -0.098804,
+              "positive_mean_r": 0.268301,
+              "negative_mean_r": -0.293612,
+              "sample_count": 12357
+            },
+            "by_regime": {
+              "risk_off": {
+                "mean_return_r": -0.103701,
+                "positive_mean_r": 0.268021,
+                "negative_mean_r": -0.302502,
+                "sample_count": 7341
+              },
+              "risk_on": {
+                "mean_return_r": -0.091638,
+                "positive_mean_r": 0.268716,
+                "negative_mean_r": -0.280687,
+                "sample_count": 5016
+              }
+            }
+          },
+          "target_rank_positive_cutoff": null,
+          "optuna_used": true,
+          "optuna_trials": 25,
+          "optuna_best_params": {
+            "n_estimators": 250,
+            "max_depth": 3,
+            "learning_rate": 0.010105596084103339,
+            "subsample": 0.7923052383875833,
+            "colsample_bytree": 0.5065013056606714,
+            "min_child_weight": 15,
+            "reg_alpha": 0.0014290128744488674,
+            "reg_lambda": 0.01404581280846917
+          },
+          "mode": "t1",
+          "horizon_days": 1,
+          "trained_at": "2026-07-17T05:46:16.313976"
+        },
+        "ready": true,
+        "block_reason": ""
       }
     },
-    "rows": 6
+    "rows": 6,
+    "ready_modes": [
+      "swing",
+      "t1"
+    ],
+    "blocked_modes": []
   },
   "train": {
-    "status": "skipped_interval",
-    "message": "Last model_v2 training still within 7 days interval",
-    "updated": false,
+    "status": "updated",
+    "message": "Model v2 trained for modes: t1, swing",
+    "updated": true,
     "state_path": "reports/model_v2_state.json",
+    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
         "rows": 20717,
         "train_rows": 20717,
-        "positive_rate": 0.3458512332866728,
-        "auc_train": 0.6413,
-        "features": [
-          "score",
-          "ret_1d",
-          "ret_5d",
-          "ret_20d",
-          "atr_pct",
-          "vol_20d",
-          "avg_vol_20d",
-          "close",
-          "ma_20",
-          "ma_50",
-          "ma_slope_20",
-          "ma_slope_50",
-          "dist_ma_20",
-          "dist_ma_50",
-          "vol_ratio",
-          "ret_5d_20d_ratio",
-          "high_low_range",
-          "close_position",
-          "volume_ratio_20d",
-          "rsi_14",
-          "rsi_slope",
-          "mfi_14",
-          "obv_slope",
-          "rank_ret_20d",
-          "rank_vol_20d",
-          "turnover_ratio_20d",
-          "dist_high_20",
-          "dist_low_20",
-          "ma_gap_20_50",
-          "ma_stack_bullish",
-          "market_breadth_ma20_pct",
-          "market_breadth_ma50_pct",
-          "market_avg_ret20_pct",
-          "market_median_atr_pct",
-          "relative_ret_20d"
-        ],
-        "model_type": "lightgbm_optuna",
-        "cv_auc": 0.5592,
-        "model_comparison": {
-          "lightgbm_optuna": 0.5592,
-          "xgboost_optuna": 0.5564,
-          "logreg": 0.5473,
-          "lightgbm": 0.5467,
-          "xgboost": 0.5415
-        },
-        "calibration": {
-          "calibrated": true,
-          "ece": 0.168569
-        },
-        "available_models": [
-          "lightgbm_optuna",
-          "xgboost_optuna",
-          "logreg",
-          "lightgbm",
-          "xgboost"
-        ],
-        "label_strategy": "binary_positive_net_return",
-        "thresholds_by_regime": {
-          "default": 0.52
-        },
-        "return_profile": {
-          "overall": {
-            "mean_return_r": -0.100046,
-            "positive_mean_r": 0.267631,
-            "negative_mean_r": -0.294438,
-            "sample_count": 20717
-          },
-          "by_regime": {
-            "risk_off": {
-              "mean_return_r": -0.099299,
-              "positive_mean_r": 0.268139,
-              "negative_mean_r": -0.297981,
-              "sample_count": 13677
-            },
-            "risk_on": {
-              "mean_return_r": -0.101497,
-              "positive_mean_r": 0.266601,
-              "negative_mean_r": -0.287711,
-              "sample_count": 7040
-            }
-          }
-        },
-        "target_rank_positive_cutoff": null,
-        "optuna_used": true,
-        "optuna_trials": 25,
-        "optuna_best_params": {
-          "n_estimators": 100,
-          "max_depth": 3,
-          "learning_rate": 0.04372456332828734,
-          "subsample": 0.8649017013193531,
-          "colsample_bytree": 0.5613832828575068,
-          "min_child_samples": 14,
-          "reg_alpha": 0.16983633873392298,
-          "reg_lambda": 0.0010390909324655665
-        },
-        "artifact_path": "models/model_v2/t1.joblib",
-        "metadata_path": "models/model_v2/t1.meta.json"
-      },
-      "swing": {
-        "status": "trained",
-        "rows": 7063,
-        "train_rows": 7063,
-        "positive_rate": 0.3222426730850913,
-        "auc_train": 0.7982,
+        "fit_rows": 12357,
+        "positive_rate": 0.3466860888565186,
+        "auc_train": 0.6349,
         "features": [
           "score",
           "ret_1d",
@@ -275,50 +423,168 @@
           "relative_ret_20d"
         ],
         "model_type": "xgboost_optuna",
-        "cv_auc": 0.5141,
+        "cv_auc": 0.5542,
         "model_comparison": {
-          "xgboost_optuna": 0.5141,
-          "logreg": 0.5094,
-          "lightgbm_optuna": 0.5035,
-          "lightgbm": 0.4886,
-          "xgboost": 0.4816
+          "xgboost_optuna": 0.5542,
+          "logreg": 0.5478,
+          "lightgbm_optuna": 0.5413,
+          "xgboost": 0.5353,
+          "lightgbm": 0.5322
         },
         "calibration": {
-          "calibrated": true,
-          "ece": 0.122257
+          "calibrated": false,
+          "evaluated_on_holdout": false,
+          "fit_rows": 12357,
+          "calibration_rows": 4136,
+          "test_rows": 4136,
+          "purge_gap_dates": 1,
+          "ece": 0.091367,
+          "holdout_auc": 0.5444
         },
         "available_models": [
           "xgboost_optuna",
           "logreg",
           "lightgbm_optuna",
-          "lightgbm",
-          "xgboost"
+          "xgboost",
+          "lightgbm"
+        ],
+        "label_strategy": "binary_positive_net_return",
+        "thresholds_by_regime": {
+          "default": 0.52
+        },
+        "return_profile": {
+          "overall": {
+            "mean_return_r": -0.098804,
+            "positive_mean_r": 0.268301,
+            "negative_mean_r": -0.293612,
+            "sample_count": 12357
+          },
+          "by_regime": {
+            "risk_off": {
+              "mean_return_r": -0.103701,
+              "positive_mean_r": 0.268021,
+              "negative_mean_r": -0.302502,
+              "sample_count": 7341
+            },
+            "risk_on": {
+              "mean_return_r": -0.091638,
+              "positive_mean_r": 0.268716,
+              "negative_mean_r": -0.280687,
+              "sample_count": 5016
+            }
+          }
+        },
+        "target_rank_positive_cutoff": null,
+        "optuna_used": true,
+        "optuna_trials": 25,
+        "optuna_best_params": {
+          "n_estimators": 250,
+          "max_depth": 3,
+          "learning_rate": 0.010105596084103339,
+          "subsample": 0.7923052383875833,
+          "colsample_bytree": 0.5065013056606714,
+          "min_child_weight": 15,
+          "reg_alpha": 0.0014290128744488674,
+          "reg_lambda": 0.01404581280846917
+        },
+        "artifact_path": "models/model_v2/t1.joblib",
+        "metadata_path": "models/model_v2/t1.meta.json"
+      },
+      "swing": {
+        "status": "trained",
+        "rows": 6998,
+        "train_rows": 6998,
+        "fit_rows": 4223,
+        "positive_rate": 0.3199147525455837,
+        "auc_train": 0.719,
+        "features": [
+          "score",
+          "ret_1d",
+          "ret_5d",
+          "ret_20d",
+          "atr_pct",
+          "vol_20d",
+          "avg_vol_20d",
+          "close",
+          "ma_20",
+          "ma_50",
+          "ma_slope_20",
+          "ma_slope_50",
+          "dist_ma_20",
+          "dist_ma_50",
+          "vol_ratio",
+          "ret_5d_20d_ratio",
+          "high_low_range",
+          "close_position",
+          "volume_ratio_20d",
+          "rsi_14",
+          "rsi_slope",
+          "mfi_14",
+          "obv_slope",
+          "rank_ret_20d",
+          "rank_vol_20d",
+          "turnover_ratio_20d",
+          "dist_high_20",
+          "dist_low_20",
+          "ma_gap_20_50",
+          "ma_stack_bullish",
+          "market_breadth_ma20_pct",
+          "market_breadth_ma50_pct",
+          "market_avg_ret20_pct",
+          "market_median_atr_pct",
+          "relative_ret_20d"
+        ],
+        "model_type": "xgboost_optuna",
+        "cv_auc": 0.5281,
+        "model_comparison": {
+          "xgboost_optuna": 0.5281,
+          "logreg": 0.5159,
+          "lightgbm_optuna": 0.5118,
+          "xgboost": 0.4818,
+          "lightgbm": 0.4784
+        },
+        "calibration": {
+          "calibrated": false,
+          "evaluated_on_holdout": false,
+          "fit_rows": 4223,
+          "calibration_rows": 1672,
+          "test_rows": 744,
+          "purge_gap_dates": 10,
+          "ece": 0.125708,
+          "holdout_auc": 0.418
+        },
+        "available_models": [
+          "xgboost_optuna",
+          "logreg",
+          "lightgbm_optuna",
+          "xgboost",
+          "lightgbm"
         ],
         "label_strategy": "ranked_expected_return_top_65pct",
         "thresholds_by_regime": {
           "default": 0.55,
-          "risk_on": 0.6,
-          "risk_off": 0.55
+          "risk_on": 0.475,
+          "risk_off": 0.425
         },
         "return_profile": {
           "overall": {
-            "mean_return_r": -0.127072,
-            "positive_mean_r": 0.747548,
-            "negative_mean_r": -0.843346,
-            "sample_count": 7063
+            "mean_return_r": -0.108073,
+            "positive_mean_r": 0.751221,
+            "negative_mean_r": -0.85019,
+            "sample_count": 4223
           },
           "by_regime": {
             "risk_off": {
-              "mean_return_r": -0.145251,
-              "positive_mean_r": 0.727429,
-              "negative_mean_r": -0.844098,
-              "sample_count": 3128
+              "mean_return_r": -0.186492,
+              "positive_mean_r": 0.742338,
+              "negative_mean_r": -0.882837,
+              "sample_count": 1468
             },
             "risk_on": {
-              "mean_return_r": -0.112622,
-              "positive_mean_r": 0.763192,
-              "negative_mean_r": -0.842738,
-              "sample_count": 3935
+              "mean_return_r": -0.066287,
+              "positive_mean_r": 0.755428,
+              "negative_mean_r": -0.830995,
+              "sample_count": 2755
             }
           }
         },
@@ -327,17 +593,23 @@
         "optuna_trials": 25,
         "optuna_best_params": {
           "n_estimators": 100,
-          "max_depth": 6,
-          "learning_rate": 0.010097684206181817,
-          "subsample": 0.8481289301555419,
-          "colsample_bytree": 0.5012392867351658,
-          "min_child_weight": 3,
-          "reg_alpha": 9.446167048943904,
-          "reg_lambda": 0.07471213420145031
+          "max_depth": 3,
+          "learning_rate": 0.013365930474740165,
+          "subsample": 0.8687139041186221,
+          "colsample_bytree": 0.6268622681245669,
+          "min_child_weight": 12,
+          "reg_alpha": 0.08871362021381851,
+          "reg_lambda": 9.595115259072765
         },
         "artifact_path": "models/model_v2/swing.joblib",
         "metadata_path": "models/model_v2/swing.meta.json"
       }
+    },
+    "errors": [],
+    "artifact_check": {
+      "ready": true,
+      "missing_modes": [],
+      "forced_retrain": true
     }
   }
 }
