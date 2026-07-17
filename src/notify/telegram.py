@@ -36,6 +36,18 @@ def _fmt_float(value: Any, digits: int = 2) -> str:
     return f"{_safe_float(value):.{digits}f}"
 
 
+def _fmt_optional_float(value: Any, digits: int = 2) -> str:
+    if value is None:
+        return "-"
+    try:
+        out = float(value)
+        if out != out:
+            return "-"
+        return f"{out:.{digits}f}"
+    except Exception:
+        return "-"
+
+
 def _fmt_price(value: Any) -> str:
     price = _safe_float(value)
     if abs(price - round(price)) < 0.005:
@@ -50,6 +62,10 @@ def _is_recommended(row: dict[str, Any]) -> bool:
     return str(value).strip().lower() in {"1", "true", "yes", "y"}
 
 
+def _is_trained_model_signal(row: dict[str, Any]) -> bool:
+    return str(row.get("shadow_model_source", "")).strip().lower() == "model"
+
+
 def _format_shadow_pick(idx: int, row: dict[str, Any]) -> list[str]:
     mode = str(row.get("mode", "-")).upper()
     ticker = str(row.get("ticker", "-")).upper()
@@ -58,8 +74,8 @@ def _format_shadow_pick(idx: int, row: dict[str, Any]) -> list[str]:
         f"{idx}. {mode}:{ticker}",
         (
             f"   score={_fmt_float(row.get('score'), 2)} "
-            f"p(win)={_fmt_float(row.get('shadow_p_win'), 4)} "
-            f"E[R]={_fmt_float(row.get('shadow_expected_r'), 4)} "
+            f"p(win)={_fmt_optional_float(row.get('shadow_p_win'), 4)} "
+            f"E[R]={_fmt_optional_float(row.get('shadow_expected_r'), 4)} "
             f"recommended={recommended}"
         ),
         (
@@ -78,15 +94,25 @@ def build_model_v2_shadow_message(
     signals = payload.get("signals", [])
     signals = signals if isinstance(signals, list) else []
     generated_at = str(payload.get("generated_at", "-"))
-    recommended = [row for row in signals if isinstance(row, dict) and _is_recommended(row)]
-    rejected = [row for row in signals if isinstance(row, dict) and not _is_recommended(row)]
+    model_signals = [
+        row for row in signals
+        if isinstance(row, dict) and _is_trained_model_signal(row)
+    ]
+    blocked = [
+        row for row in signals
+        if isinstance(row, dict) and not _is_trained_model_signal(row)
+    ]
+    recommended = [row for row in model_signals if _is_recommended(row)]
+    rejected = [row for row in model_signals if not _is_recommended(row)]
+    model_status = "READY" if model_signals else "BLOCKED"
 
     lines = [
         "IDX Model v2 Shadow Signal | pre-open",
         f"Source: {source_label} {generated_at}",
+        f"Model status: {model_status}",
         f"Note: ini shadow monitoring, bukan final/live execution signal. Rollout v2 masih {int(rollout_pct)}%.",
         "",
-        "Direkomendasikan V2:",
+        "Direkomendasikan V2 terverifikasi:",
     ]
     if recommended:
         for idx, row in enumerate(recommended, start=1):
@@ -94,12 +120,21 @@ def build_model_v2_shadow_message(
     else:
         lines.append("(tidak ada)")
 
-    lines.extend(["", "Tidak direkomendasikan V2:"])
+    lines.extend(["", "Tidak direkomendasikan V2 terverifikasi:"])
     if rejected:
         for idx, row in enumerate(rejected, start=1):
             lines.extend(_format_shadow_pick(idx, row))
     else:
         lines.append("(tidak ada)")
+
+    if blocked:
+        lines.extend(
+            [
+                "",
+                f"Diblokir: {len(blocked)} kandidat tidak memakai model terlatih.",
+                "Tidak ada p(win), E[R], atau rekomendasi yang diterbitkan dari fallback.",
+            ]
+        )
 
     return "\n".join(lines)
 

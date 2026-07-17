@@ -340,15 +340,20 @@ class ModelV2Settings(BaseModel):
     class PromotionSettings(BaseModel):
         enabled: bool = True
         state_path: str = "reports/model_v2_promotion_state.json"
-        rollout_levels_pct: list[int] = Field(default_factory=lambda: [0, 30, 60, 100])
+        rollout_levels_pct: list[int] = Field(default_factory=lambda: [0, 10, 30, 60, 100])
         consecutive_passes_required: int = 3
-        min_live_samples: int = 30
-        min_expectancy_r: float = 0.0
-        min_profit_factor_r: float = 1.1
-        min_entry_match_rate_pct: float = 40.0
+        min_live_samples: int = 100
+        min_expectancy_r: float = 0.03
+        min_profit_factor_r: float = 1.2
+        min_entry_match_rate_pct: float = 95.0
+        min_accuracy_trades: int = 120
+        min_accuracy_expectancy_r: float = 0.03
+        min_accuracy_profit_factor_r: float = 1.25
+        max_calibration_ece_pct: float = 10.0
+        max_accuracy_age_days: int = 7
         rollback_on_fail: bool = True
-        rollback_expectancy_r: float = -0.02
-        rollback_profit_factor_r: float = 0.95
+        rollback_expectancy_r: float = 0.0
+        rollback_profit_factor_r: float = 1.0
 
     promotion: PromotionSettings = Field(default_factory=PromotionSettings)
 

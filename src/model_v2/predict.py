@@ -21,14 +21,6 @@ def _build_feature_frame(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(data, index=df.index)
 
 
-def _fallback_prob(df: pd.DataFrame) -> pd.Series:
-    score = _safe_float_series(df, "score").clip(lower=0.0, upper=100.0) / 100.0
-    atr_pct = _safe_float_series(df, "atr_pct").abs()
-    vol_penalty = (atr_pct / 15.0).clip(lower=0.0, upper=0.25)
-    p = (score - vol_penalty).clip(lower=0.05, upper=0.95)
-    return p
-
-
 def _mode_threshold(settings: Settings, mode: str) -> float:
     if str(mode).lower() == "t1":
         return float(settings.model_v2.min_prob_threshold_t1)
@@ -73,23 +65,25 @@ def infer_shadow_scores(
 
     out_rows: list[pd.DataFrame] = []
     mode_meta: dict[str, Any] = {}
-    avg_reward_r = (float(settings.risk.tp1_r_multiple) + float(settings.risk.tp2_r_multiple)) / 2.0
+    blocked_modes: list[str] = []
 
     for mode, idx in df.groupby(df["mode"].astype(str).str.lower()).groups.items():
         part = df.loc[idx].copy()
         x = x_all.loc[idx].copy()
         model, metadata = load_model_bundle(settings.model_v2.model_dir, mode)
-        source = "fallback"
+        source = "unavailable"
+        block_reason = "model_artifact_missing"
+        p_win = pd.Series(float("nan"), index=part.index, dtype=float)
         if model is not None:
             try:
                 p = model.predict_proba(x)[:, 1]
                 p_win = pd.Series(p, index=part.index, dtype=float).clip(lower=0.01, upper=0.99)
                 source = "model"
-            except Exception:
-                p_win = _fallback_prob(part)
-                source = "fallback"
-        else:
-            p_win = _fallback_prob(part)
+                block_reason = ""
+            except Exception as exc:
+                block_reason = f"model_inference_error:{type(exc).__name__}"
+        if source != "model":
+            blocked_modes.append(str(mode))
 
         regime_bucket = regime_bucket_from_features(part, settings=settings, default="risk_off")
         thresholds_by_regime = metadata.get("thresholds_by_regime", {}) if isinstance(metadata, dict) else {}
@@ -101,15 +95,24 @@ def infer_shadow_scores(
         part["shadow_p_win"] = p_win.round(4)
         part["shadow_confidence"] = part["shadow_p_win"]
         part["shadow_market_regime"] = regime_bucket
-        part["shadow_expected_r"] = _expected_r_from_profile(
-            probs=part["shadow_p_win"],
-            regimes=regime_bucket,
-            metadata=metadata if isinstance(metadata, dict) else {},
-            fallback_avg_reward_r=avg_reward_r,
-        ).round(4)
+        if source == "model":
+            part["shadow_expected_r"] = _expected_r_from_profile(
+                probs=part["shadow_p_win"],
+                regimes=regime_bucket,
+                metadata=metadata if isinstance(metadata, dict) else {},
+                fallback_avg_reward_r=0.0,
+            ).round(4)
+        else:
+            part["shadow_expected_r"] = float("nan")
         part["shadow_threshold"] = threshold_series.round(4)
-        part["shadow_recommended"] = part["shadow_p_win"] >= part["shadow_threshold"]
+        part["shadow_recommended"] = (
+            (source == "model")
+            & (part["shadow_p_win"] >= part["shadow_threshold"])
+            & (part["shadow_expected_r"] > 0.0)
+        )
         part["shadow_model_source"] = source
+        part["shadow_status"] = "ready" if source == "model" else "blocked"
+        part["shadow_block_reason"] = block_reason
         out_rows.append(part)
 
         mode_meta[mode] = {
@@ -118,15 +121,23 @@ def infer_shadow_scores(
             "threshold": float(default_threshold),
             "thresholds_by_regime": thresholds_by_regime if isinstance(thresholds_by_regime, dict) else {},
             "metadata": metadata,
+            "ready": source == "model",
+            "block_reason": block_reason,
         }
 
     out = pd.concat(out_rows, ignore_index=True, sort=False)
     out = out.sort_values(["shadow_expected_r", "shadow_p_win", "score"], ascending=[False, False, False]).reset_index(drop=True)
     out["shadow_rank"] = range(1, len(out) + 1)
 
+    blocked_modes = sorted(set(blocked_modes))
+    ready_modes = sorted(set(mode_meta) - set(blocked_modes))
+    status = "ok" if not blocked_modes else ("blocked" if not ready_modes else "partial_blocked")
+    message = "Shadow inference completed" if status == "ok" else "Model V2 inference blocked for modes without a valid model artifact"
     return out, {
-        "status": "ok",
-        "message": "Shadow inference completed",
+        "status": status,
+        "message": message,
         "modes": mode_meta,
         "rows": int(len(out)),
+        "ready_modes": ready_modes,
+        "blocked_modes": blocked_modes,
     }

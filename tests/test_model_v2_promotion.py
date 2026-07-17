@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from datetime import datetime
 import json
 from pathlib import Path
 
+import joblib
 import pandas as pd
 
 from src.config import load_settings
@@ -41,7 +43,12 @@ def _write_settings(tmp_path: Path) -> Path:
                 },
             },
         },
-        "pipeline": {"min_avg_volume_20d": 100000, "top_n_per_mode": 10, "top_n_combined": 20},
+        "pipeline": {
+            "active_modes": ["t1"],
+            "min_avg_volume_20d": 100000,
+            "top_n_per_mode": 10,
+            "top_n_combined": 20,
+        },
         "risk": {
             "account_size_idr": 10000000,
             "risk_per_trade_pct": 0.75,
@@ -104,10 +111,54 @@ def _write_recon(path: Path, status: str, samples: int, expectancy_r: float, pro
     path.write_text(json.dumps(payload), encoding="utf-8")
 
 
+def _write_supporting_gates(tmp_path: Path) -> None:
+    model_dir = tmp_path / "models" / "model_v2"
+    model_dir.mkdir(parents=True, exist_ok=True)
+    joblib.dump({"kind": "test-model"}, model_dir / "t1.joblib")
+    (model_dir / "t1.meta.json").write_text(
+        json.dumps(
+            {
+                "trained_at": "2026-07-17T00:00:00",
+                "calibration": {
+                    "calibrated": True,
+                    "evaluated_on_holdout": True,
+                    "ece": 0.05,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "reports" / "model_v2_accuracy_audit.json").write_text(
+        json.dumps(
+            {
+                "generated_at": datetime.utcnow().isoformat(),
+                "status": "ok",
+                "model_source": {"has_non_model": False},
+                "v2_recommended": {
+                    "trade_count": 150,
+                    "expectancy_r": 0.08,
+                    "profit_factor_r": 1.4,
+                },
+                "calibration_v2_recommended": {"ece_pct": 5.0},
+            }
+        ),
+        encoding="utf-8",
+    )
+    folds = [
+        {"ProfitFactor": 1.4, "Expectancy": 0.08, "MaxDD": 6.0, "Trades": 30}
+        for _ in range(5)
+    ]
+    (tmp_path / "reports" / "walk_forward_metrics.json").write_text(
+        json.dumps({"folds": folds}),
+        encoding="utf-8",
+    )
+
+
 def test_promotion_steps_up_after_consecutive_passes(tmp_path, monkeypatch):
     settings_path = _write_settings(tmp_path)
     monkeypatch.chdir(tmp_path)
     settings = load_settings(settings_path)
+    _write_supporting_gates(tmp_path)
     recon_path = Path(settings.reconciliation.output_json_path)
     recon_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -125,6 +176,7 @@ def test_promotion_rolls_back_on_bad_live_metrics(tmp_path, monkeypatch):
     settings_path = _write_settings(tmp_path)
     monkeypatch.chdir(tmp_path)
     settings = load_settings(settings_path)
+    _write_supporting_gates(tmp_path)
     recon_path = Path(settings.reconciliation.output_json_path)
     recon_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -155,7 +207,13 @@ def test_apply_rollout_selection_picks_v2_slot_and_v1_fill(tmp_path, monkeypatch
     shadow_path.parent.mkdir(parents=True, exist_ok=True)
     shadow = pd.DataFrame(
         [
-            {"ticker": "DDD", "mode": "swing", "shadow_p_win": 0.9, "shadow_recommended": True},
+            {
+                "ticker": "DDD",
+                "mode": "swing",
+                "shadow_p_win": 0.9,
+                "shadow_recommended": True,
+                "shadow_model_source": "model",
+            },
             {"ticker": "AAA", "mode": "swing", "shadow_p_win": 0.4, "shadow_recommended": False},
         ]
     )

@@ -38,6 +38,14 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
 
+    - name: Restore Model V2 artifacts
+      uses: actions/cache@v4
+      with:
+        path: models/model_v2
+        key: model-v2-${{ runner.os }}-${{ hashFiles('src/model_v2/**', 'config/settings.json', 'requirements.txt') }}-${{ github.run_id }}
+        restore-keys: |
+          model-v2-${{ runner.os }}-${{ hashFiles('src/model_v2/**', 'config/settings.json', 'requirements.txt') }}-
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip

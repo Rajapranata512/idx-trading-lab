@@ -26,6 +26,8 @@ def _to_signal_rows(df: pd.DataFrame) -> list[dict[str, Any]]:
         "shadow_threshold",
         "shadow_recommended",
         "shadow_model_source",
+        "shadow_status",
+        "shadow_block_reason",
         "entry",
         "stop",
         "tp1",
@@ -56,9 +58,18 @@ def _ab_test_payload(v1: pd.DataFrame, v2: pd.DataFrame, max_positions: int) -> 
     else:
         v2_ranked = v2.copy()
 
-    v2_reco = v2_ranked[v2_ranked.get("shadow_recommended", False) == True].copy() if "shadow_recommended" in v2_ranked.columns else v2_ranked
-    if v2_reco.empty:
-        v2_reco = v2_ranked
+    model_mask = (
+        v2_ranked.get("shadow_model_source", pd.Series("", index=v2_ranked.index))
+        .astype(str)
+        .str.lower()
+        .eq("model")
+    )
+    recommended_mask = (
+        v2_ranked.get("shadow_recommended", pd.Series(False, index=v2_ranked.index))
+        .fillna(False)
+        .astype(bool)
+    )
+    v2_reco = v2_ranked[model_mask & recommended_mask].copy()
     v2_top = v2_reco.head(max_positions).copy()
 
     set_v1 = set(v1_top.get("ticker", pd.Series(dtype=str)).astype(str).tolist())
@@ -136,8 +147,8 @@ def run_model_v2_shadow(
     _write_json(ab_path, {"generated_at": datetime.utcnow().isoformat(), "run_id": run_id, **ab_payload})
 
     return {
-        "status": "ok",
-        "message": "Model v2 shadow inference completed",
+        "status": str(infer_info.get("status", "ok")),
+        "message": str(infer_info.get("message", "Model v2 shadow inference completed")),
         "shadow_csv_path": str(csv_path),
         "shadow_json_path": str(json_path),
         "ab_test_path": str(ab_path),

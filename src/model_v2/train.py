@@ -12,7 +12,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 from src.config import Settings
-from src.model_v2.io import load_state, save_model_bundle, save_state
+from src.model_v2.io import load_model_bundle, load_state, save_model_bundle, save_state
 from src.runtime import active_modes as resolve_active_modes
 from src.runtime import regime_bucket_from_features
 
@@ -247,10 +247,10 @@ def _training_rows_for_mode(
 ) -> pd.DataFrame:
     """Build labeled training rows.
 
-    Tries V2 labeling (intrabar stop/TP simulation) first.  Falls back to
-    simple forward-return labeling if V2 is unavailable or produces no rows.
+    Uses realistic intrabar stop/TP outcomes. Training fails closed when the
+    labeling pipeline is unavailable so a future-close proxy cannot silently
+    become a production model.
     """
-    # --- Try V2 labeling ---
     try:
         from src.model_v2.labeling import build_training_dataset
 
@@ -265,11 +265,9 @@ def _training_rows_for_mode(
         )
         if not v2_df.empty and "y" in v2_df.columns:
             return v2_df
-    except Exception:
-        pass
-
-    # --- Fallback: V1 simple forward-return labeling ---
-    return _training_rows_v1(scored_history, mode, horizon_days, roundtrip_cost_pct)
+        return pd.DataFrame()
+    except Exception as exc:
+        raise RuntimeError(f"realistic_labeling_failed:{mode}:{exc}") from exc
 
 
 def _training_rows_v1(
@@ -384,6 +382,7 @@ def _optuna_lgb_objective(
     y: pd.Series,
     dates: pd.Series,
     sample_weight: pd.Series | None,
+    gap_dates: int,
 ) -> float:
     """Optuna objective for LightGBM hyperparameter search."""
     params = {
@@ -399,7 +398,15 @@ def _optuna_lgb_objective(
     pipe = _build_lgb_pipeline(params)
     if pipe is None:
         return 0.0
-    return _time_cv_auc(pipe, X, y, dates, sample_weight=sample_weight, n_splits=3)
+    return _time_cv_auc(
+        pipe,
+        X,
+        y,
+        dates,
+        sample_weight=sample_weight,
+        n_splits=3,
+        gap_dates=gap_dates,
+    )
 
 
 def _optuna_xgb_objective(
@@ -408,6 +415,7 @@ def _optuna_xgb_objective(
     y: pd.Series,
     dates: pd.Series,
     sample_weight: pd.Series | None,
+    gap_dates: int,
 ) -> float:
     """Optuna objective for XGBoost hyperparameter search."""
     params = {
@@ -423,7 +431,15 @@ def _optuna_xgb_objective(
     pipe = _build_xgb_pipeline(params)
     if pipe is None:
         return 0.0
-    return _time_cv_auc(pipe, X, y, dates, sample_weight=sample_weight, n_splits=3)
+    return _time_cv_auc(
+        pipe,
+        X,
+        y,
+        dates,
+        sample_weight=sample_weight,
+        n_splits=3,
+        gap_dates=gap_dates,
+    )
 
 
 def _optuna_search(
@@ -432,6 +448,7 @@ def _optuna_search(
     dates: pd.Series,
     sample_weight: pd.Series | None,
     n_trials: int = 25,
+    gap_dates: int = 0,
 ) -> list[tuple[str, Pipeline, float, dict[str, Any]]]:
     """Run Optuna search for LightGBM and XGBoost, return tuned pipelines.
 
@@ -447,7 +464,9 @@ def _optuna_search(
         try:
             study_lgb = optuna.create_study(direction="maximize")
             study_lgb.optimize(
-                lambda trial: _optuna_lgb_objective(trial, X, y, dates, sample_weight),
+                lambda trial: _optuna_lgb_objective(
+                    trial, X, y, dates, sample_weight, gap_dates
+                ),
                 n_trials=n_trials,
                 show_progress_bar=False,
             )
@@ -465,7 +484,9 @@ def _optuna_search(
         try:
             study_xgb = optuna.create_study(direction="maximize")
             study_xgb.optimize(
-                lambda trial: _optuna_xgb_objective(trial, X, y, dates, sample_weight),
+                lambda trial: _optuna_xgb_objective(
+                    trial, X, y, dates, sample_weight, gap_dates
+                ),
                 n_trials=n_trials,
                 show_progress_bar=False,
             )
@@ -488,10 +509,12 @@ def _time_cv_auc(
     dates: pd.Series,
     sample_weight: pd.Series | None = None,
     n_splits: int = 3,
+    gap_dates: int = 0,
 ) -> float:
     """Simple time-based cross-validation to estimate AUC.
 
-    Splits by date quantiles so training always precedes validation.
+    Splits by date quantiles so training always precedes validation. A purge
+    gap prevents horizon labels near the split from leaking into validation.
     """
     date_vals = pd.to_datetime(dates, errors="coerce").values
     unique_dates = np.sort(np.unique(date_vals[~pd.isna(date_vals)]))
@@ -503,7 +526,7 @@ def _time_cv_auc(
 
     for fold in range(n_splits):
         train_end_idx = (fold + 1) * fold_size
-        val_start_idx = train_end_idx
+        val_start_idx = train_end_idx + max(0, int(gap_dates))
         val_end_idx = min(val_start_idx + fold_size, len(unique_dates))
 
         if val_end_idx <= val_start_idx:
@@ -537,10 +560,42 @@ def _time_cv_auc(
     return float(np.mean(aucs)) if aucs else 0.0
 
 
+def _chronological_partition_indices(
+    prepared: pd.DataFrame,
+    gap_dates: int,
+) -> tuple[pd.Index, pd.Index, pd.Index]:
+    """Split unique dates into disjoint fit, calibration, and test windows."""
+    if "date" not in prepared.columns:
+        return prepared.index, pd.Index([]), pd.Index([])
+
+    parsed_dates = pd.to_datetime(prepared["date"], errors="coerce")
+    unique_dates = np.sort(parsed_dates.dropna().unique())
+    holdout_dates = max(2, len(unique_dates) // 5)
+    gap = max(0, int(gap_dates))
+
+    test_start = len(unique_dates) - holdout_dates
+    cal_end = test_start - gap
+    cal_start = cal_end - holdout_dates
+    fit_end = cal_start - gap
+    if fit_end < 12 or cal_start < 0 or test_start <= cal_end:
+        return prepared.index, pd.Index([]), pd.Index([])
+
+    fit_dates = set(unique_dates[:fit_end])
+    cal_dates = set(unique_dates[cal_start:cal_end])
+    test_dates = set(unique_dates[test_start:])
+    fit_idx = prepared.index[parsed_dates.isin(fit_dates)]
+    cal_idx = prepared.index[parsed_dates.isin(cal_dates)]
+    test_idx = prepared.index[parsed_dates.isin(test_dates)]
+    if min(len(fit_idx), len(cal_idx), len(test_idx)) < 20:
+        return prepared.index, pd.Index([]), pd.Index([])
+    return fit_idx, cal_idx, test_idx
+
+
 def _train_one_mode(
     train_df: pd.DataFrame,
     mode: str,
     settings: Settings,
+    horizon_days: int,
 ) -> tuple[Any, dict[str, Any]]:
     """Train multiple candidate models, pick best by time-based CV AUC.
 
@@ -559,6 +614,16 @@ def _train_one_mode(
 
     dates = prepared["date"] if "date" in prepared.columns else pd.Series(range(len(prepared)))
     n_optuna_trials = int(getattr(settings.model_v2, "optuna_trials", 25))
+    fit_idx, cal_idx, test_idx = _chronological_partition_indices(
+        prepared,
+        gap_dates=horizon_days,
+    )
+    x_fit = x.loc[fit_idx]
+    y_fit = y.loc[fit_idx]
+    dates_fit = dates.loc[fit_idx]
+    sample_weight_fit = sample_weight.loc[fit_idx]
+    if y_fit.nunique() < 2:
+        raise ValueError("Need at least 2 classes in chronological fit window")
 
     # --- Build candidate pipelines (static defaults) ---
     candidates: list[tuple[str, Pipeline]] = [("logreg", _build_logreg_pipeline())]
@@ -573,7 +638,15 @@ def _train_one_mode(
     results: list[tuple[str, Pipeline, float]] = []
     for name, pipe in candidates:
         try:
-            cv_auc = _time_cv_auc(pipe, x, y, dates, sample_weight=sample_weight, n_splits=3)
+            cv_auc = _time_cv_auc(
+                pipe,
+                x_fit,
+                y_fit,
+                dates_fit,
+                sample_weight=sample_weight_fit,
+                n_splits=3,
+                gap_dates=horizon_days,
+            )
             results.append((name, pipe, cv_auc))
         except Exception:
             continue
@@ -581,14 +654,15 @@ def _train_one_mode(
     # --- Optuna hyperparameter search (if available) ---
     optuna_best_params: dict[str, Any] = {}
     optuna_used = False
-    if _HAS_OPTUNA and n_optuna_trials > 0 and len(x) >= 100:
+    if _HAS_OPTUNA and n_optuna_trials > 0 and len(x_fit) >= 100:
         try:
             optuna_results = _optuna_search(
-                X=x,
-                y=y,
-                dates=dates,
-                sample_weight=sample_weight,
+                X=x_fit,
+                y=y_fit,
+                dates=dates_fit,
+                sample_weight=sample_weight_fit,
                 n_trials=n_optuna_trials,
+                gap_dates=horizon_days,
             )
             for name, pipe, cv_auc, best_params in optuna_results:
                 results.append((name, pipe, cv_auc))
@@ -605,36 +679,74 @@ def _train_one_mode(
     results.sort(key=lambda r: r[2], reverse=True)
     winner_name, winner_pipe, winner_cv_auc = results[0]
 
-    # Retrain winner on full training data
-    _fit_pipeline(winner_pipe, x, y, sample_weight=sample_weight)
+    # Keep calibration and test windows disjoint from base-model fitting.
+    _fit_pipeline(winner_pipe, x_fit, y_fit, sample_weight=sample_weight_fit)
 
     # --- Calibration ---
     calibrated_model = winner_pipe  # default: uncalibrated
-    calibration_info: dict[str, Any] = {"calibrated": False}
+    calibration_info: dict[str, Any] = {
+        "calibrated": False,
+        "evaluated_on_holdout": False,
+        "fit_rows": int(len(fit_idx)),
+        "calibration_rows": int(len(cal_idx)),
+        "test_rows": int(len(test_idx)),
+        "purge_gap_dates": int(horizon_days),
+    }
+    threshold_frame = prepared.loc[fit_idx]
+    threshold_probs: pd.Series | None = None
     try:
         from src.model_v2.calibration import calibrate_model, evaluate_calibration
 
-        # Use last 20% of time-sorted data as calibration holdout
-        sorted_idx = prepared.sort_values("date").index if "date" in prepared.columns else prepared.index
-        cal_size = max(30, len(sorted_idx) // 5)
-        cal_idx = sorted_idx[-cal_size:]
-        x_cal = _build_feature_frame(prepared.loc[cal_idx])
-        y_cal = pd.to_numeric(prepared.loc[cal_idx, "y"], errors="coerce").fillna(0).astype(int).values
+        if len(cal_idx) >= 20 and len(test_idx) >= 20:
+            x_cal = x.loc[cal_idx]
+            y_cal = y.loc[cal_idx].to_numpy()
+            x_test = x.loc[test_idx]
+            y_test = y.loc[test_idx].to_numpy()
+        else:
+            x_cal = pd.DataFrame()
+            y_cal = np.array([])
+            x_test = pd.DataFrame()
+            y_test = np.array([])
 
-        if len(y_cal) >= 20 and len(np.unique(y_cal)) >= 2:
+        if (
+            len(y_cal) >= 20
+            and len(np.unique(y_cal)) >= 2
+            and len(y_test) >= 20
+            and len(np.unique(y_test)) >= 2
+        ):
             calibrated_model = calibrate_model(winner_pipe, x_cal, y_cal, method="isotonic")
-            # Evaluate calibration quality
-            p_cal = calibrated_model.predict_proba(x_cal)[:, 1]
-            cal_diag = evaluate_calibration(y_cal, p_cal, n_bins=5)
-            calibration_info = {"calibrated": True, "ece": cal_diag["ece"]}
-    except Exception:
-        pass
+            is_calibrated = getattr(calibrated_model, "calibrator", None) is not None
+            p_test = calibrated_model.predict_proba(x_test)[:, 1]
+            test_diag = evaluate_calibration(y_test, p_test, n_bins=5)
+            calibration_info.update(
+                {
+                    "calibrated": bool(is_calibrated),
+                    "evaluated_on_holdout": bool(is_calibrated),
+                    "ece": test_diag["ece"],
+                    "holdout_auc": round(float(roc_auc_score(y_test, p_test)), 4),
+                }
+            )
+            threshold_frame = prepared.loc[cal_idx]
+            threshold_probs = pd.Series(
+                calibrated_model.predict_proba(x_cal)[:, 1],
+                index=cal_idx,
+                dtype=float,
+            )
+    except Exception as exc:
+        calibration_info["error"] = f"{type(exc).__name__}:{exc}"
 
     # --- Train metrics ---
-    p_train = calibrated_model.predict_proba(x)[:, 1]
-    auc_train = float(roc_auc_score(y, p_train)) if y.nunique() > 1 else 0.5
-    thresholds_by_regime = _calibrate_regime_thresholds(prepared, pd.Series(p_train, index=prepared.index), settings=settings, mode=mode)
-    return_profile = _build_return_profile(prepared)
+    p_train = calibrated_model.predict_proba(x_fit)[:, 1]
+    auc_train = float(roc_auc_score(y_fit, p_train)) if y_fit.nunique() > 1 else 0.5
+    if threshold_probs is None:
+        threshold_probs = pd.Series(p_train, index=fit_idx, dtype=float)
+    thresholds_by_regime = _calibrate_regime_thresholds(
+        threshold_frame,
+        threshold_probs,
+        settings=settings,
+        mode=mode,
+    )
+    return_profile = _build_return_profile(prepared.loc[fit_idx])
 
     model_comparison = {
         name: round(auc, 4) for name, _, auc in results
@@ -642,7 +754,8 @@ def _train_one_mode(
 
     metadata = {
         "train_rows": int(len(train_df)),
-        "positive_rate": float(y.mean()),
+        "fit_rows": int(len(fit_idx)),
+        "positive_rate": float(y_fit.mean()),
         "auc_train": round(auc_train, 4),
         "features": MODEL_FEATURES,
         "model_type": winner_name,
@@ -681,9 +794,16 @@ def maybe_auto_train_model_v2(
             "modes": {},
         }
 
+    active_modes = resolve_active_modes(settings)
+    missing_artifact_modes: list[str] = []
+    for mode in active_modes:
+        model, metadata = load_model_bundle(cfg.model_dir, mode)
+        if model is None or not metadata:
+            missing_artifact_modes.append(str(mode))
+
     if not force:
         last_at = state.get("last_success_at", "")
-        if last_at:
+        if last_at and not missing_artifact_modes:
             try:
                 last_dt = datetime.fromisoformat(last_at)
                 if (now - last_dt) < timedelta(days=max(1, int(cfg.auto_train_interval_days))):
@@ -693,6 +813,11 @@ def maybe_auto_train_model_v2(
                         "updated": False,
                         "state_path": cfg.state_path,
                         "modes": state.get("modes", {}),
+                        "artifact_check": {
+                            "ready": True,
+                            "missing_modes": [],
+                            "forced_retrain": False,
+                        },
                     }
             except Exception:
                 pass
@@ -703,7 +828,6 @@ def maybe_auto_train_model_v2(
         (2.0 * float(settings.backtest.slippage_pct))
     )
 
-    active_modes = resolve_active_modes(settings)
     mode_horizons = {
         "t1": int(cfg.horizon_days_t1),
         "swing": int(cfg.horizon_days_swing),
@@ -732,7 +856,12 @@ def maybe_auto_train_model_v2(
             continue
 
         try:
-            model, metadata = _train_one_mode(train_df=train_df, mode=mode, settings=settings)
+            model, metadata = _train_one_mode(
+                train_df=train_df,
+                mode=mode,
+                settings=settings,
+                horizon_days=horizon_days,
+            )
             saved = save_model_bundle(
                 model_dir=cfg.model_dir,
                 mode=mode,
@@ -781,6 +910,12 @@ def maybe_auto_train_model_v2(
         }
         save_state(cfg.state_path, state_payload)
 
+    remaining_missing_modes: list[str] = []
+    for mode in active_modes:
+        model, metadata = load_model_bundle(cfg.model_dir, mode)
+        if model is None or not metadata:
+            remaining_missing_modes.append(str(mode))
+
     return {
         "status": status,
         "message": message,
@@ -789,4 +924,9 @@ def maybe_auto_train_model_v2(
         "model_dir": cfg.model_dir,
         "modes": per_mode,
         "errors": errors,
+        "artifact_check": {
+            "ready": not remaining_missing_modes,
+            "missing_modes": remaining_missing_modes,
+            "forced_retrain": bool(missing_artifact_modes and not force),
+        },
     }

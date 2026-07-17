@@ -20,7 +20,33 @@ Scaffolding fase awal sudah aktif di pipeline harian:
 - `src/model_v2/shadow.py`: output shadow + A/B test v1 vs v2.
 - `src/model_v2/io.py`: simpan/load artifact + metadata + state.
 - `run-daily` tetap memakai gate risiko live yang sama; model_v2 belum override eksekusi.
-- Promotion gate + rollback otomatis tersedia lewat `model_v2.promotion.*` (bertahap 0 -> 30 -> 60 -> 100).
+- Promotion gate + rollback otomatis tersedia lewat `model_v2.promotion.*` (bertahap 0 -> 10 -> 30 -> 60 -> 100).
+
+## 1.2 Kontrak Final Decision
+
+Model V2 hanya berstatus `FINAL` saat seluruh syarat berikut lulus:
+
+1. Semua mode aktif memakai artefak model yang tersedia, valid, dan dapat dimuat.
+2. Probabilitas dikalibrasi pada holdout terpisah dengan `ECE <= 10%`.
+3. Walk-forward memiliki minimal 5 fold, minimal 120 trade OOS, `PF >= 1.25`,
+   `expectancy >= 0.03R`, `MaxDD <= 12%`, dan minimal 60% fold profitable.
+4. Accuracy audit terbaru berstatus `ok`, tidak memakai fallback, serta memenuhi
+   batas trade, expectancy, profit factor, calibration error, dan freshness.
+5. Rekonsiliasi live memenuhi sample, expectancy, profit factor, dan entry-match gate.
+6. Rollout telah naik bertahap hingga 100% tanpa memicu rollback atau risk gate.
+
+Status operasional:
+
+- `BLOCKED`: artefak, kalibrasi, audit, atau data belum memenuhi kontrak. Tidak ada
+  rekomendasi V2 yang boleh diterbitkan.
+- `SHADOW`: sinyal model asli dicatat untuk audit, tetapi belum mengambil keputusan live.
+- `CANARY`: hanya sebagian kecil kandidat yang dipilih V2 sesuai rollout.
+- `FINAL`: rollout 100% dan semua gate tetap lulus. Risk engine dan kill-switch tetap
+  berwenang membatalkan trade.
+
+Fallback heuristik tidak boleh menghasilkan `p(win)`, expected R, rekomendasi Telegram,
+atau kandidat final. Kehilangan atau kerusakan model harus selalu gagal tertutup
+(`fail-closed`).
 
 ## 2. Prinsip Desain
 
@@ -141,7 +167,7 @@ Aturan edukasi:
 Hardening:
 
 - Input schema check sebelum infer.
-- Fallback ke model sebelumnya jika model file corrupt/missing.
+- Blokir inferensi jika model file corrupt/missing; jangan membuat probabilitas fallback.
 - Simpan `model_version` pada `daily_signal.json` dan summary.
 - Tambahkan `reason_code` per sinyal:
   - `DROP_SCORE`

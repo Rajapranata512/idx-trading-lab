@@ -5,6 +5,7 @@ criteria before it can be promoted from shadow to live execution.
 """
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 import json
 import math
@@ -13,16 +14,122 @@ from pathlib import Path
 import pandas as pd
 
 from src.config import Settings
+from src.model_v2.io import load_model_bundle, model_artifact_path, model_metadata_path
+from src.runtime import active_modes as resolve_active_modes
 
 
 # Default gate thresholds (aligned with MODEL_V2_BLUEPRINT.md §7)
 DEFAULT_GATE = {
     "min_oos_trades": 120,
     "min_profit_factor": 1.25,
-    "min_expectancy": 0.0,
+    "min_expectancy": 0.03,
     "max_drawdown_pct": 12.0,
     "min_fold_profitable_pct": 0.60,  # at least 60% of folds must be profitable
+    "min_folds": 5,
 }
+
+
+def _model_readiness(settings: Settings) -> dict[str, Any]:
+    cfg = settings.model_v2.promotion
+    modes = resolve_active_modes(settings)
+    details: dict[str, Any] = {}
+    signature_parts: list[str] = []
+    ready = bool(modes)
+
+    for mode in modes:
+        artifact_path = model_artifact_path(settings.model_v2.model_dir, mode)
+        metadata_path = model_metadata_path(settings.model_v2.model_dir, mode)
+        model, metadata = load_model_bundle(settings.model_v2.model_dir, mode)
+        metadata = metadata if isinstance(metadata, dict) else {}
+
+        calibration = metadata.get("calibration", {}) if isinstance(metadata, dict) else {}
+        holdout_ok = bool(calibration.get("evaluated_on_holdout", False))
+        ece = float(calibration.get("ece", 999.0) or 999.0)
+        ece_ok = ece <= float(cfg.max_calibration_ece_pct) / 100.0
+        artifact_exists = artifact_path.exists() and artifact_path.stat().st_size > 0
+        artifact_loadable = model is not None
+        metadata_ok = metadata_path.exists() and bool(metadata)
+        mode_ready = bool(artifact_exists and artifact_loadable and metadata_ok and holdout_ok and ece_ok)
+        ready = ready and mode_ready
+
+        version = str(metadata.get("trained_at", metadata.get("saved_at", "")))
+        signature_parts.append(f"{mode}:{version}")
+        details[str(mode)] = {
+            "ready": mode_ready,
+            "artifact_ok": artifact_exists and artifact_loadable,
+            "artifact_exists": artifact_exists,
+            "artifact_loadable": artifact_loadable,
+            "metadata_ok": metadata_ok,
+            "holdout_calibration_ok": holdout_ok,
+            "calibration_ece": ece if ece < 999.0 else None,
+            "calibration_ece_limit": float(cfg.max_calibration_ece_pct) / 100.0,
+            "version": version,
+        }
+
+    return {
+        "passed": ready,
+        "active_modes": [str(mode) for mode in modes],
+        "model_signature": "|".join(signature_parts),
+        "modes": details,
+    }
+
+
+def _accuracy_gate_from_report(settings: Settings) -> dict[str, Any]:
+    cfg = settings.model_v2.promotion
+    path = Path(settings.model_v2_accuracy.output_json_path)
+    if not path.exists():
+        return {"passed": False, "status": "missing_accuracy_audit", "path": str(path)}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "passed": False,
+            "status": "accuracy_audit_read_error",
+            "path": str(path),
+            "message": str(exc),
+        }
+
+    status = str(payload.get("status", ""))
+    source = payload.get("model_source", {}) if isinstance(payload, dict) else {}
+    v2 = payload.get("v2_recommended", {}) if isinstance(payload, dict) else {}
+    calibration = payload.get("calibration_v2_recommended", {}) if isinstance(payload, dict) else {}
+    trades = int(v2.get("trade_count", 0) or 0)
+    expectancy = float(v2.get("expectancy_r", 0.0) or 0.0)
+    profit_factor = float(v2.get("profit_factor_r", 0.0) or 0.0)
+    ece_pct = float(calibration.get("ece_pct", 999.0) or 999.0)
+    has_non_model = bool(source.get("has_non_model", source.get("has_fallback", False)))
+
+    age_days: float | None = None
+    generated_at = str(payload.get("generated_at", ""))
+    if generated_at:
+        try:
+            generated = datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+            now = datetime.now(generated.tzinfo) if generated.tzinfo else datetime.utcnow()
+            age_days = max(0.0, (now - generated).total_seconds() / 86400.0)
+        except Exception:
+            age_days = None
+
+    checks = {
+        "status_ok": status == "ok",
+        "model_source_ok": not has_non_model,
+        "trade_count_ok": trades >= int(cfg.min_accuracy_trades),
+        "expectancy_ok": expectancy >= float(cfg.min_accuracy_expectancy_r),
+        "profit_factor_ok": profit_factor >= float(cfg.min_accuracy_profit_factor_r),
+        "calibration_ok": ece_pct <= float(cfg.max_calibration_ece_pct),
+        "freshness_ok": age_days is not None and age_days <= float(cfg.max_accuracy_age_days),
+    }
+    return {
+        "passed": all(checks.values()),
+        "status": status,
+        "path": str(path),
+        "generated_at": generated_at,
+        "age_days": round(age_days, 3) if age_days is not None else None,
+        "trade_count": trades,
+        "expectancy_r": expectancy,
+        "profit_factor_r": profit_factor,
+        "calibration_ece_pct": ece_pct if ece_pct < 999.0 else None,
+        "checks": checks,
+    }
 
 
 def _extract_walk_forward_folds(payload: dict[str, Any]) -> list[dict[str, float]]:
@@ -173,6 +280,10 @@ def check_promotion_gate(
         reasons.append(
             f"Profitable folds ({profitable_pct:.0%}) < minimum ({cfg['min_fold_profitable_pct']:.0%})"
         )
+    if len(fold_metrics) < int(cfg["min_folds"]):
+        reasons.append(
+            f"Walk-forward folds ({len(fold_metrics)}) < minimum ({int(cfg['min_folds'])})"
+        )
 
     # --- Per-fold detail ---
     fold_details: list[dict[str, Any]] = []
@@ -221,6 +332,15 @@ def evaluate_and_update_model_v2_promotion(settings: Settings) -> dict[str, Any]
     idx = state.get("rollout_level_idx", 0)
     consecutive_passes = state.get("consecutive_passes", 0)
     current_rollout_pct = rollout_levels[idx] if idx < len(rollout_levels) else rollout_levels[-1]
+    model_gate = _model_readiness(settings)
+    accuracy_gate = _accuracy_gate_from_report(settings)
+    model_signature = str(model_gate.get("model_signature", ""))
+    previous_signature = str(state.get("model_signature", ""))
+    model_changed = bool(previous_signature and previous_signature != model_signature)
+    if model_changed:
+        idx = 0
+        consecutive_passes = 0
+        current_rollout_pct = rollout_levels[0]
 
     wf_path_candidates = [Path("reports/walk_forward_metrics.json"), Path("reports/backtest_metrics.json")]
     wf_gate: dict[str, Any] = {"passed": False, "reasons": ["No walk-forward metrics found"]}
@@ -236,17 +356,19 @@ def evaluate_and_update_model_v2_promotion(settings: Settings) -> dict[str, Any]
             wf_gate = {"passed": False, "reasons": [str(exc)]}
 
     live_ok, rollback, live_gate = _live_gate_from_reconciliation(settings)
-    # Backward-compatible bootstrap: when no walk-forward folds are available,
-    # live reconciliation can still advance from 0% to a limited rollout.
     wf_passed = bool(wf_gate.get("passed", False))
-    no_wf_folds = not bool(wf_gate.get("fold_details"))
-    gate_passed = bool(wf_passed or (no_wf_folds and live_ok))
+    gate_passed = bool(
+        wf_passed
+        and model_gate.get("passed", False)
+        and accuracy_gate.get("passed", False)
+    )
+    safety_blocked = not gate_passed
 
-    if rollback and cfg.rollback_on_fail:
+    if (rollback or (current_rollout_pct > 0 and safety_blocked)) and cfg.rollback_on_fail:
         idx = 0
         consecutive_passes = 0
-        status_msg = "Rolled back to 0% due to poor live performance."
-        reason = "rollback_triggered"
+        status_msg = "Rolled back to 0% because a production safety gate failed."
+        reason = "rollback_triggered" if rollback else "safety_gate_rollback"
     else:
         if gate_passed and (current_rollout_pct == 0 or live_ok):
             consecutive_passes += 1
@@ -263,7 +385,16 @@ def evaluate_and_update_model_v2_promotion(settings: Settings) -> dict[str, Any]
 
     state["rollout_level_idx"] = idx
     state["consecutive_passes"] = consecutive_passes
-    
+    state["model_signature"] = model_signature
+    state["current_rollout_pct"] = rollout_levels[idx] if idx < len(rollout_levels) else rollout_levels[-1]
+    state["last_evaluated_at"] = datetime.utcnow().isoformat()
+    state["last_reason"] = reason
+    state["final_decision_ready"] = bool(
+        state["current_rollout_pct"] == 100
+        and gate_passed
+        and live_ok
+    )
+
     state_path.parent.mkdir(parents=True, exist_ok=True)
     state_path.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
@@ -275,7 +406,11 @@ def evaluate_and_update_model_v2_promotion(settings: Settings) -> dict[str, Any]
         "reason": reason,
         "rollout_pct": new_rollout_pct,
         "live_active": new_rollout_pct > 0,
+        "final_decision_ready": bool(state["final_decision_ready"]),
         "consecutive_passes": consecutive_passes,
+        "model_changed": model_changed,
+        "model_gate": model_gate,
+        "accuracy_gate": accuracy_gate,
         "walk_forward_gate": wf_gate,
         "live_gate": live_gate,
     }
@@ -315,11 +450,35 @@ def apply_model_v2_rollout_selection(
     max_positions = max(1, int(settings.risk.max_positions))
     v2_slots = max(1, int(math.ceil(max_positions * (float(rollout_pct) / 100.0))))
     shadow_ranked = shadow_df.copy()
-    if "shadow_recommended" in shadow_ranked.columns:
-        recommended = shadow_ranked["shadow_recommended"].astype(str).str.lower().isin({"true", "1", "yes"})
-        shadow_ranked = shadow_ranked[recommended].copy()
+    source_ok = (
+        shadow_ranked.get("shadow_model_source", pd.Series("", index=shadow_ranked.index))
+        .astype(str)
+        .str.lower()
+        .eq("model")
+    )
+    recommended = (
+        shadow_ranked.get("shadow_recommended", pd.Series(False, index=shadow_ranked.index))
+        .astype(str)
+        .str.lower()
+        .isin({"true", "1", "yes"})
+    )
+    shadow_ranked = shadow_ranked[source_ok & recommended].copy()
     if shadow_ranked.empty:
-        shadow_ranked = shadow_df.copy()
+        v1_fill = filtered_combined.copy()
+        if "score" in v1_fill.columns:
+            v1_fill = v1_fill.sort_values("score", ascending=False)
+        v1_fill = v1_fill.head(max_positions).copy()
+        v1_fill["model_v2_live_selected"] = False
+        v1_fill["model_v2_rollout_pct"] = int(rollout_pct)
+        return filtered_combined.reset_index(drop=True), v1_fill.reset_index(drop=True), {
+            "status": "blocked_no_valid_model_v2",
+            "message": "No trained-model V2 recommendation was eligible; using V1 backfill only.",
+            "rollout_pct": rollout_pct,
+            "live_active": True,
+            "v2_slot_count": 0,
+            "v1_backfill_count": int(len(v1_fill)),
+            "selected_count": int(len(v1_fill)),
+        }
     sort_cols = [col for col in ["shadow_expected_r", "shadow_p_win", "score"] if col in shadow_ranked.columns]
     if sort_cols:
         shadow_ranked = shadow_ranked.sort_values(sort_cols, ascending=[False] * len(sort_cols)).copy()

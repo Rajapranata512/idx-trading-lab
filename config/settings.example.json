@@ -378,18 +378,24 @@
       "state_path": "reports/model_v2_promotion_state.json",
       "rollout_levels_pct": [
         0,
+        10,
         30,
         60,
         100
       ],
       "consecutive_passes_required": 3,
-      "min_live_samples": 30,
-      "min_expectancy_r": 0.0,
-      "min_profit_factor_r": 1.1,
-      "min_entry_match_rate_pct": 40.0,
+      "min_live_samples": 100,
+      "min_expectancy_r": 0.03,
+      "min_profit_factor_r": 1.2,
+      "min_entry_match_rate_pct": 95.0,
+      "min_accuracy_trades": 120,
+      "min_accuracy_expectancy_r": 0.03,
+      "min_accuracy_profit_factor_r": 1.25,
+      "max_calibration_ece_pct": 10.0,
+      "max_accuracy_age_days": 7,
       "rollback_on_fail": true,
-      "rollback_expectancy_r": -0.02,
-      "rollback_profit_factor_r": 0.95
+      "rollback_expectancy_r": 0.0,
+      "rollback_profit_factor_r": 1.0
     }
   },
   "coaching": {

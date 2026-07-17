@@ -223,25 +223,31 @@ function renderRisk(){
 function renderModel(){
   const sh=S.data.shadow||{},pr=S.data.promo||{},audit=S.data.accuracy||{};
   const sigs=sh.signals||[];
+  const modelSigs=sigs.filter(s=>String(s.shadow_model_source||'').toLowerCase()==='model');
+  const blockedCount=sigs.length-modelSigs.length;
+  const modelReady=blockedCount===0&&modelSigs.length>0;
+  const sourceWarning=blockedCount>0?`<div class="stale-banner stale-critical-bg mb-24">Model V2 BLOCKED: ${blockedCount} kandidat tidak memakai model terlatih. P(Win), E[R], rekomendasi, dan final decision dinonaktifkan untuk kandidat tersebut.</div>`:'';
   const html=`
 <div class="grid grid-3 mb-24">
-  ${kpiCard('Shadow Signals',sigs.length,'🤖','accent')}
+  ${kpiCard('Model Ready',modelReady?'YES':'NO','🤖',modelReady?'success':'danger')}
   ${kpiCard('Train Status',sh.train?.status||'—','📊','info')}
   ${kpiCard('Rollout',pr.current_rollout_pct!=null?pr.current_rollout_pct+'%':'0%','🚀','success')}
 </div>
+${sourceWarning}
 <div class="card mb-24">
   <div class="card-header"><span class="card-title">Shadow Signals</span></div>
   <div class="table-wrapper"><table class="data-table"><thead><tr>
-    <th>Rank</th><th>Ticker</th><th>Mode</th><th>Score</th><th>P(Win)</th><th>E[R]</th><th>Threshold</th><th>Recommended</th><th>Entry</th><th>Stop</th><th>TP1</th>
+    <th>Rank</th><th>Ticker</th><th>Mode</th><th>Source</th><th>Score</th><th>P(Win)</th><th>E[R]</th><th>Threshold</th><th>Recommended</th><th>Entry</th><th>Stop</th><th>TP1</th>
   </tr></thead><tbody>
     ${sigs.map(s=>`<tr>
       <td>${s.shadow_rank}</td><td class="fw-700">${s.ticker}</td>
       <td><span class="badge badge-${s.mode==='swing'?'accent':'info'}">${s.mode}</span></td>
+      <td>${String(s.shadow_model_source||'').toLowerCase()==='model'?'<span class="badge badge-success">MODEL</span>':'<span class="badge badge-danger">BLOCKED</span>'}</td>
       <td class="mono">${fmt(s.score)}</td>
-      <td class="mono ${s.shadow_p_win>=s.shadow_threshold?'text-success':'text-danger'}">${fmt(s.shadow_p_win,4)}</td>
+      <td class="mono ${String(s.shadow_model_source||'').toLowerCase()==='model'&&s.shadow_p_win>=s.shadow_threshold?'text-success':'text-danger'}">${fmt(s.shadow_p_win,4)}</td>
       <td class="mono">${fmt(s.shadow_expected_r,4)}</td>
       <td class="mono text-muted">${fmt(s.shadow_threshold,2)}</td>
-      <td>${s.shadow_recommended?'<span class="badge badge-success">YES</span>':'<span class="badge badge-neutral">NO</span>'}</td>
+      <td>${String(s.shadow_model_source||'').toLowerCase()!=='model'?'<span class="badge badge-danger">BLOCKED</span>':s.shadow_recommended?'<span class="badge badge-success">YES</span>':'<span class="badge badge-neutral">NO</span>'}</td>
       <td class="mono">${fmtIDR(s.entry)}</td><td class="mono text-danger">${fmtIDR(s.stop)}</td><td class="mono text-success">${fmtIDR(s.tp1)}</td>
     </tr>`).join('')}
   </tbody></table></div>
@@ -256,6 +262,7 @@ ${renderAccuracyAudit(audit)}
   <div class="card"><div class="card-header"><span class="card-title">Promotion State</span></div>
     ${metricRow('Current Rollout',pr.current_rollout_pct!=null?pr.current_rollout_pct+'%':'0%')}
     ${metricRow('Consecutive Passes',pr.consecutive_passes||0)}
+    ${metricRow('Final Decision',pr.final_decision_ready?'READY':'BLOCKED')}
     ${metricRow('Last Eval',pr.last_evaluated_at||'—')}
   </div>
 </div>`;

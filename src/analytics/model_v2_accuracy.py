@@ -195,10 +195,17 @@ def _model_source_summary(df: pd.DataFrame, infer_info: dict[str, Any]) -> dict[
                 "rows": int(payload.get("rows", 0) or 0),
                 "threshold": payload.get("threshold"),
             }
+    non_model_sources = [
+        str(source)
+        for source in sources.keys()
+        if str(source).strip().lower() != "model"
+    ]
     return {
         "candidate_sources": sources,
         "mode_sources": mode_sources,
         "has_fallback": bool(any(str(source).lower() == "fallback" for source in sources.keys())),
+        "has_non_model": bool(non_model_sources),
+        "non_model_sources": non_model_sources,
     }
 
 
@@ -299,11 +306,15 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
     v2_by_mode = {str(mode): _summarize_trades(grp) for mode, grp in v2_recommended.groupby("mode", dropna=False)}
     source_summary = _model_source_summary(trades, infer_info)
 
-    status = "ok_fallback" if source_summary["has_fallback"] else "ok"
+    status = "blocked_non_model" if source_summary["has_non_model"] else "ok"
     payload = {
         "generated_at": datetime.utcnow().isoformat(),
         "status": status,
-        "message": "Model V2 accuracy audit generated" if status == "ok" else "Model V2 accuracy audit generated, but at least one mode used fallback inference",
+        "message": (
+            "Model V2 accuracy audit generated"
+            if status == "ok"
+            else "Model V2 accuracy audit blocked because at least one mode did not use a trained model"
+        ),
         "input": {
             "feature_rows": int(len(features)),
             "candidate_count": int(candidate_count),

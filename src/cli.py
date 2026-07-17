@@ -1165,6 +1165,13 @@ def send_model_v2_shadow_telegram_step(
     payload = json.loads(path.read_text(encoding="utf-8"))
     signals = payload.get("signals", [])
     signal_count = len(signals) if isinstance(signals, list) else 0
+    model_signal_count = sum(
+        1
+        for row in signals
+        if isinstance(row, dict)
+        and str(row.get("shadow_model_source", "")).strip().lower() == "model"
+    ) if isinstance(signals, list) else 0
+    blocked_signal_count = max(0, signal_count - model_signal_count)
     rollout_pct = _rollout_pct_from_state(settings, promotion_state_path)
     message = build_model_v2_shadow_message(
         payload=payload,
@@ -1178,6 +1185,8 @@ def send_model_v2_shadow_telegram_step(
             "shadow_path": str(path),
             "promotion_state_path": str(promotion_state_path),
             "signal_count": int(signal_count),
+            "model_signal_count": int(model_signal_count),
+            "blocked_signal_count": int(blocked_signal_count),
             "rollout_pct": int(rollout_pct),
             "message": message,
         }
@@ -1192,6 +1201,8 @@ def send_model_v2_shadow_telegram_step(
         "shadow_path": str(path),
         "promotion_state_path": str(promotion_state_path),
         "signal_count": int(signal_count),
+        "model_signal_count": int(model_signal_count),
+        "blocked_signal_count": int(blocked_signal_count),
         "rollout_pct": int(rollout_pct),
     }
 

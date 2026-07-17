@@ -180,6 +180,8 @@ class TestPromotionGate:
             {"ProfitFactor": 1.8, "Expectancy": 0.15, "MaxDD": 5.0, "Trades": 50},
             {"ProfitFactor": 1.5, "Expectancy": 0.10, "MaxDD": 7.0, "Trades": 45},
             {"ProfitFactor": 1.3, "Expectancy": 0.05, "MaxDD": 6.0, "Trades": 40},
+            {"ProfitFactor": 1.4, "Expectancy": 0.08, "MaxDD": 6.0, "Trades": 40},
+            {"ProfitFactor": 1.6, "Expectancy": 0.12, "MaxDD": 5.0, "Trades": 45},
         ]
         result = check_promotion_gate(folds)
         assert result["passed"] is True
@@ -224,6 +226,7 @@ class TestPromotionGate:
             "min_expectancy": -0.01,
             "max_drawdown_pct": 20.0,
             "min_fold_profitable_pct": 0.5,
+            "min_folds": 2,
         }
         result = check_promotion_gate(folds, gate=gate)
         assert result["passed"] is True

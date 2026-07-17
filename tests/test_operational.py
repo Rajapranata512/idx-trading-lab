@@ -29,6 +29,7 @@ def test_build_model_v2_shadow_message_splits_recommendations():
                 "shadow_p_win": 0.7322,
                 "shadow_expected_r": 0.8305,
                 "shadow_recommended": True,
+                "shadow_model_source": "model",
                 "entry": 600,
                 "stop": 528.43,
                 "tp1": 671.57,
@@ -40,6 +41,7 @@ def test_build_model_v2_shadow_message_splits_recommendations():
                 "shadow_p_win": 0.4536,
                 "shadow_expected_r": 0.134,
                 "shadow_recommended": False,
+                "shadow_model_source": "model",
                 "entry": 1270,
                 "stop": 1098.49,
                 "tp1": 1441.51,
@@ -51,8 +53,9 @@ def test_build_model_v2_shadow_message_splits_recommendations():
 
     assert "IDX Model v2 Shadow Signal | pre-open" in message
     assert "bukan final/live execution signal" in message
-    assert "Direkomendasikan V2:" in message
-    assert "Tidak direkomendasikan V2:" in message
+    assert "Model status: READY" in message
+    assert "Direkomendasikan V2 terverifikasi:" in message
+    assert "Tidak direkomendasikan V2 terverifikasi:" in message
     assert "T1:ESSA" in message
     assert "p(win)=0.7322" in message
     assert "entry=600 stop=528.43 tp1=671.57" in message
