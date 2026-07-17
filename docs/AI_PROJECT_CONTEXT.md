@@ -1,169 +1,135 @@
-# AI Project Context Pack - IDX Trading Lab
+# PRD and AI Recovery Contract - IDX Trading Lab
 
-Ini adalah halaman indeks untuk agent AI. Jangan langsung membaca semua file proyek. Pilih bagian yang sesuai dengan tugas agar hemat token dan tetap akurat.
+Revision: 2026-07-17
+Owner document: this file is the first source of truth after an AI context reset.
 
-Jika hanya punya sedikit context, baca file ini dulu, lalu ambil 1-2 file dari `docs/ai-context/` yang paling relevan.
+## Resume In 60 Seconds
 
-## Protokol Setelah Token Reset
+Do not scan the repository. Read, in order:
 
-Jika agent kehilangan konteks, jangan memulai ulang dengan membaca seluruh repository. Ikuti urutan ini:
+1. The user's latest request.
+2. This file.
+3. `git status --short --branch` to protect existing work.
+4. `docs/ai-context/00-agent-reading-guide.md` only if a file route is still unclear.
+5. The one source module and nearest test for the requested task.
 
-1. Baca file ini sampai selesai.
-2. Identifikasi tugas user: konsep, operasi, debugging, coding, testing, deployment, atau GitHub.
-3. Baca hanya `docs/ai-context/00-agent-reading-guide.md`.
-4. Pilih maksimal 1-2 dokumen tambahan dari `docs/ai-context/` sesuai rute baca cepat di bawah.
-5. Baca kode hanya pada modul yang akan disentuh.
-6. Baca test terdekat sebelum atau sesudah edit.
-7. Jangan membuka `reports/`, `data/`, `web/reports/`, atau log besar kecuali tugasnya memang debugging output spesifik.
+Stop reading once the requested output, affected contract, and validation command are known.
+Historical reports, raw data, model binaries, snapshots, and logs are not startup context.
 
-Target context awal setelah reset:
+## Product Mission
 
-- memahami tujuan proyek,
-- tahu entry point utama,
-- tahu output yang relevan,
-- tahu file mana yang boleh diabaikan,
-- tahu test yang perlu dijalankan.
+IDX Trading Lab is a risk-first decision-support system for Indonesian stocks. It ranks
+T1 and Swing candidates, measures realistic outcomes after fee/slippage, and can reject
+trades when evidence is weak. It is not a broker execution bot and cannot guarantee profit.
 
-Tidak perlu memahami seluruh kode dari awal jika tugasnya sempit.
+Product priorities, in order:
 
-## Product Intent Singkat
+1. Positive and stable out-of-sample expectancy.
+2. Calibrated probabilities and low false positives.
+3. Risk gates, rollback, data quality, and operational observability.
+4. Clear reports, dashboard, and Telegram shadow monitoring.
+5. Signal quantity only after quality gates pass.
 
-Project ini adalah decision-support system untuk trading saham IDX, bukan bot eksekusi broker. Tujuan utama:
+## Authoritative Current Status
 
-- memilih kandidat saham secara disiplin,
-- memblokir trade saat edge/risk tidak mendukung,
-- menghasilkan laporan harian dan dashboard,
-- mengukur kualitas sinyal lewat backtest, walk-forward, reconciliation, profit quality, dan signal accuracy audit,
-- menjaga pipeline tetap observable dan aman untuk produksi.
+The final-decision mechanism is implemented, but Model V2 is not yet statistically ready
+to be declared final. Never infer `FINAL` from a high score or from successful training.
 
-Prioritas produk saat ini:
+An isolated full-data validation on 2026-07-17 completed both modes in about 89 seconds:
 
-1. Akurasi dan ketajaman sinyal.
-2. Risk gate dan no-trade yang sehat.
-3. Kualitas data dan observability pipeline.
-4. Evaluasi outcome realistis setelah fee/slippage.
-5. Perubahan kecil yang teruji, bukan refactor besar tanpa kebutuhan.
+- T1: calibrated on a separate holdout, ECE 7.74%, holdout AUC 0.5604, five purged
+  walk-forward folds, and 281 OOS trades. Promotion remains blocked because median PF is
+  0.8259, median expectancy is -0.0180R, and only 20% of folds are profitable.
+- Swing: calibrated on a separate holdout, ECE 7.67%, holdout AUC 0.3900, five folds,
+  and zero OOS trades at the locked threshold. Swing remains disabled from rollout.
+- Therefore the honest product state is `SHADOW/BLOCKED`, rollout 0%, not `FINAL`.
 
-Di luar scope kecuali user meminta eksplisit:
+These are validation findings, not a promise of future returns. Runtime status must always
+be read from current model metadata, accuracy audit, promotion state, and reconciliation.
 
-- eksekusi order otomatis ke broker,
-- melemahkan threshold/risk gate agar sinyal lebih banyak,
-- menghapus data/report historis,
-- membaca atau mengubah secret,
-- redesign besar UI/web tanpa kebutuhan operasional.
+## Final Decision Contract
 
-## Rute Baca Cepat
+Promotion is independent for `t1` and `swing`. A mode may move through
+`SHADOW -> CANARY 10% -> 30% -> 60% -> FINAL 100%` only when all checks pass:
 
-Untuk memahami proyek secara umum:
+1. A real, loadable model artifact exists; heuristic probability fallback is forbidden.
+2. Calibration uses a window separate from model fitting and is evaluated on untouched
+   holdout data: `calibrated=true`, `evaluated_on_holdout=true`, ECE <= 10%, AUC >= 0.52.
+3. At least five purged walk-forward folds exist, with at least 120 OOS trades, median
+   PF >= 1.25, median expectancy > 0.03R, MaxDD <= 12%, and >= 60% profitable folds.
+4. The accuracy audit is fresh, uses the exact model version, uses model output only,
+   and passes trade count, PF, expectancy, and calibration gates.
+5. A live candidate needs V1 and V2 agreement, positive EV, and a passing Bayesian
+   ticker-edge filter. Sparse ticker history must shrink to the mode prior, not blacklist.
+6. Shadow evidence covers at least 20 real market sessions and passes three consecutive
+   evaluations. Do not fabricate or backfill session dates.
+7. Canary stages require passing live reconciliation. One failed safety gate rolls the
+   affected mode back to 0%; risk engine and kill switch always retain veto authority.
 
-1. `docs/ai-context/00-agent-reading-guide.md`
-2. `docs/ai-context/01-project-overview.md`
+## Non-Negotiable Invariants
 
-Untuk mengubah pipeline harian:
+- Never lower thresholds merely to produce more signals.
+- Never select, calibrate, or tune on the final test window.
+- Never combine T1 and Swing promotion state or let one mode unblock the other.
+- Never publish fallback `p(win)`, expected R, V2 recommendation, or final candidate.
+- Never force rollout, rewrite audit results, or simulate live passes to make a gate green.
+- Never treat backtest, shadow output, website score, or Telegram output as a trade order.
+- Never expose secrets or commit `.env`, tokens, passwords, private chat IDs, or credentials.
+- Never push, deploy, send Telegram, or change production state unless explicitly requested.
+- Work with existing dirty files; do not reset or revert user changes.
 
-1. `docs/ai-context/00-agent-reading-guide.md`
-2. `docs/ai-context/03-daily-workflow-run-daily.md`
-3. `src/cli.py`
-4. Test terkait di `tests/`
+## Runtime Order That Matters
 
-Untuk mengubah config, provider data, atau output file:
+`run-daily` uses this relevant sequence:
 
-1. `docs/ai-context/02-repository-map-and-config.md`
-2. `src/config.py`
-3. Modul terkait di `src/ingest/`, `src/risk/`, atau `src/report/`
+```text
+ingest -> data quality -> features -> V1 score
+-> V2 train/infer shadow
+-> promotion evaluates the previous matching accuracy audit
+-> current accuracy audit is generated
+-> per-mode rollout selection
+-> reports/dashboard/notification/reconciliation
+```
 
-Untuk debugging `NO_SIGNAL`, gate, dashboard, atau report:
+The one-run audit delay after a new model version is intentional. Promotion must not use an
+audit produced by a different artifact version.
 
-1. `docs/ai-context/05-operations-and-debugging.md`
-2. `reports/signal_funnel_live.json`
-3. `reports/backtest_metrics.json`
-4. Run log terbaru di `reports/run_log_YYYYMMDD.json`
+## Minimal Source Map
 
-Untuk evaluasi akurasi sinyal atau profit/loss:
-
-1. `docs/ai-context/00-agent-reading-guide.md`
-2. `docs/ai-context/04-module-workflows.md`
-3. `src/analytics/signal_accuracy.py`
-4. `src/risk/profit_quality.py`
-5. `tests/test_signal_accuracy.py` atau `tests/test_profit_quality.py`
-
-Untuk perubahan kode yang aman:
-
-1. `docs/ai-context/06-change-guide-and-tests.md`
-2. Modul yang sedang diubah
-3. Test yang paling dekat dengan area tersebut
-
-## Daftar Bagian
-
-| Bagian | Isi | Kapan Dibaca |
+| Task | Read source | Read test |
 |---|---|---|
-| `00-agent-reading-guide.md` | Strategi hemat token, file yang perlu dan tidak perlu dibaca | Selalu baca pertama |
-| `01-project-overview.md` | Gambaran proyek, prinsip, output utama | Saat butuh konteks bisnis/arsitektur |
-| `02-repository-map-and-config.md` | Struktur folder, entry point, config, env, kontrak data | Saat menyentuh wiring/config/data |
-| `03-daily-workflow-run-daily.md` | Alur `run-daily` sangat detail | Saat mengubah pipeline utama |
-| `04-module-workflows.md` | Detail workflow tiap modul | Saat mengubah modul tertentu |
-| `05-operations-and-debugging.md` | SOP harian, no-signal, provider, dashboard, output | Saat operasi/debugging |
-| `06-change-guide-and-tests.md` | Aturan perubahan kode, test map, dependency | Saat coding/refactor |
+| V2 train/calibration/WF | `src/model_v2/train.py`, `src/model_v2/calibration.py` | `tests/test_model_v2_final_stage.py`, `tests/test_model_v2_upgrade.py` |
+| Promotion/rollback | `src/model_v2/promotion.py` | `tests/test_model_v2_promotion.py`, `tests/test_model_v2_final_guardrails.py` |
+| Accuracy/meta-filter | `src/analytics/model_v2_accuracy.py`, `src/model_v2/meta_filter.py` | `tests/test_model_v2_accuracy.py`, `tests/test_model_v2_final_stage.py` |
+| Daily wiring | relevant section of `src/cli.py` | nearest CLI/pipeline test |
+| Dashboard | `web/js/dashboard.js` | `node --check web/js/dashboard.js` |
+| Config | `src/config.py`, one active preset | config validation plus affected tests |
 
-## Kontrak Perilaku Agent
+Read `docs/MODEL_V2_BLUEPRINT.md` only for Model V2 product design. Read other files in
+`docs/ai-context/` only when the table above is insufficient.
 
-Agent harus menjaga fokus terhadap tujuan user terbaru. Jika konteks lama bertentangan dengan pesan user terbaru, pesan terbaru menang.
+## Work Still Required Before Final
 
-Sebelum membaca banyak file, agent harus menjawab internal:
+This is model-quality work, not a reason to bypass gates:
 
-1. Apa output yang diminta user?
-2. Apakah ini butuh edit kode, edit docs, run command, atau hanya analisis?
-3. Modul apa yang mungkin berubah?
-4. File besar apa yang bisa dihindari?
-5. Validasi minimal apa yang cukup?
+1. Improve T1 labels/features/regime segmentation until performance is positive and stable
+   across at least three of five folds, then meet the full 60%/PF/expectancy contract.
+2. Redesign or retrain Swing; its current holdout AUC and zero-trade result prohibit rollout.
+3. Generate a version-matched accuracy audit with at least 120 eligible OOS outcomes per mode.
+4. Collect 20-30 real shadow market sessions, then three consecutive passing evaluations.
+5. Promote T1 independently to 10% canary only after gates pass; keep Swing at 0%.
+6. Preserve PF, expectancy, ECE, drawdown, and reconciliation at every rollout stage.
 
-Agent tidak boleh melakukan kegiatan sampingan seperti redesign, refactor besar, push GitHub, atau deployment kecuali user meminta eksplisit.
+## Validation And Handoff
 
-## Prinsip Context Hemat Token
-
-Mulai dari pertanyaan ini:
-
-1. Tugasnya konsep, operasi, debugging, atau coding?
-2. Modul mana yang benar-benar disentuh?
-3. Output mana yang berubah?
-4. Test mana yang paling dekat?
-
-Hindari membaca file besar di awal:
-
-- `web/reports/snapshots/*.json`
-- `web/reports/run_log_*.json`
-- `reports/*.log`
-- `tmp_*.log`
-- `data/raw/prices_daily.csv`
-- `data/raw/prices_intraday.csv`
-- artifact model di `models/`
-
-File besar itu hanya dibaca saat benar-benar dibutuhkan untuk debugging spesifik.
-
-## Mental Model Singkat
-
-IDX Trading Lab adalah decision-support system untuk trading saham Indonesia. Sistem mengambil data harga, memvalidasi data, menghitung fitur, menilai kandidat `t1` dan `swing`, lalu menerapkan risk gate sebelum menghasilkan sinyal final.
-
-Sistem ini bukan bot broker. Eksekusi order tetap manual. Nilai utama proyek ini ada pada disiplin data, risk management, observability, dan evaluasi performa.
-
-Alur utama:
-
-```text
-ingest -> validate -> features -> score -> risk -> backtest/gate -> report -> notify -> monitor -> reconcile
-```
-
-Jika final signal kosong, jangan langsung anggap error. Sering kali itu berarti sistem sengaja no-trade karena score, event-risk, regime, kill switch, data quality, atau promotion gate.
-
-## Catatan Penting
-
-Saat dokumen ini dibuat, `Dockerfile` memakai command:
-
-```text
-python -m src.cli ... serve-web
-```
-
-Namun parser di `src/cli.py` tidak mendefinisikan command `serve-web`. Untuk menjalankan dashboard langsung, gunakan:
+Minimum Model V2 validation:
 
 ```powershell
-python -m src.web.server --host 127.0.0.1 --port 8080
+python -B -m pytest -p no:cacheprovider tests/test_model_v2_promotion.py tests/test_model_v2_final_guardrails.py tests/test_model_v2_final_stage.py tests/test_model_v2_accuracy.py tests/test_model_v2_upgrade.py
+node --check web/js/dashboard.js
+git diff --check
 ```
+
+Before ending a coding task, state: changed files, tests run, measured blockers, and whether
+anything was committed, pushed, or deployed. Update this PRD only when product contracts,
+runtime order, current evidence, or the recovery route materially changes.

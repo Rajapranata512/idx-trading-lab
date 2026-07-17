@@ -18,6 +18,10 @@ from src.analytics.signal_accuracy import (
     _volatility_bucket,
 )
 from src.config import Settings
+from src.model_v2.meta_filter import (
+    annotate_historical_bayesian_edge,
+    build_bayesian_ticker_edge_profile,
+)
 from src.model_v2.predict import infer_shadow_scores
 from src.utils import atomic_write_json
 
@@ -117,9 +121,27 @@ def _threshold_candidates(df: pd.DataFrame, settings: Settings) -> pd.DataFrame:
     grid = sorted({float(value) for value in settings.model_v2_accuracy.probability_threshold_grid})
     for mode, mode_df in df.groupby("mode", dropna=False):
         mode_name = str(mode)
-        source_count = int(len(mode_df))
+        agreement = _bool_series(
+            mode_df.get("passes_live_threshold", pd.Series(False, index=mode_df.index))
+        )
+        meta_ok = (
+            mode_df.get(
+                "meta_ticker_edge_action",
+                pd.Series("watch", index=mode_df.index),
+            )
+            .astype(str)
+            .str.lower()
+            .ne("block")
+        )
+        positive_ev = _numeric(
+            mode_df.get("shadow_expected_r", pd.Series(0.0, index=mode_df.index))
+        ) > 0.0
+        eligible_source = mode_df[agreement & meta_ok & positive_ev].copy()
+        source_count = int(len(eligible_source))
         for threshold in grid:
-            selected = mode_df[_numeric(mode_df["shadow_p_win"]) >= threshold].copy()
+            selected = eligible_source[
+                _numeric(eligible_source["shadow_p_win"]) >= threshold
+            ].copy()
             summary = _summarize_trades(selected)
             rows.append(
                 {
@@ -146,7 +168,10 @@ def _best_thresholds(thresholds: pd.DataFrame, settings: Settings) -> dict[str, 
     if thresholds.empty:
         return {}
     best: dict[str, Any] = {}
-    min_trades = int(settings.model_v2_accuracy.min_trades_per_segment)
+    min_trades = max(
+        int(settings.model_v2_accuracy.min_trades_per_segment),
+        int(settings.model_v2.promotion.min_accuracy_trades),
+    )
     for mode, grp in thresholds.groupby("mode", dropna=False):
         eligible = grp[_numeric(grp["trade_count"]) >= min_trades].copy()
         if eligible.empty:
@@ -194,6 +219,12 @@ def _model_source_summary(df: pd.DataFrame, infer_info: dict[str, Any]) -> dict[
                 "source": str(payload.get("source", "")),
                 "rows": int(payload.get("rows", 0) or 0),
                 "threshold": payload.get("threshold"),
+                "version": str(
+                    (payload.get("metadata", {}) or {}).get(
+                        "trained_at",
+                        (payload.get("metadata", {}) or {}).get("saved_at", ""),
+                    )
+                ),
             }
     non_model_sources = [
         str(source)
@@ -294,6 +325,28 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
         atomic_write_json(out_json, payload)
         return payload
 
+    trades = annotate_historical_bayesian_edge(trades, settings=settings)
+    ticker_edge_profile = build_bayesian_ticker_edge_profile(trades, settings=settings)
+    v1_mask = _bool_series(
+        trades.get("passes_live_threshold", pd.Series(False, index=trades.index))
+    )
+    v2_mask = _bool_series(
+        trades.get("v2_recommended", pd.Series(False, index=trades.index))
+    )
+    meta_ok = (
+        trades.get(
+            "meta_ticker_edge_action",
+            pd.Series("watch", index=trades.index),
+        )
+        .astype(str)
+        .str.lower()
+        .ne("block")
+    )
+    positive_ev = _numeric(
+        trades.get("shadow_expected_r", pd.Series(0.0, index=trades.index))
+    ) > 0.0
+    trades["final_eligible"] = v1_mask & v2_mask & meta_ok & positive_ev
+
     by_ticker = _group_summary(trades, ["ticker"])
     by_regime = _group_summary(trades, ["mode", "regime_status"])
     thresholds = _threshold_candidates(trades, settings)
@@ -302,8 +355,17 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
     thresholds.to_csv(threshold_path, index=False)
 
     v2_recommended = trades[_bool_series(trades["v2_recommended"])].copy()
+    final_eligible = trades[_bool_series(trades["final_eligible"])].copy()
     by_mode = {str(mode): _summarize_trades(grp) for mode, grp in trades.groupby("mode", dropna=False)}
     v2_by_mode = {str(mode): _summarize_trades(grp) for mode, grp in v2_recommended.groupby("mode", dropna=False)}
+    final_eligible_by_mode = {
+        str(mode): _summarize_trades(grp)
+        for mode, grp in final_eligible.groupby("mode", dropna=False)
+    }
+    calibration_by_mode = {
+        str(mode): _calibration_summary(grp, int(cfg.calibration_bins))
+        for mode, grp in trades.groupby("mode", dropna=False)
+    }
     source_summary = _model_source_summary(trades, infer_info)
 
     status = "blocked_non_model" if source_summary["has_non_model"] else "ok"
@@ -330,17 +392,21 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
             "by_ticker_csv": str(by_ticker_path),
             "by_regime_csv": str(by_regime_path),
             "threshold_candidates_csv": str(threshold_path),
+            "ticker_edge_profile_csv": str(settings.model_v2.ticker_edge_profile_path),
         },
         "infer": infer_info,
         "model_source": source_summary,
         "overall_candidates": _summarize_trades(trades),
         "v2_recommended": _summarize_trades(v2_recommended),
+        "final_eligible": _summarize_trades(final_eligible),
         "selection_comparison": _selection_comparison(trades),
         "by_mode": by_mode,
         "v2_by_mode": v2_by_mode,
+        "final_eligible_by_mode": final_eligible_by_mode,
         "precision_at_k": _precision_at_k(trades, cfg.precision_top_k),
         "calibration_all_candidates": _calibration_summary(trades, int(cfg.calibration_bins)),
         "calibration_v2_recommended": _calibration_summary(v2_recommended, int(cfg.calibration_bins)),
+        "calibration_by_mode": calibration_by_mode,
         "signal_decay_v2_recommended": _signal_decay_summary(v2_recommended, settings.signal_accuracy.decay_days),
         "best_thresholds": _best_thresholds(thresholds, settings),
         "false_positive_summary": _false_positive_summary(v2_recommended if not v2_recommended.empty else trades, int(cfg.min_trades_per_segment)),
@@ -348,6 +414,7 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
         "by_regime": _records(by_regime),
         "threshold_candidates_preview": _records(thresholds.head(40)),
         "recent_v2_recommended": _records(v2_recommended.sort_values("date", ascending=False).head(30)),
+        "ticker_edge_profile_preview": _records(ticker_edge_profile.head(20)),
     }
     atomic_write_json(out_json, payload)
     return payload

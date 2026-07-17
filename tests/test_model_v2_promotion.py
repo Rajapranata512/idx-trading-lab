@@ -86,6 +86,8 @@ def _write_settings(tmp_path: Path) -> Path:
                 "min_expectancy_r": 0.0,
                 "min_profit_factor_r": 1.1,
                 "min_entry_match_rate_pct": 40.0,
+                "min_holdout_auc": 0.5,
+                "shadow_sessions_required": 0,
                 "rollback_on_fail": True,
                 "rollback_expectancy_r": -0.02,
                 "rollback_profit_factor_r": 0.95,
@@ -123,6 +125,23 @@ def _write_supporting_gates(tmp_path: Path) -> None:
                     "calibrated": True,
                     "evaluated_on_holdout": True,
                     "ece": 0.05,
+                    "holdout_auc": 0.7,
+                },
+                "walk_forward": {
+                    "status": "ok",
+                    "completed_folds": 5,
+                    "total_oos_trades": 150,
+                    "folds": [
+                        {
+                            "metrics": {
+                                "ProfitFactor": 1.4,
+                                "Expectancy": 0.08,
+                                "MaxDD": 6.0,
+                                "Trades": 30,
+                            }
+                        }
+                        for _ in range(5)
+                    ],
                 },
             }
         ),
@@ -133,13 +152,29 @@ def _write_supporting_gates(tmp_path: Path) -> None:
             {
                 "generated_at": datetime.utcnow().isoformat(),
                 "status": "ok",
-                "model_source": {"has_non_model": False},
+                "model_source": {
+                    "has_non_model": False,
+                    "mode_sources": {
+                        "t1": {
+                            "source": "model",
+                            "version": "2026-07-17T00:00:00",
+                        }
+                    },
+                },
                 "v2_recommended": {
                     "trade_count": 150,
                     "expectancy_r": 0.08,
                     "profit_factor_r": 1.4,
                 },
                 "calibration_v2_recommended": {"ece_pct": 5.0},
+                "final_eligible_by_mode": {
+                    "t1": {
+                        "trade_count": 150,
+                        "expectancy_r": 0.08,
+                        "profit_factor_r": 1.4,
+                    }
+                },
+                "calibration_by_mode": {"t1": {"ece_pct": 5.0}},
             }
         ),
         encoding="utf-8",
@@ -190,6 +225,41 @@ def test_promotion_rolls_back_on_bad_live_metrics(tmp_path, monkeypatch):
     assert out["reason"] == "rollback_triggered"
 
 
+def test_new_model_version_resets_shadow_session_evidence(tmp_path, monkeypatch):
+    settings_path = _write_settings(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    settings = load_settings(settings_path)
+    settings.model_v2.promotion.shadow_sessions_required = 20
+    _write_supporting_gates(tmp_path)
+
+    state_path = Path(settings.model_v2.promotion.state_path)
+    state_path.write_text(
+        json.dumps(
+            {
+                "modes": {
+                    "t1": {
+                        "rollout_level_idx": 0,
+                        "consecutive_passes": 1,
+                        "model_signature": "t1:old-model-version",
+                        "shadow_session_dates": [
+                            f"2026-06-{day:02d}" for day in range(1, 21)
+                        ],
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    out = evaluate_and_update_model_v2_promotion(settings)
+
+    assert out["modes"]["t1"]["model_changed"] is True
+    assert out["modes"]["t1"]["shadow_sessions"] == 1
+    assert out["modes"]["t1"]["shadow_sessions_ok"] is False
+    assert out["modes"]["t1"]["consecutive_passes"] == 0
+    assert out["rollout_by_mode"]["t1"] == 0
+
+
 def test_apply_rollout_selection_picks_v2_slot_and_v1_fill(tmp_path, monkeypatch):
     settings_path = _write_settings(tmp_path)
     monkeypatch.chdir(tmp_path)
@@ -211,6 +281,7 @@ def test_apply_rollout_selection_picks_v2_slot_and_v1_fill(tmp_path, monkeypatch
                 "ticker": "DDD",
                 "mode": "swing",
                 "shadow_p_win": 0.9,
+                "shadow_expected_r": 0.2,
                 "shadow_recommended": True,
                 "shadow_model_source": "model",
             },
@@ -230,3 +301,36 @@ def test_apply_rollout_selection_picks_v2_slot_and_v1_fill(tmp_path, monkeypatch
     assert len(selected) == 3
     assert info["status"] == "live_rollout"
     assert "DDD" in set(selected["ticker"].tolist())
+
+
+def test_apply_rollout_selection_rejects_non_positive_expected_r(tmp_path, monkeypatch):
+    settings_path = _write_settings(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    settings = load_settings(settings_path)
+    combined = pd.DataFrame(
+        [{"ticker": "AAA", "mode": "t1", "score": 90.0, "entry": 1000}]
+    )
+    shadow_path = Path("reports/model_v2_shadow_signals.csv")
+    shadow_path.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(
+        [
+            {
+                "ticker": "AAA",
+                "mode": "t1",
+                "shadow_p_win": 0.8,
+                "shadow_expected_r": -0.01,
+                "shadow_recommended": True,
+                "shadow_model_source": "model",
+            }
+        ]
+    ).to_csv(shadow_path, index=False)
+
+    _, selected, info = apply_model_v2_rollout_selection(
+        filtered_combined=combined,
+        settings=settings,
+        promotion_info={"rollout_by_mode": {"t1": 10}},
+        shadow_csv_path=str(shadow_path),
+    )
+
+    assert info["status"] == "blocked_no_valid_model_v2"
+    assert selected["model_v2_live_selected"].eq(False).all()

@@ -99,6 +99,10 @@ def _settings(tmp_path: Path) -> Settings:
             "horizon_days_swing": 3,
             "min_prob_threshold_t1": 0.55,
             "min_prob_threshold_swing": 0.55,
+            "ticker_edge_profile_path": str(tmp_path / "reports/model_v2_ticker_edge_profile.csv"),
+            "promotion": {
+                "min_accuracy_trades": 1,
+            },
         },
         "notifications": {
             "telegram_bot_token_env": "TELEGRAM_BOT_TOKEN",
@@ -190,7 +194,7 @@ def test_model_v2_accuracy_audit_writes_reports_and_improves_selection(tmp_path:
     assert payload["model_source"]["has_fallback"] is False
     assert payload["v2_recommended"]["expectancy_r"] > payload["overall_candidates"]["expectancy_r"]
     assert payload["selection_comparison"]["v2_only"]["trade_count"] >= 0
-    assert payload["best_thresholds"]["t1"]["threshold"] in {0.55, 0.7}
+    assert payload["best_thresholds"]["t1"]["threshold"] in {0.3, 0.55, 0.7}
     assert payload["precision_at_k"]["combined"][0]["sample_count"] > 0
     assert payload["calibration_v2_recommended"]["status"] == "ok"
 

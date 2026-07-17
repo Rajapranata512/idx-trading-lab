@@ -1133,6 +1133,11 @@ def _rollout_pct_from_state(settings: Settings, promotion_state_path: str | Path
         state = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return 0
+    if "current_rollout_pct" in state:
+        try:
+            return int(state.get("current_rollout_pct", 0) or 0)
+        except Exception:
+            return 0
     if "rollout_pct" in state:
         try:
             return int(state.get("rollout_pct", 0) or 0)

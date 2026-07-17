@@ -166,8 +166,10 @@ def _pick_probability_threshold(
     if len(work) < REGIME_THRESHOLD_MIN_ROWS:
         return float(base_threshold)
 
-    lower = max(0.35, float(base_threshold) - 0.15)
-    upper = min(0.85, float(base_threshold) + 0.15)
+    # A tuned threshold may become stricter, never looser than the configured
+    # production floor.
+    lower = max(0.35, float(base_threshold))
+    upper = 0.85
     thresholds = np.round(np.arange(lower, upper + 0.0001, 0.025), 3)
     candidates: list[tuple[tuple[float, float, float], float]] = []
     for threshold in thresholds:
@@ -209,8 +211,14 @@ def _calibrate_regime_thresholds(
     probs: pd.Series,
     settings: Settings,
     mode: str,
+    base_threshold_override: float | None = None,
 ) -> dict[str, float]:
-    base = float(settings.model_v2.min_prob_threshold_t1 if str(mode).lower() == "t1" else settings.model_v2.min_prob_threshold_swing)
+    configured_base = float(
+        settings.model_v2.min_prob_threshold_t1
+        if str(mode).lower() == "t1"
+        else settings.model_v2.min_prob_threshold_swing
+    )
+    base = max(configured_base, float(base_threshold_override or configured_base))
     work = train_df.copy()
     work["pred_prob"] = pd.to_numeric(probs, errors="coerce").astype(float)
     thresholds = {"default": round(base, 4)}
@@ -223,10 +231,13 @@ def _calibrate_regime_thresholds(
             thresholds[regime] = round(base, 4)
             continue
         thresholds[regime] = round(
-            _pick_probability_threshold(
+            max(
+                base,
+                _pick_probability_threshold(
                 probs=subset["pred_prob"],
                 returns=subset["net_return"],
                 base_threshold=base,
+                ),
             ),
             4,
         )
@@ -322,7 +333,7 @@ def _build_lgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None
     if not _HAS_LGB:
         return None
     default_params = {
-        "n_estimators": 300,
+        "n_estimators": 150,
         "max_depth": 5,
         "learning_rate": 0.05,
         "subsample": 0.8,
@@ -332,13 +343,13 @@ def _build_lgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None
         "reg_lambda": 1.0,
         "class_weight": "balanced",
         "verbose": -1,
-        "n_jobs": 1,
+        "n_jobs": 2,
     }
     if params:
         default_params.update(params)
     return Pipeline(
         steps=[
-            ("imputer", SimpleImputer(strategy="median")),
+            ("imputer", SimpleImputer(strategy="median").set_output(transform="pandas")),
             ("clf", lgb.LGBMClassifier(**default_params)),
         ]
     )
@@ -349,7 +360,7 @@ def _build_xgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None
     if not _HAS_XGB:
         return None
     default_params = {
-        "n_estimators": 300,
+        "n_estimators": 150,
         "max_depth": 5,
         "learning_rate": 0.05,
         "subsample": 0.8,
@@ -361,13 +372,13 @@ def _build_xgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None
         "use_label_encoder": False,
         "eval_metric": "logloss",
         "verbosity": 0,
-        "n_jobs": 1,
+        "n_jobs": 2,
     }
     if params:
         default_params.update(params)
     return Pipeline(
         steps=[
-            ("imputer", SimpleImputer(strategy="median")),
+            ("imputer", SimpleImputer(strategy="median").set_output(transform="pandas")),
             ("clf", xgb.XGBClassifier(**default_params)),
         ]
     )
@@ -386,7 +397,7 @@ def _optuna_lgb_objective(
 ) -> float:
     """Optuna objective for LightGBM hyperparameter search."""
     params = {
-        "n_estimators": trial.suggest_int("n_estimators", 100, 600, step=50),
+        "n_estimators": trial.suggest_int("n_estimators", 100, 250, step=50),
         "max_depth": trial.suggest_int("max_depth", 3, 8),
         "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
         "subsample": trial.suggest_float("subsample", 0.6, 1.0),
@@ -419,7 +430,7 @@ def _optuna_xgb_objective(
 ) -> float:
     """Optuna objective for XGBoost hyperparameter search."""
     params = {
-        "n_estimators": trial.suggest_int("n_estimators", 100, 600, step=50),
+        "n_estimators": trial.suggest_int("n_estimators", 100, 250, step=50),
         "max_depth": trial.suggest_int("max_depth", 3, 8),
         "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
         "subsample": trial.suggest_float("subsample", 0.6, 1.0),
@@ -591,6 +602,180 @@ def _chronological_partition_indices(
     return fit_idx, cal_idx, test_idx
 
 
+def _max_drawdown_pct_from_r(returns: pd.Series, risk_per_trade_pct: float) -> float:
+    clean = pd.to_numeric(returns, errors="coerce").dropna()
+    if clean.empty:
+        return 0.0
+    equity_r = clean.cumsum()
+    running_peak = equity_r.cummax().clip(lower=0.0)
+    drawdown_r = equity_r - running_peak
+    return abs(float(drawdown_r.min())) * max(0.0, float(risk_per_trade_pct))
+
+
+def _walk_forward_date_splits(
+    prepared: pd.DataFrame,
+    n_splits: int,
+    gap_dates: int,
+) -> list[tuple[pd.Index, pd.Index, pd.Index]]:
+    """Return expanding fit/calibration/test indices with purge gaps."""
+    if "date" not in prepared.columns:
+        return []
+    parsed_dates = pd.to_datetime(prepared["date"], errors="coerce")
+    unique_dates = np.sort(parsed_dates.dropna().unique())
+    fold_count = max(1, int(n_splits))
+    test_date_count = max(10, len(unique_dates) // (fold_count + 2))
+    initial_test_start = len(unique_dates) - (fold_count * test_date_count)
+    gap = max(0, int(gap_dates))
+    if initial_test_start < max(30, gap * 3):
+        return []
+
+    splits: list[tuple[pd.Index, pd.Index, pd.Index]] = []
+    for fold in range(fold_count):
+        test_start = initial_test_start + (fold * test_date_count)
+        test_end = len(unique_dates) if fold == fold_count - 1 else test_start + test_date_count
+        train_end = test_start - gap
+        calibration_date_count = max(10, min(test_date_count, train_end // 5))
+        calibration_start = train_end - calibration_date_count
+        fit_end = calibration_start - gap
+        if fit_end < 20 or calibration_start < 0:
+            continue
+
+        fit_dates = set(unique_dates[:fit_end])
+        calibration_dates = set(unique_dates[calibration_start:train_end])
+        test_dates = set(unique_dates[test_start:test_end])
+        fit_idx = prepared.index[parsed_dates.isin(fit_dates)]
+        calibration_idx = prepared.index[parsed_dates.isin(calibration_dates)]
+        test_idx = prepared.index[parsed_dates.isin(test_dates)]
+        if min(len(fit_idx), len(calibration_idx), len(test_idx)) < 20:
+            continue
+        splits.append((fit_idx, calibration_idx, test_idx))
+    return splits
+
+
+def _walk_forward_validate_model(
+    prepared: pd.DataFrame,
+    x: pd.DataFrame,
+    y: pd.Series,
+    sample_weight: pd.Series,
+    pipeline: Pipeline,
+    mode: str,
+    settings: Settings,
+    horizon_days: int,
+) -> dict[str, Any]:
+    """Refit, calibrate, lock a threshold, then evaluate each OOS fold."""
+    from sklearn.base import clone
+
+    from src.model_v2.calibration import calibrate_model, evaluate_calibration
+
+    configured_threshold = float(
+        settings.model_v2.min_prob_threshold_t1
+        if str(mode).lower() == "t1"
+        else settings.model_v2.min_prob_threshold_swing
+    )
+    requested_folds = max(5, int(getattr(settings.model_v2, "walk_forward_folds", 5)))
+    splits = _walk_forward_date_splits(
+        prepared,
+        n_splits=requested_folds,
+        gap_dates=horizon_days,
+    )
+    folds: list[dict[str, Any]] = []
+
+    for fold_number, (fit_idx, calibration_idx, test_idx) in enumerate(splits, start=1):
+        y_fit = y.loc[fit_idx]
+        y_calibration = y.loc[calibration_idx]
+        y_test = y.loc[test_idx]
+        if min(y_fit.nunique(), y_calibration.nunique(), y_test.nunique()) < 2:
+            continue
+
+        fold_pipeline = clone(pipeline)
+        _fit_pipeline(
+            fold_pipeline,
+            x.loc[fit_idx],
+            y_fit,
+            sample_weight=sample_weight.loc[fit_idx],
+        )
+        calibrated = calibrate_model(
+            fold_pipeline,
+            x.loc[calibration_idx],
+            y_calibration.to_numpy(),
+            method=str(getattr(settings.model_v2, "calibration_method", "auto")),
+        )
+        if getattr(calibrated, "calibrator", None) is None:
+            continue
+
+        calibration_prob = pd.Series(
+            calibrated.predict_proba(x.loc[calibration_idx])[:, 1],
+            index=calibration_idx,
+            dtype=float,
+        )
+        locked_threshold = _pick_probability_threshold(
+            probs=calibration_prob,
+            returns=prepared.loc[calibration_idx, "net_return"],
+            base_threshold=configured_threshold,
+        )
+        test_prob = pd.Series(
+            calibrated.predict_proba(x.loc[test_idx])[:, 1],
+            index=test_idx,
+            dtype=float,
+        )
+        selected_idx = test_prob.index[test_prob >= locked_threshold]
+        selected_returns = pd.to_numeric(
+            prepared.loc[selected_idx, "net_return"],
+            errors="coerce",
+        ).dropna()
+        test_diag = evaluate_calibration(
+            y_test.to_numpy(),
+            test_prob.to_numpy(),
+            n_bins=5,
+        )
+        folds.append(
+            {
+                "fold": fold_number,
+                "fit_rows": int(len(fit_idx)),
+                "calibration_rows": int(len(calibration_idx)),
+                "test_rows": int(len(test_idx)),
+                "locked_threshold": round(float(locked_threshold), 4),
+                "calibration_method": str(getattr(calibrated, "calibration_method", "")),
+                "holdout_auc": round(float(roc_auc_score(y_test, test_prob)), 4),
+                "holdout_ece": float(test_diag["ece"]),
+                "metrics": {
+                    "ProfitFactor": round(_profit_factor_from_returns(selected_returns), 6),
+                    "Expectancy": round(float(selected_returns.mean()), 6) if not selected_returns.empty else 0.0,
+                    "MaxDD": round(
+                        _max_drawdown_pct_from_r(
+                            selected_returns,
+                            risk_per_trade_pct=float(settings.risk.risk_per_trade_pct),
+                        ),
+                        4,
+                    ),
+                    "Trades": int(len(selected_returns)),
+                },
+            }
+        )
+
+    thresholds = [
+        float(fold["locked_threshold"])
+        for fold in folds
+        if int(fold.get("metrics", {}).get("Trades", 0)) > 0
+    ]
+    total_oos_trades = sum(int(fold.get("metrics", {}).get("Trades", 0)) for fold in folds)
+    recommended_threshold = (
+        round(float(np.median(thresholds)), 4)
+        if thresholds
+        else round(configured_threshold, 4)
+    )
+    return {
+        "status": "ok" if len(folds) >= requested_folds else "insufficient_folds",
+        "requested_folds": requested_folds,
+        "completed_folds": int(len(folds)),
+        "purge_gap_dates": int(horizon_days),
+        "threshold_policy": "calibration_locked_per_fold",
+        "recommended_threshold": recommended_threshold,
+        "total_oos_trades": int(total_oos_trades),
+        "folds": folds,
+    }
+
+
 def _train_one_mode(
     train_df: pd.DataFrame,
     mode: str,
@@ -606,6 +791,9 @@ def _train_one_mode(
     Returns the best fitted pipeline + metadata.
     """
     prepared = _prepare_training_frame(train_df=train_df, mode=mode, settings=settings)
+    sort_columns = [column for column in ["date", "ticker"] if column in prepared.columns]
+    if sort_columns:
+        prepared = prepared.sort_values(sort_columns).reset_index(drop=True)
     x = _build_feature_frame(prepared)
     y = pd.to_numeric(prepared["y"], errors="coerce").fillna(0).astype(int)
     sample_weight = pd.to_numeric(prepared.get("sample_weight"), errors="coerce").fillna(1.0).astype(float)
@@ -651,10 +839,34 @@ def _train_one_mode(
         except Exception:
             continue
 
+    tree_min_cv_auc_gain = float(
+        getattr(settings.model_v2, "tree_model_min_cv_auc_gain", 0.02)
+    )
+    logreg_result = next((row for row in results if row[0] == "logreg"), None)
+    static_tree_results = [row for row in results if row[0] != "logreg"]
+    best_static_tree_auc = (
+        max(row[2] for row in static_tree_results)
+        if static_tree_results
+        else None
+    )
+    tree_search_eligible = bool(
+        static_tree_results
+        and (
+            logreg_result is None
+            or float(best_static_tree_auc)
+            >= float(logreg_result[2]) + tree_min_cv_auc_gain
+        )
+    )
+
     # --- Optuna hyperparameter search (if available) ---
     optuna_best_params: dict[str, Any] = {}
     optuna_used = False
-    if _HAS_OPTUNA and n_optuna_trials > 0 and len(x_fit) >= 100:
+    if (
+        tree_search_eligible
+        and _HAS_OPTUNA
+        and n_optuna_trials > 0
+        and len(x_fit) >= 100
+    ):
         try:
             optuna_results = _optuna_search(
                 X=x_fit,
@@ -675,9 +887,30 @@ def _train_one_mode(
     if not results:
         raise ValueError("All candidate models failed during CV evaluation")
 
-    # Pick winner by highest CV AUC
-    results.sort(key=lambda r: r[2], reverse=True)
-    winner_name, winner_pipe, winner_cv_auc = results[0]
+    evaluated_results = list(results)
+    winner_pool = list(results)
+    if logreg_result is not None:
+        winner_pool = [
+            row
+            for row in results
+            if row[0] == "logreg"
+            or float(row[2]) >= float(logreg_result[2]) + tree_min_cv_auc_gain
+        ]
+
+    # A tree model must beat the stable baseline by a meaningful margin.
+    winner_pool.sort(key=lambda r: r[2], reverse=True)
+    winner_name, winner_pipe, winner_cv_auc = winner_pool[0]
+
+    walk_forward = _walk_forward_validate_model(
+        prepared=prepared,
+        x=x,
+        y=y,
+        sample_weight=sample_weight,
+        pipeline=winner_pipe,
+        mode=mode,
+        settings=settings,
+        horizon_days=horizon_days,
+    )
 
     # Keep calibration and test windows disjoint from base-model fitting.
     _fit_pipeline(winner_pipe, x_fit, y_fit, sample_weight=sample_weight_fit)
@@ -714,7 +947,12 @@ def _train_one_mode(
             and len(y_test) >= 20
             and len(np.unique(y_test)) >= 2
         ):
-            calibrated_model = calibrate_model(winner_pipe, x_cal, y_cal, method="isotonic")
+            calibrated_model = calibrate_model(
+                winner_pipe,
+                x_cal,
+                y_cal,
+                method=str(getattr(settings.model_v2, "calibration_method", "auto")),
+            )
             is_calibrated = getattr(calibrated_model, "calibrator", None) is not None
             p_test = calibrated_model.predict_proba(x_test)[:, 1]
             test_diag = evaluate_calibration(y_test, p_test, n_bins=5)
@@ -722,6 +960,8 @@ def _train_one_mode(
                 {
                     "calibrated": bool(is_calibrated),
                     "evaluated_on_holdout": bool(is_calibrated),
+                    "method": str(getattr(calibrated_model, "calibration_method", "")),
+                    "selection": getattr(calibrated_model, "selection_diagnostics", {}),
                     "ece": test_diag["ece"],
                     "holdout_auc": round(float(roc_auc_score(y_test, p_test)), 4),
                 }
@@ -740,16 +980,25 @@ def _train_one_mode(
     auc_train = float(roc_auc_score(y_fit, p_train)) if y_fit.nunique() > 1 else 0.5
     if threshold_probs is None:
         threshold_probs = pd.Series(p_train, index=fit_idx, dtype=float)
+    walk_forward_threshold = float(
+        walk_forward.get(
+            "recommended_threshold",
+            settings.model_v2.min_prob_threshold_t1
+            if str(mode).lower() == "t1"
+            else settings.model_v2.min_prob_threshold_swing,
+        )
+    )
     thresholds_by_regime = _calibrate_regime_thresholds(
         threshold_frame,
         threshold_probs,
         settings=settings,
         mode=mode,
+        base_threshold_override=walk_forward_threshold,
     )
     return_profile = _build_return_profile(prepared.loc[fit_idx])
 
     model_comparison = {
-        name: round(auc, 4) for name, _, auc in results
+        name: round(auc, 4) for name, _, auc in evaluated_results
     }
 
     metadata = {
@@ -762,7 +1011,8 @@ def _train_one_mode(
         "cv_auc": round(winner_cv_auc, 4),
         "model_comparison": model_comparison,
         "calibration": calibration_info,
-        "available_models": [name for name, _, _ in results],
+        "walk_forward": walk_forward,
+        "available_models": [name for name, _, _ in evaluated_results],
         "label_strategy": str(prepared.get("label_strategy", pd.Series(["binary_positive_net_return"])).iloc[0]),
         "thresholds_by_regime": thresholds_by_regime,
         "return_profile": return_profile,
@@ -770,6 +1020,20 @@ def _train_one_mode(
         "optuna_used": optuna_used,
         "optuna_trials": n_optuna_trials if optuna_used else 0,
         "optuna_best_params": optuna_best_params.get(winner_name, {}),
+        "tree_search": {
+            "eligible": tree_search_eligible,
+            "min_cv_auc_gain": tree_min_cv_auc_gain,
+            "logreg_cv_auc": (
+                round(float(logreg_result[2]), 4)
+                if logreg_result is not None
+                else None
+            ),
+            "best_static_tree_cv_auc": (
+                round(float(best_static_tree_auc), 4)
+                if best_static_tree_auc is not None
+                else None
+            ),
+        },
     }
     return calibrated_model, metadata
 

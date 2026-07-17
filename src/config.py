@@ -329,6 +329,15 @@ class ModelV2Settings(BaseModel):
     horizon_days_swing: int = 10
     min_prob_threshold_t1: float = 0.52
     min_prob_threshold_swing: float = 0.55
+    calibration_method: str = "auto"
+    walk_forward_folds: int = 5
+    optuna_trials: int = 4
+    tree_model_min_cv_auc_gain: float = 0.02
+    require_v1_agreement_for_live: bool = True
+    ticker_edge_profile_path: str = "reports/model_v2_ticker_edge_profile.csv"
+    ticker_edge_prior_strength: float = 20.0
+    ticker_edge_min_samples: int = 12
+    ticker_edge_min_shrunk_expectancy_r: float = -0.03
     closed_loop_retrain_enabled: bool = False
     closed_loop_state_path: str = "reports/model_v2_closed_loop_state.json"
     closed_loop_min_hours_between_retrain: int = 24
@@ -350,7 +359,9 @@ class ModelV2Settings(BaseModel):
         min_accuracy_expectancy_r: float = 0.03
         min_accuracy_profit_factor_r: float = 1.25
         max_calibration_ece_pct: float = 10.0
+        min_holdout_auc: float = 0.52
         max_accuracy_age_days: int = 7
+        shadow_sessions_required: int = 20
         rollback_on_fail: bool = True
         rollback_expectancy_r: float = 0.0
         rollback_profit_factor_r: float = 1.0

@@ -223,6 +223,11 @@ function renderRisk(){
 function renderModel(){
   const sh=S.data.shadow||{},pr=S.data.promo||{},audit=S.data.accuracy||{};
   const sigs=sh.signals||[];
+  const promotionModes=pr.modes||{};
+  const rolloutByMode=pr.rollout_by_mode||Object.fromEntries(Object.entries(promotionModes).map(([mode,row])=>[mode,row.current_rollout_pct||0]));
+  const rolloutLabel=Object.keys(rolloutByMode).length
+    ?Object.entries(rolloutByMode).map(([mode,value])=>`${mode.toUpperCase()} ${value}%`).join(' / ')
+    :'0%';
   const modelSigs=sigs.filter(s=>String(s.shadow_model_source||'').toLowerCase()==='model');
   const blockedCount=sigs.length-modelSigs.length;
   const modelReady=blockedCount===0&&modelSigs.length>0;
@@ -231,7 +236,7 @@ function renderModel(){
 <div class="grid grid-3 mb-24">
   ${kpiCard('Model Ready',modelReady?'YES':'NO','🤖',modelReady?'success':'danger')}
   ${kpiCard('Train Status',sh.train?.status||'—','📊','info')}
-  ${kpiCard('Rollout',pr.current_rollout_pct!=null?pr.current_rollout_pct+'%':'0%','🚀','success')}
+  ${kpiCard('Rollout',rolloutLabel,'🚀','success')}
 </div>
 ${sourceWarning}
 <div class="card mb-24">
@@ -260,9 +265,14 @@ ${renderAccuracyAudit(audit)}
     </div>`).join('')}
   </div>
   <div class="card"><div class="card-header"><span class="card-title">Promotion State</span></div>
-    ${metricRow('Current Rollout',pr.current_rollout_pct!=null?pr.current_rollout_pct+'%':'0%')}
-    ${metricRow('Consecutive Passes',pr.consecutive_passes||0)}
-    ${metricRow('Final Decision',pr.final_decision_ready?'READY':'BLOCKED')}
+    ${metricRow('Current Rollout',rolloutLabel)}
+    ${Object.entries(promotionModes).map(([mode,row])=>`
+      ${metricRow(`${mode.toUpperCase()} Passes`,row.consecutive_passes||0)}
+      ${metricRow(`${mode.toUpperCase()} Shadow Sessions`,`${row.shadow_sessions||0} / ${row.shadow_sessions_required||20}`)}
+      ${metricRow(`${mode.toUpperCase()} Final`,row.final_decision_ready?'READY':'BLOCKED')}
+    `).join('')}
+    ${metricRow('Any Final Mode',pr.final_decision_ready?'READY':'BLOCKED')}
+    ${metricRow('All Modes Final',pr.all_modes_final?'READY':'BLOCKED')}
     ${metricRow('Last Eval',pr.last_evaluated_at||'—')}
   </div>
 </div>`;

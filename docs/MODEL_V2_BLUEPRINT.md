@@ -13,32 +13,44 @@ Catatan: tidak ada model yang bisa menjamin profit maksimal.
 
 ## 1.1 Status Implementasi Saat Ini
 
-Scaffolding fase awal sudah aktif di pipeline harian:
+Jalur final-decision sudah aktif secara fail-closed di pipeline harian:
 
-- `src/model_v2/train.py`: auto-train baseline logistic (interval mingguan, per mode).
+- `src/model_v2/train.py`: kandidat logistic/LightGBM/XGBoost, calibration window,
+  untouched holdout, threshold terkunci, dan lima purged walk-forward fold per mode.
+- Model pohon hanya dituning/dipilih bila CV statis mengungguli logistic baseline dengan
+  margin minimum; hal ini membatasi overfit dan waktu training.
+- `src/model_v2/calibration.py`: pemilihan Platt/isotonic hanya pada calibration window.
 - `src/model_v2/predict.py`: infer probabilitas shadow (`shadow_p_win`, `shadow_expected_r`).
 - `src/model_v2/shadow.py`: output shadow + A/B test v1 vs v2.
 - `src/model_v2/io.py`: simpan/load artifact + metadata + state.
-- `run-daily` tetap memakai gate risiko live yang sama; model_v2 belum override eksekusi.
-- Promotion gate + rollback otomatis tersedia lewat `model_v2.promotion.*` (bertahap 0 -> 10 -> 30 -> 60 -> 100).
+- `src/analytics/model_v2_accuracy.py`: audit outcome, calibration, threshold, agreement,
+  false positive, dan Bayesian ticker edge.
+- Promotion T1 dan Swing terpisah, dengan rollout 0 -> 10 -> 30 -> 60 -> 100 dan rollback.
+- Kandidat live awal wajib mendapat agreement V1+V2, EV positif, dan lolos meta-filter.
+
+Status bukti terbaru dan blocker promosi dicatat hanya di `docs/AI_PROJECT_CONTEXT.md`
+agar agent tidak memakai angka lama dari beberapa dokumen.
 
 ## 1.2 Kontrak Final Decision
 
 Model V2 hanya berstatus `FINAL` saat seluruh syarat berikut lulus:
 
-1. Semua mode aktif memakai artefak model yang tersedia, valid, dan dapat dimuat.
-2. Probabilitas dikalibrasi pada holdout terpisah dengan `ECE <= 10%`.
+1. Mode yang dipromosikan memakai artefak model yang tersedia, valid, dan dapat dimuat.
+2. Probabilitas dikalibrasi pada calibration window terpisah, lalu dievaluasi pada
+   untouched holdout dengan `ECE <= 10%` dan `AUC >= 0.52`.
 3. Walk-forward memiliki minimal 5 fold, minimal 120 trade OOS, `PF >= 1.25`,
    `expectancy >= 0.03R`, `MaxDD <= 12%`, dan minimal 60% fold profitable.
 4. Accuracy audit terbaru berstatus `ok`, tidak memakai fallback, serta memenuhi
    batas trade, expectancy, profit factor, calibration error, dan freshness.
-5. Rekonsiliasi live memenuhi sample, expectancy, profit factor, dan entry-match gate.
-6. Rollout telah naik bertahap hingga 100% tanpa memicu rollback atau risk gate.
+5. Kandidat membutuhkan agreement V1+V2, EV positif, serta Bayesian ticker edge yang sehat.
+6. Minimal 20 sesi shadow nyata dan tiga evaluasi berturut-turut lulus.
+7. Rekonsiliasi live memenuhi sample, expectancy, profit factor, dan entry-match gate.
+8. Rollout mode tersebut telah naik bertahap hingga 100% tanpa rollback atau risk gate.
 
 Status operasional:
 
 - `BLOCKED`: artefak, kalibrasi, audit, atau data belum memenuhi kontrak. Tidak ada
-  rekomendasi V2 yang boleh diterbitkan.
+  rekomendasi V2 live/final; output shadow tetap boleh dicatat dengan label yang jelas.
 - `SHADOW`: sinyal model asli dicatat untuk audit, tetapi belum mengambil keputusan live.
 - `CANARY`: hanya sebagian kecil kandidat yang dipilih V2 sesuai rollout.
 - `FINAL`: rollout 100% dan semua gate tetap lulus. Risk engine dan kill-switch tetap
@@ -69,16 +81,19 @@ Komponen baru:
 
 - `src/model_v2/train.py` (training + walk-forward train loop).
 - `src/model_v2/predict.py` (inference harian).
-- `src/model_v2/calibration.py` (opsional/fase lanjutan untuk probability calibration).
+- `src/model_v2/calibration.py` (Platt/isotonic calibration tanpa leakage).
 - `src/model_v2/io.py` (versioning model + metadata).
+- `src/model_v2/promotion.py` (gate per mode, rollout, dan rollback).
+- `src/model_v2/meta_filter.py` (Bayesian/shrinkage historical ticker edge).
 
 ## 4. Target Model
 
 Prioritas implementasi:
 
-1. Baseline: `LightGBM/XGBoost` (tabular, stabil untuk data saat ini).
-2. Opsional challenger: deep learning time-series (LSTM/Transformer) setelah baseline stabil.
-3. LLM dipakai sebagai lapisan tambahan event/sentiment, bukan model utama entry.
+1. Baseline stabil: logistic regression.
+2. Challenger: `LightGBM/XGBoost` hanya jika CV gain minimum 0.02 di atas baseline.
+3. Opsional challenger: deep learning time-series setelah tabular baseline stabil.
+4. LLM dipakai sebagai lapisan tambahan event/sentiment, bukan model utama entry.
 
 Output minimum model:
 
@@ -119,16 +134,18 @@ Skema wajib:
 
 1. Time-based split + walk-forward.
 2. Purged window antar train-test bila perlu.
-3. Hyperparameter tuning di train fold saja.
-4. Simpan metrik OOS per fold.
+3. Pemilihan calibration method hanya pada calibration window.
+4. Hyperparameter tuning di train fold saja dan tidak wajib bila tree baseline lemah.
+5. Threshold dikunci pada calibration fold dan diuji pada test fold berikutnya.
+6. Simpan metrik OOS per fold.
 
 Promotion gate model_v2 (minimum):
 
 - `OOS Trades >= 120`
 - `OOS ProfitFactor >= 1.25`
-- `OOS Expectancy > 0`
+- `Median OOS Expectancy > 0.03R`
 - `OOS MaxDD <= 12%`
-- Stabil antar fold (tidak hanya 1 fold bagus).
+- Minimal 5 fold dan sekurangnya 60% fold profitable.
 
 ## 8. Integrasi ke Risk Engine
 
@@ -211,8 +228,8 @@ Minggu 3:
 
 Minggu 4:
 
-- Partial rollout: 30-50% risk budget ke v2 (paper/live terbatas).
-- Jika KPI stabil, naikkan bertahap; jika tidak, rollback otomatis ke v1.
+- Canary T1 10% hanya jika seluruh gate lulus; Swing dapat tetap 0% secara independen.
+- Jika KPI stabil, naikkan 30% -> 60% -> 100%; satu gate gagal memicu rollback ke 0%.
 
 ## 13. Definisi Sukses
 
