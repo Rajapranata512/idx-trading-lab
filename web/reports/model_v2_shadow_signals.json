@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-17T08:23:06.044983",
-  "run_id": "20260717_082211",
+  "generated_at": "2026-07-17T11:39:21.459388",
+  "run_id": "20260717_113912",
   "signals": [
     {
       "ticker": "HRUM",
@@ -578,11 +578,10 @@
     "blocked_modes": []
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1, swing",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -1017,11 +1016,10 @@
         "metadata_path": "models/model_v2/swing.meta.json"
       }
     },
-    "errors": [],
     "artifact_check": {
       "ready": true,
       "missing_modes": [],
-      "forced_retrain": true
+      "forced_retrain": false
     }
   }
 }
