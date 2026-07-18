@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-17T14:11:23.580784",
+  "generated_at": "2026-07-18T12:34:07.817174",
   "signals": {
-    "generated_at": "2026-07-17T14:11:22.114661",
+    "generated_at": "2026-07-18T12:34:06.533378",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 6100.0,
         "volume": 1852800.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-17 14:10:14.033306",
+        "ingested_at": "2026-07-18 12:31:07.331037",
         "ret_1d": 0.0517241379310344,
         "ret_5d": 0.1296296296296295,
         "ret_20d": 0.0209205020920502,
@@ -67,8 +67,8 @@
         "market_median_atr_pct": 3.6563551853668073,
         "relative_ret_20d": -0.0086931540703485,
         "score": 100.0,
-        "mode": "t1",
         "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "mode": "t1",
         "rank": 1,
         "sizing_method": "volatility",
         "entry": 6100.0,
@@ -106,7 +106,7 @@
         "close": 830.0,
         "volume": 3076800.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-17 14:10:14.033306",
+        "ingested_at": "2026-07-18 12:31:07.331037",
         "ret_1d": 0.0506329113924051,
         "ret_5d": 0.1066666666666666,
         "ret_20d": 0.0060606060606061,
@@ -148,8 +148,8 @@
         "market_median_atr_pct": 3.6563551853668073,
         "relative_ret_20d": -0.0235530501017926,
         "score": 100.0,
-        "mode": "t1",
         "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "mode": "t1",
         "rank": 2,
         "sizing_method": "volatility",
         "entry": 830.0,
@@ -187,7 +187,7 @@
         "close": 26950.0,
         "volume": 1376100.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-17 14:10:14.033306",
+        "ingested_at": "2026-07-18 12:31:07.331037",
         "ret_1d": -0.0027752081406104,
         "ret_5d": 0.1,
         "ret_20d": 0.1885336273428886,
@@ -229,8 +229,8 @@
         "market_median_atr_pct": 3.6563551853668073,
         "relative_ret_20d": 0.1589199711804898,
         "score": 98.93,
-        "mode": "t1",
         "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "mode": "t1",
         "rank": 3,
         "sizing_method": "volatility",
         "entry": 26950.0,
@@ -268,7 +268,7 @@
         "close": 406.0,
         "volume": 37170000.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-17 14:10:14.033306",
+        "ingested_at": "2026-07-18 12:31:07.331037",
         "ret_1d": 0.0740740740740741,
         "ret_5d": 0.0913978494623655,
         "ret_20d": 0.0913978494623655,
@@ -310,8 +310,8 @@
         "market_median_atr_pct": 3.6563551853668073,
         "relative_ret_20d": 0.0617841932999667,
         "score": 97.41,
-        "mode": "t1",
         "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "mode": "t1",
         "rank": 4,
         "sizing_method": "volatility",
         "entry": 406.0,
@@ -349,7 +349,7 @@
         "close": 4450.0,
         "volume": 127404700.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-17 14:10:14.033306",
+        "ingested_at": "2026-07-18 12:31:07.331037",
         "ret_1d": 0.0470588235294118,
         "ret_5d": 0.0906862745098038,
         "ret_20d": 0.0324825986078887,
@@ -391,8 +391,8 @@
         "market_median_atr_pct": 3.6563551853668073,
         "relative_ret_20d": 0.0028689424454899,
         "score": 97.28,
-        "mode": "t1",
         "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "mode": "t1",
         "rank": 5,
         "sizing_method": "volatility",
         "entry": 4450.0,
@@ -430,7 +430,7 @@
         "close": 1865.0,
         "volume": 28676200.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-17 14:10:14.033306",
+        "ingested_at": "2026-07-18 12:31:07.331037",
         "ret_1d": 0.0780346820809247,
         "ret_5d": 0.0780346820809247,
         "ret_20d": 0.0163487738419618,
@@ -472,8 +472,8 @@
         "market_median_atr_pct": 3.6563551853668073,
         "relative_ret_20d": -0.0132648823204368,
         "score": 95.05,
-        "mode": "t1",
         "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "mode": "t1",
         "rank": 6,
         "sizing_method": "volatility",
         "entry": 1865.0,
@@ -513,7 +513,7 @@
         "close": 1410.0,
         "volume": 17107900.0,
         "source": "canonical_csv",
-        "ingested_at": "2026-07-17 14:10:14.033306",
+        "ingested_at": "2026-07-18 12:31:07.331037",
         "ret_1d": 0.0804597701149425,
         "ret_5d": 0.2422907488986785,
         "ret_20d": 0.4536082474226803,
@@ -643,7 +643,6 @@
         "t1"
       ],
       "triggered_modes_today": [
-        "swing",
         "t1"
       ],
       "cooldown_until": "2026-07-20",
@@ -657,26 +656,26 @@
     },
     "metrics": {
       "t1": {
-        "WinRate": 42.87003610108303,
-        "ProfitFactor": 0.7160736304712746,
-        "Expectancy": -0.005414777087432212,
-        "Trades": 1108,
-        "CAGR": -4.043183531705063,
-        "MaxDD": -18.825899224088396
+        "WinRate": 41.6595380667237,
+        "ProfitFactor": 0.6548666567002984,
+        "Expectancy": -0.006360895272678947,
+        "Trades": 1169,
+        "CAGR": -4.7235630488344444,
+        "MaxDD": -20.76167241727186
       },
       "swing": {
-        "WinRate": 62.5,
-        "ProfitFactor": 1.7944849532940519,
-        "Expectancy": 0.045475678080699834,
-        "Trades": 528,
-        "CAGR": 40.19615966902097,
-        "MaxDD": -20.351437254685546
+        "WinRate": 58.70488322717622,
+        "ProfitFactor": 1.3957490974678526,
+        "Expectancy": 0.022909808431546157,
+        "Trades": 942,
+        "CAGR": 18.378313540905864,
+        "MaxDD": -22.966926729485163
       }
     }
   },
   "funnel": {
-    "generated_at": "2026-07-17T14:11:22.175135",
-    "run_id": "20260717_141004",
+    "generated_at": "2026-07-18T12:34:06.592044",
+    "run_id": "20260718_123058",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -711,20 +710,20 @@
       "status": "ok",
       "json_path": "reports/signal_accuracy_audit.json",
       "audited_trade_count": 11570,
-      "live_threshold_trade_count": 5091,
-      "live_expectancy_r": -0.0998,
-      "live_profit_factor_r": 0.625
+      "live_threshold_trade_count": 6709,
+      "live_expectancy_r": -0.1273,
+      "live_profit_factor_r": 0.5705
     },
     "model_v2_accuracy": {
       "status": "ok",
       "json_path": "reports/model_v2_accuracy_audit.json",
       "audited_trade_count": 11570,
-      "v2_recommended_count": 14,
-      "v2_expectancy_r": -0.2667,
+      "v2_recommended_count": 0,
+      "v2_expectancy_r": 0.0,
       "v2_profit_factor_r": 0.0
     },
     "score_funnel": {
-      "generated_at": "2026-07-17T14:10:38.786776",
+      "generated_at": "2026-07-18T12:31:19.824925",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -777,14 +776,14 @@
         "message": "Event-risk filter applied",
         "path": "data/reference/event_risk_blacklist.csv",
         "as_of_date": "2026-07-17",
-        "active_events": 2,
+        "active_events": 1,
         "excluded_count": 0,
         "excluded_tickers": [],
         "excluded_t1": 0,
         "excluded_swing": 0
       },
       "profit_quality": {
-        "generated_at": "2026-07-17T14:10:38.762892",
+        "generated_at": "2026-07-18T12:31:19.804008",
         "stage": "score",
         "status": "ok",
         "enabled": true,
@@ -809,7 +808,7 @@
     }
   },
   "event_risk": {
-    "active_total": 2,
+    "active_total": 1,
     "excluded_total": 0,
     "active_items": [
       {
@@ -818,17 +817,8 @@
         "reason": "UMA atas Saham PT Prodia Diagnostic Line Tbk. (PRDL)",
         "start_date": "2026-07-15",
         "end_date": "2026-07-29",
-        "updated_at": "2026-07-17",
+        "updated_at": "2026-07-18",
         "source": "idx_announcement_uma"
-      },
-      {
-        "ticker": "PTPP",
-        "status": "MATERIAL",
-        "reason": "Material Information or Fact Report Press Release \"Menteri PU Apresiasi Kinerja PTPP, Sekolah Rakyat Kupang Resmi Difungsionalkan\" [ PTPP ]",
-        "start_date": "2026-07-17",
-        "end_date": "2026-07-31",
-        "updated_at": "2026-07-17",
-        "source": "idx_announcement_material"
       }
     ],
     "excluded_items": []
@@ -861,6 +851,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260718.json",
+      "run_id": "20260718_123058",
+      "started_at": "2026-07-18T12:30:58.112391",
+      "ended_at": "2026-07-18T12:34:07.128331",
+      "source": "yfinance_fallback",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 21,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_on | All regime checks passed | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260717.json",
       "run_id": "20260717_141004",
@@ -1049,33 +1066,6 @@
       "status_category_label": "Protective warning",
       "status_tone": "protective",
       "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260716.json",
-      "run_id": "20260716_115327",
-      "started_at": "2026-07-16T11:53:27.649661",
-      "ended_at": "2026-07-16T11:54:37.866486",
-      "source": "yfinance_fallback",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 21,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, avg_ret20_ok | Kill switch=triggered",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
     }
   ],
   "report": {
@@ -1114,7 +1104,7 @@
       "rows_total": 51885,
       "ticker_total": 44,
       "max_data_date": "2026-07-17",
-      "stale_days": 0,
+      "stale_days": 1,
       "missing_rows": 0,
       "duplicate_rows": 0,
       "missing_tickers_count": 0,
@@ -1171,7 +1161,7 @@
   "kpi": {
     "signal_total": 0,
     "execution_total": 0,
-    "event_active_total": 2,
+    "event_active_total": 1,
     "event_excluded_total": 0,
     "signal_avg_score": 0.0,
     "gate_pass": {

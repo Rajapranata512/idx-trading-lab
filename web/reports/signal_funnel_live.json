@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-17T14:11:22.175135",
-  "run_id": "20260717_141004",
+  "generated_at": "2026-07-18T12:34:06.592044",
+  "run_id": "20260718_123058",
   "gate_pass": {
     "t1": false,
     "swing": false
@@ -35,20 +35,20 @@
     "status": "ok",
     "json_path": "reports/signal_accuracy_audit.json",
     "audited_trade_count": 11570,
-    "live_threshold_trade_count": 5091,
-    "live_expectancy_r": -0.0998,
-    "live_profit_factor_r": 0.625
+    "live_threshold_trade_count": 6709,
+    "live_expectancy_r": -0.1273,
+    "live_profit_factor_r": 0.5705
   },
   "model_v2_accuracy": {
     "status": "ok",
     "json_path": "reports/model_v2_accuracy_audit.json",
     "audited_trade_count": 11570,
-    "v2_recommended_count": 14,
-    "v2_expectancy_r": -0.2667,
+    "v2_recommended_count": 0,
+    "v2_expectancy_r": 0.0,
     "v2_profit_factor_r": 0.0
   },
   "score_funnel": {
-    "generated_at": "2026-07-17T14:10:38.786776",
+    "generated_at": "2026-07-18T12:31:19.824925",
     "thresholds": {
       "min_live_score_t1": 95.0,
       "min_live_score_swing": 68.0,
@@ -101,14 +101,14 @@
       "message": "Event-risk filter applied",
       "path": "data/reference/event_risk_blacklist.csv",
       "as_of_date": "2026-07-17",
-      "active_events": 2,
+      "active_events": 1,
       "excluded_count": 0,
       "excluded_tickers": [],
       "excluded_t1": 0,
       "excluded_swing": 0
     },
     "profit_quality": {
-      "generated_at": "2026-07-17T14:10:38.762892",
+      "generated_at": "2026-07-18T12:31:19.804008",
       "stage": "score",
       "status": "ok",
       "enabled": true,
