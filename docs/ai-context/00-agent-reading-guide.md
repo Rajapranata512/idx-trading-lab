@@ -22,6 +22,7 @@ Default reset budget: this file, the PRD, 1-2 source files, and 1-2 tests.
 | Config/data contract | `02-repository-map-and-config.md` | `src/config.py` plus affected module |
 | V1 scoring/risk | `04-module-workflows.md` | relevant `src/strategy/` or `src/risk/` module |
 | Model V2/final decision | `docs/MODEL_V2_BLUEPRINT.md` | relevant file in `src/model_v2/` plus nearest test |
+| V2 label/live alignment | PRD Final Decision Contract | `src/model_v2/labeling.py`, `src/strategy/ranker.py`, or `src/paper_trading/auto_fill.py` |
 | Accuracy audit | PRD section Final Decision Contract | `src/analytics/model_v2_accuracy.py` |
 | Operations/no signal | `05-operations-and-debugging.md` | only the latest relevant report |
 | Safe code change | `06-change-guide-and-tests.md` | changed module plus nearest test |

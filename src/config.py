@@ -333,6 +333,9 @@ class ModelV2Settings(BaseModel):
     walk_forward_folds: int = 5
     optuna_trials: int = 4
     tree_model_min_cv_auc_gain: float = 0.02
+    candidate_aligned_training: bool = True
+    horizon_exit_min_r_t1: float = 0.0
+    horizon_exit_min_r_swing: float = 0.0
     require_v1_agreement_for_live: bool = True
     ticker_edge_profile_path: str = "reports/model_v2_ticker_edge_profile.csv"
     ticker_edge_prior_strength: float = 20.0
@@ -398,6 +401,7 @@ class PaperTradingSettings(BaseModel):
     slippage_pct: float = 0.1
     buy_fee_pct: float = 0.15
     sell_fee_pct: float = 0.25
+    reject_entry_outside_stop_tp: bool = True
     state_path: str = "reports/paper_trading_state.json"
 
 

@@ -20,6 +20,8 @@ Jalur final-decision sudah aktif secara fail-closed di pipeline harian:
 - Model pohon hanya dituning/dipilih bila CV statis mengungguli logistic baseline dengan
   margin minimum; hal ini membatasi overfit dan waktu training.
 - `src/model_v2/calibration.py`: pemilihan Platt/isotonic hanya pada calibration window.
+- `src/model_v2/labeling.py`: label first-touch dari open sesi berikutnya, biaya transaksi,
+  MAE/MFE, penolakan gap di luar stop/TP, dan alignment ke kandidat live score-floor/top-N.
 - `src/model_v2/predict.py`: infer probabilitas shadow (`shadow_p_win`, `shadow_expected_r`).
 - `src/model_v2/shadow.py`: output shadow + A/B test v1 vs v2.
 - `src/model_v2/io.py`: simpan/load artifact + metadata + state.
@@ -27,6 +29,8 @@ Jalur final-decision sudah aktif secara fail-closed di pipeline harian:
   false positive, dan Bayesian ticker edge.
 - Promotion T1 dan Swing terpisah, dengan rollout 0 -> 10 -> 30 -> 60 -> 100 dan rollback.
 - Kandidat live awal wajib mendapat agreement V1+V2, EV positif, dan lolos meta-filter.
+- Skor historis T1/Swing dihitung per cross-section tanggal agar observasi masa depan tidak
+  mengubah skor masa lalu; paper fill memakai aturan penolakan entry gap yang sama dengan label.
 
 Status bukti terbaru dan blocker promosi dicatat hanya di `docs/AI_PROJECT_CONTEXT.md`
 agar agent tidak memakai angka lama dari beberapa dokumen.
@@ -107,13 +111,20 @@ Gunakan label berbasis hasil trade dengan aturan entry/stop/TP yang sama dengan 
 
 - Mode `t1`: horizon 1 hari.
 - Mode `swing`: horizon 5-10 hari.
+- Stop/TP direncanakan dari close bar sinyal; entry dieksekusi pada open sesi berikutnya.
+- Entry ditolak jika open sudah berada di luar rentang stop/TP yang direncanakan.
+- Gap setelah entry dieksekusi pada harga open; bar yang menyentuh stop dan TP sekaligus
+  dihitung stop-first secara konservatif.
+- Fee dan slippage mengurangi `y_reg`; label juga menyimpan MAE, MFE, holding period, dan gap.
+- Dataset training hanya memuat kandidat yang memenuhi score floor dan top-N live pada tanggalnya.
 
 Contoh label:
 
-- `y_cls`: 1 jika mencapai TP sebelum stop dalam horizon.
+- `y_cls`: 1 jika TP tercapai lebih dulu, atau horizon exit tetap positif setelah biaya.
 - `y_reg`: realized return (R-multiple).
 
-Ini memastikan training selaras dengan real execution.
+Jangan mengganti label ini dengan ranking future return atau memakai future close sebagai entry.
+Ini memastikan training selaras dengan real execution dan mencegah target leakage terselubung.
 
 ## 6. Feature Set V2
 
@@ -122,7 +133,7 @@ Tambahkan/rapikan fitur:
 - Trend-momentum: `ret_1d/5d/20d`, slope MA, distance to MA.
 - Volatility: `atr_pct`, realized vol, volatility regime ratio.
 - Liquidity: `avg_vol_20d`, turnover proxy, spread proxy (jika tersedia).
-- Cross-sectional rank: rank score per hari di universe.
+- Cross-sectional rank: rank score point-in-time per hari di universe.
 - Regime context: breadth, market return, median atr.
 - Event-risk flags: suspend/UMA/material proximity.
 
@@ -133,11 +144,12 @@ Semua fitur harus lagged (anti look-ahead bias).
 Skema wajib:
 
 1. Time-based split + walk-forward.
-2. Purged window antar train-test bila perlu.
-3. Pemilihan calibration method hanya pada calibration window.
-4. Hyperparameter tuning di train fold saja dan tidak wajib bila tree baseline lemah.
-5. Threshold dikunci pada calibration fold dan diuji pada test fold berikutnya.
-6. Simpan metrik OOS per fold.
+2. Bangun label hanya dari kandidat historis yang memenuhi kontrak seleksi live.
+3. Purged window antar train-test bila perlu.
+4. Pemilihan calibration method hanya pada calibration window.
+5. Hyperparameter tuning di train fold saja dan tidak wajib bila tree baseline lemah.
+6. Threshold dikunci pada calibration fold dan diuji pada test fold berikutnya.
+7. Simpan metrik OOS per fold dan profil label/candidate alignment pada metadata artifact.
 
 Promotion gate model_v2 (minimum):
 
