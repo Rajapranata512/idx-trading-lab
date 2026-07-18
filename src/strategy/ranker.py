@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from src.strategy.swing_model import build_swing_score_frame, score_swing_candidates
-from src.strategy.t1_model import score_t1_candidates
+from src.strategy.t1_model import build_t1_score_frame, score_t1_candidates
 
 
 def rank_all_modes(
@@ -34,16 +34,7 @@ def score_history_modes(features: pd.DataFrame, min_avg_volume_20d: float) -> pd
     df = df[df["avg_vol_20d"].fillna(0) >= min_avg_volume_20d].copy()
 
     # T+1 historical score.
-    t1 = df.copy()
-    t1_trend = (t1["close"] > t1["ma_20"]).astype(float)
-    t1_momentum = (t1["ret_5d"].fillna(0) > 0).astype(float)
-    v = t1["vol_20d"]
-    v_lo, v_hi = v.quantile(0.1), v.quantile(0.9)
-    t1_vol_ok = ((v >= v_lo) & (v <= v_hi)).astype(float).fillna(0.0)
-    t1_ret = t1["ret_5d"].clip(lower=t1["ret_5d"].quantile(0.05), upper=t1["ret_5d"].quantile(0.95))
-    t1_mom_strength = (t1_ret - t1_ret.min()) / (t1_ret.max() - t1_ret.min() + 1e-9)
-    t1["score"] = (35 * t1_trend) + (30 * t1_momentum) + (20 * t1_mom_strength.fillna(0.0)) + (15 * t1_vol_ok)
-    t1["score"] = t1["score"].clip(0, 100)
+    t1 = build_t1_score_frame(df, group_by_date=True)
     t1["mode"] = "t1"
 
     # Swing historical score.

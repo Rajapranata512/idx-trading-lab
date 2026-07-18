@@ -23,6 +23,16 @@ def _safe_col(df: pd.DataFrame, col: str, default: float = 0.0) -> pd.Series:
     return pd.Series(default, index=df.index, dtype=float)
 
 
+def _normalized_for_frame(df: pd.DataFrame, values: pd.Series) -> pd.Series:
+    numeric = pd.to_numeric(values, errors="coerce")
+    if "date" not in df.columns:
+        return _normalized(numeric)
+    dates = pd.to_datetime(df["date"], errors="coerce")
+    if dates.nunique(dropna=True) <= 1:
+        return _normalized(numeric)
+    return numeric.groupby(dates).transform(lambda group: _normalized(group))
+
+
 def build_swing_score_frame(features: pd.DataFrame) -> pd.DataFrame:
     latest = features.copy()
     if latest.empty:
@@ -30,8 +40,14 @@ def build_swing_score_frame(features: pd.DataFrame) -> pd.DataFrame:
         latest["reason"] = "Trend stack + relative momentum + breakout proximity + volume confirmation"
         return latest
 
-    mom20 = _normalized(latest.get("ret_20d", pd.Series(dtype=float, index=latest.index)))
-    rel20 = _normalized(latest.get("relative_ret_20d", latest.get("ret_20d", pd.Series(dtype=float, index=latest.index))))
+    mom20 = _normalized_for_frame(
+        latest,
+        latest.get("ret_20d", pd.Series(dtype=float, index=latest.index)),
+    )
+    rel20 = _normalized_for_frame(
+        latest,
+        latest.get("relative_ret_20d", latest.get("ret_20d", pd.Series(dtype=float, index=latest.index))),
+    )
     trend_stack = (
         (pd.to_numeric(latest.get("close"), errors="coerce") > pd.to_numeric(latest.get("ma_20"), errors="coerce")).astype(float)
         + (pd.to_numeric(latest.get("ma_20"), errors="coerce") > pd.to_numeric(latest.get("ma_50"), errors="coerce")).astype(float)
@@ -39,8 +55,17 @@ def build_swing_score_frame(features: pd.DataFrame) -> pd.DataFrame:
     ) / 3.0
     breakout_source = _safe_col(latest, "dist_high_20", -0.15)
     breakout = ((breakout_source.clip(lower=-0.15, upper=0.05) + 0.15) / 0.20).clip(lower=0.0, upper=1.0)
-    volume_confirm = _normalized(_safe_col(latest, "turnover_ratio_20d", _safe_col(latest, "volume_ratio_20d", 1.0)))
-    vol_quality = (1.0 - _normalized(_safe_col(latest, "atr_pct", _safe_col(latest, "vol_ratio", 0.0)))).clip(lower=0.0, upper=1.0)
+    volume_confirm = _normalized_for_frame(
+        latest,
+        _safe_col(latest, "turnover_ratio_20d", _safe_col(latest, "volume_ratio_20d", 1.0)),
+    )
+    vol_quality = (
+        1.0
+        - _normalized_for_frame(
+            latest,
+            _safe_col(latest, "atr_pct", _safe_col(latest, "vol_ratio", 0.0)),
+        )
+    ).clip(lower=0.0, upper=1.0)
 
     breadth20 = (_safe_col(latest, "market_breadth_ma20_pct", 50.0) / 100.0).clip(0.0, 1.0)
     breadth50 = (_safe_col(latest, "market_breadth_ma50_pct", 50.0) / 100.0).clip(0.0, 1.0)

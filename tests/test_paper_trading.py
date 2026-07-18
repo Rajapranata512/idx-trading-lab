@@ -8,6 +8,7 @@ import pandas as pd
 
 from src.config import load_settings
 from src.paper_trading import maybe_generate_paper_fills
+from src.paper_trading.auto_fill import _simulate_fill
 from src.report.live_reconciliation import write_signal_snapshot
 
 
@@ -211,3 +212,48 @@ def test_maybe_generate_paper_fills_reports_empty_snapshots_separately(tmp_path,
     assert out["snapshot_files_in_window"] == 1
     assert out["signals_total"] == 0
     assert out["valid_signals"] == 0
+
+
+def test_paper_fill_rejects_open_outside_stop_tp(tmp_path):
+    settings = load_settings(_write_settings(tmp_path))
+    prices = pd.DataFrame(
+        [
+            {
+                "date": "2026-01-06",
+                "ticker": "BBCA",
+                "open": 85.0,
+                "high": 95.0,
+                "low": 84.0,
+                "close": 92.0,
+                "volume": 1_000_000,
+            },
+            {
+                "date": "2026-01-07",
+                "ticker": "BBCA",
+                "open": 92.0,
+                "high": 96.0,
+                "low": 90.0,
+                "close": 94.0,
+                "volume": 1_000_000,
+            },
+        ]
+    )
+    prices["date"] = pd.to_datetime(prices["date"])
+    signal = {
+        "signal_time": "2026-01-05T16:00:00",
+        "ticker": "BBCA",
+        "mode": "t1",
+        "qty": 100,
+        "entry_plan": 100.0,
+        "stop_plan": 90.0,
+        "tp1_plan": 110.0,
+        "tp2_plan": 120.0,
+        "run_id": "test-gap",
+        "score": 99.0,
+        "est_roundtrip_cost_pct": 0.6,
+    }
+
+    status, row = _simulate_fill(signal, prices, settings)
+
+    assert status == "entry_gap_outside_stop_tp"
+    assert row is None

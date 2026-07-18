@@ -369,6 +369,9 @@
     "walk_forward_folds": 5,
     "optuna_trials": 4,
     "tree_model_min_cv_auc_gain": 0.02,
+    "candidate_aligned_training": true,
+    "horizon_exit_min_r_t1": 0.0,
+    "horizon_exit_min_r_swing": 0.0,
     "require_v1_agreement_for_live": true,
     "ticker_edge_profile_path": "reports/model_v2_ticker_edge_profile.csv",
     "ticker_edge_prior_strength": 20.0,
@@ -435,6 +438,7 @@
     "slippage_pct": 0.1,
     "buy_fee_pct": 0.15,
     "sell_fee_pct": 0.25,
+    "reject_entry_outside_stop_tp": true,
     "state_path": "reports/paper_trading_state.json"
   },
   "notifications": {

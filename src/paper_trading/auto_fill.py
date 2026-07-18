@@ -197,11 +197,17 @@ def _simulate_fill(
 
     entry_plan = _safe_float(signal.get("entry_plan"), 0.0)
     stop_plan = _safe_float(signal.get("stop_plan"), 0.0)
+    tp1_plan = _safe_float(signal.get("tp1_plan"), 0.0)
     tp2_plan = _safe_float(signal.get("tp2_plan"), 0.0)
 
     entry_raw = _safe_float(entry_bar.get("open"), 0.0) or entry_plan
     if entry_raw <= 0:
         return "invalid_entry_price", None
+    if bool(paper_cfg.reject_entry_outside_stop_tp) and (
+        (stop_plan > 0 and entry_raw <= stop_plan)
+        or (tp1_plan > 0 and entry_raw >= tp1_plan)
+    ):
+        return "entry_gap_outside_stop_tp", None
 
     entry_exec = entry_raw * (1.0 + (slippage_pct / 100.0))
     stop_exec = stop_plan * (1.0 - (slippage_pct / 100.0)) if stop_plan > 0 else 0.0
@@ -256,7 +262,7 @@ def _simulate_fill(
         "signal_generated_at": signal_time.isoformat(),
         "entry_price_plan": round(entry_plan, 4),
         "stop_price_plan": round(stop_plan, 4),
-        "tp1_price_plan": round(_safe_float(signal.get("tp1_plan"), 0.0), 4),
+        "tp1_price_plan": round(tp1_plan, 4),
         "tp2_price_plan": round(tp2_plan, 4),
         "exit_price_exec": round(exit_price, 4),
         "exit_reason": exit_reason,

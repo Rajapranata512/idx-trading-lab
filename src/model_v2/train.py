@@ -82,7 +82,6 @@ MODEL_FEATURES = [
     "relative_ret_20d",
 ]
 
-SWING_POSITIVE_RANK_CUTOFF = 0.65
 REGIME_THRESHOLD_MIN_ROWS = 40
 
 
@@ -105,25 +104,18 @@ def _prepare_training_frame(
     out = train_df.copy()
     out["net_return"] = pd.to_numeric(out.get("net_return"), errors="coerce").fillna(0.0).astype(float)
     out["regime_bucket"] = regime_bucket_from_features(out, settings=settings, default="risk_off")
-    out["target_rank_pct"] = (
-        out.groupby("date")["net_return"].rank(method="average", pct=True).fillna(0.5)
-        if "date" in out.columns
-        else pd.Series([0.5] * len(out), index=out.index, dtype=float)
-    )
-
-    if str(mode).lower() == "swing":
-        ranked_positive = (out["target_rank_pct"] >= SWING_POSITIVE_RANK_CUTOFF) & (out["net_return"] > 0)
-        if ranked_positive.nunique() >= 2:
-            out["y"] = ranked_positive.astype(int)
-            out["label_strategy"] = f"ranked_expected_return_top_{int(SWING_POSITIVE_RANK_CUTOFF * 100)}pct"
-        else:
-            out["y"] = pd.to_numeric(out.get("y"), errors="coerce").fillna(0).astype(int)
-            out["label_strategy"] = "binary_fallback_positive_net_return"
-        sample_weight = out["net_return"].abs().clip(lower=0.2, upper=3.5) * (0.75 + out["target_rank_pct"])
+    out["y"] = pd.to_numeric(out.get("y"), errors="coerce").fillna(0).astype(int)
+    if "label_strategy" not in out.columns:
+        out["label_strategy"] = "first_touch_stop_tp_with_net_horizon_exit"
     else:
-        out["y"] = pd.to_numeric(out.get("y"), errors="coerce").fillna(0).astype(int)
-        out["label_strategy"] = "binary_positive_net_return"
-        sample_weight = out["net_return"].abs().clip(lower=0.25, upper=3.0)
+        out["label_strategy"] = (
+            out["label_strategy"]
+            .fillna("first_touch_stop_tp_with_net_horizon_exit")
+            .astype(str)
+        )
+
+    weight_cap = 3.5 if str(mode).lower() == "swing" else 3.0
+    sample_weight = out["net_return"].abs().clip(lower=0.25, upper=weight_cap)
 
     out["sample_weight"] = sample_weight.clip(lower=0.25, upper=4.0).astype(float)
     return out
@@ -206,6 +198,75 @@ def _build_return_profile(train_df: pd.DataFrame) -> dict[str, Any]:
     return profile
 
 
+def _build_label_profile(train_df: pd.DataFrame) -> dict[str, Any]:
+    outcomes = (
+        train_df.get("outcome", pd.Series(dtype=str))
+        .fillna("unknown")
+        .astype(str)
+        .value_counts()
+        .to_dict()
+    )
+    labels = pd.to_numeric(train_df.get("y"), errors="coerce").dropna()
+    candidate_pool = pd.to_numeric(
+        train_df.get("candidate_pool_rows", pd.Series(dtype=float)),
+        errors="coerce",
+    ).dropna()
+    selected_candidates = pd.to_numeric(
+        train_df.get("selected_candidate_rows", pd.Series(dtype=float)),
+        errors="coerce",
+    ).dropna()
+    entry_rejected = pd.to_numeric(
+        train_df.get("entry_rejected_rows", pd.Series(dtype=float)),
+        errors="coerce",
+    ).dropna()
+    return {
+        "strategy": str(
+            train_df.get(
+                "label_strategy",
+                pd.Series(["first_touch_stop_tp_with_net_horizon_exit"]),
+            ).iloc[0]
+        ),
+        "rows": int(len(train_df)),
+        "positive_rate": round(float(labels.mean()), 6) if not labels.empty else 0.0,
+        "outcome_counts": {str(key): int(value) for key, value in outcomes.items()},
+        "ambiguous_intrabar_count": int(
+            train_df.get("ambiguous_intrabar", pd.Series(False, index=train_df.index))
+            .astype("boolean")
+            .fillna(False)
+            .sum()
+        ),
+        "gap_exit_count": int(
+            train_df.get("gap_exit", pd.Series(False, index=train_df.index))
+            .astype("boolean")
+            .fillna(False)
+            .sum()
+        ),
+        "candidate_aligned": bool(
+            train_df.get("candidate_aligned", pd.Series(False, index=train_df.index))
+            .astype("boolean")
+            .fillna(False)
+            .all()
+        ),
+        "candidate_pool_rows": int(candidate_pool.max()) if not candidate_pool.empty else 0,
+        "selected_candidate_rows": (
+            int(selected_candidates.max()) if not selected_candidates.empty else 0
+        ),
+        "entry_rejected_gap_rows": int(entry_rejected.max()) if not entry_rejected.empty else 0,
+        "avg_entry_gap_pct": round(
+            float(pd.to_numeric(train_df.get("entry_gap_pct"), errors="coerce").mean()),
+            6,
+        ),
+        "avg_mae_r": round(
+            float(pd.to_numeric(train_df.get("mae_r"), errors="coerce").mean()),
+            6,
+        ),
+        "avg_mfe_r": round(
+            float(pd.to_numeric(train_df.get("mfe_r"), errors="coerce").mean()),
+            6,
+        ),
+    }
+
+
 def _calibrate_regime_thresholds(
     train_df: pd.DataFrame,
     probs: pd.Series,
@@ -255,6 +316,10 @@ def _training_rows_for_mode(
     stop_atr_mult: float = 2.0,
     tp1_r_mult: float = 1.0,
     train_lookback_days: int = 0,
+    candidate_alignment_enabled: bool = False,
+    min_live_score: float = 0.0,
+    top_n_per_date: int = 10,
+    horizon_exit_min_r: float = 0.0,
 ) -> pd.DataFrame:
     """Build labeled training rows.
 
@@ -273,6 +338,10 @@ def _training_rows_for_mode(
             tp1_r_mult=tp1_r_mult,
             roundtrip_cost_pct=roundtrip_cost_pct,
             train_lookback_days=train_lookback_days,
+            candidate_alignment_enabled=candidate_alignment_enabled,
+            min_live_score=min_live_score,
+            top_n_per_date=top_n_per_date,
+            horizon_exit_min_r=horizon_exit_min_r,
         )
         if not v2_df.empty and "y" in v2_df.columns:
             return v2_df
@@ -1013,10 +1082,15 @@ def _train_one_mode(
         "calibration": calibration_info,
         "walk_forward": walk_forward,
         "available_models": [name for name, _, _ in evaluated_results],
-        "label_strategy": str(prepared.get("label_strategy", pd.Series(["binary_positive_net_return"])).iloc[0]),
+        "label_strategy": str(
+            prepared.get(
+                "label_strategy",
+                pd.Series(["first_touch_stop_tp_with_net_horizon_exit"]),
+            ).iloc[0]
+        ),
         "thresholds_by_regime": thresholds_by_regime,
         "return_profile": return_profile,
-        "target_rank_positive_cutoff": SWING_POSITIVE_RANK_CUTOFF if str(mode).lower() == "swing" else None,
+        "label_profile": _build_label_profile(prepared.loc[fit_idx]),
         "optuna_used": optuna_used,
         "optuna_trials": n_optuna_trials if optuna_used else 0,
         "optuna_best_params": optuna_best_params.get(winner_name, {}),
@@ -1109,6 +1183,18 @@ def maybe_auto_train_model_v2(
             stop_atr_mult=float(settings.risk.stop_atr_multiple),
             tp1_r_mult=float(settings.risk.tp1_r_multiple),
             train_lookback_days=int(cfg.train_lookback_days),
+            candidate_alignment_enabled=bool(cfg.candidate_aligned_training),
+            min_live_score=float(
+                settings.pipeline.min_live_score_t1
+                if mode == "t1"
+                else settings.pipeline.min_live_score_swing
+            ),
+            top_n_per_date=int(settings.pipeline.top_n_per_mode),
+            horizon_exit_min_r=float(
+                cfg.horizon_exit_min_r_t1
+                if mode == "t1"
+                else cfg.horizon_exit_min_r_swing
+            ),
         )
 
         if len(train_df) < int(cfg.min_train_rows_per_mode):

@@ -82,7 +82,9 @@ class TestLabelingV2:
         bars = compute_features(_make_price_bars(n_days=80))
         result = simulate_trade_outcomes(bars=bars, mode="t1", horizon_days=5)
         valid = result.dropna(subset=["outcome"])
-        assert set(valid["outcome"].unique()).issubset({"tp_hit", "stop_hit", "horizon_exit"})
+        assert set(valid["outcome"].unique()).issubset(
+            {"tp_hit", "stop_hit", "horizon_exit", "entry_rejected_gap"}
+        )
 
     def test_y_cls_is_binary(self):
         from src.model_v2.labeling import simulate_trade_outcomes
