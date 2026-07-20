@@ -1,6 +1,6 @@
 # Weekly KPI Dashboard
 
-- generated_at: 2026-07-20T13:20:11.101398
+- generated_at: 2026-07-20T14:37:56.661373
 - lookback_days: 7
 
 ## Run Stability
