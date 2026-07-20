@@ -3,7 +3,7 @@
   "consecutive_passes": 0,
   "model_signature": "t1:2026-07-17T05:46:16.313976|swing:2026-07-17T05:46:16.313976",
   "current_rollout_pct": 0,
-  "last_evaluated_at": "2026-07-20T12:26:43.269769",
+  "last_evaluated_at": "2026-07-20T13:18:56.921067",
   "last_reason": "promotion_gate_failed",
   "final_decision_ready": false,
   "modes": {
@@ -18,7 +18,7 @@
       "current_rollout_pct": 0,
       "shadow_sessions": 2,
       "shadow_sessions_required": 20,
-      "last_evaluated_at": "2026-07-20T12:26:43.264670",
+      "last_evaluated_at": "2026-07-20T13:18:56.915829",
       "last_reason": "promotion_gate_failed",
       "final_decision_ready": false
     },
@@ -33,7 +33,7 @@
       "current_rollout_pct": 0,
       "shadow_sessions": 2,
       "shadow_sessions_required": 20,
-      "last_evaluated_at": "2026-07-20T12:26:43.269756",
+      "last_evaluated_at": "2026-07-20T13:18:56.921054",
       "last_reason": "promotion_gate_failed",
       "final_decision_ready": false
     }
