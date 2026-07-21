@@ -1,22 +1,22 @@
 {
-  "generated_at": "2026-07-20T14:37:15.489085",
-  "run_id": "20260720_143651",
+  "generated_at": "2026-07-21T11:59:51.286184",
+  "run_id": "20260721_115926",
   "max_positions": 3,
   "v1_top": [
-    "TKIM",
-    "HRUM",
-    "TOWR"
+    "AKRA",
+    "ARTO",
+    "AMMN"
   ],
   "v2_top": [],
   "overlap_count": 0,
   "overlap_tickers": [],
   "only_v1": [
-    "HRUM",
-    "TKIM",
-    "TOWR"
+    "AKRA",
+    "AMMN",
+    "ARTO"
   ],
   "only_v2": [],
   "jaccard_overlap": 0.0,
-  "v1_avg_score": 98.4933,
+  "v1_avg_score": 78.4633,
   "v2_avg_p_win": 0.0
 }

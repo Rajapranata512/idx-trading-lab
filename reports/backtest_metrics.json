@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-20T14:37:23.810200",
+  "generated_at": "2026-07-21T12:00:03.698452",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,12 +14,12 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 41.75918018787361,
-      "ProfitFactor": 0.6568916939593064,
-      "Expectancy": -0.00631277302506998,
-      "Trades": 1171,
-      "CAGR": -4.688886238540801,
-      "MaxDD": -20.76167241727186
+      "WinRate": 41.72354948805461,
+      "ProfitFactor": 0.6453173525582364,
+      "Expectancy": -0.0066371035721209766,
+      "Trades": 1172,
+      "CAGR": -4.923457257796193,
+      "MaxDD": -21.680270083678046
     },
     "swing": {
       "WinRate": 58.58050847457628,
@@ -1061,15 +1061,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-07-20",
+    "as_of_date": "2026-07-21",
     "pass": true,
     "status": "risk_on",
     "reason": "All regime checks passed",
     "values": {
-      "breadth_ma50_pct": 70.45454545454545,
-      "breadth_ma20_pct": 93.18181818181817,
-      "avg_ret20_pct": 5.501062189211588,
-      "median_atr_pct": 3.6035846016518014,
+      "breadth_ma50_pct": 72.72727272727273,
+      "breadth_ma20_pct": 88.63636363636364,
+      "avg_ret20_pct": 6.395964835479226,
+      "median_atr_pct": 3.5025185586385144,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -1121,7 +1121,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-07-20",
+    "as_of_date": "2026-07-21",
     "active": true,
     "active_modes": [
       "swing",
@@ -1131,7 +1131,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-07-23",
+    "cooldown_until": "2026-07-24",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {
