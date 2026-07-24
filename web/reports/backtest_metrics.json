@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-23T14:39:29.080085",
+  "generated_at": "2026-07-24T11:56:01.857865",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,11 +14,11 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 41.737649063032364,
-      "ProfitFactor": 0.6454476301798342,
-      "Expectancy": -0.0066276311747330485,
-      "Trades": 1174,
-      "CAGR": -4.916607003022788,
+      "WinRate": 41.702127659574465,
+      "ProfitFactor": 0.6449260438254967,
+      "Expectancy": -0.006637095767850732,
+      "Trades": 1175,
+      "CAGR": -4.92338216074677,
       "MaxDD": -21.680270083678046
     },
     "swing": {
@@ -1061,15 +1061,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-07-23",
+    "as_of_date": "2026-07-24",
     "pass": true,
     "status": "risk_on",
     "reason": "All regime checks passed",
     "values": {
-      "breadth_ma50_pct": 72.72727272727273,
-      "breadth_ma20_pct": 88.63636363636364,
-      "avg_ret20_pct": 7.642720552848805,
-      "median_atr_pct": 3.412659516655344,
+      "breadth_ma50_pct": 65.9090909090909,
+      "breadth_ma20_pct": 81.81818181818183,
+      "avg_ret20_pct": 7.07228877428851,
+      "median_atr_pct": 3.481994846538108,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -1103,8 +1103,8 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.5069821788626168,
-        "rolling_expectancy": -0.009195943813790328,
+        "rolling_pf": 0.4649539311851753,
+        "rolling_expectancy": -0.010098573145225876,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
@@ -1121,7 +1121,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-07-23",
+    "as_of_date": "2026-07-24",
     "active": true,
     "active_modes": [
       "swing",
@@ -1131,7 +1131,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-07-26",
+    "cooldown_until": "2026-07-27",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {
