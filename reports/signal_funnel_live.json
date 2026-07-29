@@ -1,17 +1,16 @@
 {
-  "generated_at": "2026-07-29T13:11:45.737230",
-  "run_id": "20260729_131037",
+  "generated_at": "2026-07-29T14:38:39.603616",
+  "run_id": "20260729_143720",
   "gate_pass": {
     "t1": false,
     "swing": false
   },
   "allowed_modes": [],
   "pre_gate": {
-    "combined_plan_count": 2,
-    "execution_plan_count": 2,
-    "signal_count": 2,
+    "combined_plan_count": 1,
+    "execution_plan_count": 1,
+    "signal_count": 1,
     "by_mode": {
-      "t1": 1,
       "swing": 1
     }
   },
@@ -48,7 +47,7 @@
     "v2_profit_factor_r": 0.0
   },
   "score_funnel": {
-    "generated_at": "2026-07-29T13:10:48.396564",
+    "generated_at": "2026-07-29T14:37:29.887967",
     "thresholds": {
       "min_live_score_t1": 95.0,
       "min_live_score_swing": 68.0,
@@ -70,7 +69,7 @@
         "rank_candidates": 10,
         "after_score_filter": 1,
         "after_event_risk": 1,
-        "small_size_before_filter": 1,
+        "small_size_before_filter": 2,
         "dropped_by_score": 9,
         "dropped_by_event_risk": 0
       },
@@ -78,21 +77,21 @@
         "rank_candidates": 10,
         "after_score_filter": 1,
         "after_event_risk": 1,
-        "small_size_before_filter": 1,
+        "small_size_before_filter": 2,
         "dropped_by_score": 9,
         "dropped_by_event_risk": 0
       }
     },
     "combined": {
       "before_size_filter": 2,
-      "dropped_by_size_filter": 0,
-      "after_size_filter": 2,
-      "after_top_n_combined": 2,
-      "execution_plan_count": 2,
-      "signal_count": 2,
+      "dropped_by_size_filter": 1,
+      "after_size_filter": 1,
+      "after_top_n_combined": 1,
+      "execution_plan_count": 1,
+      "signal_count": 1,
       "avg_roundtrip_cost_est_pct": 0.56,
-      "before_profit_quality_gate": 2,
-      "after_profit_quality_gate": 2,
+      "before_profit_quality_gate": 1,
+      "after_profit_quality_gate": 1,
       "dropped_by_profit_quality": 0
     },
     "event_risk": {
@@ -108,14 +107,14 @@
       "excluded_swing": 0
     },
     "profit_quality": {
-      "generated_at": "2026-07-29T13:10:48.380064",
+      "generated_at": "2026-07-29T14:37:29.871086",
       "stage": "score",
       "status": "ok",
       "enabled": true,
-      "input_count": 2,
-      "output_count": 2,
+      "input_count": 1,
+      "output_count": 1,
       "blocked_count": 0,
-      "watch_count": 2,
+      "watch_count": 1,
       "pass_count": 0,
       "profile_path": "reports/ticker_edge_profile.csv",
       "profile_rows": 0,
