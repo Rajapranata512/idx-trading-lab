@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-30T14:39:18.000462",
+  "generated_at": "2026-07-31T12:15:45.263263",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,19 +14,19 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 41.62436548223351,
-      "ProfitFactor": 0.6455271088712695,
-      "Expectancy": -0.006611423081468965,
-      "Trades": 1182,
-      "CAGR": -4.904816500613207,
+      "WinRate": 41.67371090448014,
+      "ProfitFactor": 0.6455655140848067,
+      "Expectancy": -0.006605118682795293,
+      "Trades": 1183,
+      "CAGR": -4.9002630118890504,
       "MaxDD": -21.68696487811302
     },
     "swing": {
-      "WinRate": 58.56236786469344,
-      "ProfitFactor": 1.3690779886440505,
-      "Expectancy": 0.021703558664914652,
-      "Trades": 946,
-      "CAGR": 17.301188759357665,
+      "WinRate": 58.50052798310455,
+      "ProfitFactor": 1.3616323803238746,
+      "Expectancy": 0.021359426579540385,
+      "Trades": 947,
+      "CAGR": 16.99598413617438,
       "MaxDD": -22.966926729485163
     }
   },
@@ -1061,15 +1061,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-07-30",
+    "as_of_date": "2026-07-31",
     "pass": true,
     "status": "risk_on",
     "reason": "All regime checks passed",
     "values": {
-      "breadth_ma50_pct": 68.18181818181817,
-      "breadth_ma20_pct": 72.72727272727273,
-      "avg_ret20_pct": 9.052414276857528,
-      "median_atr_pct": 3.478154798508092,
+      "breadth_ma50_pct": 72.72727272727273,
+      "breadth_ma20_pct": 77.27272727272727,
+      "avg_ret20_pct": 7.434003945624118,
+      "median_atr_pct": 3.398781189531696,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -1103,16 +1103,16 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.5091590455907676,
-        "rolling_expectancy": -0.008661387214578329,
+        "rolling_pf": 0.5104498860074365,
+        "rolling_expectancy": -0.008626913637802578,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
       "swing": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.9091612536124223,
-        "rolling_expectancy": -0.00573998827178826,
+        "rolling_pf": 0.8402942532491657,
+        "rolling_expectancy": -0.010698869222563637,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       }
@@ -1121,7 +1121,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-07-30",
+    "as_of_date": "2026-07-31",
     "active": true,
     "active_modes": [
       "swing",
@@ -1131,7 +1131,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-08-02",
+    "cooldown_until": "2026-08-03",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {
