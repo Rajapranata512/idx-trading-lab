@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-31T14:46:13.875938",
-  "run_id": "20260731_144438",
+  "generated_at": "2026-08-03T13:20:31.345409",
+  "run_id": "20260803_131918",
   "gate_pass": {
     "t1": false,
     "swing": false
@@ -34,21 +34,21 @@
   "signal_accuracy": {
     "status": "ok",
     "json_path": "reports/signal_accuracy_audit.json",
-    "audited_trade_count": 11667,
-    "live_threshold_trade_count": 6751,
-    "live_expectancy_r": -0.128,
+    "audited_trade_count": 11677,
+    "live_threshold_trade_count": 6759,
+    "live_expectancy_r": -0.1281,
     "live_profit_factor_r": 0.5681
   },
   "model_v2_accuracy": {
     "status": "ok",
     "json_path": "reports/model_v2_accuracy_audit.json",
-    "audited_trade_count": 11667,
+    "audited_trade_count": 11677,
     "v2_recommended_count": 0,
     "v2_expectancy_r": 0.0,
     "v2_profit_factor_r": 0.0
   },
   "score_funnel": {
-    "generated_at": "2026-07-31T14:44:45.933625",
+    "generated_at": "2026-08-03T13:19:36.155888",
     "thresholds": {
       "min_live_score_t1": 95.0,
       "min_live_score_swing": 68.0,
@@ -76,16 +76,16 @@
       },
       "swing": {
         "rank_candidates": 10,
-        "after_score_filter": 4,
-        "after_event_risk": 4,
-        "small_size_before_filter": 1,
-        "dropped_by_score": 6,
+        "after_score_filter": 5,
+        "after_event_risk": 5,
+        "small_size_before_filter": 2,
+        "dropped_by_score": 5,
         "dropped_by_event_risk": 0
       }
     },
     "combined": {
-      "before_size_filter": 8,
-      "dropped_by_size_filter": 2,
+      "before_size_filter": 9,
+      "dropped_by_size_filter": 3,
       "after_size_filter": 6,
       "after_top_n_combined": 6,
       "execution_plan_count": 3,
@@ -100,7 +100,7 @@
       "status": "ok",
       "message": "Event-risk filter applied",
       "path": "data/reference/event_risk_blacklist.csv",
-      "as_of_date": "2026-07-31",
+      "as_of_date": "2026-08-03",
       "active_events": 4,
       "excluded_count": 0,
       "excluded_tickers": [],
@@ -108,7 +108,7 @@
       "excluded_swing": 0
     },
     "profit_quality": {
-      "generated_at": "2026-07-31T14:44:45.912234",
+      "generated_at": "2026-08-03T13:19:36.140487",
       "stage": "score",
       "status": "ok",
       "enabled": true,
