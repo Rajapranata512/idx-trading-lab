@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-03T13:51:21.090699",
+  "generated_at": "2026-08-03T15:24:42.582176",
   "status": "no_signals",
   "message": "Snapshot files found, but all have zero executable signals",
   "lookback_days": 45,
   "fills_csv_path": "data/live/trade_fills.csv",
   "snapshot_dir": "reports/snapshots",
   "counts": {
-    "snapshot_files_total": 163,
+    "snapshot_files_total": 164,
     "snapshot_files_in_window": 100,
     "snapshot_files_with_signals": 0,
     "signals_total": 0,
