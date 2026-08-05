@@ -1,30 +1,12 @@
 {
-  "generated_at": "2026-08-05T13:04:12.900325",
-  "run_id": "20260805_130347",
+  "generated_at": "2026-08-05T14:43:13.358875",
+  "run_id": "20260805_144253",
   "signals": [
-    {
-      "ticker": "TKIM",
-      "mode": "swing",
-      "score": 72.35,
-      "shadow_rank": 1,
-      "shadow_p_win": 0.4623,
-      "shadow_expected_r": -0.1164,
-      "shadow_threshold": 0.6125,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "shadow_status": "ready",
-      "shadow_block_reason": "",
-      "entry": 7200.0,
-      "stop": 6603.15,
-      "tp1": 7796.85,
-      "tp2": 8393.69,
-      "size": 100
-    },
     {
       "ticker": "INTP",
       "mode": "swing",
       "score": 71.65,
-      "shadow_rank": 2,
+      "shadow_rank": 1,
       "shadow_p_win": 0.4557,
       "shadow_expected_r": -0.1272,
       "shadow_threshold": 0.6125,
@@ -42,7 +24,7 @@
       "ticker": "AMMN",
       "mode": "swing",
       "score": 72.6,
-      "shadow_rank": 3,
+      "shadow_rank": 2,
       "shadow_p_win": 0.4446,
       "shadow_expected_r": -0.1456,
       "shadow_threshold": 0.6125,
@@ -60,7 +42,7 @@
       "ticker": "INCO",
       "mode": "t1",
       "score": 100.0,
-      "shadow_rank": 4,
+      "shadow_rank": 3,
       "shadow_p_win": 0.2778,
       "shadow_expected_r": -0.151,
       "shadow_threshold": 0.52,
@@ -78,7 +60,7 @@
       "ticker": "INTP",
       "mode": "t1",
       "score": 99.96,
-      "shadow_rank": 5,
+      "shadow_rank": 4,
       "shadow_p_win": 0.2755,
       "shadow_expected_r": -0.1524,
       "shadow_threshold": 0.52,
@@ -96,7 +78,7 @@
       "ticker": "KLBF",
       "mode": "t1",
       "score": 97.54,
-      "shadow_rank": 6,
+      "shadow_rank": 5,
       "shadow_p_win": 0.2753,
       "shadow_expected_r": -0.1525,
       "shadow_threshold": 0.52,
@@ -114,7 +96,7 @@
       "ticker": "MBMA",
       "mode": "t1",
       "score": 97.35,
-      "shadow_rank": 7,
+      "shadow_rank": 6,
       "shadow_p_win": 0.275,
       "shadow_expected_r": -0.1527,
       "shadow_threshold": 0.52,
@@ -126,25 +108,7 @@
       "stop": 501.19,
       "tp1": 598.81,
       "tp2": 647.62,
-      "size": 1200
-    },
-    {
-      "ticker": "TKIM",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 8,
-      "shadow_p_win": 0.2747,
-      "shadow_expected_r": -0.1529,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "shadow_status": "ready",
-      "shadow_block_reason": "",
-      "entry": 7200.0,
-      "stop": 6603.15,
-      "tp1": 7796.85,
-      "tp2": 8393.69,
-      "size": 100
+      "size": 1100
     }
   ],
   "infer": {
@@ -152,7 +116,7 @@
     "message": "Shadow inference completed",
     "modes": {
       "swing": {
-        "rows": 3,
+        "rows": 2,
         "source": "model",
         "threshold": 0.6125,
         "thresholds_by_regime": {
@@ -412,7 +376,7 @@
         "block_reason": ""
       },
       "t1": {
-        "rows": 5,
+        "rows": 4,
         "source": "model",
         "threshold": 0.52,
         "thresholds_by_regime": {
@@ -655,7 +619,7 @@
         "block_reason": ""
       }
     },
-    "rows": 8,
+    "rows": 6,
     "ready_modes": [
       "swing",
       "t1"
