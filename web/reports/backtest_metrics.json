@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T14:43:28.565970",
+  "generated_at": "2026-08-06T12:18:03.123467",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,11 +14,11 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 41.65261382799326,
-      "ProfitFactor": 0.6450980449562229,
-      "Expectancy": -0.006608967812373746,
-      "Trades": 1186,
-      "CAGR": -4.902962920369469,
+      "WinRate": 41.70176916596461,
+      "ProfitFactor": 0.6452418665172251,
+      "Expectancy": -0.0066007240393050354,
+      "Trades": 1187,
+      "CAGR": -4.897016388506548,
       "MaxDD": -21.68696487811302
     },
     "swing": {
@@ -1129,15 +1129,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-08-05",
+    "as_of_date": "2026-08-06",
     "pass": true,
     "status": "risk_on",
     "reason": "All regime checks passed",
     "values": {
-      "breadth_ma50_pct": 84.0909090909091,
+      "breadth_ma50_pct": 81.81818181818183,
       "breadth_ma20_pct": 81.81818181818183,
-      "avg_ret20_pct": 10.809226589564656,
-      "median_atr_pct": 3.3716912059978035,
+      "avg_ret20_pct": 9.20358125621436,
+      "median_atr_pct": 3.3656213717184236,
       "sample_tickers": 44
     },
     "thresholds": {
@@ -1171,8 +1171,8 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.5031868048229658,
-        "rolling_expectancy": -0.008800000769766043,
+        "rolling_pf": 0.48398824189545164,
+        "rolling_expectancy": -0.009140062930313783,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
@@ -1189,7 +1189,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-08-05",
+    "as_of_date": "2026-08-06",
     "active": true,
     "active_modes": [
       "swing",
@@ -1199,7 +1199,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-08-08",
+    "cooldown_until": "2026-08-09",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {
