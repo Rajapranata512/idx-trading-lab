@@ -106,11 +106,25 @@ Use `status=confirmed` only with a traceable source. An unexplained price jump
 above the configured threshold quarantines that ticker for three days and blocks
 the production run while the anomaly is active.
 
+Legitimate non-corporate market events belong in
+`data/reference/verified_price_events.csv`:
+
+```text
+ticker,event_date,event_type,status,source
+```
+
+A confirmed row resolves only the exact ticker/date anomaly and never adjusts
+OHLCV. For example, the GOTO jump on 2023-05-31 is annotated as an MSCI index
+rebalance event with the official MSCI review document as its traceable source.
+
 Price reconciliation compares the primary provider with an independent CSV or
 yfinance. It checks recent close prices, overlap coverage, and mismatch ratio.
-Production currently warns when the independent source is unavailable because
-`reconciliation_required=false`; switch it to `true` only after a dependable
-secondary source is continuously available.
+When EODHD is primary, set `EODHD_API_TOKEN` so yfinance remains independent. If
+the primary provider falls back to yfinance, configure a separate reference CSV;
+yfinance cannot reconcile against itself. Production currently warns when the
+independent source is unavailable because `reconciliation_required=false`;
+switch it to `true` only after a dependable secondary source is continuously
+available.
 
 ## Validation
 

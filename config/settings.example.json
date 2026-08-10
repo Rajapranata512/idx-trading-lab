@@ -91,6 +91,7 @@
       "adjusted_prices_path": "data/processed/prices_daily_adjusted.csv",
       "use_adjusted_for_features": true,
       "corporate_actions_path": "data/reference/corporate_actions.csv",
+      "verified_price_events_path": "data/reference/verified_price_events.csv",
       "anomaly_report_path": "reports/corporate_action_anomalies.csv",
       "reconciliation_report_path": "reports/price_reconciliation.json",
       "outlier_threshold_pct": 25,

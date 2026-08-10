@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from src.cli import _load_price_reconciliation_reference
 from src.config import load_settings
 
 
@@ -15,6 +16,7 @@ def test_production_settings_enable_stage123_fail_closed_gates():
     assert settings.data.universe_auto_update.expected_lq45_members == 45
     assert settings.data.universe_auto_update.expected_idx30_members == 30
     assert settings.data.price_quality.use_adjusted_for_features is True
+    assert settings.data.price_quality.verified_price_events_path.endswith("verified_price_events.csv")
     assert settings.data.price_quality.block_on_active_unresolved_action is True
 
 
@@ -38,3 +40,19 @@ def test_vercel_watchdog_cron_targets_preopen_endpoint():
             "schedule": "15 1 * * 1-5",
         }
     ]
+
+def test_yfinance_primary_fallback_explains_missing_independent_reconciliation():
+    settings = load_settings("config/settings.json")
+
+    reference, source, error = _load_price_reconciliation_reference(
+        settings=settings,
+        primary_source="yfinance_fallback",
+        tickers=["BBCA"],
+        start_date="2026-08-01",
+        end_date="2026-08-10",
+    )
+
+    assert reference is None
+    assert source == ""
+    assert "EODHD_API_TOKEN" in error
+    assert "independent reconciliation" in error

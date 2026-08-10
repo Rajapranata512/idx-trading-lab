@@ -19,11 +19,16 @@ _ACTION_COLUMNS = [
     "status",
     "source",
 ]
+_EVENT_COLUMNS = ["ticker", "event_date", "event_type", "status", "source"]
 _SPLIT_ACTIONS = {"stock_split", "reverse_split"}
 
 
 def _empty_actions() -> pd.DataFrame:
     return pd.DataFrame(columns=_ACTION_COLUMNS)
+
+
+def _empty_events() -> pd.DataFrame:
+    return pd.DataFrame(columns=_EVENT_COLUMNS)
 
 
 def load_corporate_actions(path: str | Path) -> pd.DataFrame:
@@ -37,12 +42,12 @@ def load_corporate_actions(path: str | Path) -> pd.DataFrame:
         raise ValueError(f"Corporate-action reference is missing columns: {missing}")
 
     actions = frame[_ACTION_COLUMNS].copy()
-    actions["ticker"] = actions["ticker"].astype(str).str.upper().str.strip()
+    actions["ticker"] = actions["ticker"].fillna("").astype(str).str.upper().str.strip()
     actions["effective_date"] = pd.to_datetime(actions["effective_date"], errors="coerce")
-    actions["action_type"] = actions["action_type"].astype(str).str.lower().str.strip()
+    actions["action_type"] = actions["action_type"].fillna("").astype(str).str.lower().str.strip()
     actions["ratio"] = pd.to_numeric(actions["ratio"], errors="coerce")
-    actions["status"] = actions["status"].astype(str).str.lower().str.strip()
-    actions["source"] = actions["source"].astype(str).str.strip()
+    actions["status"] = actions["status"].fillna("").astype(str).str.lower().str.strip()
+    actions["source"] = actions["source"].fillna("").astype(str).str.strip()
 
     invalid = (
         actions["ticker"].str.fullmatch(r"[A-Z]{4,6}").fillna(False).eq(False)
@@ -60,6 +65,38 @@ def load_corporate_actions(path: str | Path) -> pd.DataFrame:
             + json.dumps(sample, ensure_ascii=True)
         )
     return actions.sort_values(["ticker", "effective_date"]).reset_index(drop=True)
+
+
+def load_verified_price_events(path: str | Path) -> pd.DataFrame:
+    event_path = Path(path)
+    if not event_path.exists():
+        return _empty_events()
+
+    frame = pd.read_csv(event_path)
+    missing = [column for column in _EVENT_COLUMNS if column not in frame.columns]
+    if missing:
+        raise ValueError(f"Verified price-event reference is missing columns: {missing}")
+
+    events = frame[_EVENT_COLUMNS].copy()
+    events["ticker"] = events["ticker"].fillna("").astype(str).str.upper().str.strip()
+    events["event_date"] = pd.to_datetime(events["event_date"], errors="coerce")
+    events["event_type"] = events["event_type"].fillna("").astype(str).str.lower().str.strip()
+    events["status"] = events["status"].fillna("").astype(str).str.lower().str.strip()
+    events["source"] = events["source"].fillna("").astype(str).str.strip()
+    invalid = (
+        events["ticker"].str.fullmatch(r"[A-Z]{4,6}").fillna(False).eq(False)
+        | events["event_date"].isna()
+        | events["event_type"].eq("")
+        | events["status"].eq("")
+        | events["source"].eq("")
+    )
+    if bool(invalid.any()):
+        sample = events.loc[invalid].head(5).astype(str).to_dict(orient="records")
+        raise ValueError(
+            "Verified price-event reference contains invalid rows. Sample: "
+            + json.dumps(sample, ensure_ascii=True)
+        )
+    return events.sort_values(["ticker", "event_date"]).reset_index(drop=True)
 
 
 def build_split_adjusted_prices(
@@ -109,6 +146,7 @@ def classify_price_anomalies(
     corporate_actions: pd.DataFrame,
     threshold_pct: float,
     quarantine_days: int,
+    verified_events: pd.DataFrame | None = None,
 ) -> tuple[pd.DataFrame, list[str]]:
     work = prices[_PRICE_COLUMNS].copy()
     work["date"] = pd.to_datetime(work["date"], errors="coerce")
@@ -130,10 +168,15 @@ def classify_price_anomalies(
         "prev_close",
         "close",
         "change_pct",
+        "resolved",
         "resolved_by_action",
         "action_type",
         "action_effective_date",
         "action_source",
+        "resolved_by_event",
+        "event_type",
+        "event_date",
+        "event_source",
         "active_quarantine",
         "quarantine_until",
     ]
@@ -141,6 +184,11 @@ def classify_price_anomalies(
         return pd.DataFrame(columns=columns), []
 
     confirmed = corporate_actions[corporate_actions["status"].eq("confirmed")].copy()
+    confirmed_events = (
+        verified_events[verified_events["status"].eq("confirmed")].copy()
+        if verified_events is not None and not verified_events.empty
+        else _empty_events()
+    )
     max_data_date = pd.Timestamp(work["date"].max()).normalize()
     records: list[dict[str, Any]] = []
     for _, row in anomaly.iterrows():
@@ -156,13 +204,23 @@ def classify_price_anomalies(
             if "distance_days" in ticker_actions.columns
             else ticker_actions.head(0)
         )
-        resolved = not matched.empty
+        action_resolved = not matched.empty
+        ticker_events = confirmed_events
+        if not confirmed_events.empty:
+            ticker_events = confirmed_events[
+                confirmed_events["ticker"].eq(str(row["ticker"]))
+                & confirmed_events["event_date"].dt.normalize().eq(anomaly_date)
+            ]
+        matched_event = ticker_events.head(1)
+        event_resolved = not matched_event.empty
+        resolved = action_resolved or event_resolved
         active = (
             not resolved
             and anomaly_date <= max_data_date
             and (max_data_date - anomaly_date).days <= max(0, int(quarantine_days))
         )
-        action = matched.iloc[0] if resolved else None
+        action = matched.iloc[0] if action_resolved else None
+        event = matched_event.iloc[0] if event_resolved else None
         records.append(
             {
                 "ticker": str(row["ticker"]),
@@ -170,7 +228,8 @@ def classify_price_anomalies(
                 "prev_close": round(float(row["prev_close"]), 6),
                 "close": round(float(row["close"]), 6),
                 "change_pct": round(float(row["change_pct"]), 4),
-                "resolved_by_action": bool(resolved),
+                "resolved": bool(resolved),
+                "resolved_by_action": bool(action_resolved),
                 "action_type": str(action["action_type"]) if action is not None else "",
                 "action_effective_date": (
                     pd.Timestamp(action["effective_date"]).date().isoformat()
@@ -178,6 +237,14 @@ def classify_price_anomalies(
                     else ""
                 ),
                 "action_source": str(action["source"]) if action is not None else "",
+                "resolved_by_event": bool(event_resolved),
+                "event_type": str(event["event_type"]) if event is not None else "",
+                "event_date": (
+                    pd.Timestamp(event["event_date"]).date().isoformat()
+                    if event is not None
+                    else ""
+                ),
+                "event_source": str(event["source"]) if event is not None else "",
                 "active_quarantine": bool(active),
                 "quarantine_until": (
                     (anomaly_date + timedelta(days=max(0, int(quarantine_days))))
@@ -273,8 +340,10 @@ def run_price_quality_audit(
     reconciliation_reference: pd.DataFrame | None = None,
     primary_source: str = "",
     reference_source: str = "",
+    reconciliation_unavailable_reason: str = "",
 ) -> dict[str, Any]:
     actions = load_corporate_actions(config.corporate_actions_path)
+    verified_events = load_verified_price_events(config.verified_price_events_path)
     adjusted = build_split_adjusted_prices(prices, actions)
     adjusted_path = Path(config.adjusted_prices_path)
     adjusted_path.parent.mkdir(parents=True, exist_ok=True)
@@ -285,6 +354,7 @@ def run_price_quality_audit(
         corporate_actions=actions,
         threshold_pct=float(config.outlier_threshold_pct),
         quarantine_days=int(config.quarantine_days),
+        verified_events=verified_events,
     )
     anomaly_path = Path(config.anomaly_report_path)
     anomaly_path.parent.mkdir(parents=True, exist_ok=True)
@@ -300,7 +370,10 @@ def run_price_quality_audit(
         reconciliation = {
             "status": "unavailable",
             "pass": not bool(config.reconciliation_required),
-            "message": "Independent reconciliation source is not configured or unavailable",
+            "message": (
+                str(reconciliation_unavailable_reason).strip()
+                or "Independent reconciliation source is not configured or unavailable"
+            ),
             "rows_compared": 0,
         }
     else:
@@ -325,14 +398,16 @@ def run_price_quality_audit(
     )
 
     unresolved = (
-        anomalies["resolved_by_action"].eq(False)
-        if "resolved_by_action" in anomalies.columns
+        anomalies["resolved"].eq(False)
+        if "resolved" in anomalies.columns
         else pd.Series(dtype=bool)
     )
     return {
         "adjusted_prices_path": str(adjusted_path),
         "corporate_actions_path": str(config.corporate_actions_path),
         "corporate_actions_count": int(len(actions)),
+        "verified_price_events_path": str(config.verified_price_events_path),
+        "verified_price_events_count": int(len(verified_events)),
         "anomaly_report_path": str(anomaly_path),
         "anomaly_count": int(len(anomalies)),
         "unresolved_anomaly_count": int(unresolved.sum()) if len(unresolved) else 0,

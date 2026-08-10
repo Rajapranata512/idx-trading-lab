@@ -131,6 +131,13 @@ def _load_price_reconciliation_reference(
         except Exception as exc:
             return None, "", f"yfinance reconciliation failed: {exc}"
 
+    if primary_source == "yfinance_fallback":
+        return (
+            None,
+            "",
+            "Primary EOD provider fell back to yfinance; configure EODHD_API_TOKEN "
+            "or reconciliation_reference_csv_path to enable independent reconciliation",
+        )
     return None, "", "No independent reconciliation source available for selected primary provider"
 
 
@@ -254,9 +261,13 @@ def _evaluate_data_quality(
             & (((sorted_work["close"] - sorted_work["prev_close"]) / sorted_work["prev_close"]).abs() > threshold)
         )
         stats["outlier_rows"] = int(outlier_mask.sum())
-    if stats["outlier_rows"] > 0:
+    has_anomaly_audit = "anomaly_count" in price_quality
+    unresolved_outliers = (
+        stats["unresolved_anomaly_count"] if has_anomaly_audit else stats["outlier_rows"]
+    )
+    if unresolved_outliers > 0:
         warning_codes.append("price_outliers")
-    checks["outlier_ok"] = stats["outlier_rows"] == 0
+    checks["outlier_ok"] = unresolved_outliers == 0
 
     block_active = bool(price_quality.get("block_on_active_unresolved_action", True))
     checks["corporate_actions_ok"] = not (
@@ -362,6 +373,7 @@ def ingest_daily(
         reconciliation_reference=reference,
         primary_source=source,
         reference_source=reference_source,
+        reconciliation_unavailable_reason=reference_error,
     )
     max_date = pd.to_datetime(to_save["date"], errors="coerce").max()
     min_date = pd.to_datetime(to_save["date"], errors="coerce").min()

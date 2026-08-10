@@ -128,3 +128,36 @@ def test_evaluate_data_quality_warns_but_allows_price_outliers(tmp_path, monkeyp
     assert report["reason_codes"] == []
     assert "price_outliers" in report["warning_codes"]
     assert report["checks"]["outlier_ok"] is False
+
+
+def test_evaluate_data_quality_clears_warning_for_verified_historical_outlier(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "data/raw").mkdir(parents=True, exist_ok=True)
+    today = datetime.utcnow().date()
+    previous = today - timedelta(days=1)
+    prices_path = "data/raw/prices_daily.csv"
+    (tmp_path / prices_path).write_text(
+        "date,ticker,open,high,low,close,volume\n"
+        f"{previous:%Y-%m-%d},BBCA,10000,10000,10000,10000,1000000\n"
+        f"{today:%Y-%m-%d},BBCA,14000,14000,14000,14000,1000000\n",
+        encoding="utf-8",
+    )
+    settings = load_settings(_write_settings(tmp_path, prices_path))
+    ingest_info = {
+        "missing_tickers_count": 0,
+        "price_quality": {
+            "anomaly_count": 1,
+            "unresolved_anomaly_count": 0,
+            "active_unresolved_count": 0,
+            "block_on_active_unresolved_action": True,
+            "reconciliation": {"status": "disabled", "required": False},
+        },
+    }
+
+    report = _evaluate_data_quality(settings=settings, ingest_info=ingest_info)
+
+    assert report["status"] == "pass"
+    assert report["stats"]["outlier_rows"] == 1
+    assert report["checks"]["outlier_ok"] is True
+    assert "price_outliers" not in report["warning_codes"]
+    assert "historical_unresolved_price_anomalies" not in report["warning_codes"]

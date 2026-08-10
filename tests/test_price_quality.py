@@ -8,6 +8,7 @@ from src.config import PriceQualitySettings
 from src.ingest.quality import (
     build_split_adjusted_prices,
     classify_price_anomalies,
+    load_verified_price_events,
     reconcile_price_frames,
     run_price_quality_audit,
 )
@@ -42,6 +43,20 @@ def _actions(status: str = "confirmed") -> pd.DataFrame:
                 "ratio": 2.0,
                 "status": status,
                 "source": "IDX",
+            }
+        ]
+    )
+
+
+def _events(status: str = "confirmed") -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "ticker": "TEST",
+                "event_date": pd.Timestamp("2026-01-02"),
+                "event_type": "index_rebalance",
+                "status": status,
+                "source": "https://example.test/index-review.pdf",
             }
         ]
     )
@@ -89,6 +104,53 @@ def test_confirmed_action_resolves_jump_without_quarantine():
     assert anomalies.iloc[0]["action_type"] == "stock_split"
 
 
+def test_verified_event_resolves_exact_jump_without_adjusting_prices():
+    raw = _prices([100.0, 150.0, 152.0])
+    actions = pd.DataFrame(
+        columns=["ticker", "effective_date", "action_type", "ratio", "status", "source"]
+    )
+
+    anomalies, quarantined = classify_price_anomalies(
+        prices=raw,
+        corporate_actions=actions,
+        threshold_pct=25.0,
+        quarantine_days=3,
+        verified_events=_events(),
+    )
+    adjusted = build_split_adjusted_prices(raw, actions)
+
+    assert quarantined == []
+    assert len(anomalies) == 1
+    assert bool(anomalies.iloc[0]["resolved"]) is True
+    assert bool(anomalies.iloc[0]["resolved_by_action"]) is False
+    assert bool(anomalies.iloc[0]["resolved_by_event"]) is True
+    assert anomalies.iloc[0]["event_type"] == "index_rebalance"
+    assert adjusted["close"].tolist() == raw["close"].tolist()
+    assert adjusted["price_basis"].eq("raw").all()
+
+
+def test_verified_event_loader_rejects_rows_without_traceable_source(tmp_path: Path):
+    path = tmp_path / "events.csv"
+    pd.DataFrame(
+        [
+            {
+                "ticker": "TEST",
+                "event_date": "2026-01-02",
+                "event_type": "index_rebalance",
+                "status": "confirmed",
+                "source": "",
+            }
+        ]
+    ).to_csv(path, index=False)
+
+    try:
+        load_verified_price_events(path)
+    except ValueError as exc:
+        assert "invalid rows" in str(exc)
+    else:
+        raise AssertionError("Untraceable verified event must be rejected")
+
+
 def test_price_reconciliation_fails_material_close_disagreement():
     primary = _prices([100.0, 100.0])
     reference = _prices([100.0, 90.0])
@@ -110,6 +172,7 @@ def test_price_quality_audit_writes_separate_adjusted_and_reports(tmp_path: Path
     config = PriceQualitySettings(
         adjusted_prices_path=str(tmp_path / "adjusted.csv"),
         corporate_actions_path=str(tmp_path / "actions.csv"),
+        verified_price_events_path=str(tmp_path / "events.csv"),
         anomaly_report_path=str(tmp_path / "anomalies.csv"),
         reconciliation_report_path=str(tmp_path / "reconciliation.json"),
         reconciliation_enabled=True,
@@ -118,6 +181,10 @@ def test_price_quality_audit_writes_separate_adjusted_and_reports(tmp_path: Path
     pd.DataFrame(
         columns=["ticker", "effective_date", "action_type", "ratio", "status", "source"]
     ).to_csv(config.corporate_actions_path, index=False)
+    pd.DataFrame(columns=["ticker", "event_date", "event_type", "status", "source"]).to_csv(
+        config.verified_price_events_path,
+        index=False,
+    )
 
     result = run_price_quality_audit(
         prices=_prices([100.0, 101.0]),
@@ -133,3 +200,36 @@ def test_price_quality_audit_writes_separate_adjusted_and_reports(tmp_path: Path
     assert Path(config.reconciliation_report_path).exists()
     assert result["reconciliation"]["pass"] is True
     assert result["quarantined_tickers"] == []
+
+
+def test_price_quality_audit_preserves_actionable_reconciliation_reason(tmp_path: Path):
+    config = PriceQualitySettings(
+        adjusted_prices_path=str(tmp_path / "adjusted.csv"),
+        corporate_actions_path=str(tmp_path / "actions.csv"),
+        verified_price_events_path=str(tmp_path / "events.csv"),
+        anomaly_report_path=str(tmp_path / "anomalies.csv"),
+        reconciliation_report_path=str(tmp_path / "reconciliation.json"),
+        reconciliation_enabled=True,
+        reconciliation_required=False,
+    )
+    pd.DataFrame(
+        columns=["ticker", "effective_date", "action_type", "ratio", "status", "source"]
+    ).to_csv(config.corporate_actions_path, index=False)
+    pd.DataFrame(columns=["ticker", "event_date", "event_type", "status", "source"]).to_csv(
+        config.verified_price_events_path,
+        index=False,
+    )
+    reason = "Primary provider fell back; configure an independent source"
+
+    result = run_price_quality_audit(
+        prices=_prices([100.0, 101.0]),
+        config=config,
+        reconciliation_primary=_prices([100.0, 101.0]),
+        reconciliation_reference=None,
+        primary_source="yfinance_fallback",
+        reconciliation_unavailable_reason=reason,
+    )
+
+    assert result["reconciliation"]["status"] == "unavailable"
+    assert result["reconciliation"]["pass"] is True
+    assert result["reconciliation"]["message"] == reason

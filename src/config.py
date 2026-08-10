@@ -85,6 +85,7 @@ class PriceQualitySettings(BaseModel):
     adjusted_prices_path: str = "data/processed/prices_daily_adjusted.csv"
     use_adjusted_for_features: bool = True
     corporate_actions_path: str = "data/reference/corporate_actions.csv"
+    verified_price_events_path: str = "data/reference/verified_price_events.csv"
     anomaly_report_path: str = "reports/corporate_action_anomalies.csv"
     reconciliation_report_path: str = "reports/price_reconciliation.json"
     outlier_threshold_pct: float = 25.0
