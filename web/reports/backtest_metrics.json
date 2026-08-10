@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-10T13:52:56.720056",
+  "generated_at": "2026-08-10T16:25:38.817374",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -15,18 +15,18 @@
   "metrics": {
     "t1": {
       "WinRate": 41.71572750210261,
-      "ProfitFactor": 0.6449479553768813,
-      "Expectancy": -0.006599616057401841,
+      "ProfitFactor": 0.648604163741816,
+      "Expectancy": -0.006531655396977769,
       "Trades": 1189,
-      "CAGR": -4.896173340488474,
+      "CAGR": -4.847444512270416,
       "MaxDD": -21.68696487811302
     },
     "swing": {
       "WinRate": 58.54430379746836,
-      "ProfitFactor": 1.3665085630465559,
-      "Expectancy": 0.021624598208842986,
+      "ProfitFactor": 1.367785138837053,
+      "Expectancy": 0.02167966536443698,
       "Trades": 948,
-      "CAGR": 17.23003375155936,
+      "CAGR": 17.27925021899326,
       "MaxDD": -22.966926729485163
     }
   },
@@ -1135,10 +1135,10 @@
     "reason": "All regime checks passed",
     "values": {
       "breadth_ma50_pct": 79.54545454545455,
-      "breadth_ma20_pct": 72.72727272727273,
-      "avg_ret20_pct": 7.428365915767618,
-      "median_atr_pct": 3.2475582405238637,
-      "sample_tickers": 44
+      "breadth_ma20_pct": 76.78571428571429,
+      "avg_ret20_pct": 8.863456913442702,
+      "median_atr_pct": 3.475173484826681,
+      "sample_tickers": 56
     },
     "thresholds": {
       "min_breadth_ma50_pct": 45.0,
@@ -1171,16 +1171,16 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.4546217600237423,
-        "rolling_expectancy": -0.009627865336864107,
+        "rolling_pf": 0.5118377289621542,
+        "rolling_expectancy": -0.008617800021311343,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
       "swing": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.9085706117114054,
-        "rolling_expectancy": -0.006007761446639321,
+        "rolling_pf": 0.9176839452015357,
+        "rolling_expectancy": -0.005355215652850506,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       }

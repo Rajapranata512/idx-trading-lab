@@ -1,0 +1,9 @@
+{
+  "status": "unavailable",
+  "pass": true,
+  "message": "Independent reconciliation source is not configured or unavailable",
+  "rows_compared": 0,
+  "required": false,
+  "primary_source": "yfinance_fallback",
+  "reference_source": ""
+}

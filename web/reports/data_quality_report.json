@@ -1,27 +1,55 @@
 {
-  "generated_at": "2026-08-10T13:51:06.932032",
+  "generated_at": "2026-08-10T16:24:29.755876+00:00",
   "status": "warning",
   "pass": true,
   "reason_codes": [],
   "warning_codes": [
-    "price_outliers"
+    "price_outliers",
+    "historical_unresolved_price_anomalies",
+    "price_reconciliation_unavailable"
   ],
   "checks": {
     "stale_ok": true,
     "missing_ok": true,
     "duplicate_ok": true,
     "missing_tickers_ok": true,
-    "outlier_ok": false
+    "outlier_ok": false,
+    "corporate_actions_ok": true,
+    "reconciliation_ok": true
   },
   "stats": {
-    "rows_total": 52589,
-    "ticker_total": 44,
+    "rows_total": 52841,
+    "ticker_total": 56,
     "max_data_date": "2026-08-10",
     "stale_days": 0,
     "missing_rows": 0,
     "duplicate_rows": 0,
     "missing_tickers_count": 0,
-    "outlier_rows": 1
+    "outlier_rows": 1,
+    "unresolved_anomaly_count": 1,
+    "active_unresolved_count": 0,
+    "reconciliation_rows": 0,
+    "reconciliation_mismatch_ratio": null
   },
-  "message": "Data quality checks passed with warnings: price_outliers"
+  "price_quality": {
+    "adjusted_prices_path": "data/processed/prices_daily_adjusted.csv",
+    "corporate_actions_path": "data/reference/corporate_actions.csv",
+    "corporate_actions_count": 0,
+    "anomaly_report_path": "reports/corporate_action_anomalies.csv",
+    "anomaly_count": 1,
+    "unresolved_anomaly_count": 1,
+    "active_unresolved_count": 0,
+    "quarantined_tickers": [],
+    "block_on_active_unresolved_action": true,
+    "reconciliation": {
+      "status": "unavailable",
+      "pass": true,
+      "message": "Independent reconciliation source is not configured or unavailable",
+      "rows_compared": 0,
+      "required": false,
+      "primary_source": "yfinance_fallback",
+      "reference_source": ""
+    }
+  },
+  "message": "Data quality checks passed with warnings: price_outliers, historical_unresolved_price_anomalies, price_reconciliation_unavailable"
 }

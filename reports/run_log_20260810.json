@@ -6464,5 +6464,2240 @@
     "extra": {
       "path": "reports/beginner_coaching.md"
     }
+  },
+  {
+    "ts": "2026-08-10T16:24:12.854221",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "start_run",
+    "extra": {
+      "command": "run-daily"
+    }
+  },
+  {
+    "ts": "2026-08-10T16:24:12.885052",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "universe_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "validated_current",
+      "message": "Point-in-time IDX universe snapshot is current and valid",
+      "updated": false,
+      "attempted_at": "2026-08-10T16:24:12.854238",
+      "last_success_at": "2026-08-10T16:24:12.854238",
+      "universe_path": "data/reference/universe_lq45_idx30.csv",
+      "history_path": "data/reference/universe_history.csv",
+      "as_of": "2026-08-10",
+      "effective_from": "2026-08-03",
+      "effective_until": "2026-10-30",
+      "days_until_expiry": 81,
+      "counts": {
+        "lq45": 45,
+        "idx30": 30,
+        "combined": 45
+      },
+      "source_documents": [
+        "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/No.%20Peng-00148_BEI.POP_07-2026-ID.zip"
+      ],
+      "errors": []
+    }
+  },
+  {
+    "ts": "2026-08-10T16:24:29.684710",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "ingest_done",
+    "extra": {
+      "rows": 52841,
+      "rows_new": 945,
+      "tickers": 56,
+      "source": "yfinance_fallback",
+      "max_data_date": "2026-08-10",
+      "min_data_date": "2021-06-30",
+      "missing_tickers_count": 0,
+      "missing_tickers_sample": [],
+      "out_path": "data/raw/prices_daily.csv",
+      "price_quality": {
+        "adjusted_prices_path": "data/processed/prices_daily_adjusted.csv",
+        "corporate_actions_path": "data/reference/corporate_actions.csv",
+        "corporate_actions_count": 0,
+        "anomaly_report_path": "reports/corporate_action_anomalies.csv",
+        "anomaly_count": 1,
+        "unresolved_anomaly_count": 1,
+        "active_unresolved_count": 0,
+        "quarantined_tickers": [],
+        "block_on_active_unresolved_action": true,
+        "reconciliation": {
+          "status": "unavailable",
+          "pass": true,
+          "message": "Independent reconciliation source is not configured or unavailable",
+          "rows_compared": 0,
+          "required": false,
+          "primary_source": "yfinance_fallback",
+          "reference_source": ""
+        }
+      },
+      "reconciliation_reference_error": "No independent reconciliation source available for selected primary provider"
+    }
+  },
+  {
+    "ts": "2026-08-10T16:24:29.756514",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "data_quality_evaluated",
+    "extra": {
+      "generated_at": "2026-08-10T16:24:29.755876+00:00",
+      "status": "warning",
+      "pass": true,
+      "reason_codes": [],
+      "warning_codes": [
+        "price_outliers",
+        "historical_unresolved_price_anomalies",
+        "price_reconciliation_unavailable"
+      ],
+      "checks": {
+        "stale_ok": true,
+        "missing_ok": true,
+        "duplicate_ok": true,
+        "missing_tickers_ok": true,
+        "outlier_ok": false,
+        "corporate_actions_ok": true,
+        "reconciliation_ok": true
+      },
+      "stats": {
+        "rows_total": 52841,
+        "ticker_total": 56,
+        "max_data_date": "2026-08-10",
+        "stale_days": 0,
+        "missing_rows": 0,
+        "duplicate_rows": 0,
+        "missing_tickers_count": 0,
+        "outlier_rows": 1,
+        "unresolved_anomaly_count": 1,
+        "active_unresolved_count": 0,
+        "reconciliation_rows": 0,
+        "reconciliation_mismatch_ratio": null
+      },
+      "price_quality": {
+        "adjusted_prices_path": "data/processed/prices_daily_adjusted.csv",
+        "corporate_actions_path": "data/reference/corporate_actions.csv",
+        "corporate_actions_count": 0,
+        "anomaly_report_path": "reports/corporate_action_anomalies.csv",
+        "anomaly_count": 1,
+        "unresolved_anomaly_count": 1,
+        "active_unresolved_count": 0,
+        "quarantined_tickers": [],
+        "block_on_active_unresolved_action": true,
+        "reconciliation": {
+          "status": "unavailable",
+          "pass": true,
+          "message": "Independent reconciliation source is not configured or unavailable",
+          "rows_compared": 0,
+          "required": false,
+          "primary_source": "yfinance_fallback",
+          "reference_source": ""
+        }
+      },
+      "message": "Data quality checks passed with warnings: price_outliers, historical_unresolved_price_anomalies, price_reconciliation_unavailable"
+    }
+  },
+  {
+    "ts": "2026-08-10T16:24:30.649079",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "features_done",
+    "extra": {
+      "rows": 52841,
+      "out_path": "data/processed/features.parquet",
+      "input_path": "data/processed/prices_daily_adjusted.csv",
+      "price_basis": "split_adjusted"
+    }
+  },
+  {
+    "ts": "2026-08-10T16:24:30.650309",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "volatility_recalibration_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "skipped_interval",
+      "message": "Last successful recalibration still within 7 days interval",
+      "updated": false,
+      "attempted_at": "2026-08-10T16:24:30.649131",
+      "last_success_at": "2026-08-05T14:43:02.222943",
+      "state_path": "reports/volatility_recalibration_state.json",
+      "features_path": "data/processed/features.parquet",
+      "samples": {
+        "rows_total": 0,
+        "rows_window": 0,
+        "atr_rows": 0,
+        "realized_rows": 0,
+        "lookback_days": 252
+      },
+      "old_targets": {
+        "volatility_reference_atr_pct": 4.0088,
+        "volatility_reference_realized_pct": 2.9309
+      },
+      "new_targets": {
+        "volatility_reference_atr_pct": 4.0088,
+        "volatility_reference_realized_pct": 2.9309
+      }
+    }
+  },
+  {
+    "ts": "2026-08-10T16:24:30.650732",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "event_risk_update_done",
+    "extra": {
+      "enabled": true,
+      "forced": false,
+      "status": "skipped_interval",
+      "message": "Last successful update still within 8 hours interval",
+      "blacklist_path": "data/reference/event_risk_blacklist.csv",
+      "state_path": "reports/event_risk_update_state.json",
+      "updated": false,
+      "attempted_at": "2026-08-10T16:24:30.650336",
+      "last_success_at": "2026-08-10T11:20:43.562095",
+      "counts": {
+        "rows": 0,
+        "tickers": 0,
+        "status_counts": {}
+      },
+      "errors": [],
+      "source_status": {}
+    }
+  },
+  {
+    "ts": "2026-08-10T16:24:30.815010",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "event_risk_filtered",
+    "extra": {
+      "enabled": true,
+      "status": "ok",
+      "message": "Event-risk filter applied",
+      "path": "data/reference/event_risk_blacklist.csv",
+      "as_of_date": "2026-08-10",
+      "active_events": 3,
+      "excluded_count": 0,
+      "excluded_tickers": [],
+      "excluded_t1": 0,
+      "excluded_swing": 0
+    }
+  },
+  {
+    "ts": "2026-08-10T16:25:28.585941",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "model_v2_shadow_done",
+    "extra": {
+      "status": "ok",
+      "message": "Shadow inference completed",
+      "shadow_csv_path": "reports/model_v2_shadow_signals.csv",
+      "shadow_json_path": "reports/model_v2_shadow_signals.json",
+      "ab_test_path": "reports/model_v2_ab_test.json",
+      "rows": 11,
+      "train": {
+        "status": "updated",
+        "message": "Model v2 trained for modes: t1, swing",
+        "updated": true,
+        "state_path": "reports/model_v2_state.json",
+        "model_dir": "models/model_v2",
+        "modes": {
+          "t1": {
+            "status": "trained",
+            "rows": 2056,
+            "train_rows": 2056,
+            "fit_rows": 1195,
+            "positive_rate": 0.2895397489539749,
+            "auc_train": 0.8845,
+            "features": [
+              "score",
+              "ret_1d",
+              "ret_5d",
+              "ret_20d",
+              "atr_pct",
+              "vol_20d",
+              "avg_vol_20d",
+              "close",
+              "ma_20",
+              "ma_50",
+              "ma_slope_20",
+              "ma_slope_50",
+              "dist_ma_20",
+              "dist_ma_50",
+              "vol_ratio",
+              "ret_5d_20d_ratio",
+              "high_low_range",
+              "close_position",
+              "volume_ratio_20d",
+              "rsi_14",
+              "rsi_slope",
+              "mfi_14",
+              "obv_slope",
+              "rank_ret_20d",
+              "rank_vol_20d",
+              "turnover_ratio_20d",
+              "dist_high_20",
+              "dist_low_20",
+              "ma_gap_20_50",
+              "ma_stack_bullish",
+              "market_breadth_ma20_pct",
+              "market_breadth_ma50_pct",
+              "market_avg_ret20_pct",
+              "market_median_atr_pct",
+              "relative_ret_20d"
+            ],
+            "model_type": "xgboost_optuna",
+            "cv_auc": 0.559,
+            "model_comparison": {
+              "logreg": 0.511,
+              "lightgbm": 0.5461,
+              "xgboost": 0.5528,
+              "lightgbm_optuna": 0.5573,
+              "xgboost_optuna": 0.559
+            },
+            "calibration": {
+              "calibrated": true,
+              "evaluated_on_holdout": true,
+              "fit_rows": 1195,
+              "calibration_rows": 444,
+              "test_rows": 408,
+              "purge_gap_dates": 1,
+              "method": "sigmoid",
+              "selection": {
+                "requested_method": "auto",
+                "candidates": {
+                  "sigmoid": {
+                    "selection_rows": 111,
+                    "ece": 0.065445,
+                    "brier": 0.224392
+                  },
+                  "isotonic": {
+                    "selection_rows": 111,
+                    "ece": 0.148648,
+                    "brier": 0.233021
+                  }
+                },
+                "selection_strategy": "temporal_calibration_holdout",
+                "selected_method": "sigmoid",
+                "fit_rows": 444
+              },
+              "ece": 0.044557,
+              "holdout_auc": 0.4939
+            },
+            "walk_forward": {
+              "status": "ok",
+              "requested_folds": 5,
+              "completed_folds": 5,
+              "purge_gap_dates": 1,
+              "threshold_policy": "calibration_locked_per_fold",
+              "recommended_threshold": 0.52,
+              "total_oos_trades": 0,
+              "folds": [
+                {
+                  "fold": 1,
+                  "fit_rows": 479,
+                  "calibration_rows": 95,
+                  "test_rows": 272,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.4555,
+                  "holdout_ece": 0.068526,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 2,
+                  "fit_rows": 669,
+                  "calibration_rows": 180,
+                  "test_rows": 275,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "isotonic",
+                  "holdout_auc": 0.5706,
+                  "holdout_ece": 0.008162,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 3,
+                  "fit_rows": 895,
+                  "calibration_rows": 235,
+                  "test_rows": 346,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.5517,
+                  "holdout_ece": 0.02871,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 4,
+                  "fit_rows": 1129,
+                  "calibration_rows": 344,
+                  "test_rows": 291,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.4972,
+                  "holdout_ece": 0.005347,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 5,
+                  "fit_rows": 1473,
+                  "calibration_rows": 288,
+                  "test_rows": 286,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "isotonic",
+                  "holdout_auc": 0.5082,
+                  "holdout_ece": 0.062821,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                }
+              ]
+            },
+            "available_models": [
+              "logreg",
+              "lightgbm",
+              "xgboost",
+              "lightgbm_optuna",
+              "xgboost_optuna"
+            ],
+            "label_strategy": "first_touch_stop_tp_with_net_horizon_exit",
+            "thresholds_by_regime": {
+              "default": 0.52
+            },
+            "return_profile": {
+              "overall": {
+                "mean_return_r": -0.145201,
+                "positive_mean_r": 0.287926,
+                "negative_mean_r": -0.321716,
+                "sample_count": 1195
+              },
+              "by_regime": {
+                "risk_off": {
+                  "mean_return_r": -0.145369,
+                  "positive_mean_r": 0.298308,
+                  "negative_mean_r": -0.322088,
+                  "sample_count": 660
+                },
+                "risk_on": {
+                  "mean_return_r": -0.144993,
+                  "positive_mean_r": 0.275573,
+                  "negative_mean_r": -0.321251,
+                  "sample_count": 535
+                }
+              }
+            },
+            "label_profile": {
+              "strategy": "first_touch_stop_tp_with_net_horizon_exit",
+              "rows": 1195,
+              "positive_rate": 0.28954,
+              "outcome_counts": {
+                "horizon_exit": 1122,
+                "tp_hit": 50,
+                "stop_hit": 23
+              },
+              "ambiguous_intrabar_count": 1,
+              "gap_exit_count": 0,
+              "candidate_aligned": true,
+              "candidate_pool_rows": 20785,
+              "selected_candidate_rows": 2071,
+              "entry_rejected_gap_rows": 5,
+              "avg_entry_gap_pct": 0.295596,
+              "avg_mae_r": -0.309554,
+              "avg_mfe_r": 0.250177
+            },
+            "optuna_used": true,
+            "optuna_trials": 4,
+            "optuna_best_params": {
+              "n_estimators": 250,
+              "max_depth": 5,
+              "learning_rate": 0.01630530404111314,
+              "subsample": 0.9918484899140103,
+              "colsample_bytree": 0.9275502333612616,
+              "min_child_weight": 4,
+              "reg_alpha": 0.30963862917983104,
+              "reg_lambda": 3.2039715077741033
+            },
+            "tree_search": {
+              "eligible": true,
+              "min_cv_auc_gain": 0.02,
+              "logreg_cv_auc": 0.511,
+              "best_static_tree_cv_auc": 0.5528
+            },
+            "artifact_path": "models/model_v2/t1.joblib",
+            "metadata_path": "models/model_v2/t1.meta.json"
+          },
+          "swing": {
+            "status": "trained",
+            "rows": 752,
+            "train_rows": 752,
+            "fit_rows": 434,
+            "positive_rate": 0.46774193548387094,
+            "auc_train": 0.048,
+            "features": [
+              "score",
+              "ret_1d",
+              "ret_5d",
+              "ret_20d",
+              "atr_pct",
+              "vol_20d",
+              "avg_vol_20d",
+              "close",
+              "ma_20",
+              "ma_50",
+              "ma_slope_20",
+              "ma_slope_50",
+              "dist_ma_20",
+              "dist_ma_50",
+              "vol_ratio",
+              "ret_5d_20d_ratio",
+              "high_low_range",
+              "close_position",
+              "volume_ratio_20d",
+              "rsi_14",
+              "rsi_slope",
+              "mfi_14",
+              "obv_slope",
+              "rank_ret_20d",
+              "rank_vol_20d",
+              "turnover_ratio_20d",
+              "dist_high_20",
+              "dist_low_20",
+              "ma_gap_20_50",
+              "ma_stack_bullish",
+              "market_breadth_ma20_pct",
+              "market_breadth_ma50_pct",
+              "market_avg_ret20_pct",
+              "market_median_atr_pct",
+              "relative_ret_20d"
+            ],
+            "model_type": "lightgbm_optuna",
+            "cv_auc": 0.6591,
+            "model_comparison": {
+              "logreg": 0.6,
+              "lightgbm": 0.623,
+              "xgboost": 0.6412,
+              "lightgbm_optuna": 0.6591,
+              "xgboost_optuna": 0.6425
+            },
+            "calibration": {
+              "calibrated": true,
+              "evaluated_on_holdout": true,
+              "fit_rows": 434,
+              "calibration_rows": 153,
+              "test_rows": 127,
+              "purge_gap_dates": 10,
+              "method": "sigmoid",
+              "selection": {
+                "requested_method": "auto",
+                "candidates": {
+                  "sigmoid": {
+                    "selection_rows": 39,
+                    "ece": 0.128604,
+                    "brier": 0.221787
+                  },
+                  "isotonic": {
+                    "selection_rows": 39,
+                    "ece": 0.184615,
+                    "brier": 0.236581
+                  }
+                },
+                "selection_strategy": "temporal_calibration_holdout",
+                "selected_method": "sigmoid",
+                "fit_rows": 153
+              },
+              "ece": 0.231648,
+              "holdout_auc": 0.5296
+            },
+            "walk_forward": {
+              "status": "ok",
+              "requested_folds": 5,
+              "completed_folds": 5,
+              "purge_gap_dates": 10,
+              "threshold_policy": "calibration_locked_per_fold",
+              "recommended_threshold": 0.575,
+              "total_oos_trades": 99,
+              "folds": [
+                {
+                  "fold": 1,
+                  "fit_rows": 194,
+                  "calibration_rows": 28,
+                  "test_rows": 113,
+                  "locked_threshold": 0.55,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.417,
+                  "holdout_ece": 0.539171,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 2,
+                  "fit_rows": 247,
+                  "calibration_rows": 83,
+                  "test_rows": 93,
+                  "locked_threshold": 0.6,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.6806,
+                  "holdout_ece": 0.104301,
+                  "metrics": {
+                    "ProfitFactor": 2.213342,
+                    "Expectancy": 0.317934,
+                    "MaxDD": 2.5105,
+                    "Trades": 65
+                  }
+                },
+                {
+                  "fold": 3,
+                  "fit_rows": 349,
+                  "calibration_rows": 74,
+                  "test_rows": 93,
+                  "locked_threshold": 0.55,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.4035,
+                  "holdout_ece": 0.133004,
+                  "metrics": {
+                    "ProfitFactor": 0.768081,
+                    "Expectancy": -0.07925,
+                    "MaxDD": 3.7139,
+                    "Trades": 34
+                  }
+                },
+                {
+                  "fold": 4,
+                  "fit_rows": 419,
+                  "calibration_rows": 93,
+                  "test_rows": 123,
+                  "locked_threshold": 0.55,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.5631,
+                  "holdout_ece": 0.030269,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 5,
+                  "fit_rows": 506,
+                  "calibration_rows": 125,
+                  "test_rows": 85,
+                  "locked_threshold": 0.55,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.4181,
+                  "holdout_ece": 0.260382,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                }
+              ]
+            },
+            "available_models": [
+              "logreg",
+              "lightgbm",
+              "xgboost",
+              "lightgbm_optuna",
+              "xgboost_optuna"
+            ],
+            "label_strategy": "first_touch_stop_tp_with_net_horizon_exit",
+            "thresholds_by_regime": {
+              "default": 0.575,
+              "risk_on": 0.575,
+              "risk_off": 0.575
+            },
+            "return_profile": {
+              "overall": {
+                "mean_return_r": -0.075501,
+                "positive_mean_r": 0.86659,
+                "negative_mean_r": -0.9034,
+                "sample_count": 434
+              },
+              "by_regime": {
+                "risk_off": {
+                  "mean_return_r": -0.092453,
+                  "positive_mean_r": 1.036134,
+                  "negative_mean_r": -0.924643,
+                  "sample_count": 172
+                },
+                "risk_on": {
+                  "mean_return_r": -0.064372,
+                  "positive_mean_r": 0.771385,
+                  "negative_mean_r": -0.887467,
+                  "sample_count": 262
+                }
+              }
+            },
+            "label_profile": {
+              "strategy": "first_touch_stop_tp_with_net_horizon_exit",
+              "rows": 434,
+              "positive_rate": 0.467742,
+              "outcome_counts": {
+                "tp_hit": 175,
+                "stop_hit": 159,
+                "horizon_exit": 100
+              },
+              "ambiguous_intrabar_count": 0,
+              "gap_exit_count": 40,
+              "candidate_aligned": true,
+              "candidate_pool_rows": 7182,
+              "selected_candidate_rows": 761,
+              "entry_rejected_gap_rows": 3,
+              "avg_entry_gap_pct": 0.36787,
+              "avg_mae_r": -0.718566,
+              "avg_mfe_r": 0.799031
+            },
+            "optuna_used": true,
+            "optuna_trials": 4,
+            "optuna_best_params": {
+              "n_estimators": 150,
+              "max_depth": 3,
+              "learning_rate": 0.07040020744445652,
+              "subsample": 0.7021253525111736,
+              "colsample_bytree": 0.9557597066315683,
+              "min_child_samples": 40,
+              "reg_alpha": 2.7124542832228657,
+              "reg_lambda": 1.183000991487219
+            },
+            "tree_search": {
+              "eligible": true,
+              "min_cv_auc_gain": 0.02,
+              "logreg_cv_auc": 0.6,
+              "best_static_tree_cv_auc": 0.6412
+            },
+            "artifact_path": "models/model_v2/swing.joblib",
+            "metadata_path": "models/model_v2/swing.meta.json"
+          }
+        },
+        "errors": [],
+        "artifact_check": {
+          "ready": true,
+          "missing_modes": [],
+          "forced_retrain": true
+        }
+      },
+      "infer": {
+        "status": "ok",
+        "message": "Shadow inference completed",
+        "modes": {
+          "swing": {
+            "rows": 4,
+            "source": "model",
+            "threshold": 0.575,
+            "thresholds_by_regime": {
+              "default": 0.575,
+              "risk_on": 0.575,
+              "risk_off": 0.575
+            },
+            "metadata": {
+              "saved_at": "2026-08-10T16:25:28.464565",
+              "train_rows": 752,
+              "fit_rows": 434,
+              "positive_rate": 0.46774193548387094,
+              "auc_train": 0.048,
+              "features": [
+                "score",
+                "ret_1d",
+                "ret_5d",
+                "ret_20d",
+                "atr_pct",
+                "vol_20d",
+                "avg_vol_20d",
+                "close",
+                "ma_20",
+                "ma_50",
+                "ma_slope_20",
+                "ma_slope_50",
+                "dist_ma_20",
+                "dist_ma_50",
+                "vol_ratio",
+                "ret_5d_20d_ratio",
+                "high_low_range",
+                "close_position",
+                "volume_ratio_20d",
+                "rsi_14",
+                "rsi_slope",
+                "mfi_14",
+                "obv_slope",
+                "rank_ret_20d",
+                "rank_vol_20d",
+                "turnover_ratio_20d",
+                "dist_high_20",
+                "dist_low_20",
+                "ma_gap_20_50",
+                "ma_stack_bullish",
+                "market_breadth_ma20_pct",
+                "market_breadth_ma50_pct",
+                "market_avg_ret20_pct",
+                "market_median_atr_pct",
+                "relative_ret_20d"
+              ],
+              "model_type": "lightgbm_optuna",
+              "cv_auc": 0.6591,
+              "model_comparison": {
+                "logreg": 0.6,
+                "lightgbm": 0.623,
+                "xgboost": 0.6412,
+                "lightgbm_optuna": 0.6591,
+                "xgboost_optuna": 0.6425
+              },
+              "calibration": {
+                "calibrated": true,
+                "evaluated_on_holdout": true,
+                "fit_rows": 434,
+                "calibration_rows": 153,
+                "test_rows": 127,
+                "purge_gap_dates": 10,
+                "method": "sigmoid",
+                "selection": {
+                  "requested_method": "auto",
+                  "candidates": {
+                    "sigmoid": {
+                      "selection_rows": 39,
+                      "ece": 0.128604,
+                      "brier": 0.221787
+                    },
+                    "isotonic": {
+                      "selection_rows": 39,
+                      "ece": 0.184615,
+                      "brier": 0.236581
+                    }
+                  },
+                  "selection_strategy": "temporal_calibration_holdout",
+                  "selected_method": "sigmoid",
+                  "fit_rows": 153
+                },
+                "ece": 0.231648,
+                "holdout_auc": 0.5296
+              },
+              "walk_forward": {
+                "status": "ok",
+                "requested_folds": 5,
+                "completed_folds": 5,
+                "purge_gap_dates": 10,
+                "threshold_policy": "calibration_locked_per_fold",
+                "recommended_threshold": 0.575,
+                "total_oos_trades": 99,
+                "folds": [
+                  {
+                    "fold": 1,
+                    "fit_rows": 194,
+                    "calibration_rows": 28,
+                    "test_rows": 113,
+                    "locked_threshold": 0.55,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.417,
+                    "holdout_ece": 0.539171,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  },
+                  {
+                    "fold": 2,
+                    "fit_rows": 247,
+                    "calibration_rows": 83,
+                    "test_rows": 93,
+                    "locked_threshold": 0.6,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.6806,
+                    "holdout_ece": 0.104301,
+                    "metrics": {
+                      "ProfitFactor": 2.213342,
+                      "Expectancy": 0.317934,
+                      "MaxDD": 2.5105,
+                      "Trades": 65
+                    }
+                  },
+                  {
+                    "fold": 3,
+                    "fit_rows": 349,
+                    "calibration_rows": 74,
+                    "test_rows": 93,
+                    "locked_threshold": 0.55,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.4035,
+                    "holdout_ece": 0.133004,
+                    "metrics": {
+                      "ProfitFactor": 0.768081,
+                      "Expectancy": -0.07925,
+                      "MaxDD": 3.7139,
+                      "Trades": 34
+                    }
+                  },
+                  {
+                    "fold": 4,
+                    "fit_rows": 419,
+                    "calibration_rows": 93,
+                    "test_rows": 123,
+                    "locked_threshold": 0.55,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.5631,
+                    "holdout_ece": 0.030269,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  },
+                  {
+                    "fold": 5,
+                    "fit_rows": 506,
+                    "calibration_rows": 125,
+                    "test_rows": 85,
+                    "locked_threshold": 0.55,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.4181,
+                    "holdout_ece": 0.260382,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  }
+                ]
+              },
+              "available_models": [
+                "logreg",
+                "lightgbm",
+                "xgboost",
+                "lightgbm_optuna",
+                "xgboost_optuna"
+              ],
+              "label_strategy": "first_touch_stop_tp_with_net_horizon_exit",
+              "thresholds_by_regime": {
+                "default": 0.575,
+                "risk_on": 0.575,
+                "risk_off": 0.575
+              },
+              "return_profile": {
+                "overall": {
+                  "mean_return_r": -0.075501,
+                  "positive_mean_r": 0.86659,
+                  "negative_mean_r": -0.9034,
+                  "sample_count": 434
+                },
+                "by_regime": {
+                  "risk_off": {
+                    "mean_return_r": -0.092453,
+                    "positive_mean_r": 1.036134,
+                    "negative_mean_r": -0.924643,
+                    "sample_count": 172
+                  },
+                  "risk_on": {
+                    "mean_return_r": -0.064372,
+                    "positive_mean_r": 0.771385,
+                    "negative_mean_r": -0.887467,
+                    "sample_count": 262
+                  }
+                }
+              },
+              "label_profile": {
+                "strategy": "first_touch_stop_tp_with_net_horizon_exit",
+                "rows": 434,
+                "positive_rate": 0.467742,
+                "outcome_counts": {
+                  "tp_hit": 175,
+                  "stop_hit": 159,
+                  "horizon_exit": 100
+                },
+                "ambiguous_intrabar_count": 0,
+                "gap_exit_count": 40,
+                "candidate_aligned": true,
+                "candidate_pool_rows": 7182,
+                "selected_candidate_rows": 761,
+                "entry_rejected_gap_rows": 3,
+                "avg_entry_gap_pct": 0.36787,
+                "avg_mae_r": -0.718566,
+                "avg_mfe_r": 0.799031
+              },
+              "optuna_used": true,
+              "optuna_trials": 4,
+              "optuna_best_params": {
+                "n_estimators": 150,
+                "max_depth": 3,
+                "learning_rate": 0.07040020744445652,
+                "subsample": 0.7021253525111736,
+                "colsample_bytree": 0.9557597066315683,
+                "min_child_samples": 40,
+                "reg_alpha": 2.7124542832228657,
+                "reg_lambda": 1.183000991487219
+              },
+              "tree_search": {
+                "eligible": true,
+                "min_cv_auc_gain": 0.02,
+                "logreg_cv_auc": 0.6,
+                "best_static_tree_cv_auc": 0.6412
+              },
+              "mode": "swing",
+              "horizon_days": 10,
+              "trained_at": "2026-08-10T16:24:37.722441"
+            },
+            "ready": true,
+            "block_reason": ""
+          },
+          "t1": {
+            "rows": 7,
+            "source": "model",
+            "threshold": 0.52,
+            "thresholds_by_regime": {
+              "default": 0.52
+            },
+            "metadata": {
+              "saved_at": "2026-08-10T16:24:52.981437",
+              "train_rows": 2056,
+              "fit_rows": 1195,
+              "positive_rate": 0.2895397489539749,
+              "auc_train": 0.8845,
+              "features": [
+                "score",
+                "ret_1d",
+                "ret_5d",
+                "ret_20d",
+                "atr_pct",
+                "vol_20d",
+                "avg_vol_20d",
+                "close",
+                "ma_20",
+                "ma_50",
+                "ma_slope_20",
+                "ma_slope_50",
+                "dist_ma_20",
+                "dist_ma_50",
+                "vol_ratio",
+                "ret_5d_20d_ratio",
+                "high_low_range",
+                "close_position",
+                "volume_ratio_20d",
+                "rsi_14",
+                "rsi_slope",
+                "mfi_14",
+                "obv_slope",
+                "rank_ret_20d",
+                "rank_vol_20d",
+                "turnover_ratio_20d",
+                "dist_high_20",
+                "dist_low_20",
+                "ma_gap_20_50",
+                "ma_stack_bullish",
+                "market_breadth_ma20_pct",
+                "market_breadth_ma50_pct",
+                "market_avg_ret20_pct",
+                "market_median_atr_pct",
+                "relative_ret_20d"
+              ],
+              "model_type": "xgboost_optuna",
+              "cv_auc": 0.559,
+              "model_comparison": {
+                "logreg": 0.511,
+                "lightgbm": 0.5461,
+                "xgboost": 0.5528,
+                "lightgbm_optuna": 0.5573,
+                "xgboost_optuna": 0.559
+              },
+              "calibration": {
+                "calibrated": true,
+                "evaluated_on_holdout": true,
+                "fit_rows": 1195,
+                "calibration_rows": 444,
+                "test_rows": 408,
+                "purge_gap_dates": 1,
+                "method": "sigmoid",
+                "selection": {
+                  "requested_method": "auto",
+                  "candidates": {
+                    "sigmoid": {
+                      "selection_rows": 111,
+                      "ece": 0.065445,
+                      "brier": 0.224392
+                    },
+                    "isotonic": {
+                      "selection_rows": 111,
+                      "ece": 0.148648,
+                      "brier": 0.233021
+                    }
+                  },
+                  "selection_strategy": "temporal_calibration_holdout",
+                  "selected_method": "sigmoid",
+                  "fit_rows": 444
+                },
+                "ece": 0.044557,
+                "holdout_auc": 0.4939
+              },
+              "walk_forward": {
+                "status": "ok",
+                "requested_folds": 5,
+                "completed_folds": 5,
+                "purge_gap_dates": 1,
+                "threshold_policy": "calibration_locked_per_fold",
+                "recommended_threshold": 0.52,
+                "total_oos_trades": 0,
+                "folds": [
+                  {
+                    "fold": 1,
+                    "fit_rows": 479,
+                    "calibration_rows": 95,
+                    "test_rows": 272,
+                    "locked_threshold": 0.52,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.4555,
+                    "holdout_ece": 0.068526,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  },
+                  {
+                    "fold": 2,
+                    "fit_rows": 669,
+                    "calibration_rows": 180,
+                    "test_rows": 275,
+                    "locked_threshold": 0.52,
+                    "calibration_method": "isotonic",
+                    "holdout_auc": 0.5706,
+                    "holdout_ece": 0.008162,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  },
+                  {
+                    "fold": 3,
+                    "fit_rows": 895,
+                    "calibration_rows": 235,
+                    "test_rows": 346,
+                    "locked_threshold": 0.52,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.5517,
+                    "holdout_ece": 0.02871,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  },
+                  {
+                    "fold": 4,
+                    "fit_rows": 1129,
+                    "calibration_rows": 344,
+                    "test_rows": 291,
+                    "locked_threshold": 0.52,
+                    "calibration_method": "sigmoid",
+                    "holdout_auc": 0.4972,
+                    "holdout_ece": 0.005347,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  },
+                  {
+                    "fold": 5,
+                    "fit_rows": 1473,
+                    "calibration_rows": 288,
+                    "test_rows": 286,
+                    "locked_threshold": 0.52,
+                    "calibration_method": "isotonic",
+                    "holdout_auc": 0.5082,
+                    "holdout_ece": 0.062821,
+                    "metrics": {
+                      "ProfitFactor": 0.0,
+                      "Expectancy": 0.0,
+                      "MaxDD": 0.0,
+                      "Trades": 0
+                    }
+                  }
+                ]
+              },
+              "available_models": [
+                "logreg",
+                "lightgbm",
+                "xgboost",
+                "lightgbm_optuna",
+                "xgboost_optuna"
+              ],
+              "label_strategy": "first_touch_stop_tp_with_net_horizon_exit",
+              "thresholds_by_regime": {
+                "default": 0.52
+              },
+              "return_profile": {
+                "overall": {
+                  "mean_return_r": -0.145201,
+                  "positive_mean_r": 0.287926,
+                  "negative_mean_r": -0.321716,
+                  "sample_count": 1195
+                },
+                "by_regime": {
+                  "risk_off": {
+                    "mean_return_r": -0.145369,
+                    "positive_mean_r": 0.298308,
+                    "negative_mean_r": -0.322088,
+                    "sample_count": 660
+                  },
+                  "risk_on": {
+                    "mean_return_r": -0.144993,
+                    "positive_mean_r": 0.275573,
+                    "negative_mean_r": -0.321251,
+                    "sample_count": 535
+                  }
+                }
+              },
+              "label_profile": {
+                "strategy": "first_touch_stop_tp_with_net_horizon_exit",
+                "rows": 1195,
+                "positive_rate": 0.28954,
+                "outcome_counts": {
+                  "horizon_exit": 1122,
+                  "tp_hit": 50,
+                  "stop_hit": 23
+                },
+                "ambiguous_intrabar_count": 1,
+                "gap_exit_count": 0,
+                "candidate_aligned": true,
+                "candidate_pool_rows": 20785,
+                "selected_candidate_rows": 2071,
+                "entry_rejected_gap_rows": 5,
+                "avg_entry_gap_pct": 0.295596,
+                "avg_mae_r": -0.309554,
+                "avg_mfe_r": 0.250177
+              },
+              "optuna_used": true,
+              "optuna_trials": 4,
+              "optuna_best_params": {
+                "n_estimators": 250,
+                "max_depth": 5,
+                "learning_rate": 0.01630530404111314,
+                "subsample": 0.9918484899140103,
+                "colsample_bytree": 0.9275502333612616,
+                "min_child_weight": 4,
+                "reg_alpha": 0.30963862917983104,
+                "reg_lambda": 3.2039715077741033
+              },
+              "tree_search": {
+                "eligible": true,
+                "min_cv_auc_gain": 0.02,
+                "logreg_cv_auc": 0.511,
+                "best_static_tree_cv_auc": 0.5528
+              },
+              "mode": "t1",
+              "horizon_days": 1,
+              "trained_at": "2026-08-10T16:24:37.722441"
+            },
+            "ready": true,
+            "block_reason": ""
+          }
+        },
+        "rows": 11,
+        "ready_modes": [
+          "swing",
+          "t1"
+        ],
+        "blocked_modes": []
+      },
+      "ab_test": {
+        "max_positions": 3,
+        "v1_top": [
+          "MDKA",
+          "HRTA",
+          "ISAT"
+        ],
+        "v2_top": [],
+        "overlap_count": 0,
+        "overlap_tickers": [],
+        "only_v1": [
+          "HRTA",
+          "ISAT",
+          "MDKA"
+        ],
+        "only_v2": [],
+        "jaccard_overlap": 0.0,
+        "v1_avg_score": 99.41,
+        "v2_avg_p_win": 0.0
+      }
+    }
+  },
+  {
+    "ts": "2026-08-10T16:25:28.593256",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "model_v2_promotion_evaluated",
+    "extra": {
+      "status": "ok",
+      "message": "Evaluated independent Model V2 promotion criteria by mode.",
+      "reason": "promotion_gate_failed",
+      "rollout_pct": 0,
+      "rollout_by_mode": {
+        "t1": 0,
+        "swing": 0
+      },
+      "live_active": false,
+      "final_decision_ready": false,
+      "final_decision_modes": [],
+      "final_decision_by_mode": {
+        "t1": false,
+        "swing": false
+      },
+      "all_modes_final": false,
+      "modes": {
+        "t1": {
+          "status": "ok",
+          "reason": "promotion_gate_failed",
+          "rollout_pct": 0,
+          "live_active": false,
+          "final_decision_ready": false,
+          "consecutive_passes": 0,
+          "model_changed": true,
+          "shadow_sessions": 1,
+          "shadow_sessions_required": 20,
+          "shadow_sessions_ok": false,
+          "model_gate": {
+            "passed": false,
+            "active_modes": [
+              "t1"
+            ],
+            "model_signature": "t1:2026-08-10T16:24:37.722441",
+            "modes": {
+              "t1": {
+                "ready": false,
+                "artifact_ok": true,
+                "artifact_exists": true,
+                "artifact_loadable": true,
+                "metadata_ok": true,
+                "holdout_calibration_ok": true,
+                "calibration_ece": 0.044557,
+                "calibration_ece_limit": 0.1,
+                "holdout_auc": 0.4939,
+                "holdout_auc_minimum": 0.52,
+                "holdout_auc_ok": false,
+                "walk_forward": {
+                  "status": "ok",
+                  "requested_folds": 5,
+                  "completed_folds": 5,
+                  "purge_gap_dates": 1,
+                  "threshold_policy": "calibration_locked_per_fold",
+                  "recommended_threshold": 0.52,
+                  "total_oos_trades": 0,
+                  "folds": [
+                    {
+                      "fold": 1,
+                      "fit_rows": 479,
+                      "calibration_rows": 95,
+                      "test_rows": 272,
+                      "locked_threshold": 0.52,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.4555,
+                      "holdout_ece": 0.068526,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    },
+                    {
+                      "fold": 2,
+                      "fit_rows": 669,
+                      "calibration_rows": 180,
+                      "test_rows": 275,
+                      "locked_threshold": 0.52,
+                      "calibration_method": "isotonic",
+                      "holdout_auc": 0.5706,
+                      "holdout_ece": 0.008162,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    },
+                    {
+                      "fold": 3,
+                      "fit_rows": 895,
+                      "calibration_rows": 235,
+                      "test_rows": 346,
+                      "locked_threshold": 0.52,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.5517,
+                      "holdout_ece": 0.02871,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    },
+                    {
+                      "fold": 4,
+                      "fit_rows": 1129,
+                      "calibration_rows": 344,
+                      "test_rows": 291,
+                      "locked_threshold": 0.52,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.4972,
+                      "holdout_ece": 0.005347,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    },
+                    {
+                      "fold": 5,
+                      "fit_rows": 1473,
+                      "calibration_rows": 288,
+                      "test_rows": 286,
+                      "locked_threshold": 0.52,
+                      "calibration_method": "isotonic",
+                      "holdout_auc": 0.5082,
+                      "holdout_ece": 0.062821,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    }
+                  ]
+                },
+                "version": "2026-08-10T16:24:37.722441"
+              }
+            }
+          },
+          "accuracy_gate": {
+            "passed": false,
+            "status": "ok",
+            "mode": "t1",
+            "path": "reports/model_v2_accuracy_audit.json",
+            "generated_at": "2026-08-10T13:53:58.953567",
+            "audit_model_version": "2026-08-10T13:51:19.211309",
+            "expected_model_version": "2026-08-10T16:24:37.722441",
+            "age_days": 0.105,
+            "trade_count": 0,
+            "expectancy_r": 0.0,
+            "profit_factor_r": 0.0,
+            "calibration_ece_pct": 6.84,
+            "checks": {
+              "status_ok": true,
+              "model_source_ok": true,
+              "trade_count_ok": false,
+              "expectancy_ok": false,
+              "profit_factor_ok": false,
+              "calibration_ok": true,
+              "freshness_ok": true,
+              "model_version_ok": false
+            }
+          },
+          "walk_forward_gate": {
+            "passed": false,
+            "reasons": [
+              "Total OOS trades (0) < minimum (120)",
+              "Median ProfitFactor (0.0000) < minimum (1.25)",
+              "Median Expectancy (0.000000) <= minimum (0.0300)",
+              "Profitable folds (0%) < minimum (60%)"
+            ],
+            "summary": {
+              "total_oos_trades": 0,
+              "median_profit_factor": 0.0,
+              "median_expectancy": 0.0,
+              "worst_max_drawdown_pct": 0.0,
+              "profitable_fold_pct": 0.0,
+              "n_folds": 5,
+              "n_folds_profitable": 0
+            },
+            "fold_details": [
+              {
+                "fold": 1,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 2,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 3,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 4,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 5,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              }
+            ]
+          },
+          "live_gate": {
+            "status": "no_signals",
+            "mode": "t1",
+            "samples": 0,
+            "profit_factor_r": 0.0,
+            "expectancy_r": 0.0,
+            "entry_match_rate_pct": 0.0,
+            "reason": "insufficient_live_samples"
+          }
+        },
+        "swing": {
+          "status": "ok",
+          "reason": "promotion_gate_failed",
+          "rollout_pct": 0,
+          "live_active": false,
+          "final_decision_ready": false,
+          "consecutive_passes": 0,
+          "model_changed": true,
+          "shadow_sessions": 1,
+          "shadow_sessions_required": 20,
+          "shadow_sessions_ok": false,
+          "model_gate": {
+            "passed": false,
+            "active_modes": [
+              "swing"
+            ],
+            "model_signature": "swing:2026-08-10T16:24:37.722441",
+            "modes": {
+              "swing": {
+                "ready": false,
+                "artifact_ok": true,
+                "artifact_exists": true,
+                "artifact_loadable": true,
+                "metadata_ok": true,
+                "holdout_calibration_ok": true,
+                "calibration_ece": 0.231648,
+                "calibration_ece_limit": 0.1,
+                "holdout_auc": 0.5296,
+                "holdout_auc_minimum": 0.52,
+                "holdout_auc_ok": true,
+                "walk_forward": {
+                  "status": "ok",
+                  "requested_folds": 5,
+                  "completed_folds": 5,
+                  "purge_gap_dates": 10,
+                  "threshold_policy": "calibration_locked_per_fold",
+                  "recommended_threshold": 0.575,
+                  "total_oos_trades": 99,
+                  "folds": [
+                    {
+                      "fold": 1,
+                      "fit_rows": 194,
+                      "calibration_rows": 28,
+                      "test_rows": 113,
+                      "locked_threshold": 0.55,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.417,
+                      "holdout_ece": 0.539171,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    },
+                    {
+                      "fold": 2,
+                      "fit_rows": 247,
+                      "calibration_rows": 83,
+                      "test_rows": 93,
+                      "locked_threshold": 0.6,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.6806,
+                      "holdout_ece": 0.104301,
+                      "metrics": {
+                        "ProfitFactor": 2.213342,
+                        "Expectancy": 0.317934,
+                        "MaxDD": 2.5105,
+                        "Trades": 65
+                      }
+                    },
+                    {
+                      "fold": 3,
+                      "fit_rows": 349,
+                      "calibration_rows": 74,
+                      "test_rows": 93,
+                      "locked_threshold": 0.55,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.4035,
+                      "holdout_ece": 0.133004,
+                      "metrics": {
+                        "ProfitFactor": 0.768081,
+                        "Expectancy": -0.07925,
+                        "MaxDD": 3.7139,
+                        "Trades": 34
+                      }
+                    },
+                    {
+                      "fold": 4,
+                      "fit_rows": 419,
+                      "calibration_rows": 93,
+                      "test_rows": 123,
+                      "locked_threshold": 0.55,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.5631,
+                      "holdout_ece": 0.030269,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    },
+                    {
+                      "fold": 5,
+                      "fit_rows": 506,
+                      "calibration_rows": 125,
+                      "test_rows": 85,
+                      "locked_threshold": 0.55,
+                      "calibration_method": "sigmoid",
+                      "holdout_auc": 0.4181,
+                      "holdout_ece": 0.260382,
+                      "metrics": {
+                        "ProfitFactor": 0.0,
+                        "Expectancy": 0.0,
+                        "MaxDD": 0.0,
+                        "Trades": 0
+                      }
+                    }
+                  ]
+                },
+                "version": "2026-08-10T16:24:37.722441"
+              }
+            }
+          },
+          "accuracy_gate": {
+            "passed": false,
+            "status": "ok",
+            "mode": "swing",
+            "path": "reports/model_v2_accuracy_audit.json",
+            "generated_at": "2026-08-10T13:53:58.953567",
+            "audit_model_version": "2026-08-10T13:51:19.211309",
+            "expected_model_version": "2026-08-10T16:24:37.722441",
+            "age_days": 0.105,
+            "trade_count": 0,
+            "expectancy_r": 0.0,
+            "profit_factor_r": 0.0,
+            "calibration_ece_pct": 9.09,
+            "checks": {
+              "status_ok": true,
+              "model_source_ok": true,
+              "trade_count_ok": false,
+              "expectancy_ok": false,
+              "profit_factor_ok": false,
+              "calibration_ok": true,
+              "freshness_ok": true,
+              "model_version_ok": false
+            }
+          },
+          "walk_forward_gate": {
+            "passed": false,
+            "reasons": [
+              "Total OOS trades (99) < minimum (120)",
+              "Median ProfitFactor (0.0000) < minimum (1.25)",
+              "Median Expectancy (0.000000) <= minimum (0.0300)",
+              "Profitable folds (20%) < minimum (60%)"
+            ],
+            "summary": {
+              "total_oos_trades": 99,
+              "median_profit_factor": 0.0,
+              "median_expectancy": 0.0,
+              "worst_max_drawdown_pct": 3.71,
+              "profitable_fold_pct": 0.2,
+              "n_folds": 5,
+              "n_folds_profitable": 1
+            },
+            "fold_details": [
+              {
+                "fold": 1,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 2,
+                "trades": 65,
+                "profit_factor": 2.2133,
+                "expectancy": 0.317934,
+                "max_dd_pct": 2.51,
+                "profitable": true
+              },
+              {
+                "fold": 3,
+                "trades": 34,
+                "profit_factor": 0.7681,
+                "expectancy": -0.07925,
+                "max_dd_pct": 3.71,
+                "profitable": false
+              },
+              {
+                "fold": 4,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              },
+              {
+                "fold": 5,
+                "trades": 0,
+                "profit_factor": 0.0,
+                "expectancy": 0.0,
+                "max_dd_pct": 0.0,
+                "profitable": false
+              }
+            ]
+          },
+          "live_gate": {
+            "status": "no_signals",
+            "mode": "swing",
+            "samples": 0,
+            "profit_factor_r": 0.0,
+            "expectancy_r": 0.0,
+            "entry_match_rate_pct": 0.0,
+            "reason": "insufficient_live_samples"
+          }
+        }
+      },
+      "consecutive_passes": 0,
+      "model_changed": true,
+      "model_gate": {
+        "passed": false,
+        "active_modes": [
+          "t1"
+        ],
+        "model_signature": "t1:2026-08-10T16:24:37.722441",
+        "modes": {
+          "t1": {
+            "ready": false,
+            "artifact_ok": true,
+            "artifact_exists": true,
+            "artifact_loadable": true,
+            "metadata_ok": true,
+            "holdout_calibration_ok": true,
+            "calibration_ece": 0.044557,
+            "calibration_ece_limit": 0.1,
+            "holdout_auc": 0.4939,
+            "holdout_auc_minimum": 0.52,
+            "holdout_auc_ok": false,
+            "walk_forward": {
+              "status": "ok",
+              "requested_folds": 5,
+              "completed_folds": 5,
+              "purge_gap_dates": 1,
+              "threshold_policy": "calibration_locked_per_fold",
+              "recommended_threshold": 0.52,
+              "total_oos_trades": 0,
+              "folds": [
+                {
+                  "fold": 1,
+                  "fit_rows": 479,
+                  "calibration_rows": 95,
+                  "test_rows": 272,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.4555,
+                  "holdout_ece": 0.068526,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 2,
+                  "fit_rows": 669,
+                  "calibration_rows": 180,
+                  "test_rows": 275,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "isotonic",
+                  "holdout_auc": 0.5706,
+                  "holdout_ece": 0.008162,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 3,
+                  "fit_rows": 895,
+                  "calibration_rows": 235,
+                  "test_rows": 346,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.5517,
+                  "holdout_ece": 0.02871,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 4,
+                  "fit_rows": 1129,
+                  "calibration_rows": 344,
+                  "test_rows": 291,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "sigmoid",
+                  "holdout_auc": 0.4972,
+                  "holdout_ece": 0.005347,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                },
+                {
+                  "fold": 5,
+                  "fit_rows": 1473,
+                  "calibration_rows": 288,
+                  "test_rows": 286,
+                  "locked_threshold": 0.52,
+                  "calibration_method": "isotonic",
+                  "holdout_auc": 0.5082,
+                  "holdout_ece": 0.062821,
+                  "metrics": {
+                    "ProfitFactor": 0.0,
+                    "Expectancy": 0.0,
+                    "MaxDD": 0.0,
+                    "Trades": 0
+                  }
+                }
+              ]
+            },
+            "version": "2026-08-10T16:24:37.722441"
+          }
+        }
+      },
+      "accuracy_gate": {
+        "passed": false,
+        "status": "ok",
+        "mode": "t1",
+        "path": "reports/model_v2_accuracy_audit.json",
+        "generated_at": "2026-08-10T13:53:58.953567",
+        "audit_model_version": "2026-08-10T13:51:19.211309",
+        "expected_model_version": "2026-08-10T16:24:37.722441",
+        "age_days": 0.105,
+        "trade_count": 0,
+        "expectancy_r": 0.0,
+        "profit_factor_r": 0.0,
+        "calibration_ece_pct": 6.84,
+        "checks": {
+          "status_ok": true,
+          "model_source_ok": true,
+          "trade_count_ok": false,
+          "expectancy_ok": false,
+          "profit_factor_ok": false,
+          "calibration_ok": true,
+          "freshness_ok": true,
+          "model_version_ok": false
+        }
+      },
+      "walk_forward_gate": {
+        "passed": false,
+        "reasons": [
+          "Total OOS trades (0) < minimum (120)",
+          "Median ProfitFactor (0.0000) < minimum (1.25)",
+          "Median Expectancy (0.000000) <= minimum (0.0300)",
+          "Profitable folds (0%) < minimum (60%)"
+        ],
+        "summary": {
+          "total_oos_trades": 0,
+          "median_profit_factor": 0.0,
+          "median_expectancy": 0.0,
+          "worst_max_drawdown_pct": 0.0,
+          "profitable_fold_pct": 0.0,
+          "n_folds": 5,
+          "n_folds_profitable": 0
+        },
+        "fold_details": [
+          {
+            "fold": 1,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 2,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 3,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 4,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          },
+          {
+            "fold": 5,
+            "trades": 0,
+            "profit_factor": 0.0,
+            "expectancy": 0.0,
+            "max_dd_pct": 0.0,
+            "profitable": false
+          }
+        ]
+      },
+      "live_gate": {
+        "status": "no_signals",
+        "mode": "t1",
+        "samples": 0,
+        "profit_factor_r": 0.0,
+        "expectancy_r": 0.0,
+        "entry_match_rate_pct": 0.0,
+        "reason": "insufficient_live_samples"
+      }
+    }
+  },
+  {
+    "ts": "2026-08-10T16:25:28.601873",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "report_done",
+    "extra": {
+      "report_path": "reports/daily_report.html",
+      "signal_path": "reports/daily_signal.json"
+    }
+  },
+  {
+    "ts": "2026-08-10T16:25:38.820571",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "backtest_done",
+    "extra": {
+      "metrics": {
+        "t1": {
+          "WinRate": 41.71572750210261,
+          "ProfitFactor": 0.648604163741816,
+          "Expectancy": -0.006531655396977769,
+          "Trades": 1189,
+          "CAGR": -4.847444512270416,
+          "MaxDD": -21.68696487811302
+        },
+        "swing": {
+          "WinRate": 58.54430379746836,
+          "ProfitFactor": 1.367785138837053,
+          "Expectancy": 0.02167966536443698,
+          "Trades": 948,
+          "CAGR": 17.27925021899326,
+          "MaxDD": -22.966926729485163
+        }
+      },
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-08-10",
+        "pass": true,
+        "status": "risk_on",
+        "reason": "All regime checks passed",
+        "values": {
+          "breadth_ma50_pct": 79.54545454545455,
+          "breadth_ma20_pct": 76.78571428571429,
+          "avg_ret20_pct": 8.863456913442702,
+          "median_atr_pct": 3.475173484826681,
+          "sample_tickers": 56
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": true,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": true,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "triggered",
+        "as_of_date": "2026-08-10",
+        "active": true,
+        "active_modes": [
+          "swing",
+          "t1"
+        ],
+        "triggered_modes_today": [
+          "swing",
+          "t1"
+        ],
+        "cooldown_until": "2026-08-13",
+        "state_path": "reports/kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-08-10T16:25:59.597345",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "signal_accuracy_audit_done",
+    "extra": {
+      "status": "ok",
+      "json_path": "reports/signal_accuracy_audit.json",
+      "audited_trade_count": 11727,
+      "live_threshold_trade_count": 6791
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:17.982030",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "model_v2_accuracy_audit_done",
+    "extra": {
+      "status": "ok",
+      "json_path": "reports/model_v2_accuracy_audit.json",
+      "audited_trade_count": 11727,
+      "v2_recommended_count": 0
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:17.984399",
+    "run_id": "20260810_162412",
+    "level": "WARN",
+    "message": "live_gate_blocked",
+    "extra": {
+      "gate_pass": {
+        "t1": false,
+        "swing": false
+      },
+      "gate_components": {
+        "t1": {
+          "model_gate_ok": false,
+          "regime_ok": true,
+          "kill_switch_ok": false,
+          "final_ok": false
+        },
+        "swing": {
+          "model_gate_ok": false,
+          "regime_ok": true,
+          "kill_switch_ok": false,
+          "final_ok": false
+        }
+      },
+      "regime": {
+        "enabled": true,
+        "as_of_date": "2026-08-10",
+        "pass": true,
+        "status": "risk_on",
+        "reason": "All regime checks passed",
+        "values": {
+          "breadth_ma50_pct": 79.54545454545455,
+          "breadth_ma20_pct": 76.78571428571429,
+          "avg_ret20_pct": 8.863456913442702,
+          "median_atr_pct": 3.475173484826681,
+          "sample_tickers": 56
+        },
+        "thresholds": {
+          "min_breadth_ma50_pct": 45.0,
+          "min_breadth_ma20_pct": 50.0,
+          "min_avg_ret20_pct": 0.0,
+          "max_median_atr_pct": 8.0
+        },
+        "checks": {
+          "breadth_ma50_ok": true,
+          "breadth_ma20_ok": true,
+          "avg_ret20_ok": true,
+          "median_atr_ok": true
+        }
+      },
+      "kill_switch": {
+        "enabled": true,
+        "status": "triggered",
+        "as_of_date": "2026-08-10",
+        "active": true,
+        "active_modes": [
+          "swing",
+          "t1"
+        ],
+        "triggered_modes_today": [
+          "swing",
+          "t1"
+        ],
+        "cooldown_until": "2026-08-13",
+        "state_path": "reports/kill_switch_state.json"
+      }
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:17.985084",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "signal_snapshot_written",
+    "extra": {
+      "path": "reports/snapshots/signals_20260810_162412.json",
+      "signal_count": 0
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:18.043634",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "live_reconciliation_done",
+    "extra": {
+      "status": "no_signals",
+      "message": "Snapshot files found, but all have zero executable signals",
+      "json_path": "reports/live_reconciliation.json",
+      "details_csv_path": "reports/live_reconciliation_details.csv"
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:18.044428",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "signal_funnel_written",
+    "extra": {
+      "path": "reports/signal_funnel_live.json",
+      "post_gate_signals": 0
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:18.652814",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "telegram_done",
+    "extra": {
+      "ok": true
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:18.685666",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "weekly_kpi_generated",
+    "extra": {
+      "status": "ok",
+      "message": "Weekly KPI dashboard generated",
+      "json_path": "reports/weekly_kpi.json",
+      "markdown_path": "reports/weekly_kpi.md",
+      "payload": {
+        "generated_at": "2026-08-10T16:26:18.683051",
+        "lookback_days": 7,
+        "run_stats": {
+          "runs_total": 15,
+          "runs_failed": 0,
+          "runs_live_allowed": 0,
+          "runs_risk_blocked": 15,
+          "setup_errors": 0,
+          "error_rate_pct": 0.0
+        },
+        "event_risk_update": {
+          "ok_count": 15,
+          "error_count": 0
+        },
+        "strategy_snapshot": {
+          "swing_profit_factor": 1.367785138837053,
+          "swing_expectancy": 0.02167966536443698,
+          "swing_max_dd_pct": -22.966926729485163,
+          "swing_trades": 948
+        },
+        "live_reconciliation": {
+          "status": "no_signals",
+          "entry_match_rate_pct": 0.0,
+          "signal_execution_rate_pct": 0.0,
+          "live_win_rate_pct": 0.0,
+          "live_expectancy_r": 0.0,
+          "live_profit_factor_r": 0.0,
+          "live_samples": 0
+        }
+      }
+    }
+  },
+  {
+    "ts": "2026-08-10T16:26:18.685806",
+    "run_id": "20260810_162412",
+    "level": "INFO",
+    "message": "beginner_coaching_written",
+    "extra": {
+      "path": "reports/beginner_coaching.md"
+    }
   }
 ]

@@ -1,12 +1,24 @@
 {
-  "last_attempt_at": "2026-08-10T13:50:59.356558",
-  "last_success_at": "",
-  "status": "skipped_no_source",
-  "message": "Universe source URLs are empty; keeping existing universe file",
-  "errors": [],
-  "source_status": {
-    "LQ45": "no_url",
-    "IDX30": "no_url"
+  "enabled": true,
+  "forced": false,
+  "status": "validated_current",
+  "message": "Point-in-time IDX universe snapshot is current and valid",
+  "updated": false,
+  "attempted_at": "2026-08-10T16:24:12.854238",
+  "last_success_at": "2026-08-10T16:24:12.854238",
+  "universe_path": "data/reference/universe_lq45_idx30.csv",
+  "history_path": "data/reference/universe_history.csv",
+  "as_of": "2026-08-10",
+  "effective_from": "2026-08-03",
+  "effective_until": "2026-10-30",
+  "days_until_expiry": 81,
+  "counts": {
+    "lq45": 45,
+    "idx30": 30,
+    "combined": 45
   },
-  "universe_path": "data/reference/universe_lq45_idx30.csv"
+  "source_documents": [
+    "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/No.%20Peng-00148_BEI.POP_07-2026-ID.zip"
+  ],
+  "errors": []
 }
