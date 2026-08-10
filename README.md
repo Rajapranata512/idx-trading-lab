@@ -6,9 +6,18 @@ Production-oriented EOD research pipeline for Indonesian stocks (IDX):
 - dual signal model: `T+1` and `Swing 1-4 weeks`
 - semi-auto execution workflow (manual order entry in Stockbit with Auto Order/Bracket)
 
+## Project control documents
+
+- `PRD.md` is the product source of truth: current state, requirements,
+  final-decision gates, roadmap, blockers, and next action.
+- `AGENTS.md` is the token-efficient operating contract for AI agents. It
+  prevents full-repository rereads and defines safe autonomous work and handoff.
+
 ## What this project does
 
 This project does **not** execute broker orders directly.
+`PRD.md` defines a gated `FINAL_EXECUTION` end-state, but current runtime
+status remains `EXECUTION_DISABLED` until its model and execution contracts pass.
 
 It generates:
 

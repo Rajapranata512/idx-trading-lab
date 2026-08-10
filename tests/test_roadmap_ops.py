@@ -79,6 +79,9 @@ def test_evaluate_data_quality_passes_clean_dataset(tmp_path, monkeypatch):
     assert report["status"] == "pass"
     assert report["pass"] is True
     assert report["reason_codes"] == []
+    generated_at = datetime.fromisoformat(report["generated_at"])
+    assert generated_at.tzinfo is not None
+    assert generated_at.utcoffset().total_seconds() == 0
     assert Path("reports/data_quality_report.json").exists()
 
 

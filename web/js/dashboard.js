@@ -9,6 +9,8 @@ const P={
   promo:'./reports/model_v2_promotion_state.json',
   accuracy:'./reports/model_v2_accuracy_audit.json',
   recon:'./reports/live_reconciliation.json',
+  quality:'./reports/data_quality_report.json',
+  calendar:'./idx_market_calendar.json',
   topT1:'./reports/top_t1.csv',
   topSwing:'./reports/top_swing.csv',
   eventActive:'./reports/event_risk_active.csv'
@@ -37,37 +39,53 @@ function toast(msg,type='info'){
 
 // ── Data Loading ──
 async function loadAll(){
-  const[bt,kpi,fun,shd,prm,acc,rec,t1,sw,ev]=await Promise.all([
+  const[bt,kpi,fun,shd,prm,acc,rec,quality,calendar,t1,sw,ev]=await Promise.all([
     fetchJSON(P.backtest),fetchJSON(P.kpi),fetchJSON(P.funnel),
     fetchJSON(P.shadow),fetchJSON(P.promo),fetchJSON(P.accuracy),fetchJSON(P.recon),
+    fetchJSON(P.quality),fetchJSON(P.calendar),
     fetchCSV(P.topT1),fetchCSV(P.topSwing),fetchCSV(P.eventActive)
   ]);
-  S.data={backtest:bt,kpi:kpi,funnel:fun,shadow:shd,promo:prm,accuracy:acc,recon:rec,topT1:t1,topSwing:sw,eventActive:ev};
-  const gen=bt?.generated_at||'';
-  // ── Data Freshness Warning ──
-  let freshnessClass='freshness-dot';
-  let staleWarning='';
-  if(gen){
-    const genDate=new Date(gen);
-    const now=new Date();
-    const ageDays=Math.floor((now-genDate)/(1000*60*60*24));
-    if(ageDays>7){
-      freshnessClass='freshness-dot stale-critical';
-      staleWarning=`<div class="stale-banner stale-critical-bg" id="staleBanner">⚠️ Data terakhir diupdate <strong>${ageDays} hari lalu</strong> (${gen.slice(0,10)}). Pipeline harian mungkin berhenti. Jangan gunakan sinyal ini untuk keputusan trading.</div>`;
-    }else if(ageDays>1){
-      freshnessClass='freshness-dot stale-warning';
-      staleWarning=`<div class="stale-banner stale-warning-bg" id="staleBanner">⚠️ Data sudah <strong>${ageDays} hari</strong> tidak diperbarui (${gen.slice(0,10)}). Sinyal mungkin tidak akurat.</div>`;
-    }
-  }else{
-    staleWarning='<div class="stale-banner stale-critical-bg" id="staleBanner">❌ Tidak ada data tersedia. Pastikan pipeline harian berjalan.</div>';
-  }
-  // Remove old banner if exists, then inject new one
+  S.data={backtest:bt,kpi:kpi,funnel:fun,shadow:shd,promo:prm,accuracy:acc,recon:rec,quality:quality,calendar:calendar,topT1:t1,topSwing:sw,eventActive:ev};
+  const gen=quality?.generated_at||'';
+  const dataDate=quality?.stats?.max_data_date||'';
+  const freshness=window.IdxMarketFreshness?.calculateFreshness({
+    dataDate:dataDate,
+    generatedAt:gen,
+    calendar:calendar,
+    now:new Date()
+  })||{
+    severity:'critical',
+    message:'Modul freshness data tidak tersedia.',
+    dataDate:dataDate||null,
+    pipelineTimestampWib:null
+  };
+  const freshnessClass=freshness.severity==='critical'
+    ?'freshness-dot stale-critical'
+    :freshness.severity==='warning'
+      ?'freshness-dot stale-warning'
+      :'freshness-dot';
+  const staleWarning=freshness.severity==='fresh'
+    ?''
+    :`<div class="stale-banner ${freshness.severity==='critical'?'stale-critical-bg':'stale-warning-bg'}" id="staleBanner"><strong>${freshness.severity==='critical'?'BLOKIR':'PERINGATAN'}:</strong> ${freshness.message}${freshness.severity==='critical'?' Jangan gunakan sinyal untuk keputusan trading.':''}</div>`;
   document.getElementById('staleBanner')?.remove();
+  document.getElementById('qualityBanner')?.remove();
   if(staleWarning){
     const main=$('#mainContent');
     if(main) main.insertAdjacentHTML('afterbegin',staleWarning);
   }
-  $('#dataFreshness').innerHTML=`<div class="${freshnessClass}"></div><span>${gen?gen.slice(0,16):'No data'}</span>`;
+  const qualityCodes=[...(quality?.reason_codes||[]),...(quality?.warning_codes||[])];
+  if(quality&&(quality.pass===false||qualityCodes.length)){
+    const blocked=quality.pass===false;
+    const banner=document.createElement('div');
+    banner.id='qualityBanner';
+    banner.className=`stale-banner ${blocked?'stale-critical-bg':'stale-warning-bg'}`;
+    banner.textContent=`${blocked?'BLOKIR':'PERINGATAN'} KUALITAS DATA: ${qualityCodes.join(', ')||quality.status||'unknown'}. Freshness tanggal pasar dinilai terpisah dari kualitas isi.`;
+    const main=$('#mainContent');
+    const stale=$('#staleBanner');
+    if(stale) stale.insertAdjacentElement('afterend',banner);
+    else if(main) main.insertAdjacentElement('afterbegin',banner);
+  }
+  $('#dataFreshness').innerHTML=`<div class="${freshnessClass}"></div><div class="freshness-copy"><span><strong>Data</strong> ${freshness.dataDate||'Tidak tersedia'}</span><span class="pipeline-time"><strong>Pipeline</strong> ${freshness.pipelineTimestampWib||'Tidak tersedia'}</span></div>`;
   const st=$('#systemStatus');
   const regime=bt?.regime;
   if(regime){

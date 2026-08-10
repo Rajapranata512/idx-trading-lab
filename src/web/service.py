@@ -5,7 +5,7 @@ import math
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 from uuid import uuid4
@@ -14,7 +14,7 @@ import pandas as pd
 
 
 def _utc_now_iso() -> str:
-    return datetime.utcnow().isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:

@@ -19,6 +19,20 @@ config/settings.local.json
 .DS_Store
 data/live/trade_fills.csv
 
+# Local agent and development scratch
+*.log
+tmp_*
+.codex-worktrees/
+.openclaw/
+.playwright-mcp/
+memory/
+MEMORY.md
+HEARTBEAT.md
+IDENTITY.md
+SOUL.md
+TOOLS.md
+USER.md
+
 # Allow web static exports (needed by Vercel frontend)
 !web/reports/
 !web/public_*.json

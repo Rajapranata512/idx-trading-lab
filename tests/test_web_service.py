@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import time
+from datetime import datetime
 from pathlib import Path
 
 from src.web.service import (
@@ -157,6 +158,9 @@ def test_build_dashboard_snapshot_reads_reports_contract(tmp_path):
     )
 
     snapshot = build_dashboard_snapshot(reports_dir=reports)
+    generated_at = datetime.fromisoformat(snapshot["generated_at"])
+    assert generated_at.tzinfo is not None
+    assert generated_at.utcoffset().total_seconds() == 0
     assert snapshot["kpi"]["signal_total"] == 2
     assert snapshot["kpi"]["execution_total"] == 1
     assert snapshot["kpi"]["event_active_total"] == 1

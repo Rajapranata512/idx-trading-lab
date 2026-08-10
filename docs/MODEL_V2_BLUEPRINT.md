@@ -32,7 +32,7 @@ Jalur final-decision sudah aktif secara fail-closed di pipeline harian:
 - Skor historis T1/Swing dihitung per cross-section tanggal agar observasi masa depan tidak
   mengubah skor masa lalu; paper fill memakai aturan penolakan entry gap yang sama dengan label.
 
-Status bukti terbaru dan blocker promosi dicatat hanya di `docs/AI_PROJECT_CONTEXT.md`
+Status bukti terbaru dan blocker promosi dicatat hanya di root `PRD.md`
 agar agent tidak memakai angka lama dari beberapa dokumen.
 
 ## 1.2 Kontrak Final Decision

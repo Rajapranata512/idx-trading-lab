@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -173,7 +173,7 @@ def _evaluate_data_quality(
 
     def blocked_payload(code: str, message: str) -> dict[str, Any]:
         payload = {
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
             "status": "blocked",
             "pass": False,
             "reason_codes": [code],
@@ -312,7 +312,7 @@ def _evaluate_data_quality(
     else:
         message = "Data quality checks blocked run: " + ", ".join(reason_codes)
     payload = {
-        "generated_at": datetime.utcnow().isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": status,
         "pass": passed,
         "reason_codes": reason_codes,
