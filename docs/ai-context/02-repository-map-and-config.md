@@ -179,19 +179,30 @@ data/raw/prices_intraday.csv
 
 ## Universe
 
-File:
+Files:
 
 ```text
+data/reference/universe_history.csv
 data/reference/universe_lq45_idx30.csv
 ```
 
-Minimal kolom:
+History adalah sumber point-in-time dengan kolom `ticker,index,effective_from,
+effective_until,source,source_document,imported_at`. Snapshot aktif adalah hasil pilihan
+untuk tanggal pipeline. Produksi memblokir snapshot stale/invalid dan memvalidasi jumlah
+anggota LQ45=45 serta IDX30=30.
+
+## Price Quality
 
 ```text
-ticker
+data/reference/corporate_actions.csv
+data/processed/prices_daily_adjusted.csv
+reports/corporate_action_anomalies.csv
+reports/price_reconciliation.json
+reports/data_quality_report.json
 ```
 
-Universe bisa auto-update jika `data.universe_auto_update.enabled=true`.
+Raw canonical tidak diubah oleh adjustment. Features memakai adjusted prices. Anomali
+aktif tanpa corporate action terkonfirmasi mengarantina ticker dan memblokir run.
 
 ## Event Risk
 

@@ -1,6 +1,6 @@
 # PRD and AI Recovery Contract - IDX Trading Lab
 
-Revision: 2026-07-18
+Revision: 2026-07-20
 Owner document: this file is the first source of truth after an AI context reset.
 
 ## Resume In 60 Seconds
@@ -53,6 +53,25 @@ stop/TP outcomes, and fee/slippage-adjusted returns:
 These are validation findings, not a promise of future returns. Runtime status must always
 be read from current model metadata, accuracy audit, promotion state, and reconciliation.
 
+## Stage 1-3 Production Foundation
+
+Implemented on branch `codex/stage-1-3-production-foundation`:
+
+1. Pre-open delivery has GitHub runs at 08:05 and 08:25 WIB, an idempotency guard,
+   stale-report rejection, a failure alert, and an independent Vercel watchdog endpoint.
+2. The universe is point-in-time and fail-closed. The tracked official IDX LQ45/IDX30
+   snapshot has 45/30 members and is effective 2026-08-03 through 2026-10-30.
+3. Raw prices remain auditable, features use split-adjusted prices, active unexplained
+   jumps quarantine the ticker and block the run, and independent close-price
+   reconciliation emits a machine-readable report.
+
+Operational limits remain explicit: Vercel needs `CRON_SECRET` and a scoped
+`GITHUB_WATCHDOG_TOKEN`; the next official IDX archive must be imported before
+2026-10-31; history currently covers two periods starting 2026-05-04 and is not yet
+sufficient for survivorship-bias-safe long-horizon backtests; and reconciliation currently warns rather
+than blocks when its independent source is unavailable. See
+`docs/STAGE_1_3_OPERATIONS.md` before changing these controls.
+
 ## Final Decision Contract
 
 Promotion is independent for `t1` and `swing`. A mode may move through
@@ -94,7 +113,11 @@ Promotion is independent for `t1` and `swing`. A mode may move through
 `run-daily` uses this relevant sequence:
 
 ```text
-ingest -> data quality -> features -> V1 score
+point-in-time universe freshness
+-> ingest unadjusted canonical raw prices
+-> corporate-action anomaly scan + independent reconciliation
+-> fail-closed data quality
+-> split-adjusted features -> active-universe V1 score
 -> V2 train/infer shadow
 -> promotion evaluates the previous matching accuracy audit
 -> current accuracy audit is generated
@@ -114,6 +137,9 @@ audit produced by a different artifact version.
 | Promotion/rollback | `src/model_v2/promotion.py` | `tests/test_model_v2_promotion.py`, `tests/test_model_v2_final_guardrails.py` |
 | Accuracy/meta-filter | `src/analytics/model_v2_accuracy.py`, `src/model_v2/meta_filter.py` | `tests/test_model_v2_accuracy.py`, `tests/test_model_v2_final_stage.py` |
 | Daily wiring | relevant section of `src/cli.py` | nearest CLI/pipeline test |
+| Pre-open delivery | `.github/workflows/model-v2-shadow-preopen.yml`, `scripts/preopen_delivery_guard.py`, `web/api/preopen-watchdog.js` | `tests/test_preopen_delivery.py`, `tests_js/preopen_watchdog.test.js` |
+| Universe freshness | `src/universe/idx_archive.py`, `src/universe/snapshot_updater.py` | `tests/test_universe_snapshot.py`, `tests/test_universe_update.py` |
+| Price/corporate-action quality | `src/ingest/quality.py`, relevant section of `src/cli.py` | `tests/test_price_quality.py`, `tests/test_ingest_validation.py` |
 | Dashboard | `web/js/dashboard.js` | `node --check web/js/dashboard.js` |
 | Config | `src/config.py`, one active preset | config validation plus affected tests |
 
@@ -141,11 +167,14 @@ Minimum Model V2 validation:
 
 ```powershell
 python -B -m pytest -p no:cacheprovider tests/test_model_v2_label_alignment.py tests/test_model_v2_promotion.py tests/test_model_v2_final_guardrails.py tests/test_model_v2_final_stage.py tests/test_model_v2_accuracy.py tests/test_model_v2_upgrade.py tests/test_paper_trading.py tests/test_strategy.py
+python -B -m pytest -p no:cacheprovider tests/test_preopen_delivery.py tests/test_stage123_configuration.py tests/test_universe_snapshot.py tests/test_universe_update.py tests/test_price_quality.py tests/test_ingest_validation.py tests/test_integration_cli.py
+node --test tests_js/preopen_watchdog.test.js tests_js/preopen_watchdog_handler.test.js
+node --check web/api/preopen-watchdog.js
 node --check web/js/dashboard.js
 git diff --check
 ```
 
-Last full regression verification: `128 passed` on 2026-07-18.
+Last full regression verification: `147 passed` plus `7` Node tests on 2026-08-10.
 
 Before ending a coding task, state: changed files, tests run, measured blockers, and whether
 anything was committed, pushed, or deployed. Update this PRD only when product contracts,

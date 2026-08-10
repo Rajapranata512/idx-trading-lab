@@ -15,6 +15,13 @@ def _write_json(path: str | Path, payload: dict[str, Any]) -> str:
     return atomic_write_json(path, payload)
 
 
+def _latest_data_date(scored_history: pd.DataFrame) -> str:
+    if scored_history.empty or "date" not in scored_history.columns:
+        return ""
+    latest = pd.to_datetime(scored_history["date"], errors="coerce").max()
+    return pd.Timestamp(latest).date().isoformat() if pd.notna(latest) else ""
+
+
 def _to_signal_rows(df: pd.DataFrame) -> list[dict[str, Any]]:
     keep = [
         "ticker",
@@ -103,6 +110,7 @@ def run_model_v2_shadow(
 ) -> dict[str, Any]:
     reports_dir = Path("reports")
     reports_dir.mkdir(parents=True, exist_ok=True)
+    data_date = _latest_data_date(scored_history)
 
     train_info = maybe_auto_train_model_v2(scored_history=scored_history, settings=settings, force=False)
     shadow_df, infer_info = infer_shadow_scores(candidates=candidates, settings=settings)
@@ -116,6 +124,7 @@ def run_model_v2_shadow(
         signal_payload = {
             "generated_at": datetime.utcnow().isoformat(),
             "run_id": run_id,
+            "data_date": data_date,
             "signals": [],
             "infer": infer_info,
             "train": train_info,
@@ -137,6 +146,7 @@ def run_model_v2_shadow(
     signal_payload = {
         "generated_at": datetime.utcnow().isoformat(),
         "run_id": run_id,
+        "data_date": data_date,
         "signals": _to_signal_rows(shadow_df),
         "infer": infer_info,
         "train": train_info,

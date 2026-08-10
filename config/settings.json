@@ -7,7 +7,7 @@
     "universe_auto_update": {
       "enabled": true,
       "interval_days": 7,
-      "fail_on_error": false,
+      "fail_on_error": true,
       "state_path": "reports/universe_update_state.json",
       "request_timeout_seconds": 20,
       "headers": {
@@ -26,7 +26,11 @@
         "response_data_path": "",
         "ticker_column": "ticker",
         "query_params": {}
-      }
+      },
+      "fail_on_stale": true,
+      "history_path": "data/reference/universe_history.csv",
+      "expected_lq45_members": 45,
+      "expected_idx30_members": 30
     },
     "intraday": {
       "enabled": false,
@@ -81,6 +85,23 @@
           "volume": "volume"
         }
       }
+    },
+    "price_quality": {
+      "adjusted_prices_path": "data/processed/prices_daily_adjusted.csv",
+      "use_adjusted_for_features": true,
+      "corporate_actions_path": "data/reference/corporate_actions.csv",
+      "anomaly_report_path": "reports/corporate_action_anomalies.csv",
+      "reconciliation_report_path": "reports/price_reconciliation.json",
+      "outlier_threshold_pct": 25,
+      "quarantine_days": 3,
+      "block_on_active_unresolved_action": true,
+      "reconciliation_enabled": true,
+      "reconciliation_required": false,
+      "reconciliation_reference_csv_path": "",
+      "reconciliation_yfinance_enabled": true,
+      "reconciliation_lookback_sessions": 5,
+      "reconciliation_max_close_diff_pct": 1,
+      "reconciliation_max_mismatch_ratio": 0.05
     }
   },
   "pipeline": {
@@ -443,6 +464,7 @@
   },
   "notifications": {
     "telegram_bot_token_env": "TELEGRAM_BOT_TOKEN",
-    "telegram_chat_id_env": "TELEGRAM_CHAT_ID"
+    "telegram_chat_id_env": "TELEGRAM_CHAT_ID",
+    "preopen_max_report_age_days": 5
   }
 }

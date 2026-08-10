@@ -69,12 +69,34 @@ class UniverseAutoUpdateSettings(BaseModel):
     enabled: bool = True
     interval_days: int = 7
     fail_on_error: bool = False
+    fail_on_stale: bool = True
     state_path: str = "reports/universe_update_state.json"
+    history_path: str = "data/reference/universe_history.csv"
     request_timeout_seconds: int = 20
+    expected_lq45_members: int = 45
+    expected_idx30_members: int = 30
     headers: dict[str, str] = Field(default_factory=dict)
     query_params: dict[str, str] = Field(default_factory=dict)
     lq45: UniverseSourceSettings = Field(default_factory=UniverseSourceSettings)
     idx30: UniverseSourceSettings = Field(default_factory=UniverseSourceSettings)
+
+
+class PriceQualitySettings(BaseModel):
+    adjusted_prices_path: str = "data/processed/prices_daily_adjusted.csv"
+    use_adjusted_for_features: bool = True
+    corporate_actions_path: str = "data/reference/corporate_actions.csv"
+    anomaly_report_path: str = "reports/corporate_action_anomalies.csv"
+    reconciliation_report_path: str = "reports/price_reconciliation.json"
+    outlier_threshold_pct: float = 25.0
+    quarantine_days: int = 3
+    block_on_active_unresolved_action: bool = True
+    reconciliation_enabled: bool = True
+    reconciliation_required: bool = False
+    reconciliation_reference_csv_path: str = ""
+    reconciliation_yfinance_enabled: bool = True
+    reconciliation_lookback_sessions: int = 5
+    reconciliation_max_close_diff_pct: float = 1.0
+    reconciliation_max_mismatch_ratio: float = 0.05
 
 
 class IntradaySettings(BaseModel):
@@ -107,6 +129,7 @@ class DataSettings(BaseModel):
     provider: ProviderSettings
     intraday: IntradaySettings = Field(default_factory=IntradaySettings)
     universe_auto_update: UniverseAutoUpdateSettings = Field(default_factory=UniverseAutoUpdateSettings)
+    price_quality: PriceQualitySettings = Field(default_factory=PriceQualitySettings)
 
 
 class EventRiskSourceSettings(BaseModel):
@@ -312,6 +335,7 @@ class GuardrailSettings(BaseModel):
 class NotificationSettings(BaseModel):
     telegram_bot_token_env: str = "TELEGRAM_BOT_TOKEN"
     telegram_chat_id_env: str = "TELEGRAM_CHAT_ID"
+    preopen_max_report_age_days: int = 5
 
 
 class ModelV2Settings(BaseModel):

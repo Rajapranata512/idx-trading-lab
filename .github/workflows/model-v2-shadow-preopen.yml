@@ -2,14 +2,30 @@ name: IDX Trading Lab - Model V2 Pre-Open Telegram
 
 on:
   schedule:
-    # Around one hour before regular IDX market open, avoiding minute 00
-    # because GitHub Actions schedules can be delayed or dropped then.
-    - cron: '5 1 * * 1-5' # 08:05 WIB
+    # Primary at 08:05 WIB and same-platform retry at 08:25 WIB.
+    # The delivery guard prevents duplicates when a delayed run completes later.
+    - cron: '5 1 * * 1-5'
+    - cron: '25 1 * * 1-5'
   workflow_dispatch:
+    inputs:
+      force_send:
+        description: Send even if a successful delivery already exists today
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: idx-trading-lab-model-v2-preopen
+  cancel-in-progress: false
 
 jobs:
   send-model-v2-shadow:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - name: Checkout repository
@@ -21,14 +37,46 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
 
+    - name: Check whether today's report was already delivered
+      id: delivery_guard
+      if: ${{ inputs.force_send != true }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        python scripts/preopen_delivery_guard.py \
+          --repo "${{ github.repository }}" \
+          --workflow "model-v2-shadow-preopen.yml" \
+          --run-id "${{ github.run_id }}" \
+          --timezone "Asia/Jakarta"
+
     - name: Install dependencies
+      if: ${{ inputs.force_send == true || steps.delivery_guard.outputs.should_send == 'true' }}
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Send Model V2 shadow pre-open Telegram
+      if: ${{ inputs.force_send == true || steps.delivery_guard.outputs.should_send == 'true' }}
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: |
         python -m src.cli send-model-v2-shadow-telegram
+
+    - name: Record idempotent skip
+      if: ${{ inputs.force_send != true && steps.delivery_guard.outputs.should_send != 'true' }}
+      run: |
+        echo "Pre-open delivery skipped: ${{ steps.delivery_guard.outputs.reason }}"
+
+    - name: Alert Telegram when pre-open delivery fails
+      if: ${{ failure() }}
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+        if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+          curl --fail --silent --show-error \
+            --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" \
+            --data-urlencode "text=IDX Model V2 pre-open delivery failed. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" || true
+        fi

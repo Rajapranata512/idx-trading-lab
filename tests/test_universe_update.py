@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from src.config import Settings
 from src.universe import maybe_auto_update_universe
 
@@ -75,10 +77,10 @@ def _settings(tmp_path: Path) -> Settings:
     return Settings.model_validate(payload)
 
 
-def test_universe_auto_update_skips_when_source_url_empty(tmp_path, monkeypatch):
+def test_universe_auto_update_blocks_when_no_snapshot_or_source_exists(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     settings = _settings(tmp_path)
-    out = maybe_auto_update_universe(settings=settings, force=True)
-    assert out["status"] == "skipped_no_source"
+    with pytest.raises(RuntimeError, match="Universe freshness gate blocked run"):
+        maybe_auto_update_universe(settings=settings, force=True)
     assert Path("data/reference/universe.csv").exists()
 

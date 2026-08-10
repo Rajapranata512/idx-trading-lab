@@ -32,6 +32,7 @@ def _write_runtime_files(tmp_path: Path) -> Path:
             "canonical_prices_path": "data/raw/prices_daily.csv",
             "fallback_csv_path": "data/raw/prices_daily.csv",
             "universe_csv_path": "data/reference/universe.csv",
+            "universe_auto_update": {"enabled": False},
             "provider": {
                 "kind": "csv",
                 "rest": {
@@ -161,6 +162,27 @@ def test_event_risk_blacklist_excludes_active_ticker(tmp_path, monkeypatch):
     tickers = {str(r.get("ticker", "")) for r in payload.get("signals", [])}
     assert "BBCA" not in tickers
     assert Path("reports/event_risk_excluded.csv").exists()
+
+
+def test_score_step_removes_rows_outside_active_universe(tmp_path, monkeypatch):
+    settings_path = _write_runtime_files(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    settings = load_settings(settings_path)
+
+    ingest_daily(settings)
+    compute_features_step(settings)
+    features_path = Path("data/processed/features.parquet")
+    features = pd.read_parquet(features_path)
+    outside = features.copy()
+    outside["ticker"] = "EXCL"
+    pd.concat([features, outside], ignore_index=True).to_parquet(features_path, index=False)
+
+    result = score_step(settings)
+    payload = json.loads(Path("reports/daily_signal.json").read_text(encoding="utf-8"))
+
+    assert result["universe_filter"]["active_ticker_count"] == 2
+    assert result["universe_filter"]["feature_rows_removed"] == len(outside)
+    assert "EXCL" not in {str(row.get("ticker", "")) for row in payload.get("signals", [])}
 
 
 def test_liquidity_cost_estimate_handles_missing_avg_volume(tmp_path, monkeypatch):

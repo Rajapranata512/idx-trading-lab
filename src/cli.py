@@ -13,6 +13,9 @@ from src.backtest import BacktestCosts, pass_live_gate, run_backtest, run_walk_f
 from src.config import Settings, load_settings
 from src.features.compute_features import compute_features
 from src.ingest.load_prices import load_prices_csv, load_prices_from_provider
+from src.ingest.providers.yfinance_provider import YFinanceProvider
+from src.ingest.quality import run_price_quality_audit
+from src.ingest.validator import validate_prices
 from src.model_v2 import (
     apply_model_v2_rollout_selection,
     evaluate_and_update_model_v2_promotion,
@@ -30,7 +33,7 @@ from src.risk import maybe_auto_recalibrate_volatility_targets, maybe_auto_updat
 from src.risk.manager import apply_global_position_limit, propose_trade_plan
 from src.risk.profit_quality import apply_profit_quality_gate
 from src.strategy import rank_all_modes, score_history_modes
-from src.universe import maybe_auto_update_universe
+from src.universe import import_idx_universe_archive, maybe_auto_update_universe
 from src.utils import JsonRunLogger
 
 
@@ -84,13 +87,63 @@ def _merge_with_existing_prices(out_path: str, incoming: pd.DataFrame) -> pd.Dat
     return merged
 
 
+def _load_price_reconciliation_reference(
+    settings: Settings,
+    primary_source: str,
+    tickers: list[str],
+    start_date: str | None,
+    end_date: str | None,
+) -> tuple[pd.DataFrame | None, str, str]:
+    cfg = settings.data.price_quality
+    reference_path = str(cfg.reconciliation_reference_csv_path).strip()
+    if reference_path:
+        path = Path(reference_path)
+        if not path.exists():
+            return None, "", f"Reconciliation reference file not found: {path}"
+        try:
+            if path.resolve() == Path(settings.data.canonical_prices_path).resolve():
+                return None, "", "Reconciliation reference must be independent from canonical prices"
+            raw = pd.read_csv(path)
+            canonical, _ = validate_prices(
+                raw,
+                source="independent_reference_csv",
+                max_staleness_days=10000,
+            )
+            canonical = canonical[canonical["ticker"].isin(tickers)].copy()
+            if start_date:
+                canonical = canonical[canonical["date"].ge(pd.Timestamp(start_date))]
+            if end_date:
+                canonical = canonical[canonical["date"].le(pd.Timestamp(end_date))]
+            return canonical, "independent_reference_csv", ""
+        except Exception as exc:
+            return None, "", f"Reference CSV validation failed: {exc}"
+
+    if primary_source == "rest" and bool(cfg.reconciliation_yfinance_enabled):
+        try:
+            provider = YFinanceProvider(settings.data.provider.yfinance_ticker_suffix)
+            raw = provider.fetch_daily(
+                start_date=start_date,
+                end_date=end_date,
+                tickers=tickers,
+            )
+            canonical, _ = validate_prices(raw, source="yfinance_reconciliation")
+            return canonical, "yfinance_reconciliation", ""
+        except Exception as exc:
+            return None, "", f"yfinance reconciliation failed: {exc}"
+
+    return None, "", "No independent reconciliation source available for selected primary provider"
+
+
 def _evaluate_data_quality(
     settings: Settings,
     ingest_info: dict[str, Any] | None = None,
     max_staleness_days: int = 5,
 ) -> dict[str, Any]:
-    """Write and return an operational quality gate report for canonical prices."""
+    """Write and return the fail-closed operational quality gate for canonical prices."""
     ingest_info = ingest_info or {}
+    price_quality = ingest_info.get("price_quality", {})
+    if not isinstance(price_quality, dict):
+        price_quality = {}
     path = Path(settings.data.canonical_prices_path)
     reason_codes: list[str] = []
     warning_codes: list[str] = []
@@ -100,6 +153,8 @@ def _evaluate_data_quality(
         "duplicate_ok": False,
         "missing_tickers_ok": False,
         "outlier_ok": False,
+        "corporate_actions_ok": False,
+        "reconciliation_ok": False,
     }
     stats: dict[str, Any] = {
         "rows_total": 0,
@@ -110,53 +165,42 @@ def _evaluate_data_quality(
         "duplicate_rows": 0,
         "missing_tickers_count": int(ingest_info.get("missing_tickers_count", 0) or 0),
         "outlier_rows": 0,
+        "unresolved_anomaly_count": int(price_quality.get("unresolved_anomaly_count", 0) or 0),
+        "active_unresolved_count": int(price_quality.get("active_unresolved_count", 0) or 0),
+        "reconciliation_rows": 0,
+        "reconciliation_mismatch_ratio": None,
     }
 
-    if not path.exists():
+    def blocked_payload(code: str, message: str) -> dict[str, Any]:
         payload = {
             "generated_at": datetime.utcnow().isoformat(),
             "status": "blocked",
             "pass": False,
-            "reason_codes": ["missing_price_file"],
+            "reason_codes": [code],
             "warning_codes": [],
             "checks": checks,
             "stats": stats,
-            "message": f"Canonical price file not found: {path}",
+            "price_quality": price_quality,
+            "message": message,
         }
         _write_json("reports/data_quality_report.json", payload)
         return payload
+
+    if not path.exists():
+        return blocked_payload("missing_price_file", f"Canonical price file not found: {path}")
 
     try:
         df = pd.read_csv(path)
     except Exception as exc:
-        payload = {
-            "generated_at": datetime.utcnow().isoformat(),
-            "status": "blocked",
-            "pass": False,
-            "reason_codes": ["read_error"],
-            "warning_codes": [],
-            "checks": checks,
-            "stats": stats,
-            "message": f"Could not read canonical prices: {exc}",
-        }
-        _write_json("reports/data_quality_report.json", payload)
-        return payload
+        return blocked_payload("read_error", f"Could not read canonical prices: {exc}")
 
     required = ["date", "ticker", "open", "high", "low", "close", "volume"]
     missing_cols = [col for col in required if col not in df.columns]
     if missing_cols:
-        payload = {
-            "generated_at": datetime.utcnow().isoformat(),
-            "status": "blocked",
-            "pass": False,
-            "reason_codes": ["missing_columns"],
-            "warning_codes": [],
-            "checks": checks,
-            "stats": stats,
-            "message": "Canonical price data is missing required columns: " + ", ".join(missing_cols),
-        }
-        _write_json("reports/data_quality_report.json", payload)
-        return payload
+        return blocked_payload(
+            "missing_columns",
+            "Canonical price data is missing required columns: " + ", ".join(missing_cols),
+        )
 
     work = df[required].copy()
     work["date"] = pd.to_datetime(work["date"], errors="coerce")
@@ -166,12 +210,9 @@ def _evaluate_data_quality(
 
     stats["rows_total"] = int(len(work))
     stats["ticker_total"] = int(work["ticker"].nunique()) if not work.empty else 0
-    null_rows = int(work[["date", "ticker", "open", "high", "low", "close", "volume"]].isna().any(axis=1).sum())
+    null_rows = int(work[required].isna().any(axis=1).sum())
     non_positive_rows = int(
-        (
-            (work[["open", "high", "low", "close"]] <= 0).any(axis=1)
-            | (work["volume"] < 0)
-        ).sum()
+        ((work[["open", "high", "low", "close"]] <= 0).any(axis=1) | (work["volume"] < 0)).sum()
     )
     ohlc_bad_rows = int(
         (
@@ -180,50 +221,85 @@ def _evaluate_data_quality(
         ).sum()
     )
     stats["missing_rows"] = int(null_rows + non_positive_rows + ohlc_bad_rows)
-    if stats["missing_rows"] > 0:
-        reason_codes.append("missing_or_invalid_rows")
     checks["missing_ok"] = stats["missing_rows"] == 0
+    if not checks["missing_ok"]:
+        reason_codes.append("missing_or_invalid_rows")
 
-    duplicate_rows = int(work.duplicated(subset=["ticker", "date"], keep=False).sum())
-    stats["duplicate_rows"] = duplicate_rows
-    if duplicate_rows > 0:
+    stats["duplicate_rows"] = int(work.duplicated(subset=["ticker", "date"], keep=False).sum())
+    checks["duplicate_ok"] = stats["duplicate_rows"] == 0
+    if not checks["duplicate_ok"]:
         reason_codes.append("duplicate_rows")
-    checks["duplicate_ok"] = duplicate_rows == 0
 
     max_date = work["date"].max()
     if pd.notna(max_date):
         max_day = pd.Timestamp(max_date).date()
         stats["max_data_date"] = max_day.isoformat()
-        stale_days = int((datetime.utcnow().date() - max_day).days)
-        stats["stale_days"] = stale_days
-        checks["stale_ok"] = stale_days <= max(0, int(max_staleness_days))
+        stats["stale_days"] = int((datetime.utcnow().date() - max_day).days)
+        checks["stale_ok"] = stats["stale_days"] <= max(0, int(max_staleness_days))
         if not checks["stale_ok"]:
             reason_codes.append("stale_data")
     else:
         reason_codes.append("missing_data_date")
 
-    if stats["missing_tickers_count"] > 0:
-        reason_codes.append("missing_tickers")
     checks["missing_tickers_ok"] = stats["missing_tickers_count"] == 0
+    if not checks["missing_tickers_ok"]:
+        reason_codes.append("missing_tickers")
 
-    outlier_mask = pd.Series([False] * len(work), index=work.index)
     if not work.empty:
         sorted_work = work.sort_values(["ticker", "date"]).copy()
         sorted_work["prev_close"] = sorted_work.groupby("ticker")["close"].shift(1)
+        threshold = float(settings.data.price_quality.outlier_threshold_pct) / 100.0
         outlier_mask = (
             sorted_work["prev_close"].gt(0)
-            & (((sorted_work["close"] - sorted_work["prev_close"]) / sorted_work["prev_close"]).abs() > 0.25)
+            & (((sorted_work["close"] - sorted_work["prev_close"]) / sorted_work["prev_close"]).abs() > threshold)
         )
         stats["outlier_rows"] = int(outlier_mask.sum())
     if stats["outlier_rows"] > 0:
         warning_codes.append("price_outliers")
     checks["outlier_ok"] = stats["outlier_rows"] == 0
 
+    block_active = bool(price_quality.get("block_on_active_unresolved_action", True))
+    checks["corporate_actions_ok"] = not (
+        block_active and stats["active_unresolved_count"] > 0
+    )
+    if not checks["corporate_actions_ok"]:
+        reason_codes.append("unresolved_recent_corporate_action")
+    elif stats["unresolved_anomaly_count"] > 0:
+        warning_codes.append("historical_unresolved_price_anomalies")
+
+    reconciliation = price_quality.get(
+        "reconciliation",
+        {"status": "disabled", "required": False} if not price_quality else {},
+    )
+    if not isinstance(reconciliation, dict):
+        reconciliation = {}
+    reconciliation_status = str(reconciliation.get("status", "unavailable"))
+    reconciliation_required = bool(reconciliation.get("required", False))
+    stats["reconciliation_rows"] = int(reconciliation.get("rows_compared", 0) or 0)
+    mismatch_ratio = reconciliation.get("mismatch_ratio")
+    stats["reconciliation_mismatch_ratio"] = mismatch_ratio
+    if reconciliation_status == "disabled":
+        checks["reconciliation_ok"] = True
+    elif reconciliation_status == "unavailable":
+        checks["reconciliation_ok"] = not reconciliation_required
+        if checks["reconciliation_ok"]:
+            warning_codes.append("price_reconciliation_unavailable")
+    else:
+        checks["reconciliation_ok"] = bool(reconciliation.get("pass", False))
+    if not checks["reconciliation_ok"]:
+        reason_codes.append("price_reconciliation_failed")
+
+    reference_error = str(ingest_info.get("reconciliation_reference_error", "")).strip()
+    if reference_error and "price_reconciliation_unavailable" not in warning_codes:
+        warning_codes.append("price_reconciliation_reference_error")
+
     hard_checks = [
         checks["stale_ok"],
         checks["missing_ok"],
         checks["duplicate_ok"],
         checks["missing_tickers_ok"],
+        checks["corporate_actions_ok"],
+        checks["reconciliation_ok"],
     ]
     passed = bool(all(hard_checks))
     status = "pass" if passed and not warning_codes else "warning" if passed else "blocked"
@@ -243,11 +319,11 @@ def _evaluate_data_quality(
         "warning_codes": warning_codes,
         "checks": checks,
         "stats": stats,
+        "price_quality": price_quality,
         "message": message,
     }
     _write_json("reports/data_quality_report.json", payload)
     return payload
-
 
 def ingest_daily(
     settings: Settings,
@@ -266,22 +342,42 @@ def ingest_daily(
     fetched_tickers = set(prices["ticker"].unique().tolist())
     missing_tickers = sorted(set(tickers) - fetched_tickers)
 
+    reference, reference_source, reference_error = _load_price_reconciliation_reference(
+        settings=settings,
+        primary_source=source,
+        tickers=tickers,
+        start_date=start_date,
+        end_date=end_date,
+    )
+
     out_path = settings.data.canonical_prices_path
     _ensure_parent(out_path)
     to_save = _merge_with_existing_prices(out_path, prices) if merge_existing else prices
     to_save.to_csv(out_path, index=False)
+
+    price_quality = run_price_quality_audit(
+        prices=to_save,
+        config=settings.data.price_quality,
+        reconciliation_primary=prices,
+        reconciliation_reference=reference,
+        primary_source=source,
+        reference_source=reference_source,
+    )
+    max_date = pd.to_datetime(to_save["date"], errors="coerce").max()
+    min_date = pd.to_datetime(to_save["date"], errors="coerce").min()
     return {
         "rows": len(to_save),
         "rows_new": len(prices),
         "tickers": int(to_save["ticker"].nunique()) if not to_save.empty else 0,
         "source": source,
-        "max_data_date": to_save["date"].max().strftime("%Y-%m-%d") if not to_save.empty else "",
-        "min_data_date": to_save["date"].min().strftime("%Y-%m-%d") if not to_save.empty else "",
+        "max_data_date": pd.Timestamp(max_date).strftime("%Y-%m-%d") if pd.notna(max_date) else "",
+        "min_data_date": pd.Timestamp(min_date).strftime("%Y-%m-%d") if pd.notna(min_date) else "",
         "missing_tickers_count": len(missing_tickers),
         "missing_tickers_sample": missing_tickers[:10],
         "out_path": out_path,
+        "price_quality": price_quality,
+        "reconciliation_reference_error": reference_error,
     }
-
 
 def backfill_history(settings: Settings, years: int = 2, end_date: str | None = None) -> dict[str, Any]:
     if years < 1:
@@ -301,12 +397,21 @@ def backfill_history(settings: Settings, years: int = 2, end_date: str | None = 
 
 
 def compute_features_step(settings: Settings) -> dict[str, Any]:
-    prices = load_prices_csv(settings.data.canonical_prices_path, source="canonical_csv")
+    adjusted_path = Path(settings.data.price_quality.adjusted_prices_path)
+    use_adjusted = bool(settings.data.price_quality.use_adjusted_for_features) and adjusted_path.exists()
+    input_path = adjusted_path if use_adjusted else Path(settings.data.canonical_prices_path)
+    source = "split_adjusted_csv" if use_adjusted else "canonical_raw_csv"
+    prices = load_prices_csv(str(input_path), source=source)
     feats = compute_features(prices)
     out_path = "data/processed/features.parquet"
     _ensure_parent(out_path)
     feats.to_parquet(out_path, index=False)
-    return {"rows": len(feats), "out_path": out_path}
+    return {
+        "rows": len(feats),
+        "out_path": out_path,
+        "input_path": str(input_path),
+        "price_basis": "split_adjusted" if use_adjusted else "raw",
+    }
 
 
 def _apply_liquidity_cost_estimate(plan: pd.DataFrame, settings: Settings) -> pd.DataFrame:
@@ -339,8 +444,32 @@ def _apply_liquidity_cost_estimate(plan: pd.DataFrame, settings: Settings) -> pd
     return df
 
 
-def score_step(settings: Settings) -> dict[str, Any]:
+def score_step(
+    settings: Settings,
+    excluded_tickers: list[str] | None = None,
+) -> dict[str, Any]:
     feats = pd.read_parquet("data/processed/features.parquet")
+    active_tickers = set(_load_universe(settings.data.universe_csv_path))
+    outside_universe_feature_rows = 0
+    if "ticker" in feats.columns:
+        ticker_values = feats["ticker"].astype(str).str.upper().str.strip()
+        outside_mask = ~ticker_values.isin(active_tickers)
+        outside_universe_feature_rows = int(outside_mask.sum())
+        feats = feats.loc[~outside_mask].copy()
+    if excluded_tickers is None:
+        quality_path = Path("reports/data_quality_report.json")
+        try:
+            quality_payload = json.loads(quality_path.read_text(encoding="utf-8")) if quality_path.exists() else {}
+            excluded_tickers = quality_payload.get("price_quality", {}).get("quarantined_tickers", [])
+        except Exception:
+            excluded_tickers = []
+    excluded = sorted({str(ticker).upper().strip() for ticker in (excluded_tickers or []) if str(ticker).strip()})
+    present_excluded = sorted(set(feats.get("ticker", pd.Series(dtype=str)).astype(str).str.upper()) & set(excluded))
+    excluded_feature_rows = 0
+    if excluded and "ticker" in feats.columns:
+        excluded_mask = feats["ticker"].astype(str).str.upper().isin(excluded)
+        excluded_feature_rows = int(excluded_mask.sum())
+        feats = feats.loc[~excluded_mask].copy()
     top_t1_raw, top_swing_raw, _ = rank_all_modes(
         features=feats,
         min_avg_volume_20d=settings.pipeline.min_avg_volume_20d,
@@ -489,6 +618,15 @@ def score_step(settings: Settings) -> dict[str, Any]:
             "after_profit_quality_gate": combined_after_profit_quality,
             "dropped_by_profit_quality": max(0, combined_before_profit_quality - combined_after_profit_quality),
         },
+        "data_quality_exclusions": {
+            "tickers": present_excluded,
+            "ticker_count": len(present_excluded),
+            "feature_rows_removed": excluded_feature_rows,
+        },
+        "universe_filter": {
+            "active_ticker_count": len(active_tickers),
+            "feature_rows_removed": outside_universe_feature_rows,
+        },
         "event_risk": event_risk_info,
         "profit_quality": profit_quality_info,
     }
@@ -503,6 +641,8 @@ def score_step(settings: Settings) -> dict[str, Any]:
         "signal_funnel_path": signal_funnel_path,
         "event_risk": event_risk_info,
         "profit_quality": profit_quality_info,
+        "data_quality_exclusions": signal_funnel["data_quality_exclusions"],
+        "universe_filter": signal_funnel["universe_filter"],
     }
 
 
@@ -1153,11 +1293,48 @@ def _rollout_pct_from_state(settings: Settings, promotion_state_path: str | Path
     return 0
 
 
+def _shadow_report_freshness(
+    payload: dict[str, Any],
+    max_age_days: int,
+    today: datetime | None = None,
+) -> dict[str, Any]:
+    now = today or datetime.utcnow()
+    raw_date = str(payload.get("data_date", "")).strip()
+    source_field = "data_date"
+    if not raw_date:
+        raw_date = str(payload.get("generated_at", "")).strip()
+        source_field = "generated_at"
+    parsed = pd.to_datetime(raw_date, errors="coerce")
+    if pd.isna(parsed):
+        return {
+            "fresh": False,
+            "data_date": "",
+            "age_days": None,
+            "source_field": source_field,
+            "message": "Shadow report has no valid data_date/generated_at",
+        }
+    report_date = pd.Timestamp(parsed).date()
+    age_days = int((now.date() - report_date).days)
+    fresh = 0 <= age_days <= max(0, int(max_age_days))
+    return {
+        "fresh": fresh,
+        "data_date": report_date.isoformat(),
+        "age_days": age_days,
+        "source_field": source_field,
+        "message": (
+            "Shadow report is fresh"
+            if fresh
+            else f"Shadow report is stale by {age_days} days (limit {max_age_days})"
+        ),
+    }
+
+
 def send_model_v2_shadow_telegram_step(
     settings: Settings,
     shadow_path: str = "reports/model_v2_shadow_signals.json",
     promotion_state_path: str = "reports/model_v2_promotion_state.json",
     dry_run: bool = False,
+    max_report_age_days: int | None = None,
 ) -> dict[str, Any]:
     path = Path(shadow_path)
     if not path.exists():
@@ -1168,6 +1345,20 @@ def send_model_v2_shadow_telegram_step(
             "shadow_path": str(path),
         }
     payload = json.loads(path.read_text(encoding="utf-8"))
+    age_limit = (
+        int(max_report_age_days)
+        if max_report_age_days is not None
+        else int(settings.notifications.preopen_max_report_age_days)
+    )
+    freshness = _shadow_report_freshness(payload, max_age_days=age_limit)
+    if not bool(freshness.get("fresh", False)):
+        return {
+            "ok": False,
+            "status": "stale_shadow_report",
+            "message": freshness.get("message", "Shadow report is stale"),
+            "shadow_path": str(path),
+            "freshness": freshness,
+        }
     signals = payload.get("signals", [])
     signal_count = len(signals) if isinstance(signals, list) else 0
     model_signal_count = sum(
@@ -1193,6 +1384,7 @@ def send_model_v2_shadow_telegram_step(
             "model_signal_count": int(model_signal_count),
             "blocked_signal_count": int(blocked_signal_count),
             "rollout_pct": int(rollout_pct),
+            "freshness": freshness,
             "message": message,
         }
     ok = send_telegram_message(
@@ -1209,6 +1401,7 @@ def send_model_v2_shadow_telegram_step(
         "model_signal_count": int(model_signal_count),
         "blocked_signal_count": int(blocked_signal_count),
         "rollout_pct": int(rollout_pct),
+        "freshness": freshness,
     }
 
 
@@ -1258,7 +1451,8 @@ def run_daily(
         event_risk_update = maybe_auto_update_event_risk(settings=settings, force=False)
         logger.event("INFO", "event_risk_update_done", **event_risk_update)
 
-        score_info = score_step(settings)
+        quarantined_tickers = quality_info.get("price_quality", {}).get("quarantined_tickers", [])
+        score_info = score_step(settings, excluded_tickers=quarantined_tickers)
         top_t1: pd.DataFrame = score_info["top_t1"]
         top_swing: pd.DataFrame = score_info["top_swing"]
         event_risk_info = score_info.get("event_risk", {})
@@ -1777,8 +1971,15 @@ def _build_parser() -> argparse.ArgumentParser:
     p_backfill.add_argument("--years", type=int, default=2)
     p_backfill.add_argument("--end-date", default=None)
 
-    p_uni = sub.add_parser("update-universe", help="Update LQ45/IDX30 universe using configured sources")
-    p_uni.add_argument("--force", action="store_true", help="Ignore interval and force update attempt")
+    p_uni = sub.add_parser("update-universe", help="Validate and activate the current point-in-time IDX universe")
+    p_uni.add_argument("--force", action="store_true", help="Force universe validation and rewrite")
+    p_uni_import = sub.add_parser(
+        "import-idx-universe-archive",
+        help="Import official IDX LQ45/IDX30 announcement ZIP into point-in-time history",
+    )
+    p_uni_import.add_argument("--archive", required=True, help="Path to official IDX announcement ZIP")
+    p_uni_import.add_argument("--history-path", default=None, help="Optional universe history CSV override")
+    p_uni_import.add_argument("--source-document", default="", help="Official IDX announcement URL or identifier")
     p_event = sub.add_parser("update-event-risk", help="Update event-risk blacklist using configured sources")
     p_event.add_argument("--force", action="store_true", help="Ignore interval and force update attempt")
     p_recal = sub.add_parser(
@@ -1804,6 +2005,12 @@ def _build_parser() -> argparse.ArgumentParser:
     p_v2_notify.add_argument("--shadow-path", default="reports/model_v2_shadow_signals.json")
     p_v2_notify.add_argument("--promotion-state-path", default="reports/model_v2_promotion_state.json")
     p_v2_notify.add_argument("--dry-run", action="store_true", help="Print the message without sending Telegram")
+    p_v2_notify.add_argument(
+        "--max-report-age-days",
+        type=int,
+        default=None,
+        help="Override the maximum allowed market-data age for the shadow report",
+    )
 
     p_run = sub.add_parser("run-daily", help="Execute full daily pipeline")
     p_run.add_argument("--skip-telegram", action="store_true")
@@ -1831,6 +2038,15 @@ def main() -> None:
         return
     if args.command == "update-universe":
         out = maybe_auto_update_universe(settings=settings, force=args.force)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        return
+    if args.command == "import-idx-universe-archive":
+        history_path = args.history_path or settings.data.universe_auto_update.history_path
+        out = import_idx_universe_archive(
+            archive_path=args.archive,
+            history_path=history_path,
+            source_document=args.source_document,
+        )
         print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "update-event-risk":
@@ -1883,6 +2099,7 @@ def main() -> None:
             shadow_path=args.shadow_path,
             promotion_state_path=args.promotion_state_path,
             dry_run=args.dry_run,
+            max_report_age_days=args.max_report_age_days,
         )
         print(json.dumps(out, ensure_ascii=True, indent=2))
         if not args.dry_run and not bool(out.get("ok", False)):

@@ -59,7 +59,7 @@ reports/run_log_YYYYMMDD.json
 
 Run log penting untuk debugging karena menyimpan event tahap demi tahap.
 
-## 3. Auto Update Universe
+## 3. Point-In-Time Universe Gate
 
 Fungsi:
 
@@ -69,11 +69,15 @@ maybe_auto_update_universe()
 
 Tujuan:
 
-- menyegarkan anggota LQ45/IDX30 dari source yang dikonfigurasi,
-- menghormati interval `data.universe_auto_update.interval_days`,
-- menyimpan state update.
+- membaca membership LQ45/IDX30 dari `data/reference/universe_history.csv`,
+- memilih snapshot yang aktif pada tanggal pipeline,
+- memvalidasi tepat 45 anggota LQ45 dan 30 anggota IDX30,
+- menulis snapshot aktif dan state update.
 
-Jika gagal dan `fail_on_error=false`, pipeline tetap lanjut memakai universe lama.
+Konfigurasi produksi memakai `fail_on_error=true` dan `fail_on_stale=true`. Snapshot
+hilang, kedaluwarsa, overlap, atau jumlah anggota salah harus memblokir pipeline; dilarang
+melanjutkan dengan universe lama. Archive IDX resmi diimpor dengan
+`python -m src.cli import-idx-universe-archive`.
 
 ## 4. Auto Update Event Risk
 
@@ -127,20 +131,17 @@ ingest_daily()
 
 Langkah:
 
-1. Load universe dari `data/reference/universe_lq45_idx30.csv`.
-2. Ambil harga dari provider.
-3. Filter ticker hanya yang ada di universe.
-4. Merge dengan existing canonical CSV.
-5. Deduplicate berdasarkan `ticker,date`, keep latest `ingested_at`.
-6. Simpan ke `data/raw/prices_daily.csv`.
+1. Load snapshot universe aktif dari `data/reference/universe_lq45_idx30.csv`.
+2. Ambil harga dari provider utama dan, bila tersedia, provider rekonsiliasi independen.
+3. Filter ticker hanya yang ada di universe aktif.
+4. Merge dan deduplicate canonical raw berdasarkan `ticker,date`.
+5. Simpan raw auditable ke `data/raw/prices_daily.csv`.
+6. Terapkan corporate action terkonfirmasi ke salinan adjusted.
+7. Deteksi anomali, quarantine ticker aktif, dan rekonsiliasi close price.
+8. Tulis adjusted prices serta laporan quality gate.
 
-Output info:
-
-- jumlah row baru,
-- jumlah ticker,
-- source provider,
-- min/max data date,
-- missing ticker sample.
+Output info mencakup jumlah row/ticker, source, rentang tanggal, missing ticker,
+quarantined ticker, hasil corporate-action audit, dan hasil rekonsiliasi.
 
 ## 7. Compute Features
 
@@ -153,8 +154,11 @@ compute_features_step()
 Input:
 
 ```text
-data/raw/prices_daily.csv
+data/processed/prices_daily_adjusted.csv
 ```
+
+Raw prices tetap disimpan untuk audit. Fallback ke canonical raw hanya terjadi bila
+`use_adjusted_for_features=false` atau file adjusted belum tersedia.
 
 Output:
 
@@ -175,16 +179,13 @@ score_step()
 Langkah:
 
 1. Baca `data/processed/features.parquet`.
-2. Jalankan `rank_all_modes()`.
-3. Buat `top_t1` dan `top_swing`.
+2. Buang ticker di luar snapshot universe aktif dan ticker yang sedang quarantine.
+3. Jalankan `rank_all_modes()` dan buat kandidat T1/Swing.
 4. Buat trade plan dengan `propose_trade_plan()`.
-5. Terapkan minimum score live per mode.
-6. Terapkan event-risk filter.
-7. Buang size di bawah lot.
-8. Gabungkan kandidat.
-9. Batasi `top_n_combined`.
-10. Tambahkan liquidity cost estimate.
-11. Terapkan global dan mode position cap.
+5. Terapkan minimum score live per mode dan event-risk filter.
+6. Buang size di bawah lot, tambahkan liquidity cost estimate, dan jalankan profit-quality gate.
+7. Batasi `top_n_combined`, global position cap, dan mode position cap.
+8. Simpan jumlah row yang dibuang oleh universe/quality filter ke `signal_funnel.json`.
 
 Output awal:
 
