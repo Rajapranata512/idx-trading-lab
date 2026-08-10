@@ -20,9 +20,9 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   rollout 0%, and no broker order is authorized.
 - Evidence: data/pipeline are current as of 2026-08-10, but model edge and promotion
   evidence do not pass the final-decision contract.
-- Local branch: `codex/stage-1-3-production-foundation` contains reliability/data
-  foundations rebased over main; it is not pushed or deployed.
-- Production main last verified: `1efac73`, automated run 2026-08-10.
+- Production release: `origin/main` includes Stage 1-3 and REL-01/REL-02; the
+  public Vercel module, calendar, and dashboard wiring returned HTTP 200.
+- Production main last verified: `e67d859`, automated run 2026-08-10.
 - Primary blocker: statistical quality and stability, not UI score quantity.
 - Next Action: expand official point-in-time universe history for research coverage.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
@@ -141,23 +141,25 @@ Authoritative paths:
 
 Last verified on 2026-08-10:
 
-- GitHub/Vercel production main before this release: `1efac73`.
-- Live backtest generated: 2026-08-10T13:52:56.
-- Live dashboard generated: 2026-08-10T13:54:00.
-- Data quality: pass with warning `price_outliers`.
+- GitHub/Vercel production main: `e67d859`.
+- Live backtest generated: 2026-08-10T16:25:38.
+- Live dashboard generated: 2026-08-10T16:26:19+00:00.
+- Data quality: pass with warnings `price_outliers`,
+  `historical_unresolved_price_anomalies`, and `price_reconciliation_unavailable`.
 - Maximum market-data date: 2026-08-10; stale days 0; missing tickers 0.
 - Vercel and GitHub artifacts were synchronized when checked.
-- REL-01/REL-02 are implemented locally: freshness uses the latest expected
-  completed IDX session, the 2026 exchange holiday calendar, and separate market-data
-  and timezone-aware pipeline timestamps. Production remains unchanged until push/deploy.
+- REL-01/REL-02 are deployed: freshness uses the latest expected completed IDX
+  session, the 2026 exchange holiday calendar, and separate market-data and
+  timezone-aware pipeline timestamps.
 - `FINAL_EXECUTION` is now the approved product end-state, but the broker
   execution layer is not implemented and current status is `EXECUTION_DISABLED`.
-- Stage 1-3 reliability/data foundation is implemented locally on
-  `codex/stage-1-3-production-foundation`, not pushed/deployed.
+- Stage 1-3 reliability/data foundation is committed, pushed, and exercised by a
+  successful production Daily Pipeline run.
 - Latest local regression: 148 Python and 16 Node tests passed; dashboard JavaScript
   syntax and `git diff --check` passed. Desktop and compact-width screenshots were
   inspected; data date and pipeline time render separately without a false stale banner.
-- Governance, cleanup, Stage 1-3, and REL-01/REL-02 changes remain local and uncommitted.
+- Governance, cleanup, Stage 1-3, and REL-01/REL-02 are committed and pushed;
+  public Vercel asset checks passed.
 
 Model research baseline from 2026-07-18:
 
@@ -374,7 +376,8 @@ Portfolio quality:
 1. T1 has too few eligible OOS trades and no profitable fold in the recorded baseline.
 2. Swing holdout calibration and fold stability fail the contract.
 3. Candidate pools do not yet demonstrate stable positive edge after costs.
-4. Stage 1-3 reliability/data and REL-01/REL-02 work is local and not yet deployed.
+4. Pre-open Vercel secrets, watchdog dispatch, and duplicate-free external delivery
+   still require a complete production health check.
 5. Universe history has only two official periods, insufficient for long historical
    survivorship-bias-safe claims.
 6. Independent price reconciliation warns instead of blocking when unavailable.
@@ -393,7 +396,7 @@ These blockers are work items, not reasons to weaken thresholds or relabel the p
 
 ### Phase 0 - Governance And Recovery
 
-Status: complete locally.
+Status: complete and deployed.
 
 - Root `AGENTS.md` controls token-efficient agent behavior.
 - Root `PRD.md` is the only product state and direction source.
@@ -402,7 +405,7 @@ Status: complete locally.
 
 ### Phase 1 - Production Data And Delivery Foundation
 
-Status: implemented and tested locally; pending push/deploy approval.
+Status: deployed; production pipeline green, external delivery health check pending.
 
 - Point-in-time universe with official current period.
 - Corporate-action-aware adjusted feature prices and raw auditability.
@@ -414,7 +417,7 @@ and live health checks verified without sending duplicates.
 
 ### Phase 2 - Truthful Freshness And Observability
 
-Status: implemented and tested locally; pending push/deploy approval.
+Status: complete, deployed, and public assets verified.
 
 - Freshness uses the expected completed IDX session and official 2026 holiday calendar.
 - Market-data date and timezone-aware pipeline generation time are separate.
@@ -422,7 +425,7 @@ Status: implemented and tested locally; pending push/deploy approval.
 - One missed session warns; two or more missed sessions and invalid evidence block use.
 - Price-quality warnings render separately and do not change the freshness calculation.
 
-Exit: locally satisfied. Production exit requires deployment and a live health check.
+Exit: satisfied for release `e67d859`; renew the market calendar before its 2026 expiry.
 
 ### Phase 3 - Research Data Depth
 
@@ -579,9 +582,9 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
-- 2026-08-10: REL-01/REL-02 completed locally with session-aware IDX freshness,
-  explicit UTC pipeline timestamps, fail-closed calendar coverage, 148 Python and
-  16 Node tests; production remains unchanged pending explicit release.
+- 2026-08-10: Stage 1-3 and REL-01/REL-02 were pushed to `main`; Daily Pipeline
+  run 31408655821 passed, produced `e67d859`, and public Vercel asset checks returned
+  HTTP 200. Execution remains `EXECUTION_DISABLED`.
 - 2026-08-10: established root `AGENTS.md` and `PRD.md` as the only
   agent/product control plane; the old duplicate recovery PRD is retired.
 - 2026-08-10: final decision remains per-mode and evidence-gated; portfolio release
