@@ -1,7 +1,7 @@
 {
   "status": "unavailable",
   "pass": true,
-  "message": "Independent reconciliation source is not configured or unavailable",
+  "message": "Primary EOD provider fell back to yfinance; configure EODHD_API_TOKEN or reconciliation_reference_csv_path to enable independent reconciliation",
   "rows_compared": 0,
   "required": false,
   "primary_source": "yfinance_fallback",

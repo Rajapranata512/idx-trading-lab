@@ -1,2 +1,2 @@
-ticker,date,prev_close,close,change_pct,resolved_by_action,action_type,action_effective_date,action_source,active_quarantine,quarantine_until
-GOTO,2023-05-31,109.0,147.0,34.8624,False,,,,False,
+ticker,date,prev_close,close,change_pct,resolved,resolved_by_action,action_type,action_effective_date,action_source,resolved_by_event,event_type,event_date,event_source,active_quarantine,quarantine_until
+GOTO,2023-05-31,109.0,147.0,34.8624,True,False,,,,True,index_rebalance,2023-05-31,https://www.msci.com/eqb/gimi/stdindex/MSCI_May23_STPublicList.pdf,False,
