@@ -22,6 +22,12 @@ def test_production_settings_enable_stage123_fail_closed_gates():
     assert settings.data.price_quality.reconciliation_required is False
     assert settings.data.price_quality.reconciliation_min_coverage_ratio == 0.95
     assert settings.data.price_quality.reconciliation_min_consecutive_sessions == 5
+    assert settings.data.price_quality.provider_account_probe_enabled is True
+    assert (
+        settings.data.price_quality.provider_account_status_url
+        == "https://eodhd.com/api/user"
+    )
+    assert settings.data.price_quality.provider_account_token_env == "EODHD_API_TOKEN"
     assert settings.preopen_auction.enabled is False
     assert settings.preopen_auction.shadow_only is True
     assert settings.preopen_auction.data_license_confirmed is False
@@ -35,6 +41,7 @@ def test_daily_workflow_preflights_eod_reconciliation_secret():
 
     assert "Verify EOD reconciliation readiness" in workflow
     assert "python -m src.cli check-eod-reconciliation-readiness" in workflow
+    assert "python -m src.cli check-eod-provider-account" in workflow
     assert "EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}" in workflow
 
 def test_preopen_workflow_has_retry_guard_and_failure_alert():
@@ -67,9 +74,13 @@ def test_yfinance_primary_fallback_explains_missing_independent_reconciliation()
         tickers=["BBCA"],
         start_date="2026-08-01",
         end_date="2026-08-10",
+        primary_provider_failures=[
+            "rest=HTTPError: HTTP Error 402: Payment Required"
+        ],
     )
 
     assert reference is None
     assert source == ""
-    assert "EODHD_API_TOKEN" in error
+    assert "402" in error
+    assert "entitlement/quota" in error
     assert "independent reconciliation" in error

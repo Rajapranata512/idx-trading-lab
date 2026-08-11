@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -18,6 +19,12 @@ INTRADAY_REQUIRED_COLS = ["timestamp", "ticker", "open", "high", "low", "close",
 
 def _format_provider_error(exc: Exception) -> str:
     detail = str(exc).strip()
+    detail = re.sub(
+        r"([?&](?:api_token|token|api_key|apikey)=)[^&\s]+",
+        r"\1***",
+        detail,
+        flags=re.IGNORECASE,
+    )
     if not detail:
         return exc.__class__.__name__
     return f"{exc.__class__.__name__}: {detail}"
@@ -51,6 +58,7 @@ def load_prices_from_provider(
         try:
             raw = primary.fetch_daily(start_date=start_date, end_date=end_date, tickers=tickers)
             canonical, _ = validate_prices(raw, source="rest")
+            canonical.attrs["provider_failures"] = []
             return canonical, "rest"
         except Exception as exc:
             failures.append(f"rest={_format_provider_error(exc)}")
@@ -59,6 +67,7 @@ def load_prices_from_provider(
                     yf_provider = YFinanceProvider(settings.data.provider.yfinance_ticker_suffix)
                     raw = yf_provider.fetch_daily(start_date=start_date, end_date=end_date, tickers=tickers)
                     canonical, _ = validate_prices(raw, source="yfinance_fallback")
+                    canonical.attrs["provider_failures"] = list(failures)
                     return canonical, "yfinance_fallback"
                 except Exception as yf_exc:
                     failures.append(f"yfinance_fallback={_format_provider_error(yf_exc)}")
@@ -70,6 +79,7 @@ def load_prices_from_provider(
             try:
                 raw = fallback.fetch_daily(start_date=start_date, end_date=end_date, tickers=tickers)
                 canonical, _ = validate_prices(raw, source="csv_fallback")
+                canonical.attrs["provider_failures"] = list(failures)
                 return canonical, "csv_fallback"
             except Exception as fallback_exc:
                 failures.append(f"csv_fallback={_format_provider_error(fallback_exc)}")
@@ -79,6 +89,7 @@ def load_prices_from_provider(
         provider = CSVProvider(settings.data.canonical_prices_path)
         raw = provider.fetch_daily(start_date=start_date, end_date=end_date, tickers=tickers)
         canonical, _ = validate_prices(raw, source="csv")
+        canonical.attrs["provider_failures"] = []
         return canonical, "csv"
 
     raise ValueError(f"Unknown provider kind: {settings.data.provider.kind}")

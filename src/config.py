@@ -108,6 +108,11 @@ class PriceQualitySettings(BaseModel):
     reconciliation_evidence_retention_sessions: int = 60
     reconciliation_required_primary_source: str = "rest"
     reconciliation_required_reference_source: str = "yfinance_reconciliation"
+    provider_account_probe_enabled: bool = False
+    provider_account_status_url: str = ""
+    provider_account_token_env: str = "EODHD_API_TOKEN"
+    provider_account_call_cost_per_ticker: int = 1
+    provider_account_minimum_reserve_calls: int = 0
 
 
 class IntradaySettings(BaseModel):

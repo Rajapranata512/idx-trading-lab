@@ -115,7 +115,12 @@
       "reconciliation_min_consecutive_sessions": 5,
       "reconciliation_evidence_retention_sessions": 60,
       "reconciliation_required_primary_source": "rest",
-      "reconciliation_required_reference_source": "yfinance_reconciliation"
+      "reconciliation_required_reference_source": "yfinance_reconciliation",
+      "provider_account_probe_enabled": true,
+      "provider_account_status_url": "https://eodhd.com/api/user",
+      "provider_account_token_env": "EODHD_API_TOKEN",
+      "provider_account_call_cost_per_ticker": 1,
+      "provider_account_minimum_reserve_calls": 0
     }
   },
   "pipeline": {

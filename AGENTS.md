@@ -145,6 +145,8 @@ These rules cannot be weakened to improve presentation or signal count:
   session-aligned aggregates with gap and duplicate checks.
 - EOD reconciliation evidence is idempotent by market date; do not enable required
   enforcement until five consecutive real IDX sessions qualify.
+- Secret presence is not provider readiness. Before EOD ticker fan-out, the account
+  entitlement and remaining quota must cover the complete active universe.
 - Pre-open features use only licensed snapshots at or before the fixed cutoff; IEP
   opening direction and post-open follow-through are separate labels.
 - Order-book withdrawal proxies are not called cancellations without event-level proof.

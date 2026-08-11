@@ -10,7 +10,10 @@ from src.config import PriceQualitySettings, RestProviderSettings, load_settings
 from src.ingest.providers.rest_provider import RestEodProvider
 from src.ingest.quality import reconcile_price_frames, run_price_quality_audit
 from src.ingest.reconciliation_evidence import record_price_reconciliation_evidence
-from src.ingest.reconciliation_readiness import assess_eod_reconciliation_readiness
+from src.ingest.reconciliation_readiness import (
+    assess_eod_reconciliation_readiness,
+    probe_eod_provider_account,
+)
 
 
 def _frame(session_date: str, tickers: tuple[str, ...] = ("BBCA", "TLKM")) -> pd.DataFrame:
@@ -254,6 +257,66 @@ def test_readiness_reports_only_secret_name_and_never_secret_value():
     assert blocked["missing_environment_variables"] == ["EODHD_API_TOKEN"]
     assert ready["ready"] is True
     assert "super-secret-value" not in json.dumps(ready)
+
+
+def test_provider_account_probe_blocks_free_quota_without_leaking_token():
+    settings = load_settings("config/settings.json")
+    token = "super-secret-value"
+
+    result = probe_eod_provider_account(
+        settings,
+        environ={"EODHD_API_TOKEN": token},
+        fetcher=lambda _url, _timeout: {
+            "subscriptionType": "free",
+            "apiRequests": 20,
+            "apiRequestsDate": "2026-08-11",
+            "dailyRateLimit": 20,
+            "extraLimit": 0,
+        },
+    )
+
+    assert result["ready"] is False
+    assert result["universe_tickers"] == 45
+    assert result["required_calls"] == 45
+    assert result["remaining_calls"] == 0
+    assert "provider_daily_limit_below_universe_requirement" in result["reason_codes"]
+    assert "provider_remaining_quota_insufficient" in result["reason_codes"]
+    assert token not in json.dumps(result)
+
+
+def test_provider_account_probe_accepts_sufficient_quota():
+    settings = load_settings("config/settings.json")
+
+    result = probe_eod_provider_account(
+        settings,
+        environ={"EODHD_API_TOKEN": "test-token"},
+        fetcher=lambda _url, _timeout: {
+            "subscriptionType": "paid",
+            "apiRequests": 100,
+            "apiRequestsDate": "2026-08-11",
+            "dailyRateLimit": 100_000,
+            "extraLimit": 0,
+        },
+    )
+
+    assert result["ready"] is True
+    assert result["required_calls"] == 45
+    assert result["remaining_calls"] == 99_900
+
+
+def test_provider_account_probe_does_not_call_http_when_token_is_missing():
+    settings = load_settings("config/settings.json")
+
+    result = probe_eod_provider_account(
+        settings,
+        environ={},
+        fetcher=lambda _url, _timeout: pytest.fail(
+            "HTTP must not be attempted when the provider token is missing"
+        ),
+    )
+
+    assert result["ready"] is False
+    assert result["missing_environment_variables"] == ["EODHD_API_TOKEN"]
 
 
 def test_rest_provider_rejects_missing_environment_before_http(monkeypatch):

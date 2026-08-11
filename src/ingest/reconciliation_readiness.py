@@ -1,10 +1,157 @@
 from __future__ import annotations
 
+import csv
+import json
+import os
 from pathlib import Path
-from typing import Mapping
+from typing import Callable, Mapping
+from urllib import parse, request
+from urllib.error import HTTPError
 
 from src.config import Settings
 from src.ingest.providers.rest_provider import inspect_rest_provider_environment
+
+
+AccountFetcher = Callable[[str, int], object]
+
+
+def _universe_ticker_count(path: str | Path) -> int:
+    universe_path = Path(path)
+    if not universe_path.exists():
+        return 0
+    with universe_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        rows = csv.DictReader(handle)
+        tickers = {
+            str(row.get("ticker", "")).strip().upper()
+            for row in rows
+            if str(row.get("ticker", "")).strip()
+        }
+    return len(tickers)
+
+
+def _fetch_account_payload(url: str, timeout_seconds: int) -> object:
+    req = request.Request(url=url, headers={"Accept": "application/json"})
+    with request.urlopen(req, timeout=timeout_seconds) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def _as_int(value: object, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def probe_eod_provider_account(
+    settings: Settings,
+    environ: Mapping[str, str] | None = None,
+    fetcher: AccountFetcher | None = None,
+) -> dict[str, object]:
+    """Check provider quota without returning account identity or credential values."""
+    quality = settings.data.price_quality
+    if not bool(quality.provider_account_probe_enabled):
+        return {
+            "status": "disabled",
+            "ready": True,
+            "message": "Provider account probe is disabled",
+        }
+
+    token_env = str(quality.provider_account_token_env).strip()
+    active_env = os.environ if environ is None else environ
+    token = str(active_env.get(token_env, "")).strip()
+    if not token:
+        return {
+            "status": "blocked",
+            "ready": False,
+            "reason_codes": ["provider_account_token_missing"],
+            "missing_environment_variables": [token_env] if token_env else [],
+            "message": "Provider account probe blocked by a missing environment variable",
+        }
+
+    status_url = str(quality.provider_account_status_url).strip()
+    if not status_url.lower().startswith("https://"):
+        return {
+            "status": "blocked",
+            "ready": False,
+            "reason_codes": ["provider_account_status_url_invalid"],
+            "message": "Provider account probe requires an HTTPS status URL",
+        }
+
+    ticker_count = _universe_ticker_count(settings.data.universe_csv_path)
+    cost_per_ticker = max(1, int(quality.provider_account_call_cost_per_ticker))
+    reserve = max(0, int(quality.provider_account_minimum_reserve_calls))
+    required_calls = ticker_count * cost_per_ticker + reserve
+    if ticker_count <= 0:
+        return {
+            "status": "blocked",
+            "ready": False,
+            "reason_codes": ["provider_account_universe_unavailable"],
+            "required_calls": required_calls,
+            "message": "Provider account probe could not determine the active universe",
+        }
+
+    url = status_url + "?" + parse.urlencode({"api_token": token, "fmt": "json"})
+    active_fetcher = fetcher or _fetch_account_payload
+    try:
+        payload = active_fetcher(url, int(settings.data.provider.rest.timeout_seconds))
+    except HTTPError as exc:
+        return {
+            "status": "blocked",
+            "ready": False,
+            "reason_codes": ["provider_account_http_error"],
+            "http_status": int(exc.code),
+            "required_calls": required_calls,
+            "message": "Provider account status request failed",
+        }
+    except Exception as exc:
+        return {
+            "status": "blocked",
+            "ready": False,
+            "reason_codes": ["provider_account_probe_failed"],
+            "error_type": exc.__class__.__name__,
+            "required_calls": required_calls,
+            "message": "Provider account status request failed",
+        }
+
+    if not isinstance(payload, dict):
+        return {
+            "status": "blocked",
+            "ready": False,
+            "reason_codes": ["provider_account_payload_invalid"],
+            "required_calls": required_calls,
+            "message": "Provider account status payload is invalid",
+        }
+
+    daily_limit = max(0, _as_int(payload.get("dailyRateLimit")))
+    used_calls = max(0, _as_int(payload.get("apiRequests")))
+    extra_calls = max(0, _as_int(payload.get("extraLimit")))
+    remaining_calls = max(daily_limit - used_calls, 0) + extra_calls
+    reason_codes: list[str] = []
+    if daily_limit < required_calls:
+        reason_codes.append("provider_daily_limit_below_universe_requirement")
+    if remaining_calls < required_calls:
+        reason_codes.append("provider_remaining_quota_insufficient")
+    ready = not reason_codes
+    return {
+        "status": "ready" if ready else "blocked",
+        "ready": ready,
+        "reason_codes": reason_codes,
+        "subscription_type": str(payload.get("subscriptionType", "")),
+        "usage_date": str(payload.get("apiRequestsDate", "")),
+        "daily_limit": daily_limit,
+        "used_calls": used_calls,
+        "extra_calls": extra_calls,
+        "remaining_calls": remaining_calls,
+        "universe_tickers": ticker_count,
+        "call_cost_per_ticker": cost_per_ticker,
+        "reserve_calls": reserve,
+        "required_calls": required_calls,
+        "message": (
+            "Provider account quota is sufficient for one EOD run"
+            if ready
+            else "Provider account quota is insufficient for the configured EOD universe"
+        ),
+    }
 
 
 def assess_eod_reconciliation_readiness(
@@ -48,10 +195,19 @@ def assess_eod_reconciliation_readiness(
         and str(quality.reconciliation_evidence_history_path).strip()
         and str(quality.reconciliation_market_calendar_path).strip()
     )
+    account_probe_configured = bool(
+        not quality.provider_account_probe_enabled
+        or (
+            str(quality.provider_account_status_url).strip().lower().startswith("https://")
+            and str(quality.provider_account_token_env).strip()
+            and int(quality.provider_account_call_cost_per_ticker) >= 1
+        )
+    )
 
     checks = {
         "provider_is_rest": str(provider.kind).strip().lower() == "rest",
         "provider_environment_ready": bool(env_status["ok"]),
+        "provider_account_probe_configured": account_probe_configured,
         "reconciliation_enabled": bool(quality.reconciliation_enabled),
         "independent_reference_configured": independent_reference_ok,
         "evidence_collection_enabled": bool(quality.reconciliation_evidence_enabled),

@@ -15,7 +15,10 @@ from src.features.compute_features import compute_features
 from src.ingest.load_prices import load_prices_csv, load_prices_from_provider
 from src.ingest.providers.yfinance_provider import YFinanceProvider
 from src.ingest.quality import run_price_quality_audit
-from src.ingest.reconciliation_readiness import assess_eod_reconciliation_readiness
+from src.ingest.reconciliation_readiness import (
+    assess_eod_reconciliation_readiness,
+    probe_eod_provider_account,
+)
 from src.ingest.validator import validate_prices
 from src.model_v2 import (
     apply_model_v2_rollout_selection,
@@ -101,6 +104,7 @@ def _load_price_reconciliation_reference(
     tickers: list[str],
     start_date: str | None,
     end_date: str | None,
+    primary_provider_failures: list[str] | None = None,
 ) -> tuple[pd.DataFrame | None, str, str]:
     cfg = settings.data.price_quality
     reference_path = str(cfg.reconciliation_reference_csv_path).strip()
@@ -140,12 +144,19 @@ def _load_price_reconciliation_reference(
             return None, "", f"yfinance reconciliation failed: {exc}"
 
     if primary_source == "yfinance_fallback":
-        return (
-            None,
-            "",
-            "Primary EOD provider fell back to yfinance; configure EODHD_API_TOKEN "
-            "or reconciliation_reference_csv_path to enable independent reconciliation",
+        failures = [
+            str(value).strip()
+            for value in (primary_provider_failures or [])
+            if str(value).strip()
+        ]
+        message = "Primary EOD provider fell back to yfinance."
+        if failures:
+            message += " Primary provider failure: " + " | ".join(failures) + "."
+        message += (
+            " Configure sufficient provider entitlement/quota or an independent "
+            "reconciliation_reference_csv_path."
         )
+        return None, "", message
     return None, "", "No independent reconciliation source available for selected primary provider"
 
 
@@ -347,6 +358,11 @@ def _evaluate_data_quality(
 def eod_reconciliation_readiness_step(settings: Settings) -> dict[str, object]:
     return assess_eod_reconciliation_readiness(settings)
 
+
+def eod_provider_account_step(settings: Settings) -> dict[str, object]:
+    return probe_eod_provider_account(settings)
+
+
 def ingest_daily(
     settings: Settings,
     start_date: str | None = None,
@@ -360,6 +376,11 @@ def ingest_daily(
         end_date=end_date,
         tickers=tickers,
     )
+    provider_failures = [
+        str(value)
+        for value in prices.attrs.get("provider_failures", [])
+        if str(value).strip()
+    ]
     prices = prices[prices["ticker"].isin(tickers)].sort_values(["ticker", "date"]).reset_index(drop=True)
     fetched_tickers = set(prices["ticker"].unique().tolist())
     missing_tickers = sorted(set(tickers) - fetched_tickers)
@@ -370,6 +391,7 @@ def ingest_daily(
         tickers=tickers,
         start_date=start_date,
         end_date=end_date,
+        primary_provider_failures=provider_failures,
     )
 
     out_path = settings.data.canonical_prices_path
@@ -393,6 +415,7 @@ def ingest_daily(
         "rows_new": len(prices),
         "tickers": int(to_save["ticker"].nunique()) if not to_save.empty else 0,
         "source": source,
+        "provider_failures": provider_failures,
         "max_data_date": pd.Timestamp(max_date).strftime("%Y-%m-%d") if pd.notna(max_date) else "",
         "min_data_date": pd.Timestamp(min_date).strftime("%Y-%m-%d") if pd.notna(min_date) else "",
         "missing_tickers_count": len(missing_tickers),
@@ -2043,6 +2066,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "check-eod-reconciliation-readiness",
         help="Validate EOD provider and reconciliation evidence configuration without network access",
     )
+    sub.add_parser(
+        "check-eod-provider-account",
+        help="Verify provider account quota for one configured EOD universe run",
+    )
     sub.add_parser("compute-features", help="Compute features and save parquet")
     sub.add_parser("score", help="Score T+1 and Swing picks, write reports/daily_signal.json")
     sub.add_parser("backtest", help="Run bar-based backtest on scored history")
@@ -2131,6 +2158,12 @@ def main() -> None:
         return
     if args.command == "check-eod-reconciliation-readiness":
         out = eod_reconciliation_readiness_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        if not bool(out.get("ready", False)):
+            raise SystemExit(1)
+        return
+    if args.command == "check-eod-provider-account":
+        out = eod_provider_account_step(settings)
         print(json.dumps(out, ensure_ascii=True, indent=2))
         if not bool(out.get("ready", False)):
             raise SystemExit(1)
