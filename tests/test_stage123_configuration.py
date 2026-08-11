@@ -18,6 +18,10 @@ def test_production_settings_enable_stage123_fail_closed_gates():
     assert settings.data.price_quality.use_adjusted_for_features is True
     assert settings.data.price_quality.verified_price_events_path.endswith("verified_price_events.csv")
     assert settings.data.price_quality.block_on_active_unresolved_action is True
+    assert settings.data.price_quality.reconciliation_evidence_enabled is True
+    assert settings.data.price_quality.reconciliation_required is False
+    assert settings.data.price_quality.reconciliation_min_coverage_ratio == 0.95
+    assert settings.data.price_quality.reconciliation_min_consecutive_sessions == 5
     assert settings.preopen_auction.enabled is False
     assert settings.preopen_auction.shadow_only is True
     assert settings.preopen_auction.data_license_confirmed is False
@@ -25,6 +29,13 @@ def test_production_settings_enable_stage123_fail_closed_gates():
     assert settings.preopen_auction.preliminary_time_local == "08:55:00"
     assert settings.preopen_auction.decision_cutoff_time_local == "08:57:40"
 
+
+def test_daily_workflow_preflights_eod_reconciliation_secret():
+    workflow = Path(".github/workflows/daily-run.yml").read_text(encoding="utf-8")
+
+    assert "Verify EOD reconciliation readiness" in workflow
+    assert "python -m src.cli check-eod-reconciliation-readiness" in workflow
+    assert "EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}" in workflow
 
 def test_preopen_workflow_has_retry_guard_and_failure_alert():
     workflow = Path(".github/workflows/model-v2-shadow-preopen.yml").read_text(

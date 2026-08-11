@@ -8,6 +8,7 @@ from typing import Any
 import pandas as pd
 
 from src.config import PriceQualitySettings
+from src.ingest.reconciliation_evidence import record_price_reconciliation_evidence
 
 
 _PRICE_COLUMNS = ["date", "ticker", "open", "high", "low", "close", "volume"]
@@ -263,13 +264,14 @@ def classify_price_anomalies(
     return details, quarantined
 
 
-def reconcile_price_frames(
+def _reconcile_price_frames_with_details(
     primary: pd.DataFrame,
     reference: pd.DataFrame,
     lookback_sessions: int,
     max_close_diff_pct: float,
     max_mismatch_ratio: float,
-) -> dict[str, Any]:
+    min_coverage_ratio: float,
+) -> tuple[dict[str, Any], pd.DataFrame]:
     for label, frame in [("primary", primary), ("reference", reference)]:
         missing = [column for column in ["date", "ticker", "close"] if column not in frame.columns]
         if missing:
@@ -278,59 +280,142 @@ def reconcile_price_frames(
     left = primary[["date", "ticker", "close"]].copy()
     right = reference[["date", "ticker", "close"]].copy()
     for frame in [left, right]:
-        frame["date"] = pd.to_datetime(frame["date"], errors="coerce")
+        frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.normalize()
         frame["ticker"] = frame["ticker"].astype(str).str.upper().str.strip()
         frame["close"] = pd.to_numeric(frame["close"], errors="coerce")
         frame.dropna(subset=["date", "ticker", "close"], inplace=True)
+        frame.sort_values(["date", "ticker"], inplace=True)
+        frame.drop_duplicates(subset=["date", "ticker"], keep="last", inplace=True)
 
-    common_dates = sorted(set(left["date"].dt.normalize()) & set(right["date"].dt.normalize()))
+    common_dates = sorted(set(left["date"]) & set(right["date"]))
     selected_dates = common_dates[-max(1, int(lookback_sessions)) :]
-    left = left[left["date"].dt.normalize().isin(selected_dates)]
-    right = right[right["date"].dt.normalize().isin(selected_dates)]
-    merged = left.merge(
+    detail_columns = [
+        "date",
+        "ticker",
+        "close_primary",
+        "close_reference",
+        "matched",
+        "close_diff_pct",
+        "mismatch",
+    ]
+    if not selected_dates:
+        return (
+            {
+                "status": "unavailable",
+                "pass": False,
+                "message": "No overlapping primary/reference sessions for reconciliation",
+                "market_date": "",
+                "session_dates": [],
+                "rows_expected": 0,
+                "rows_compared": 0,
+                "coverage_ratio": 0.0,
+                "mismatch_rows": 0,
+                "mismatch_ratio": 0.0,
+                "max_close_diff_pct": None,
+            },
+            pd.DataFrame(columns=detail_columns),
+        )
+
+    left = left[left["date"].isin(selected_dates)]
+    right = right[right["date"].isin(selected_dates)]
+    details = left.merge(
         right,
         on=["date", "ticker"],
-        how="inner",
+        how="left",
         suffixes=("_primary", "_reference"),
     )
-    expected_rows = int(len(left.drop_duplicates(subset=["date", "ticker"])))
-    if merged.empty or expected_rows == 0:
-        return {
-            "status": "unavailable",
-            "pass": False,
-            "message": "No overlapping primary/reference rows for reconciliation",
-            "rows_compared": 0,
-            "coverage_ratio": 0.0,
-            "mismatch_rows": 0,
-            "mismatch_ratio": 0.0,
-            "max_close_diff_pct": None,
-        }
-
-    denominator = merged["close_reference"].abs().replace(0, pd.NA)
-    merged["close_diff_pct"] = (
-        (merged["close_primary"] - merged["close_reference"]).abs() / denominator * 100.0
+    details["matched"] = details["close_reference"].notna()
+    denominator = details["close_reference"].abs().replace(0, pd.NA)
+    details["close_diff_pct"] = (
+        (details["close_primary"] - details["close_reference"]).abs()
+        / denominator
+        * 100.0
     )
-    merged["mismatch"] = merged["close_diff_pct"].gt(float(max_close_diff_pct))
-    mismatch_rows = int(merged["mismatch"].sum())
-    mismatch_ratio = float(mismatch_rows / len(merged))
-    coverage_ratio = float(len(merged) / expected_rows)
-    passed = bool(coverage_ratio >= 0.95 and mismatch_ratio <= float(max_mismatch_ratio))
-    return {
-        "status": "pass" if passed else "failed",
-        "pass": passed,
-        "message": (
-            "Independent price reconciliation passed"
-            if passed
-            else "Independent price reconciliation exceeded tolerance"
-        ),
-        "rows_compared": int(len(merged)),
-        "coverage_ratio": round(coverage_ratio, 6),
-        "mismatch_rows": mismatch_rows,
-        "mismatch_ratio": round(mismatch_ratio, 6),
-        "max_close_diff_pct": round(float(merged["close_diff_pct"].max()), 6),
-        "threshold_close_diff_pct": float(max_close_diff_pct),
-        "threshold_mismatch_ratio": float(max_mismatch_ratio),
-    }
+    details["mismatch"] = details["matched"] & details["close_diff_pct"].gt(
+        float(max_close_diff_pct)
+    )
+
+    expected_rows = int(len(details))
+    compared = details[details["matched"]].copy()
+    rows_compared = int(len(compared))
+    coverage_ratio = float(rows_compared / expected_rows) if expected_rows else 0.0
+    mismatch_rows = int(compared["mismatch"].sum())
+    mismatch_ratio = float(mismatch_rows / rows_compared) if rows_compared else 0.0
+    passed = bool(
+        rows_compared > 0
+        and coverage_ratio >= float(min_coverage_ratio)
+        and mismatch_ratio <= float(max_mismatch_ratio)
+    )
+
+    session_rows: list[dict[str, Any]] = []
+    for session_date, group in details.groupby("date", sort=True):
+        matched = group[group["matched"]]
+        expected = int(len(group))
+        compared_count = int(len(matched))
+        session_rows.append(
+            {
+                "date": pd.Timestamp(session_date).strftime("%Y-%m-%d"),
+                "rows_expected": expected,
+                "rows_compared": compared_count,
+                "coverage_ratio": round(compared_count / expected, 6) if expected else 0.0,
+                "mismatch_rows": int(matched["mismatch"].sum()),
+                "mismatch_ratio": (
+                    round(float(matched["mismatch"].mean()), 6)
+                    if compared_count
+                    else 0.0
+                ),
+            }
+        )
+
+    details["date"] = details["date"].dt.strftime("%Y-%m-%d")
+    details = details[detail_columns].sort_values(["date", "ticker"]).reset_index(drop=True)
+    return (
+        {
+            "status": "pass" if passed else "failed",
+            "pass": passed,
+            "message": (
+                "Independent price reconciliation passed"
+                if passed
+                else "Independent price reconciliation failed coverage or mismatch tolerance"
+            ),
+            "market_date": pd.Timestamp(selected_dates[-1]).strftime("%Y-%m-%d"),
+            "session_dates": [pd.Timestamp(value).strftime("%Y-%m-%d") for value in selected_dates],
+            "sessions": session_rows,
+            "rows_expected": expected_rows,
+            "rows_compared": rows_compared,
+            "coverage_ratio": round(coverage_ratio, 6),
+            "mismatch_rows": mismatch_rows,
+            "mismatch_ratio": round(mismatch_ratio, 6),
+            "max_close_diff_pct": (
+                round(float(compared["close_diff_pct"].max()), 6)
+                if rows_compared
+                else None
+            ),
+            "threshold_close_diff_pct": float(max_close_diff_pct),
+            "threshold_mismatch_ratio": float(max_mismatch_ratio),
+            "threshold_coverage_ratio": float(min_coverage_ratio),
+        },
+        details,
+    )
+
+
+def reconcile_price_frames(
+    primary: pd.DataFrame,
+    reference: pd.DataFrame,
+    lookback_sessions: int,
+    max_close_diff_pct: float,
+    max_mismatch_ratio: float,
+    min_coverage_ratio: float = 0.95,
+) -> dict[str, Any]:
+    summary, _ = _reconcile_price_frames_with_details(
+        primary=primary,
+        reference=reference,
+        lookback_sessions=lookback_sessions,
+        max_close_diff_pct=max_close_diff_pct,
+        max_mismatch_ratio=max_mismatch_ratio,
+        min_coverage_ratio=min_coverage_ratio,
+    )
+    return summary
 
 
 def run_price_quality_audit(
@@ -360,11 +445,28 @@ def run_price_quality_audit(
     anomaly_path.parent.mkdir(parents=True, exist_ok=True)
     anomalies.to_csv(anomaly_path, index=False)
 
+    detail_columns = [
+        "date",
+        "ticker",
+        "close_primary",
+        "close_reference",
+        "matched",
+        "close_diff_pct",
+        "mismatch",
+    ]
+    reconciliation_details = pd.DataFrame(columns=detail_columns)
     if not bool(config.reconciliation_enabled):
         reconciliation = {
             "status": "disabled",
             "pass": True,
             "message": "Independent price reconciliation disabled",
+            "market_date": "",
+            "session_dates": [],
+            "rows_expected": 0,
+            "rows_compared": 0,
+            "coverage_ratio": 0.0,
+            "mismatch_rows": 0,
+            "mismatch_ratio": 0.0,
         }
     elif reconciliation_primary is None or reconciliation_reference is None:
         reconciliation = {
@@ -374,33 +476,59 @@ def run_price_quality_audit(
                 str(reconciliation_unavailable_reason).strip()
                 or "Independent reconciliation source is not configured or unavailable"
             ),
+            "market_date": "",
+            "session_dates": [],
+            "rows_expected": 0,
             "rows_compared": 0,
+            "coverage_ratio": 0.0,
+            "mismatch_rows": 0,
+            "mismatch_ratio": 0.0,
         }
     else:
-        reconciliation = reconcile_price_frames(
+        reconciliation, reconciliation_details = _reconcile_price_frames_with_details(
             primary=reconciliation_primary,
             reference=reconciliation_reference,
             lookback_sessions=int(config.reconciliation_lookback_sessions),
             max_close_diff_pct=float(config.reconciliation_max_close_diff_pct),
             max_mismatch_ratio=float(config.reconciliation_max_mismatch_ratio),
+            min_coverage_ratio=float(config.reconciliation_min_coverage_ratio),
         )
         if reconciliation["status"] == "unavailable" and not bool(config.reconciliation_required):
             reconciliation["pass"] = True
+
     reconciliation["required"] = bool(config.reconciliation_required)
     reconciliation["primary_source"] = str(primary_source)
     reconciliation["reference_source"] = str(reference_source)
+    details_path = Path(config.reconciliation_details_path)
+    details_path.parent.mkdir(parents=True, exist_ok=True)
+    reconciliation_details.to_csv(details_path, index=False)
+    reconciliation["details_path"] = str(details_path)
+
+    unresolved = (
+        anomalies["resolved"].eq(False)
+        if "resolved" in anomalies.columns
+        else pd.Series(dtype=bool)
+    )
+    evidence = record_price_reconciliation_evidence(
+        config=config,
+        primary=reconciliation_primary,
+        reference=reconciliation_reference,
+        details=reconciliation_details,
+        reconciliation=reconciliation,
+        active_unresolved_count=int(len(quarantined)),
+    )
+    reconciliation["evidence"] = {
+        "status": str(evidence.get("status", "")),
+        "qualified": bool(evidence.get("qualified", False)),
+        "history_path": str(evidence.get("history_path", "")),
+        "qualification": evidence.get("qualification", {}),
+    }
 
     reconciliation_path = Path(config.reconciliation_report_path)
     reconciliation_path.parent.mkdir(parents=True, exist_ok=True)
     reconciliation_path.write_text(
         json.dumps(reconciliation, ensure_ascii=True, indent=2),
         encoding="utf-8",
-    )
-
-    unresolved = (
-        anomalies["resolved"].eq(False)
-        if "resolved" in anomalies.columns
-        else pd.Series(dtype=bool)
     )
     return {
         "adjusted_prices_path": str(adjusted_path),
@@ -415,4 +543,5 @@ def run_price_quality_audit(
         "quarantined_tickers": quarantined,
         "block_on_active_unresolved_action": bool(config.block_on_active_unresolved_action),
         "reconciliation": reconciliation,
+        "reconciliation_evidence": evidence,
     }

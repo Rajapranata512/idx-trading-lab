@@ -15,6 +15,7 @@ from src.features.compute_features import compute_features
 from src.ingest.load_prices import load_prices_csv, load_prices_from_provider
 from src.ingest.providers.yfinance_provider import YFinanceProvider
 from src.ingest.quality import run_price_quality_audit
+from src.ingest.reconciliation_readiness import assess_eod_reconciliation_readiness
 from src.ingest.validator import validate_prices
 from src.model_v2 import (
     apply_model_v2_rollout_selection,
@@ -342,6 +343,9 @@ def _evaluate_data_quality(
     }
     _write_json("reports/data_quality_report.json", payload)
     return payload
+
+def eod_reconciliation_readiness_step(settings: Settings) -> dict[str, object]:
+    return assess_eod_reconciliation_readiness(settings)
 
 def ingest_daily(
     settings: Settings,
@@ -2035,6 +2039,10 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_recal.add_argument("--force", action="store_true", help="Ignore interval and force recalibration attempt")
 
+    sub.add_parser(
+        "check-eod-reconciliation-readiness",
+        help="Validate EOD provider and reconciliation evidence configuration without network access",
+    )
     sub.add_parser("compute-features", help="Compute features and save parquet")
     sub.add_parser("score", help="Score T+1 and Swing picks, write reports/daily_signal.json")
     sub.add_parser("backtest", help="Run bar-based backtest on scored history")
@@ -2120,6 +2128,12 @@ def main() -> None:
     if args.command == "recalibrate-volatility":
         out = maybe_auto_recalibrate_volatility_targets(settings=settings, settings_path=args.settings, force=args.force)
         print(json.dumps(out, ensure_ascii=True, indent=2))
+        return
+    if args.command == "check-eod-reconciliation-readiness":
+        out = eod_reconciliation_readiness_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        if not bool(out.get("ready", False)):
+            raise SystemExit(1)
         return
     if args.command == "compute-features":
         out = compute_features_step(settings)

@@ -88,6 +88,11 @@ class PriceQualitySettings(BaseModel):
     verified_price_events_path: str = "data/reference/verified_price_events.csv"
     anomaly_report_path: str = "reports/corporate_action_anomalies.csv"
     reconciliation_report_path: str = "reports/price_reconciliation.json"
+    reconciliation_details_path: str = "reports/price_reconciliation_details.csv"
+    reconciliation_evidence_enabled: bool = False
+    reconciliation_evidence_dir: str = "data/raw/price_reconciliation"
+    reconciliation_evidence_history_path: str = "reports/price_reconciliation_evidence.json"
+    reconciliation_market_calendar_path: str = "web/idx_market_calendar.json"
     outlier_threshold_pct: float = 25.0
     quarantine_days: int = 3
     block_on_active_unresolved_action: bool = True
@@ -98,6 +103,11 @@ class PriceQualitySettings(BaseModel):
     reconciliation_lookback_sessions: int = 5
     reconciliation_max_close_diff_pct: float = 1.0
     reconciliation_max_mismatch_ratio: float = 0.05
+    reconciliation_min_coverage_ratio: float = 0.95
+    reconciliation_min_consecutive_sessions: int = 5
+    reconciliation_evidence_retention_sessions: int = 60
+    reconciliation_required_primary_source: str = "rest"
+    reconciliation_required_reference_source: str = "yfinance_reconciliation"
 
 
 class IntradaySettings(BaseModel):

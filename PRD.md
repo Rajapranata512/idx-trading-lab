@@ -158,6 +158,7 @@ Authoritative paths:
 - accuracy audit: `src/analytics/model_v2_accuracy.py`;
 - public dashboard: `web/`;
 - operations: `docs/STAGE_1_3_OPERATIONS.md`;
+- EOD reconciliation activation: `docs/EOD_RECONCILIATION_RUNBOOK.md`;
 - V2 design: `docs/MODEL_V2_BLUEPRINT.md`.
 
 ## Current State
@@ -178,6 +179,14 @@ Last verified on 2026-08-11:
 - Independent reconciliation remains unavailable because the production primary
   source falls back to yfinance without `EODHD_API_TOKEN`; yfinance cannot be its
   own independent reference. This warning remains truthful and unresolved.
+- Local DATA-03B readiness now fails before HTTP when required environment variables
+  are empty, preserves per-ticker comparison and hashed provider snapshots, and keeps
+  an idempotent five-session ledger against the verified IDX calendar. Evidence
+  collection is enabled, enforcement remains false until five real sessions qualify,
+  and no external secret, workflow run, push, or deployment has been performed.
+- DATA-03B validation: 33 focused tests and the full 172-test Python regression pass
+  for provider preflight, secret redaction, coverage/mismatch accounting, calendar
+  continuity, retry idempotency, shared ingest, and production quality gates.
 - Maximum production market-data date: 2026-08-10; stale days 0; missing tickers 0.
 - REL-01/REL-02 remain deployed and Vercel/GitHub assets were synchronized when checked.
 - `FINAL_EXECUTION` is the approved product end-state, but the broker execution
@@ -459,8 +468,9 @@ Portfolio quality:
 6. Universe history has only two official periods, insufficient for long historical
    survivorship-bias-safe claims.
 7. Independent price reconciliation is unavailable because production lacks an
-   active independent EOD source; `EODHD_API_TOKEN` is not configured and the
-   yfinance fallback cannot reconcile against itself.
+   active independent EOD source; `EODHD_API_TOKEN` is not configured, no qualifying
+   production session has been recorded, and yfinance fallback cannot reconcile
+   against itself. Code-side preflight and evidence collection are locally ready.
 8. No licensed retained 5-minute/pre-open IEP/IEV/order-event feed or compatible
    historical backfill is configured; the pre-open module therefore remains disabled.
 9. No qualified pre-open artifact, timestamp-safe sentiment dataset, or real auction
@@ -598,6 +608,9 @@ and engineering quality without assuming guaranteed returns.
 
 `DATA-03B Production independent EOD reconciliation activation` is the single next action.
 
+Code-side readiness is implemented locally. The remaining step starts with approved
+GitHub secret activation; measured production evidence is still zero sessions.
+
 Acceptance criteria:
 
 1. Configure `EODHD_API_TOKEN` as a GitHub Actions secret through an approved external
@@ -680,6 +693,10 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-11: DATA-03B code-side readiness now preflights named environment variables
+  without exposing values, records per-ticker reconciliation details plus hashed provider
+  snapshots, and requires five calendar-complete real sessions before enforcement. The
+  production secret and evidence window remain external blockers; execution stays disabled.
 - 2026-08-11: approved raw 5-minute storage with canonical 15-minute modeling,
   timestamp-safe official/licensed sentiment, and a separate IEP/IEV/order-book
   pre-open shadow track. Alerts target 08:55 and 08:57:40 WIB; opening direction,

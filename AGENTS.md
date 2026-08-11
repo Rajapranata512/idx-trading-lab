@@ -69,6 +69,7 @@ instead of printing an entire structured file.
 | Accuracy/meta-filter | PRD evidence contract | `src/analytics/model_v2_accuracy.py`, `src/model_v2/meta_filter.py` | accuracy/final-stage tests |
 | Promotion/rollback | PRD state machine | `src/model_v2/promotion.py` | promotion/guardrail tests |
 | Universe/price quality | `docs/STAGE_1_3_OPERATIONS.md` | `src/universe/`, `src/ingest/quality.py` | universe/quality tests |
+| EOD reconciliation | `docs/EOD_RECONCILIATION_RUNBOOK.md` | `src/ingest/reconciliation_*`, `src/ingest/quality.py`, REST provider | `tests/test_eod_reconciliation_evidence.py` plus affected ingest tests |
 | No signal/blocked | `docs/ai-context/05-operations-and-debugging.md` | latest funnel, quality, and gate report | focused reproduction |
 | Dashboard | relevant PRD requirement | `web/js/dashboard.js` plus producer | JS/static-dashboard tests |
 | Daily Telegram | `docs/STAGE_1_3_OPERATIONS.md` | workflow, guard, sender | delivery tests; do not send live |
@@ -142,6 +143,8 @@ These rules cannot be weakened to improve presentation or signal count:
 - Promotion evidence must match the exact model artifact version.
 - Raw 5-minute bars are immutable inputs; 15-minute model bars are deterministic,
   session-aligned aggregates with gap and duplicate checks.
+- EOD reconciliation evidence is idempotent by market date; do not enable required
+  enforcement until five consecutive real IDX sessions qualify.
 - Pre-open features use only licensed snapshots at or before the fixed cutoff; IEP
   opening direction and post-open follow-through are separate labels.
 - Order-book withdrawal proxies are not called cancellations without event-level proof.
@@ -206,6 +209,11 @@ python -B -m pytest -p no:cacheprovider tests/test_preopen_delivery.py tests/tes
 node --test tests_js/preopen_watchdog.test.js tests_js/preopen_watchdog_handler.test.js
 ```
 
+EOD reconciliation:
+
+```powershell
+python -B -m pytest -p no:cacheprovider tests/test_eod_reconciliation_evidence.py tests/test_price_quality.py tests/test_rest_provider.py tests/test_ingest_validation.py tests/test_stage123_configuration.py tests/test_roadmap_ops.py
+```
 Pre-open auction:
 
 ```powershell
