@@ -18,6 +18,12 @@ def test_production_settings_enable_stage123_fail_closed_gates():
     assert settings.data.price_quality.use_adjusted_for_features is True
     assert settings.data.price_quality.verified_price_events_path.endswith("verified_price_events.csv")
     assert settings.data.price_quality.block_on_active_unresolved_action is True
+    assert settings.preopen_auction.enabled is False
+    assert settings.preopen_auction.shadow_only is True
+    assert settings.preopen_auction.data_license_confirmed is False
+    assert settings.preopen_auction.retention_allowed is False
+    assert settings.preopen_auction.preliminary_time_local == "08:55:00"
+    assert settings.preopen_auction.decision_cutoff_time_local == "08:57:40"
 
 
 def test_preopen_workflow_has_retry_guard_and_failure_alert():

@@ -160,3 +160,54 @@ def send_telegram_message(message: str, bot_token_env: str, chat_id_env: str) ->
         return bool(data.get("ok"))
     except Exception:
         return False
+
+
+def build_preopen_auction_message(payload: dict[str, Any], max_items_per_section: int = 5) -> str:
+    signals = payload.get("signals", [])
+    signals = [row for row in signals if isinstance(row, dict)] if isinstance(signals, list) else []
+    phase = str(payload.get("phase", "-")).upper()
+    as_of = str(payload.get("as_of", "-"))
+    status = str(payload.get("status", "blocked")).upper()
+    lines = [
+        f"IDX Pre-Open Auction | {phase} | SHADOW",
+        f"As of: {as_of}",
+        f"Status: {status} | Execution: DISABLED",
+        "Catatan: analisis IEP/IEV dan order book, bukan perintah beli/jual.",
+    ]
+    if status != "READY":
+        reasons = payload.get("block_reasons", []) or [payload.get("block_reason", "unknown")]
+        reason_text = ", ".join(str(reason) for reason in reasons if str(reason)) or "unknown"
+        lines.extend(["", "NO_TRADE", f"Alasan: {reason_text}"])
+        return "\n".join(lines)
+
+    def add_section(title: str, classifications: set[str]) -> None:
+        rows = [row for row in signals if str(row.get("shadow_classification", "")) in classifications]
+        lines.extend(["", title])
+        if not rows:
+            lines.append("(tidak ada)")
+            return
+        for index, row in enumerate(rows[: max(1, int(max_items_per_section))], start=1):
+            ticker = str(row.get("ticker", "-")).upper()
+            classification = str(row.get("shadow_classification", "-"))
+            lines.append(
+                f"{index}. {ticker} | {classification} | "
+                f"IEP={_fmt_optional_float(row.get('iep_gap_bps'), 0)}bps "
+                f"IEV/ADV={_fmt_optional_float(row.get('iev_to_adv20_pct'), 2)}%"
+            )
+            lines.append(
+                f"   P(open up)={_fmt_optional_float(row.get('p_open_up'), 3)} "
+                f"P(follow up)={_fmt_optional_float(row.get('p_follow_up_15m'), 3)} "
+                f"P(fake up)={_fmt_optional_float(row.get('p_fake_gap_up_15m'), 3)} "
+                f"EV15={_fmt_optional_float(row.get('expected_return_15m_bps'), 0)}bps"
+            )
+
+    add_section("Pantauan naik terverifikasi model:", {"UP_FOLLOW_THROUGH"})
+    add_section("Risiko fake gap:", {"FAKE_UP_RISK", "FAKE_DOWN_RISK"})
+    add_section("Risiko turun / hindari:", {"DOWN_FOLLOW_THROUGH"})
+    uncertain_count = sum(
+        str(row.get("shadow_classification", "")) in {"UNCERTAIN", "NO_TRADE"}
+        for row in signals
+    )
+    if uncertain_count:
+        lines.extend(["", f"Tidak pasti/NO_TRADE: {uncertain_count} saham."])
+    return "\n".join(lines)

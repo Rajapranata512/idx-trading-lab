@@ -101,12 +101,17 @@ class PriceQualitySettings(BaseModel):
 
 
 class IntradaySettings(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     enabled: bool = False
     timeframe: str = "5m"
+    model_timeframe: str = "15m"
     lookback_minutes: int = 300
     poll_seconds: int = 30
     max_rows_per_ticker: int = 500
     canonical_prices_path: str = "data/raw/prices_intraday.csv"
+    model_prices_path: str = "data/processed/prices_intraday_15m.parquet"
+    require_complete_model_bars: bool = True
     fallback_csv_path: str = "data/raw/prices_intraday.sample.csv"
     allow_sample_fallback: bool = True
     websocket_enabled: bool = False
@@ -120,6 +125,35 @@ class IntradaySettings(BaseModel):
     min_avg_volume_20bars: float = 100000
     min_live_score: float = 30.0
     top_n: int = 10
+
+
+class PreopenAuctionSettings(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    enabled: bool = False
+    shadow_only: bool = True
+    provider_name: str = ""
+    data_license_confirmed: bool = False
+    retention_allowed: bool = False
+    snapshots_path: str = "data/raw/preopen_auction_snapshots.csv"
+    features_path: str = "data/processed/preopen_auction_features.parquet"
+    labels_path: str = "data/processed/preopen_auction_labels.parquet"
+    report_path: str = "reports/preopen_auction_shadow.json"
+    scheduler_state_path: str = "reports/preopen_auction_scheduler_state.json"
+    model_dir: str = "models/preopen_auction"
+    require_market_depth: bool = True
+    min_snapshots_per_ticker: int = 6
+    max_snapshot_age_seconds: int = 20
+    preliminary_time_local: str = "08:55:00"
+    decision_cutoff_time_local: str = "08:57:40"
+    market_open_time_local: str = "09:00:00"
+    scheduler_poll_seconds: int = 2
+    roundtrip_cost_bps: float = 65.0
+    minimum_edge_bps: float = 10.0
+    fake_reversal_bps: float = 10.0
+    max_calibration_ece_pct: float = 10.0
+    min_oos_samples: int = 120
+    min_walk_forward_folds: int = 5
 
 
 class DataSettings(BaseModel):
@@ -446,6 +480,7 @@ class Settings(BaseModel):
     coaching: CoachingSettings = Field(default_factory=CoachingSettings)
     reconciliation: ReconciliationSettings = Field(default_factory=ReconciliationSettings)
     paper_trading: PaperTradingSettings = Field(default_factory=PaperTradingSettings)
+    preopen_auction: PreopenAuctionSettings = Field(default_factory=PreopenAuctionSettings)
     notifications: NotificationSettings
 
     @classmethod

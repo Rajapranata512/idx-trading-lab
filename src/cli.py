@@ -21,7 +21,14 @@ from src.model_v2 import (
     evaluate_and_update_model_v2_promotion,
     run_model_v2_shadow,
 )
-from src.notify import build_daily_message, build_model_v2_shadow_message, send_telegram_message
+from src.notify import (
+    build_daily_message,
+    build_model_v2_shadow_message,
+    build_preopen_auction_message,
+    send_telegram_message,
+)
+from src.preopen.daemon import run_preopen_daemon
+from src.preopen.pipeline import run_preopen_auction_shadow
 from src.report import (
     generate_weekly_kpi_dashboard,
     reconcile_live_signals,
@@ -1429,6 +1436,34 @@ def reconcile_live_step(
     )
 
 
+def run_preopen_auction_step(
+    settings: Settings,
+    snapshots_path: str | None = None,
+    as_of: str | None = None,
+    send_telegram: bool = False,
+) -> dict[str, Any]:
+    report = run_preopen_auction_shadow(
+        settings=settings,
+        snapshots_path=snapshots_path,
+        as_of=as_of,
+    )
+    message = build_preopen_auction_message(report)
+    sent = False
+    if send_telegram:
+        sent = send_telegram_message(
+            message=message,
+            bot_token_env=settings.notifications.telegram_bot_token_env,
+            chat_id_env=settings.notifications.telegram_chat_id_env,
+        )
+    return {
+        "status": str(report.get("status", "blocked")),
+        "sent": bool(sent),
+        "send_requested": bool(send_telegram),
+        "report_path": settings.preopen_auction.report_path,
+        "message": message,
+        "report": report,
+    }
+
 def run_daily(
     settings: Settings,
     skip_telegram: bool = False,
@@ -2024,6 +2059,23 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Override the maximum allowed market-data age for the shadow report",
     )
 
+    p_preopen = sub.add_parser(
+        "run-preopen-auction",
+        help="Analyze licensed IEP/IEV and order-book snapshots in shadow mode",
+    )
+    p_preopen.add_argument("--snapshots-path", default=None)
+    p_preopen.add_argument("--as-of", default=None, help="Asia/Jakarta timestamp override")
+    p_preopen.add_argument(
+        "--send-telegram",
+        action="store_true",
+        help="Explicitly send the shadow message; default only prints it",
+    )
+    p_preopen_daemon = sub.add_parser(
+        "run-preopen-daemon",
+        help="Run the local precision scheduler for 08:55 and 08:57:40 WIB",
+    )
+    p_preopen_daemon.add_argument("--send-telegram", action="store_true")
+    p_preopen_daemon.add_argument("--max-loops", type=int, default=None)
     p_run = sub.add_parser("run-daily", help="Execute full daily pipeline")
     p_run.add_argument("--skip-telegram", action="store_true")
 
@@ -2116,6 +2168,25 @@ def main() -> None:
         print(json.dumps(out, ensure_ascii=True, indent=2))
         if not args.dry_run and not bool(out.get("ok", False)):
             raise SystemExit(1)
+        return
+    if args.command == "run-preopen-auction":
+        out = run_preopen_auction_step(
+            settings=settings,
+            snapshots_path=args.snapshots_path,
+            as_of=args.as_of,
+            send_telegram=args.send_telegram,
+        )
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        if args.send_telegram and not bool(out.get("sent", False)):
+            raise SystemExit(1)
+        return
+    if args.command == "run-preopen-daemon":
+        out = run_preopen_daemon(
+            settings_path=args.settings,
+            send_telegram=args.send_telegram,
+            max_loops=args.max_loops,
+        )
+        print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "run-daily":
         out = run_daily(settings, skip_telegram=args.skip_telegram, settings_path=args.settings)

@@ -28,6 +28,8 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   no independent EOD primary source is currently operational.
 - Primary blocker: statistical quality and stability, not UI score quantity.
 - Next Action: activate dependable independent EOD price reconciliation.
+- Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
+  IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
   push/deploy/send externally, or promote without required authority.
 
@@ -180,6 +182,13 @@ Last verified on 2026-08-11:
 - REL-01/REL-02 remain deployed and Vercel/GitHub assets were synchronized when checked.
 - `FINAL_EXECUTION` is the approved product end-state, but the broker execution
   layer is not implemented and current status is `EXECUTION_DISABLED`.
+- A local pre-open auction foundation now validates licensed IEP/IEV plus five-level
+  depth, builds cutoff-safe features and 5/15-minute labels, requires a calibrated
+  artifact, renders shadow Telegram output, and schedules 08:55/08:57:40 WIB phases.
+  It is not pushed or deployed; configuration is disabled, no provider/model evidence
+  exists, and execution remains disabled.
+- Full local Python regression after this foundation: 163 tests passed, including
+  pre-open, intraday aggregation, Telegram, delivery guard, and production settings.
 - Latest local regression: 153 Python and 7 Node tests passed; watchdog JavaScript
   syntax passed. Commit `e79891b` is pushed, but Daily Pipeline run 31413187445
   failed twice before export: EODHD returned 401 with an empty secret and yfinance
@@ -209,6 +218,20 @@ walk-forward evidence.
   unexplained jumps, and independent close reconciliation are machine-readable.
 - `DATA-04 Fail closed`: active unexplained anomalies quarantine affected tickers
   and block production according to configuration.
+- `INTRA-01 Immutable 5m base`: licensed raw 5-minute OHLCV is append-only, timestamped
+  in Asia/Jakarta, versioned, and backfilled for at least three years where available.
+- `INTRA-02 Canonical 15m model bars`: 15-minute bars are deterministic session-aligned
+  aggregates of 5-minute data; gaps, duplicates, partial bars, and corporate actions gate use.
+- `INTRA-03 Effective samples`: evaluation splits by purged market date and reports
+  independent ticker-session counts; snapshot row count cannot inflate sample claims.
+- `PREOPEN-01 Licensed auction feed`: IEP, IEV, rule version, source, receive time, and
+  five-level depth or order events require explicit storage/usage rights and immutable lineage.
+- `PREOPEN-02 Fixed clock`: preliminary analysis is 08:55 WIB, the feature cutoff is
+  08:57:40 WIB, matching/post-open data cannot enter prediction, and late data returns NO_TRADE.
+- `SENT-01 Event provenance`: official disclosures and licensed news store publication/
+  collection time, source tier, ticker mapping, event type, novelty, and confirmation state.
+- `SENT-02 No leakage`: only information published before the decision cutoff may join
+  a candidate; edits, duplicates, and collection latency remain auditable.
 - `REL-01 Market-session freshness`: dashboard freshness uses
   `data_quality_report.stats.max_data_date` against the latest expected completed
   IDX session in Asia/Jakarta, not 24-hour calendar age.
@@ -229,6 +252,15 @@ walk-forward evidence.
   fee/slippage-adjusted R, and mode-specific horizon.
 - `SIG-03 Abstention`: empty output caused by quality/risk gates is a valid
   no-trade result and is distinguishable from pipeline failure.
+- `PREOPEN-03 Separate labels`: opening direction, after-cost 5/15-minute follow-through,
+  and fake-gap reversal are separate point-in-time targets with MAE/MFE.
+- `PREOPEN-04 Artifact gate`: a complete calibrated multi-target artifact, untouched
+  holdout, ECE <= 10%, at least 120 OOS ticker-sessions, and five purged folds are minimum
+  shadow inference requirements; they do not bypass final-decision promotion.
+- `SENT-03 Ablation proof`: sentiment is retained only when technical+auction+sentiment
+  improves untouched after-cost expectancy, calibration, false positives, and drawdown.
+- `SENT-04 Meta-filter only`: rumor, social text, or LLM output can raise event risk or
+  confidence context but can never directly authorize an order.
 - `V2-01 Real artifacts`: a loadable model and versioned metadata are mandatory;
   fallback probability cannot produce recommendation or final state.
 - `V2-02 Calibration`: calibration fits on a separate window and is evaluated
@@ -429,13 +461,17 @@ Portfolio quality:
 7. Independent price reconciliation is unavailable because production lacks an
    active independent EOD source; `EODHD_API_TOKEN` is not configured and the
    yfinance fallback cannot reconcile against itself.
-8. Real shadow sessions, consecutive passes, and live reconciliation are insufficient
-   for canary promotion.
-9. No production broker adapter, immutable order-intent store, or broker execution
-   state machine exists yet.
-10. Paper execution, failure-injection, kill-switch drill, and live-canary evidence
+8. No licensed retained 5-minute/pre-open IEP/IEV/order-event feed or compatible
+   historical backfill is configured; the pre-open module therefore remains disabled.
+9. No qualified pre-open artifact, timestamp-safe sentiment dataset, or real auction
+   shadow-session evidence exists; no current ticker may be called an auction recommendation.
+10. Real shadow sessions, consecutive passes, and live reconciliation are insufficient
+    for canary promotion.
+11. No production broker adapter, immutable order-intent store, or broker execution
+    state machine exists yet.
+12. Paper execution, failure-injection, kill-switch drill, and live-canary evidence
     required by section 8 have not been collected.
-11. Live account activation is intentionally absent; current execution status is
+13. Live account activation is intentionally absent; current execution status is
     `EXECUTION_DISABLED`.
 
 These blockers are work items, not reasons to weaken thresholds or relabel the product.
@@ -485,6 +521,10 @@ Status: code pushed; production evidence blocked by failed EOD ingestion.
   without modifying raw or adjusted OHLCV; GOTO 2023-05-31 is the first entry.
 - Resolve/annotate corporate actions and recurrent price outliers.
 - Version immutable research datasets and feature contracts.
+- Backfill licensed raw 5-minute bars, derive canonical 15-minute bars, and record
+  effective ticker-session samples without treating correlated snapshots as independent.
+- Acquire licensed historical/forward IEP, IEV, order-book/event data and timestamp-safe
+  official disclosure/news events under explicit retention terms.
 
 Exit: reproducible point-in-time research window with documented coverage and no
 unresolved active quality blocker.
@@ -494,6 +534,10 @@ unresolved active quality blocker.
 Status: pending; T1 first, Swing remains 0%.
 
 - Add market/sector-relative, liquidity, point-in-time regime, and entry-gap features.
+- Qualify a separate pre-open auction policy for opening, follow-through, and fake-gap
+  outcomes; its alert is shadow observation until its own promotion evidence passes.
+- Compare technical baseline, plus IEP/IEV, plus order book, and plus sentiment through
+  a versioned ablation before accepting additional complexity.
 - Define independent bullish-long, sideways-selective, and bearish-risk-off policy
   cells; research short/hedge only as a separately authorized track.
 - Evaluate discovery data, then confirm on a later untouched period.
@@ -635,6 +679,11 @@ Stable implementation details belong in runbooks. Runtime metrics belong in repo
 This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
+
+- 2026-08-11: approved raw 5-minute storage with canonical 15-minute modeling,
+  timestamp-safe official/licensed sentiment, and a separate IEP/IEV/order-book
+  pre-open shadow track. Alerts target 08:55 and 08:57:40 WIB; opening direction,
+  follow-through, and fake gaps are separate labels, and no feed/model means NO_TRADE.
 
 - 2026-08-11: set the long-term goal to an evidence-gated multi-regime portfolio
   engine. Bullish long, sideways selective/no-trade, and bearish risk-off or separately
