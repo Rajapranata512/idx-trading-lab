@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-12T14:20:13.574939+00:00",
+  "generated_at": "2026-08-12T16:32:54.669245+00:00",
   "signals": {
-    "generated_at": "2026-08-12T14:20:10.209291",
+    "generated_at": "2026-08-12T16:32:51.237884",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 700.0,
         "volume": 133212700.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-12 14:18:58.729302",
+        "ingested_at": "2026-08-12 16:31:16.442653",
         "ret_1d": 0.0071942446043165,
         "ret_5d": 0.1111111111111111,
         "ret_20d": 0.1666666666666667,
@@ -77,25 +77,25 @@
         "tp2": 822.5,
         "trailing_stop_rule": "If Close >= TP1 -> Stop Loss = Entry (Break-Even)",
         "risk_per_share": 61.25,
-        "size": 1000,
-        "position_value": 700000.0,
+        "size": 900,
+        "position_value": 630000.0,
         "risk_budget_base": 60000.0,
-        "risk_budget_effective": 64549.2,
-        "vol_target_multiplier": 1.0758,
-        "vol_target_multiplier_market": 1.15,
-        "vol_target_multiplier_asset": 0.9916,
-        "vol_target_multiplier_asset_atr": 0.9163,
-        "vol_target_multiplier_asset_realized": 1.1164,
-        "vol_target_market_vol_index": 0.8235,
-        "vol_target_market_regime": "calm",
+        "risk_budget_effective": 60000.0,
+        "vol_target_multiplier": 1.0,
+        "vol_target_multiplier_market": 1.1433,
+        "vol_target_multiplier_asset": 0.9337,
+        "vol_target_multiplier_asset_atr": 0.8977,
+        "vol_target_multiplier_asset_realized": 0.9904,
+        "vol_target_market_vol_index": 0.8746,
+        "vol_target_market_regime": "normal",
         "vol_target_regime_cap_enabled": true,
-        "vol_target_regime_cap": 1.15,
-        "vol_target_regime_cap_raw": 1.15,
+        "vol_target_regime_cap": 1.0,
+        "vol_target_regime_cap_raw": 1.0,
         "vol_target_realized_weight": 0.4,
-        "vol_target_ref_realized_pct": 2.9309,
+        "vol_target_ref_realized_pct": 2.6001,
         "arb_protection_enabled": true,
         "arb_worst_case_loss_pct": 19.56,
-        "arb_worst_case_idr": 136950.0
+        "arb_worst_case_idr": 123255.0
       },
       {
         "date": "2026-08-12",
@@ -106,7 +106,7 @@
         "close": 2150.0,
         "volume": 10031100.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-12 14:18:58.729302",
+        "ingested_at": "2026-08-12 16:31:16.442653",
         "ret_1d": 0.0336538461538462,
         "ret_5d": 0.0749999999999999,
         "ret_20d": 0.1716621253405994,
@@ -158,25 +158,25 @@
         "tp2": 2554.26,
         "trailing_stop_rule": "If Close >= TP1 -> Stop Loss = Entry (Break-Even)",
         "risk_per_share": 202.13,
-        "size": 300,
-        "position_value": 645000.0,
+        "size": 200,
+        "position_value": 430000.0,
         "risk_budget_base": 60000.0,
-        "risk_budget_effective": 60912.77,
-        "vol_target_multiplier": 1.0152,
-        "vol_target_multiplier_market": 1.15,
-        "vol_target_multiplier_asset": 0.8717,
-        "vol_target_multiplier_asset_atr": 0.8528,
-        "vol_target_multiplier_asset_realized": 0.9009,
-        "vol_target_market_vol_index": 0.8235,
-        "vol_target_market_regime": "calm",
+        "risk_budget_effective": 59095.38,
+        "vol_target_multiplier": 0.9849,
+        "vol_target_multiplier_market": 1.1433,
+        "vol_target_multiplier_asset": 0.8208,
+        "vol_target_multiplier_asset_atr": 0.8355,
+        "vol_target_multiplier_asset_realized": 0.7992,
+        "vol_target_market_vol_index": 0.8746,
+        "vol_target_market_regime": "normal",
         "vol_target_regime_cap_enabled": true,
-        "vol_target_regime_cap": 1.15,
-        "vol_target_regime_cap_raw": 1.15,
+        "vol_target_regime_cap": 1.0,
+        "vol_target_regime_cap_raw": 1.0,
         "vol_target_realized_weight": 0.4,
-        "vol_target_ref_realized_pct": 2.9309,
+        "vol_target_ref_realized_pct": 2.6001,
         "arb_protection_enabled": true,
         "arb_worst_case_loss_pct": 19.56,
-        "arb_worst_case_idr": 126190.0
+        "arb_worst_case_idr": 84126.0
       }
     ],
     "swing_items": [
@@ -189,7 +189,7 @@
         "close": 2480.0,
         "volume": 131030300.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-12 14:18:58.729302",
+        "ingested_at": "2026-08-12 16:31:16.442653",
         "ret_1d": 0.1534883720930233,
         "ret_5d": 0.3052631578947369,
         "ret_20d": 0.2950391644908616,
@@ -244,19 +244,19 @@
         "size": 200,
         "position_value": 496000.0,
         "risk_budget_base": 60000.0,
-        "risk_budget_effective": 55237.9,
-        "vol_target_multiplier": 0.9206,
-        "vol_target_multiplier_market": 1.1364,
-        "vol_target_multiplier_asset": 0.7117,
-        "vol_target_multiplier_asset_atr": 0.7945,
-        "vol_target_multiplier_asset_realized": 0.6035,
-        "vol_target_market_vol_index": 0.88,
+        "risk_budget_effective": 52010.05,
+        "vol_target_multiplier": 0.8668,
+        "vol_target_multiplier_market": 1.07,
+        "vol_target_multiplier_asset": 0.6701,
+        "vol_target_multiplier_asset_atr": 0.7784,
+        "vol_target_multiplier_asset_realized": 0.5354,
+        "vol_target_market_vol_index": 0.9346,
         "vol_target_market_regime": "normal",
         "vol_target_regime_cap_enabled": true,
         "vol_target_regime_cap": 1.0,
         "vol_target_regime_cap_raw": 1.0,
         "vol_target_realized_weight": 0.4,
-        "vol_target_ref_realized_pct": 2.9309,
+        "vol_target_ref_realized_pct": 2.6001,
         "arb_protection_enabled": true,
         "arb_worst_case_loss_pct": 19.56,
         "arb_worst_case_idr": 97039.0
@@ -270,7 +270,7 @@
         "close": 700.0,
         "volume": 133212700.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-12 14:18:58.729302",
+        "ingested_at": "2026-08-12 16:31:16.442653",
         "ret_1d": 0.0071942446043165,
         "ret_5d": 0.1111111111111111,
         "ret_20d": 0.1666666666666667,
@@ -327,17 +327,17 @@
         "risk_budget_base": 60000.0,
         "risk_budget_effective": 60000.0,
         "vol_target_multiplier": 1.0,
-        "vol_target_multiplier_market": 1.1364,
-        "vol_target_multiplier_asset": 0.9916,
-        "vol_target_multiplier_asset_atr": 0.9163,
-        "vol_target_multiplier_asset_realized": 1.1164,
-        "vol_target_market_vol_index": 0.88,
+        "vol_target_multiplier_market": 1.07,
+        "vol_target_multiplier_asset": 0.9337,
+        "vol_target_multiplier_asset_atr": 0.8977,
+        "vol_target_multiplier_asset_realized": 0.9904,
+        "vol_target_market_vol_index": 0.9346,
         "vol_target_market_regime": "normal",
         "vol_target_regime_cap_enabled": true,
         "vol_target_regime_cap": 1.0,
         "vol_target_regime_cap_raw": 1.0,
         "vol_target_realized_weight": 0.4,
-        "vol_target_ref_realized_pct": 2.9309,
+        "vol_target_ref_realized_pct": 2.6001,
         "arb_protection_enabled": true,
         "arb_worst_case_loss_pct": 19.56,
         "arb_worst_case_idr": 123255.0
@@ -432,8 +432,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-08-12T14:20:10.284863",
-    "run_id": "20260812_141851",
+    "generated_at": "2026-08-12T16:32:51.322521",
+    "run_id": "20260812_163103",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -481,7 +481,7 @@
       "v2_profit_factor_r": 0.0
     },
     "score_funnel": {
-      "generated_at": "2026-08-12T14:19:00.002301",
+      "generated_at": "2026-08-12T16:31:24.316907",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -543,14 +543,14 @@
         "message": "Event-risk filter applied",
         "path": "data/reference/event_risk_blacklist.csv",
         "as_of_date": "2026-08-12",
-        "active_events": 2,
+        "active_events": 4,
         "excluded_count": 0,
         "excluded_tickers": [],
         "excluded_t1": 0,
         "excluded_swing": 0
       },
       "profit_quality": {
-        "generated_at": "2026-08-12T14:18:59.984229",
+        "generated_at": "2026-08-12T16:31:24.296742",
         "stage": "score",
         "status": "ok",
         "enabled": true,
@@ -575,7 +575,7 @@
     }
   },
   "event_risk": {
-    "active_total": 2,
+    "active_total": 4,
     "excluded_total": 0,
     "active_items": [
       {
@@ -595,6 +595,24 @@
         "end_date": "2026-08-20",
         "updated_at": "2026-08-12",
         "source": "idx_announcement_uma"
+      },
+      {
+        "ticker": "GIAA",
+        "status": "MATERIAL",
+        "reason": "Other Material Information or Facts [ GIAA ]",
+        "start_date": "2026-08-12",
+        "end_date": "2026-08-26",
+        "updated_at": "2026-08-12",
+        "source": "idx_announcement_material"
+      },
+      {
+        "ticker": "INCF",
+        "status": "SUSPEND",
+        "reason": "Penghentian Sementara Perdagangan Efek PT Indo Komoditi Korpora Tbk (INCF)",
+        "start_date": "2026-08-12",
+        "end_date": "2026-08-26",
+        "updated_at": "2026-08-12",
+        "source": "idx_announcement_suspend"
       }
     ],
     "excluded_items": []
@@ -627,6 +645,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260812.json",
+      "run_id": "20260812_163103",
+      "started_at": "2026-08-12T16:31:03.246416",
+      "ended_at": "2026-08-12T16:32:51.956591",
+      "source": "yfinance_primary",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 21,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_on | All regime checks passed | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260812.json",
       "run_id": "20260812_141851",
@@ -815,33 +860,6 @@
       "status_category_label": "Protective warning",
       "status_tone": "protective",
       "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260812.json",
-      "run_id": "20260812_070551",
-      "started_at": "2026-08-12T07:05:51.410863",
-      "ended_at": "2026-08-12T07:07:43.725893",
-      "source": "yfinance_primary",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 21,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_on | All regime checks passed | Kill switch=triggered",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
     }
   ],
   "report": {
@@ -942,7 +960,7 @@
   "kpi": {
     "signal_total": 0,
     "execution_total": 0,
-    "event_active_total": 2,
+    "event_active_total": 4,
     "event_excluded_total": 0,
     "signal_avg_score": 0.0,
     "gate_pass": {
