@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generated_at": "2026-08-12T12:03:07.455818+00:00",
   "run_date": "2026-08-12",
   "status": "collecting",
@@ -62,5 +62,50 @@
     "state_path": "reports/deferred_eod_reconciliation_state.json",
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
-  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled"
+  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled",
+  "rollout": {
+    "cycle": 1,
+    "status": "collecting",
+    "successful_dates": [
+      "2026-08-12"
+    ],
+    "successful_date_count": 1,
+    "minimum_successful_dates_required": 3,
+    "remaining_successful_dates": 2,
+    "completed_tickers": 15,
+    "universe_tickers": 45,
+    "remaining_tickers": 30,
+    "ticker_progress_ratio": 0.333333,
+    "cycle_completed": false,
+    "ready_for_deferred_audit": false,
+    "same_day_reconciliation": false,
+    "final_execution_eligible": false
+  },
+  "last_successful_batch": {
+    "run_date": "2026-08-12",
+    "generated_at": "",
+    "cycle": 1,
+    "success_tickers": [],
+    "completed_cycle_tickers": [
+      "AADI",
+      "ADMR",
+      "ADRO",
+      "AKRA",
+      "AMMN",
+      "AMRT",
+      "ANTM",
+      "ASII",
+      "BBCA",
+      "BBNI",
+      "BBRI",
+      "BBTN",
+      "BMRI",
+      "BRPT",
+      "BUMI"
+    ],
+    "completed_current_cycle": 15,
+    "cycle_completed": false,
+    "reconstructed_from_state": true
+  },
+  "last_checked_at": "2026-08-12T14:10:08.070018+00:00"
 }
