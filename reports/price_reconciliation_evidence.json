@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-12T14:09:08.711588+00:00",
+  "updated_at": "2026-08-12T14:18:58.489814+00:00",
   "qualification": {
     "qualified": false,
     "required_consecutive_sessions": 5,
@@ -28,7 +28,7 @@
   "sessions": [
     {
       "market_date": "2026-08-12",
-      "recorded_at": "2026-08-12T14:09:08.711379+00:00",
+      "recorded_at": "2026-08-12T14:18:58.489555+00:00",
       "eligible": false,
       "reasons": [
         "reconciliation_not_passed",
@@ -45,7 +45,7 @@
       "rows_compared": 0,
       "evidence": {
         "primary_path": "data/raw/price_reconciliation/2026-08-12/primary_yfinance_primary.csv",
-        "primary_sha256": "40c6c69b89244ec72840aea0ef43a26fb877eb0413047ebe069a120d361ed4df",
+        "primary_sha256": "2e2e33b9d42c04cafadc319cd51556532e080dbbed0fe398a963229705478790",
         "reference_path": "",
         "reference_sha256": "",
         "comparison_path": "data/raw/price_reconciliation/2026-08-12/comparison.csv",
