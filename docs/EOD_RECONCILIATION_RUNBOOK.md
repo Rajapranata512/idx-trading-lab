@@ -71,6 +71,11 @@ state advances: `cycle=1`, `completed_current_cycle=45`, `cycle_completed=true`,
 `next_cycle=2`. A retry cannot erase that completion evidence. These audit semantics
 are report/state schema version 2.
 
+When schema v2 first reads an older state that has `last_success_date` and cycle
+progress but no `last_successful_batch`, it reconstructs only provable fields. The
+summary carries `reconstructed_from_state=true`, leaves `success_tickers` empty, and
+uses `completed_cycle_tickers` for cumulative progress; it never invents a lost batch.
+
 EODHD resets daily limits at midnight GMT/UTC, but its User API keeps reporting the
 previous active day's `apiRequests` until the first data request after reset. Preflight
 therefore applies these rules:

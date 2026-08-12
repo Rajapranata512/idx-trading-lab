@@ -117,6 +117,50 @@ def test_deferred_collection_rotates_15_tickers_and_is_same_day_idempotent(
     assert "test-secret" not in json.dumps(first)
 
 
+def test_deferred_collection_reconstructs_v1_success_progress_without_provider_calls(
+    tmp_path: Path,
+):
+    settings, universe, _prices = _settings(tmp_path)
+    state_path = Path(
+        settings.data.price_quality.deferred_eod_reconciliation.state_path
+    )
+    state_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "cycle": 1,
+                "completed_cycle_tickers": universe[:15],
+                "last_success_date": "2026-08-12",
+                "runs": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 12, 12, tzinfo=timezone.utc),
+        fetcher=lambda *_args: pytest.fail("migration retry must not fetch tickers"),
+        account_fetcher=lambda *_args: pytest.fail(
+            "migration retry must not call account endpoint"
+        ),
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+    migrated_state = json.loads(state_path.read_text(encoding="utf-8"))
+    recovered = result["last_successful_batch"]
+
+    assert result["batch"]["idempotent_skip"] is True
+    assert result["account"]["required_calls"] == 0
+    assert migrated_state["schema_version"] == 2
+    assert recovered["run_date"] == "2026-08-12"
+    assert recovered["cycle"] == 1
+    assert recovered["success_tickers"] == []
+    assert recovered["completed_cycle_tickers"] == universe[:15]
+    assert recovered["completed_current_cycle"] == 15
+    assert recovered["cycle_completed"] is False
+    assert recovered["reconstructed_from_state"] is True
+
+
 def test_three_daily_batches_build_full_universe_five_session_research_audit(
     tmp_path: Path,
 ):
