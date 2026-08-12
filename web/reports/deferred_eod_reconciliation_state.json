@@ -23,45 +23,13 @@
   "runs": [
     {
       "run_date": "2026-08-12",
-      "generated_at": "2026-08-12T07:31:50.054143+00:00",
+      "generated_at": "2026-08-12T11:11:29.391220+00:00",
       "cycle": 1,
-      "selected_tickers": [
-        "AADI",
-        "ADMR",
-        "ADRO",
-        "AKRA",
-        "AMMN",
-        "AMRT",
-        "ANTM",
-        "ASII",
-        "BBCA",
-        "BBNI",
-        "BBRI",
-        "BBTN",
-        "BMRI",
-        "BRPT",
-        "BUMI"
-      ],
-      "success_tickers": [
-        "AADI",
-        "ADMR",
-        "ADRO",
-        "AKRA",
-        "AMMN",
-        "AMRT",
-        "ANTM",
-        "ASII",
-        "BBCA",
-        "BBNI",
-        "BBRI",
-        "BBTN",
-        "BMRI",
-        "BRPT",
-        "BUMI"
-      ],
+      "selected_tickers": [],
+      "success_tickers": [],
       "failures": [],
-      "idempotent_skip": false
+      "idempotent_skip": true
     }
   ],
-  "updated_at": "2026-08-12T07:31:50.054143+00:00"
+  "updated_at": "2026-08-12T11:11:29.391220+00:00"
 }
