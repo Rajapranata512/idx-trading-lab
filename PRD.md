@@ -211,7 +211,9 @@ Last verified on 2026-08-12:
 - Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
   Even a passing deferred audit remains research-only and cannot satisfy the same-day
   production reconciliation or final-execution gate.
-- Deferred quota/state validation: 21 focused tests and the full 187-test Python
+- The Operations dashboard consumes the deferred report directly and exposes ticker/date
+  progress, audit readiness, last-check time, and fail-closed final eligibility.
+- Deferred quota/state validation: 21 focused tests and the full 188-test Python
   regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
@@ -717,6 +719,9 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-12: connected schema-v2 deferred rollout evidence to the Operations dashboard.
+  Coverage, distinct collection dates, audit readiness, and final eligibility are now
+  visible; absent or incomplete evidence remains waiting/blocked and cannot imply approval.
 - 2026-08-12: production run `31605104835` verified rollout progress at one of three
   distinct dates, 15/45 tickers, and zero retry calls, then published `b7bae5d`.
   A separate stale-base publication guard was added after run `31603799469` exposed a

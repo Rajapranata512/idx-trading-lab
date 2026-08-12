@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 
@@ -33,3 +34,21 @@ def test_market_session_freshness_is_wired_to_static_dashboard() -> None:
     assert "Freshness tanggal pasar dinilai terpisah" in dashboard_js
     assert freshness_js.exists()
     assert calendar.exists()
+
+
+def test_deferred_eod_rollout_is_visible_and_fail_closed() -> None:
+    dashboard_js = (ROOT / "web" / "js" / "dashboard.js").read_text(encoding="utf-8")
+    dashboard_css = (ROOT / "web" / "css" / "dashboard.css").read_text(encoding="utf-8")
+    report_path = ROOT / "web" / "reports" / "deferred_eod_reconciliation.json"
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+
+    assert "deferred_eod_reconciliation.json" in dashboard_js
+    assert "Deferred Price Validation" in dashboard_js
+    assert "ready_for_deferred_audit" in dashboard_js
+    assert "final_execution_eligible===true" in dashboard_js
+    assert "Same-day independent reconciliation and final execution remain blocked" in dashboard_js
+    assert ".rollout-progress" in dashboard_css
+    assert report["schema_version"] >= 2
+    assert report["same_day_reconciliation"] is False
+    assert report["final_execution_eligible"] is False
+    assert report["rollout"]["final_execution_eligible"] is False

@@ -127,6 +127,10 @@ therefore applies these rules:
 The report includes a SHA-256 digest of the cache. Cache retention is bounded by
 configuration and raw rows are never rewritten to match Yahoo.
 
+The static dashboard Operations page loads the deferred report directly. It shows
+ticker/date progress, audit readiness, last-check time, and final-execution eligibility;
+missing or incomplete evidence is displayed as waiting/blocked rather than inferred.
+
 ## Deferred Qualification
 
 Deferred research evidence passes only when:
