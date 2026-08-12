@@ -202,6 +202,9 @@ Last verified on 2026-08-12:
   empty and is explicitly marked `reconstructed_from_state=true`.
 - Production state confirms schema 2, cycle 1, 15 completed tickers, three retained
   run records, 15 reconstructed progress tickers, and zero provider calls during migration.
+- Schema-v2 rollout progress is derived from unique successful dates per cycle. It
+  reports required/remaining dates, completed/remaining tickers, progress ratio, and
+  deferred-audit readiness; same-day retries cannot advance these values.
 - Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
   Even a passing deferred audit remains research-only and cannot satisfy the same-day
   production reconciliation or final-execution gate.
@@ -630,7 +633,9 @@ Acceptance criteria:
    reserve. Two scheduled retries selected zero tickers and skipped the account endpoint
    with `required_calls=0`.
 3. **In progress, 1/3 dates:** the first batch persisted 15/45 canonical tickers with
-   no failures and SHA-256 cache evidence. Two successful distinct-date batches remain.
+   no failures and SHA-256 cache evidence. Schema-v2 rollout must report one unique
+   successful date, 15 completed tickers, and two remaining dates until production
+   evidence advances it. Two successful distinct-date batches remain.
 4. At least five historical sessions reach 95% ticker coverage, mismatch ratio at most
    5%, and no active unresolved anomaly; every mismatch is investigated.
 5. Reports expose source, batch, cache coverage, lag, mismatch, and

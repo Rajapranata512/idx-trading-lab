@@ -35,6 +35,67 @@ def _safe_error(exc: Exception) -> str:
     return f"{exc.__class__.__name__}: {detail}" if detail else exc.__class__.__name__
 
 
+def _rollout_progress(
+    *,
+    state: dict[str, Any],
+    cycle: int,
+    completed_tickers: set[str],
+    universe_size: int,
+    batch_size: int,
+    cycle_completed: bool,
+) -> dict[str, Any]:
+    successful_dates = {
+        str(row.get("run_date", "")).strip()
+        for row in state.get("runs", [])
+        if isinstance(row, dict)
+        and int(row.get("cycle", 0) or 0) == cycle
+        and bool(row.get("success_tickers"))
+        and str(row.get("run_date", "")).strip()
+    }
+    last_successful = state.get("last_successful_batch", {})
+    if (
+        isinstance(last_successful, dict)
+        and int(last_successful.get("cycle", 0) or 0) == cycle
+        and int(last_successful.get("completed_current_cycle", 0) or 0) > 0
+    ):
+        last_date = str(last_successful.get("run_date", "")).strip()
+        if last_date:
+            successful_dates.add(last_date)
+
+    minimum_dates = (
+        int(math.ceil(universe_size / batch_size))
+        if universe_size > 0 and batch_size > 0
+        else 0
+    )
+    completed_count = min(len(completed_tickers), universe_size)
+    successful_date_count = len(successful_dates)
+    complete = bool(
+        cycle_completed
+        and universe_size > 0
+        and completed_count >= universe_size
+        and successful_date_count >= minimum_dates
+    )
+    return {
+        "cycle": cycle,
+        "status": "complete" if complete else "collecting",
+        "successful_dates": sorted(successful_dates),
+        "successful_date_count": successful_date_count,
+        "minimum_successful_dates_required": minimum_dates,
+        "remaining_successful_dates": max(minimum_dates - successful_date_count, 0),
+        "completed_tickers": completed_count,
+        "universe_tickers": universe_size,
+        "remaining_tickers": max(universe_size - completed_count, 0),
+        "ticker_progress_ratio": round(
+            completed_count / universe_size if universe_size else 0.0,
+            6,
+        ),
+        "cycle_completed": cycle_completed,
+        "ready_for_deferred_audit": complete,
+        "same_day_reconciliation": False,
+        "final_execution_eligible": False,
+    }
+
+
 def _read_json(path: Path, default: dict[str, Any]) -> dict[str, Any]:
     if not path.exists():
         return dict(default)
@@ -451,6 +512,17 @@ def collect_deferred_eod_reconciliation(
         if isinstance(row, dict)
     ]
     state["runs"] = (previous_runs + [run_record])[-30:]
+    rollout = _rollout_progress(
+        state=state,
+        cycle=collection_cycle,
+        completed_tickers=completed_for_report,
+        universe_size=len(universe),
+        batch_size=batch_size,
+        cycle_completed=cycle_completed,
+    )
+    state["rollout"] = rollout
+    if cycle_completed:
+        state["last_completed_rollout"] = rollout
     _write_json(state_path, state)
 
     audit, details = _audit_cache(
@@ -499,6 +571,7 @@ def collect_deferred_eod_reconciliation(
             "start_date": start_date,
             "end_date": end_date,
         },
+        "rollout": rollout,
         "last_successful_batch": state.get("last_successful_batch", {}),
         "account": account,
         "audit": audit,
@@ -514,6 +587,27 @@ def collect_deferred_eod_reconciliation(
             else "Deferred reconciliation is collecting or blocked; final execution remains disabled"
         ),
     }
-    if not skipped_same_day:
+    if skipped_same_day:
+        persisted_report = _read_json(report_path, {})
+        if persisted_report:
+            persisted_rollout = rollout
+            last_completed_rollout = state.get("last_completed_rollout", {})
+            last_successful = state.get("last_successful_batch", {})
+            if (
+                isinstance(last_completed_rollout, dict)
+                and last_completed_rollout
+                and isinstance(last_successful, dict)
+                and bool(last_successful.get("cycle_completed", False))
+            ):
+                persisted_rollout = last_completed_rollout
+            persisted_report["schema_version"] = _SCHEMA_VERSION
+            persisted_report["rollout"] = persisted_rollout
+            persisted_report["last_successful_batch"] = state.get(
+                "last_successful_batch",
+                {},
+            )
+            persisted_report["last_checked_at"] = generated_at
+            _write_json(report_path, persisted_report)
+    else:
         _write_json(report_path, payload)
     return payload

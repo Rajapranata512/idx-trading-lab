@@ -92,10 +92,18 @@ def test_deferred_collection_rotates_15_tickers_and_is_same_day_idempotent(
 
     assert first["status"] == "collecting"
     assert first["batch"]["selected_tickers"] == universe[:15]
+    assert first["rollout"]["successful_dates"] == ["2026-08-12"]
+    assert first["rollout"]["successful_date_count"] == 1
+    assert first["rollout"]["remaining_successful_dates"] == 2
+    assert first["rollout"]["completed_tickers"] == 15
+    assert first["rollout"]["remaining_tickers"] == 30
+    assert first["rollout"]["ticker_progress_ratio"] == 0.333333
+    assert first["rollout"]["ready_for_deferred_audit"] is False
     assert len(calls) == 15
     assert second["batch"]["idempotent_skip"] is True
     assert second["batch"]["selected_tickers"] == []
     assert second["account"]["required_calls"] == 0
+    assert second["rollout"]["successful_dates"] == ["2026-08-12"]
     persisted_report = json.loads(
         Path(
             settings.data.price_quality.deferred_eod_reconciliation.report_path
@@ -109,6 +117,9 @@ def test_deferred_collection_rotates_15_tickers_and_is_same_day_idempotent(
     assert persisted_report["batch"]["success_tickers"] == universe[:15]
     assert persisted_report["schema_version"] == 2
     assert persisted_report["batch"]["idempotent_skip"] is False
+    assert persisted_report["rollout"]["successful_date_count"] == 1
+    assert persisted_report["rollout"]["completed_tickers"] == 15
+    assert persisted_report["last_checked_at"] == second["generated_at"]
     assert len(state["runs"]) == 2
     assert state["runs"][0]["success_tickers"] == universe[:15]
     assert state["runs"][1]["idempotent_skip"] is True
@@ -159,6 +170,10 @@ def test_deferred_collection_reconstructs_v1_success_progress_without_provider_c
     assert recovered["completed_current_cycle"] == 15
     assert recovered["cycle_completed"] is False
     assert recovered["reconstructed_from_state"] is True
+    assert result["rollout"]["successful_dates"] == ["2026-08-12"]
+    assert result["rollout"]["successful_date_count"] == 1
+    assert result["rollout"]["remaining_successful_dates"] == 2
+    assert result["rollout"]["completed_tickers"] == 15
 
 
 def test_three_daily_batches_build_full_universe_five_session_research_audit(
@@ -186,6 +201,14 @@ def test_three_daily_batches_build_full_universe_five_session_research_audit(
     assert len(calls) == 45
     assert calls == universe
     assert outputs[1]["status"] == "collecting"
+    assert outputs[1]["rollout"]["successful_dates"] == [
+        "2026-08-12",
+        "2026-08-13",
+    ]
+    assert outputs[1]["rollout"]["successful_date_count"] == 2
+    assert outputs[1]["rollout"]["remaining_successful_dates"] == 1
+    assert outputs[1]["rollout"]["completed_tickers"] == 30
+    assert outputs[1]["rollout"]["ticker_progress_ratio"] == 0.666667
     final = outputs[2]
     assert final["status"] == "pass"
     assert final["research_evidence_eligible"] is True
@@ -204,6 +227,18 @@ def test_three_daily_batches_build_full_universe_five_session_research_audit(
     assert final["batch"]["completed_current_cycle"] == 45
     assert final["last_successful_batch"]["cycle"] == 1
     assert final["last_successful_batch"]["cycle_completed"] is True
+    assert final["rollout"]["status"] == "complete"
+    assert final["rollout"]["successful_dates"] == [
+        "2026-08-12",
+        "2026-08-13",
+        "2026-08-14",
+    ]
+    assert final["rollout"]["successful_date_count"] == 3
+    assert final["rollout"]["remaining_successful_dates"] == 0
+    assert final["rollout"]["completed_tickers"] == 45
+    assert final["rollout"]["remaining_tickers"] == 0
+    assert final["rollout"]["ticker_progress_ratio"] == 1.0
+    assert final["rollout"]["ready_for_deferred_audit"] is True
 
     retry = collect_deferred_eod_reconciliation(
         settings,
@@ -229,10 +264,35 @@ def test_three_daily_batches_build_full_universe_five_session_research_audit(
     assert persisted_report["batch"]["cycle"] == 1
     assert persisted_report["batch"]["completed_current_cycle"] == 45
     assert persisted_report["batch"]["cycle_completed"] is True
+    assert persisted_report["rollout"]["status"] == "complete"
+    assert persisted_report["rollout"]["successful_date_count"] == 3
     assert state["cycle"] == 2
     assert state["last_completed_cycle"] == 1
     assert state["completed_cycle_tickers"] == []
     assert len(state["runs"]) == 4
+    assert state["last_completed_rollout"]["status"] == "complete"
+    assert state["last_completed_rollout"]["successful_date_count"] == 3
+
+    next_cycle = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 15, 10, tzinfo=timezone.utc),
+        fetcher=fetcher,
+        account_fetcher=_account_payload,
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+    next_state = json.loads(
+        Path(
+            settings.data.price_quality.deferred_eod_reconciliation.state_path
+        ).read_text(encoding="utf-8")
+    )
+    assert next_cycle["batch"]["cycle"] == 2
+    assert next_cycle["batch"]["completed_current_cycle"] == 15
+    assert next_cycle["rollout"]["successful_dates"] == ["2026-08-15"]
+    assert next_cycle["rollout"]["successful_date_count"] == 1
+    assert next_cycle["rollout"]["remaining_successful_dates"] == 2
+    assert next_cycle["rollout"]["completed_tickers"] == 15
+    assert next_state["last_completed_rollout"]["cycle"] == 1
+    assert next_state["last_completed_rollout"]["status"] == "complete"
 
     cache = pd.read_csv(
         settings.data.price_quality.deferred_eod_reconciliation.cache_path
