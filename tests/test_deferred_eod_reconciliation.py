@@ -96,6 +96,24 @@ def test_deferred_collection_rotates_15_tickers_and_is_same_day_idempotent(
     assert second["batch"]["idempotent_skip"] is True
     assert second["batch"]["selected_tickers"] == []
     assert second["account"]["required_calls"] == 0
+    persisted_report = json.loads(
+        Path(
+            settings.data.price_quality.deferred_eod_reconciliation.report_path
+        ).read_text(encoding="utf-8")
+    )
+    state = json.loads(
+        Path(
+            settings.data.price_quality.deferred_eod_reconciliation.state_path
+        ).read_text(encoding="utf-8")
+    )
+    assert persisted_report["batch"]["success_tickers"] == universe[:15]
+    assert persisted_report["schema_version"] == 2
+    assert persisted_report["batch"]["idempotent_skip"] is False
+    assert len(state["runs"]) == 2
+    assert state["runs"][0]["success_tickers"] == universe[:15]
+    assert state["runs"][1]["idempotent_skip"] is True
+    assert state["last_successful_batch"]["completed_current_cycle"] == 15
+    assert state["schema_version"] == 2
     assert "test-secret" not in json.dumps(first)
 
 
@@ -136,6 +154,41 @@ def test_three_daily_batches_build_full_universe_five_session_research_audit(
     assert final["audit"]["coverage_ratio"] == 1.0
     assert final["audit"]["mismatch_ratio"] == 0.0
     assert len(final["audit"]["session_dates"]) == 5
+    assert final["batch"]["cycle"] == 1
+    assert final["batch"]["next_cycle"] == 2
+    assert final["batch"]["cycle_completed"] is True
+    assert final["batch"]["completed_current_cycle"] == 45
+    assert final["last_successful_batch"]["cycle"] == 1
+    assert final["last_successful_batch"]["cycle_completed"] is True
+
+    retry = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 14, 11, tzinfo=timezone.utc),
+        fetcher=lambda *_args: pytest.fail("completed-day retry must not fetch tickers"),
+        account_fetcher=lambda *_args: pytest.fail(
+            "completed-day retry must not call account endpoint"
+        ),
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+    persisted_report = json.loads(
+        Path(
+            settings.data.price_quality.deferred_eod_reconciliation.report_path
+        ).read_text(encoding="utf-8")
+    )
+    state = json.loads(
+        Path(
+            settings.data.price_quality.deferred_eod_reconciliation.state_path
+        ).read_text(encoding="utf-8")
+    )
+    assert retry["batch"]["idempotent_skip"] is True
+    assert retry["last_successful_batch"]["cycle_completed"] is True
+    assert persisted_report["batch"]["cycle"] == 1
+    assert persisted_report["batch"]["completed_current_cycle"] == 45
+    assert persisted_report["batch"]["cycle_completed"] is True
+    assert state["cycle"] == 2
+    assert state["last_completed_cycle"] == 1
+    assert state["completed_cycle_tickers"] == []
+    assert len(state["runs"]) == 4
 
     cache = pd.read_csv(
         settings.data.price_quality.deferred_eod_reconciliation.cache_path

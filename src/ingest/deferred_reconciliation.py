@@ -19,6 +19,7 @@ from src.ingest.validator import validate_prices
 
 
 TickerFetcher = Callable[[str, str, str], pd.DataFrame]
+_SCHEMA_VERSION = 2
 _SECRET_QUERY = re.compile(
     r"([?&](?:api_token|token|api_key|apikey)=)[^&\s]+",
     flags=re.IGNORECASE,
@@ -282,7 +283,7 @@ def collect_deferred_eod_reconciliation(
     report_path = Path(deferred.report_path)
     details_path = Path(deferred.details_path)
     default_state: dict[str, Any] = {
-        "schema_version": 1,
+        "schema_version": _SCHEMA_VERSION,
         "cycle": 1,
         "completed_cycle_tickers": [],
         "last_success_date": "",
@@ -290,6 +291,8 @@ def collect_deferred_eod_reconciliation(
         "runs": [],
     }
     state = _read_json(state_path, default_state)
+    state["schema_version"] = _SCHEMA_VERSION
+    collection_cycle = int(state.get("cycle", 1) or 1)
     completed = {
         str(value).strip().upper()
         for value in state.get("completed_cycle_tickers", [])
@@ -300,7 +303,8 @@ def collect_deferred_eod_reconciliation(
     if not pending and universe:
         completed = set()
         pending = list(universe)
-        state["cycle"] = int(state.get("cycle", 1) or 1) + 1
+        collection_cycle += 1
+        state["cycle"] = collection_cycle
     planned_batch = pending[:batch_size]
 
     account: dict[str, Any] = {
@@ -381,29 +385,46 @@ def collect_deferred_eod_reconciliation(
         as_of_date=run_date,
     )
 
+    cycle_completed = False
+    completed_for_report = set(completed)
     if success_tickers:
         completed.update(success_tickers)
+        completed_for_report = set(completed)
         state["last_success_date"] = run_date
         if len(completed) >= len(universe):
+            cycle_completed = True
             state["last_cycle_completed_at"] = generated_at
-            state["last_completed_cycle"] = int(state.get("cycle", 1) or 1)
-            completed = set()
-            state["cycle"] = int(state.get("cycle", 1) or 1) + 1
-    state["completed_cycle_tickers"] = sorted(completed)
+            state["last_completed_cycle"] = collection_cycle
+            state["completed_cycle_tickers"] = []
+            state["cycle"] = collection_cycle + 1
+        else:
+            state["completed_cycle_tickers"] = sorted(completed)
+        state["last_successful_batch"] = {
+            "run_date": run_date,
+            "generated_at": generated_at,
+            "cycle": collection_cycle,
+            "success_tickers": success_tickers,
+            "completed_current_cycle": len(completed_for_report),
+            "cycle_completed": cycle_completed,
+        }
+    else:
+        state["completed_cycle_tickers"] = sorted(completed)
     state["updated_at"] = generated_at
     run_record = {
         "run_date": run_date,
         "generated_at": generated_at,
-        "cycle": int(state.get("cycle", 1) or 1),
+        "cycle": collection_cycle,
         "selected_tickers": selected_batch,
         "success_tickers": success_tickers,
         "failures": failures,
         "idempotent_skip": skipped_same_day,
+        "completed_current_cycle": len(completed_for_report),
+        "cycle_completed": cycle_completed,
     }
     previous_runs = [
         row
         for row in state.get("runs", [])
-        if isinstance(row, dict) and str(row.get("run_date", "")) != run_date
+        if isinstance(row, dict)
     ]
     state["runs"] = (previous_runs + [run_record])[-30:]
     _write_json(state_path, state)
@@ -425,7 +446,7 @@ def collect_deferred_eod_reconciliation(
         status = "collecting"
 
     payload = {
-        "schema_version": 1,
+        "schema_version": _SCHEMA_VERSION,
         "generated_at": generated_at,
         "run_date": run_date,
         "status": status,
@@ -440,18 +461,21 @@ def collect_deferred_eod_reconciliation(
             "deferred_reference": "eodhd_deferred",
         },
         "batch": {
-            "cycle": int(state.get("cycle", 1) or 1),
+            "cycle": collection_cycle,
+            "next_cycle": int(state.get("cycle", collection_cycle) or collection_cycle),
+            "cycle_completed": cycle_completed,
             "batch_size": batch_size,
             "planned_tickers": planned_batch,
             "selected_tickers": selected_batch,
             "success_tickers": success_tickers,
             "failures": failures,
             "idempotent_skip": skipped_same_day,
-            "completed_current_cycle": len(completed),
+            "completed_current_cycle": len(completed_for_report),
             "universe_tickers": len(universe),
             "start_date": start_date,
             "end_date": end_date,
         },
+        "last_successful_batch": state.get("last_successful_batch", {}),
         "account": account,
         "audit": audit,
         "artifacts": {
@@ -466,5 +490,6 @@ def collect_deferred_eod_reconciliation(
             else "Deferred reconciliation is collecting or blocked; final execution remains disabled"
         ),
     }
-    _write_json(report_path, payload)
+    if not skipped_same_day:
+        _write_json(report_path, payload)
     return payload

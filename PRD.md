@@ -190,6 +190,12 @@ Last verified on 2026-08-12:
 - Post-batch account metadata reports 15 calls used and five remaining on 2026-08-12.
   Generic preflight for another 15-ticker batch is quota-blocked, while collector state
   prevents the duplicate attempt before any account or ticker request.
+- Scheduled retries `31590541944` and `31594420952` both passed with
+  `idempotent_skip=true`, zero selected tickers, account status
+  `not_checked_idempotent_skip`, and `required_calls=0`.
+- Cycle-report hardening preserves successful run history, prevents empty retries from
+  replacing the latest success report, and records 45/45 completion before advancing
+  state to the next cycle.
 - Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
   Even a passing deferred audit remains research-only and cannot satisfy the same-day
   production reconciliation or final-execution gate.
@@ -614,9 +620,9 @@ Acceptance criteria:
 
 1. **Verified 2026-08-12:** daily ingestion uses `yfinance_primary` and does not attempt
    a full-universe EODHD fan-out while deferred mode is enabled.
-2. **Partially verified:** production used exactly 15 calls and retained the five-call
-   reserve. Another generic batch is quota-blocked; collector no-account-call idempotency
-   is covered by automated tests and awaits the next scheduled production retry.
+2. **Verified 2026-08-12:** production used exactly 15 calls and retained the five-call
+   reserve. Two scheduled retries selected zero tickers and skipped the account endpoint
+   with `required_calls=0`.
 3. **In progress, 1/3 dates:** the first batch persisted 15/45 canonical tickers with
    no failures and SHA-256 cache evidence. Two successful distinct-date batches remain.
 4. At least five historical sessions reach 95% ticker coverage, mismatch ratio at most
@@ -697,6 +703,9 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-12: production retries proved zero-call idempotency. Hardened audit state so
+  retries append rather than replace successful history, successful reports remain
+  persisted, and a 45/45 batch reports completion before state advances to cycle 2.
 - 2026-08-12: merged and deployed free-tier deferred reconciliation. Production run
   `31574193633` passed and published commit `ebe3813` after PR #4 corrected EODHD's
   stale previous-day counter behavior. Batch 1/3 succeeded for 15/45 tickers with no
