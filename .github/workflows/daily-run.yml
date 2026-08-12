@@ -81,6 +81,21 @@ jobs:
 
     - name: Commit and Push Results
       run: |
+        # Results must only be published from the source/config revision that produced them.
+        git fetch --no-tags origin main
+        remote_sha="$(git rev-parse FETCH_HEAD)"
+        if [ "$remote_sha" != "$GITHUB_SHA" ]; then
+          echo "::warning title=Stale workflow base::Skipping generated artifact publish because main advanced from ${GITHUB_SHA} to ${remote_sha}."
+          {
+            echo "### Generated artifact publish skipped"
+            echo ""
+            echo "- Workflow base: \`${GITHUB_SHA}\`"
+            echo "- Current main: \`${remote_sha}\`"
+            echo "- Reason: results were computed from stale source/config and were not rebased."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        fi
+
         # Use a custom email to prevent Vercel from ignoring github-actions[bot] commits by default
         git config --local user.email "pipeline@idxtradinglab.local"
         git config --local user.name "IDX Lab Pipeline"
@@ -92,7 +107,24 @@ jobs:
         # Only commit if there are changes
         if ! git diff-index --quiet HEAD; then
           git commit -m "Automated Daily Run: $(date -u +'%Y-%m-%d')"
-          git push
+          if ! git push origin HEAD:main; then
+            git fetch --no-tags origin main
+            latest_sha="$(git rev-parse FETCH_HEAD)"
+            if [ "$latest_sha" != "$GITHUB_SHA" ]; then
+              echo "::warning title=Concurrent main update::Generated artifact push was skipped because main advanced to ${latest_sha}."
+              {
+                echo "### Generated artifact push skipped"
+                echo ""
+                echo "- Workflow base: \`${GITHUB_SHA}\`"
+                echo "- Current main: \`${latest_sha}\`"
+                echo "- Reason: main advanced during publication; stale results were not force-pushed."
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            echo "::error title=Artifact publish failed::Push failed while main remained at ${latest_sha}."
+            exit 1
+          fi
         else
           echo "No changes to commit"
         fi

@@ -50,6 +50,21 @@ def test_daily_workflow_preflights_eod_reconciliation_secret():
     assert "python -m src.cli collect-deferred-eod-reconciliation" in workflow
     assert "EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}" in workflow
 
+
+def test_daily_workflow_never_publishes_stale_generated_artifacts():
+    workflow = Path(".github/workflows/daily-run.yml").read_text(encoding="utf-8")
+
+    assert "git fetch --no-tags origin main" in workflow
+    assert 'remote_sha="$(git rev-parse FETCH_HEAD)"' in workflow
+    assert 'if [ "$remote_sha" != "$GITHUB_SHA" ]; then' in workflow
+    assert "Stale workflow base" in workflow
+    assert "git push origin HEAD:main" in workflow
+    assert 'if [ "$latest_sha" != "$GITHUB_SHA" ]; then' in workflow
+    assert "Concurrent main update" in workflow
+    assert "git rebase" not in workflow
+    assert "git push --force" not in workflow
+
+
 def test_preopen_workflow_has_retry_guard_and_failure_alert():
     workflow = Path(".github/workflows/model-v2-shadow-preopen.yml").read_text(
         encoding="utf-8"

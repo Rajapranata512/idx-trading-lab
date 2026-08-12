@@ -89,6 +89,22 @@ The schema-v2 `rollout` block is the machine-readable progress contract:
 An idempotent retry may enrich a legacy persisted report with schema, rollout, and
 `last_checked_at`, but it must retain the successful `batch` evidence unchanged.
 
+## Workflow Artifact Publication Safety
+
+Daily Pipeline artifacts are valid only for the source and configuration revision that
+produced them. After computation, the workflow fetches the current `main` head and
+compares it with `GITHUB_SHA`:
+
+- when `main` already advanced, generated artifacts are not committed or rebased;
+  the workflow emits a stale-base warning and records the skipped publication in the
+  GitHub Actions step summary;
+- when `main` advances between the check and push, the rejected push is rechecked and
+  becomes a concurrent-update warning only after the new remote SHA is proven;
+- when a push fails while `main` has not advanced, the workflow still fails so
+  authentication, permission, or network faults remain visible;
+- generated artifacts are never force-pushed. A newer run or the next schedule must
+  recompute them from the current source/config revision.
+
 EODHD resets daily limits at midnight GMT/UTC, but its User API keeps reporting the
 previous active day's `apiRequests` until the first data request after reset. Preflight
 therefore applies these rules:
