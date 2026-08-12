@@ -10,6 +10,7 @@ const P={
   accuracy:'./reports/model_v2_accuracy_audit.json',
   recon:'./reports/live_reconciliation.json',
   quality:'./reports/data_quality_report.json',
+  deferred:'./reports/deferred_eod_reconciliation.json',
   calendar:'./idx_market_calendar.json',
   topT1:'./reports/top_t1.csv',
   topSwing:'./reports/top_swing.csv',
@@ -27,6 +28,14 @@ const asNum=n=>{const v=Number(n);return Number.isFinite(v)?v:null;};
 const fmtNum=(n,d=2)=>{const v=asNum(n);return v==null?'-':v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});};
 const fmtPctNum=(n,d=2)=>{const v=asNum(n);return v==null?'-':fmtNum(v,d)+'%';};
 const fmtSignedR=(n,d=4)=>{const v=asNum(n);if(v==null)return '-';return `${v>=0?'+':''}${fmtNum(v,d)}R`;};
+const fmtWib=value=>{
+  if(!value)return '-';
+  const parsed=new Date(value);
+  if(Number.isNaN(parsed.getTime()))return '-';
+  return new Intl.DateTimeFormat('id-ID',{
+    timeZone:'Asia/Jakarta',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'
+  }).format(parsed)+' WIB';
+};
 
 async function fetchJSON(p){try{const r=await fetch(p + '?t=' + Date.now());if(!r.ok)return null;return r.json();}catch{return null;}}
 async function fetchCSV(p){return new Promise(r=>{Papa.parse(p + '?t=' + Date.now(),{download:true,header:true,dynamicTyping:true,skipEmptyLines:true,complete:d=>r(d.data),error:()=>r([])});});}
@@ -39,13 +48,13 @@ function toast(msg,type='info'){
 
 // ── Data Loading ──
 async function loadAll(){
-  const[bt,kpi,fun,shd,prm,acc,rec,quality,calendar,t1,sw,ev]=await Promise.all([
+  const[bt,kpi,fun,shd,prm,acc,rec,quality,deferred,calendar,t1,sw,ev]=await Promise.all([
     fetchJSON(P.backtest),fetchJSON(P.kpi),fetchJSON(P.funnel),
     fetchJSON(P.shadow),fetchJSON(P.promo),fetchJSON(P.accuracy),fetchJSON(P.recon),
-    fetchJSON(P.quality),fetchJSON(P.calendar),
+    fetchJSON(P.quality),fetchJSON(P.deferred),fetchJSON(P.calendar),
     fetchCSV(P.topT1),fetchCSV(P.topSwing),fetchCSV(P.eventActive)
   ]);
-  S.data={backtest:bt,kpi:kpi,funnel:fun,shadow:shd,promo:prm,accuracy:acc,recon:rec,quality:quality,calendar:calendar,topT1:t1,topSwing:sw,eventActive:ev};
+  S.data={backtest:bt,kpi:kpi,funnel:fun,shadow:shd,promo:prm,accuracy:acc,recon:rec,quality:quality,deferred:deferred,calendar:calendar,topT1:t1,topSwing:sw,eventActive:ev};
   const gen=quality?.generated_at||'';
   const dataDate=quality?.stats?.max_data_date||'';
   const freshness=window.IdxMarketFreshness?.calculateFreshness({
@@ -299,12 +308,26 @@ ${renderAccuracyAudit(audit)}
 
 // ═══ PAGE: OPERATIONS ═══
 function renderOperations(){
-  const rec=S.data.recon||{},ev=S.data.eventActive||[];
+  const rec=S.data.recon||{},deferred=S.data.deferred||{},rollout=deferred.rollout||{},ev=S.data.eventActive||[];
+  const completed=Math.max(0,asNum(rollout.completed_tickers)||0);
+  const universe=Math.max(0,asNum(rollout.universe_tickers)||0);
+  const remaining=Math.max(0,asNum(rollout.remaining_tickers)??Math.max(0,universe-completed));
+  const successfulDates=Math.max(0,asNum(rollout.successful_date_count)||0);
+  const requiredDates=Math.max(0,asNum(rollout.minimum_successful_dates_required)||0);
+  const remainingDates=Math.max(0,asNum(rollout.remaining_successful_dates)??Math.max(0,requiredDates-successfulDates));
+  const ratio=asNum(rollout.ticker_progress_ratio)??(universe>0?completed/universe:0);
+  const progressPct=Math.min(100,Math.max(0,ratio*100));
+  const status=String(deferred.status||rollout.status||'unavailable').toUpperCase();
+  const statusTone=status==='PASSED'?'success':status==='FAILED'?'danger':'warning';
+  const auditReady=rollout.ready_for_deferred_audit===true;
+  const finalEligible=deferred.final_execution_eligible===true&&rollout.final_execution_eligible===true;
+  const sources=deferred.sources||{};
   const html=`
-<div class="grid grid-3 mb-24">
-  ${kpiCard('Recon Status',rec.status||'—','🔄',rec.status==='ok'?'success':'warning')}
-  ${kpiCard('Match Rate',fmtPct(rec.coverage?.entry_match_rate_pct),'🎯','info')}
-  ${kpiCard('Active Events',ev.length,'⚠','warning')}
+<div class="grid grid-4 mb-24">
+  ${kpiCard('Live Recon',rec.status||'-','L',rec.status==='ok'?'success':'warning')}
+  ${kpiCard('Deferred Coverage',`${completed} / ${universe}`,'EOD',auditReady?'success':'warning')}
+  ${kpiCard('Collection Dates',`${successfulDates} / ${requiredDates}`,'D',auditReady?'success':'info')}
+  ${kpiCard('Final Eligible',finalEligible?'YES':'NO','X',finalEligible?'success':'danger')}
 </div>
 <div class="grid grid-2 mb-24">
   <div class="card"><div class="card-header"><span class="card-title">Reconciliation Summary</span></div>
@@ -319,6 +342,32 @@ function renderOperations(){
     ${metricRow('Avg Entry Slippage',fmtPct(rec.cost_kpi?.avg_entry_slippage_pct))}
     ${metricRow('Avg Roundtrip Cost',fmtPct(rec.cost_kpi?.avg_est_roundtrip_cost_pct))}
     ${metricRow('Total Fees',fmtIDR(rec.cost_kpi?.total_fee_idr))}
+  </div>
+</div>
+<div class="card mb-24">
+  <div class="card-header"><span class="card-title">Deferred Price Validation</span>${badgeHtml(status,statusTone)}</div>
+  <div class="rollout-progress">
+    <div class="rollout-progress-meta"><span>Cycle ${rollout.cycle||'-'} ticker coverage</span><strong>${fmt(progressPct,1)}%</strong></div>
+    <div class="progress-bar" role="progressbar" aria-label="Deferred ticker coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progressPct.toFixed(1)}">
+      <div class="progress-fill ${auditReady?'success':'warning'}" style="width:${progressPct.toFixed(1)}%"></div>
+    </div>
+  </div>
+  <div class="grid grid-2 rollout-detail-grid">
+    <div>
+      ${metricRow('Daily Primary',sources.daily_primary||'-')}
+      ${metricRow('Deferred Reference',sources.deferred_reference||'-')}
+      ${metricRow('Completed Tickers',`${completed} / ${universe}`)}
+      ${metricRow('Remaining Tickers',remaining)}
+    </div>
+    <div>
+      ${metricRow('Successful Dates',`${successfulDates} / ${requiredDates}`)}
+      ${metricRow('Remaining Dates',remainingDates)}
+      ${metricRow('Deferred Audit',auditReady?'READY':'WAITING')}
+      ${metricRow('Last Checked',fmtWib(deferred.last_checked_at||deferred.generated_at))}
+    </div>
+  </div>
+  <div class="rollout-note ${finalEligible?'success':'warning'}">
+    ${finalEligible?'All deferred eligibility flags passed.':'Delayed research evidence only. Same-day independent reconciliation and final execution remain blocked.'}
   </div>
 </div>
 <div class="card">
