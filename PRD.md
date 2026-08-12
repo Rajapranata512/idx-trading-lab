@@ -20,8 +20,9 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   every model, regime, risk, execution, security, and reconciliation gate passes.
 - Current state: `EXECUTION_DISABLED`; Model V2 is `SHADOW/BLOCKED`,
   rollout 0%, and no broker order is authorized.
-- Evidence: Daily Pipeline run `31574193633` completed the first deferred batch
-  and pushed production artifact commit `ebe3813` to `origin/main` and Vercel.
+- Evidence: run `31574193633` completed deferred batch 1/3; run `31603631298`
+  migrated its audit state to schema v2 and published artifact commit `b4fcc87` to
+  `origin/main` and Vercel without another provider call.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
   interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
   batch once per Jakarta date until delayed research coverage is complete.
@@ -167,9 +168,9 @@ Authoritative paths:
 
 Last verified on 2026-08-12:
 
-- PR #4 was merged as `0141801`. Successful production Daily Pipeline run
-  `31574193633` then published the first deferred batch as current GitHub main
-  `ebe3813`; Vercel reported that deployment complete.
+- PR #7 was merged as `f537330`. Successful production Daily Pipeline run
+  `31603631298` then published schema-v2 state artifact `b4fcc87`; Vercel reported
+  that deployment complete.
 - Production market data is current through 2026-08-12 with 0 stale sessions,
   52,931 rows, 56 represented tickers, no missing critical rows, and no duplicate rows.
   Daily primary source is explicitly `yfinance_primary`.
@@ -199,6 +200,8 @@ Last verified on 2026-08-12:
 - Schema v2 migration reconstructs only provable legacy progress: the current 15/45
   completed ticker set is retained, while an unavailable historical success list remains
   empty and is explicitly marked `reconstructed_from_state=true`.
+- Production state confirms schema 2, cycle 1, 15 completed tickers, three retained
+  run records, 15 reconstructed progress tickers, and zero provider calls during migration.
 - Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
   Even a passing deferred audit remains research-only and cannot satisfy the same-day
   production reconciliation or final-execution gate.
@@ -709,7 +712,8 @@ This PRD stays compact enough for reset recovery.
 - 2026-08-12: production retries proved zero-call idempotency. Hardened audit state so
   retries append rather than replace successful history, successful reports remain
   persisted, and a 45/45 batch reports completion before state advances to cycle 2.
-  Schema v2 migrates legacy progress without fabricating lost success details.
+  Production run `31603631298` verified schema-v2 migration and published `b4fcc87`
+  without provider calls; legacy progress was retained without fabricated success details.
 - 2026-08-12: merged and deployed free-tier deferred reconciliation. Production run
   `31574193633` passed and published commit `ebe3813` after PR #4 corrected EODHD's
   stale previous-day counter behavior. Batch 1/3 succeeded for 15/45 tickers with no
