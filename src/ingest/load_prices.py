@@ -51,6 +51,47 @@ def load_prices_from_provider(
 ) -> tuple[pd.DataFrame, str]:
     """Load daily prices using primary provider and fallback to CSV on failure."""
     provider_kind = settings.data.provider.kind.lower()
+    deferred = settings.data.price_quality.deferred_eod_reconciliation
+
+    if bool(deferred.enabled) and bool(deferred.use_yfinance_as_daily_primary):
+        failures: list[str] = []
+        try:
+            provider = YFinanceProvider(settings.data.provider.yfinance_ticker_suffix)
+            raw = provider.fetch_daily(
+                start_date=start_date,
+                end_date=end_date,
+                tickers=tickers,
+            )
+            canonical, _ = validate_prices(raw, source="yfinance_primary")
+            canonical.attrs["provider_failures"] = []
+            return canonical, "yfinance_primary"
+        except Exception as exc:
+            failures.append(f"yfinance_primary={_format_provider_error(exc)}")
+            fallback_path = settings.data.fallback_csv_path
+            if _is_sample_path(fallback_path) and not bool(
+                getattr(settings.data, "allow_sample_fallback", False)
+            ):
+                failures.append(
+                    "csv_fallback=RuntimeError: Sample fallback disabled for daily production runs"
+                )
+                raise ValueError("All daily providers failed: " + " | ".join(failures))
+            fallback = CSVProvider(fallback_path)
+            try:
+                raw = fallback.fetch_daily(
+                    start_date=start_date,
+                    end_date=end_date,
+                    tickers=tickers,
+                )
+                canonical, _ = validate_prices(raw, source="csv_fallback")
+                canonical.attrs["provider_failures"] = list(failures)
+                return canonical, "csv_fallback"
+            except Exception as fallback_exc:
+                failures.append(
+                    f"csv_fallback={_format_provider_error(fallback_exc)}"
+                )
+                raise ValueError(
+                    "All daily providers failed: " + " | ".join(failures)
+                ) from fallback_exc
 
     if provider_kind == "rest":
         failures: list[str] = []

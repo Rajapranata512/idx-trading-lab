@@ -81,6 +81,18 @@ class UniverseAutoUpdateSettings(BaseModel):
     idx30: UniverseSourceSettings = Field(default_factory=UniverseSourceSettings)
 
 
+class DeferredEodReconciliationSettings(BaseModel):
+    enabled: bool = False
+    use_yfinance_as_daily_primary: bool = True
+    batch_size: int = 15
+    lookback_calendar_days: int = 45
+    cache_retention_calendar_days: int = 180
+    cache_path: str = "data/raw/deferred_eodhd_reference.csv"
+    state_path: str = "reports/deferred_eod_reconciliation_state.json"
+    report_path: str = "reports/deferred_eod_reconciliation.json"
+    details_path: str = "reports/deferred_eod_reconciliation_details.csv"
+
+
 class PriceQualitySettings(BaseModel):
     adjusted_prices_path: str = "data/processed/prices_daily_adjusted.csv"
     use_adjusted_for_features: bool = True
@@ -113,6 +125,9 @@ class PriceQualitySettings(BaseModel):
     provider_account_token_env: str = "EODHD_API_TOKEN"
     provider_account_call_cost_per_ticker: int = 1
     provider_account_minimum_reserve_calls: int = 0
+    deferred_eod_reconciliation: DeferredEodReconciliationSettings = Field(
+        default_factory=DeferredEodReconciliationSettings
+    )
 
 
 class IntradaySettings(BaseModel):

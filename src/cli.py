@@ -12,6 +12,7 @@ from src.analytics import generate_model_v2_accuracy_audit, generate_signal_accu
 from src.backtest import BacktestCosts, pass_live_gate, run_backtest, run_walk_forward, simulate_mode_trades
 from src.config import Settings, load_settings
 from src.features.compute_features import compute_features
+from src.ingest.deferred_reconciliation import collect_deferred_eod_reconciliation
 from src.ingest.load_prices import load_prices_csv, load_prices_from_provider
 from src.ingest.providers.yfinance_provider import YFinanceProvider
 from src.ingest.quality import run_price_quality_audit
@@ -143,19 +144,25 @@ def _load_price_reconciliation_reference(
         except Exception as exc:
             return None, "", f"yfinance reconciliation failed: {exc}"
 
-    if primary_source == "yfinance_fallback":
+    if primary_source in {"yfinance_fallback", "yfinance_primary"}:
         failures = [
             str(value).strip()
             for value in (primary_provider_failures or [])
             if str(value).strip()
         ]
-        message = "Primary EOD provider fell back to yfinance."
-        if failures:
-            message += " Primary provider failure: " + " | ".join(failures) + "."
-        message += (
-            " Configure sufficient provider entitlement/quota or an independent "
-            "reconciliation_reference_csv_path."
-        )
+        if primary_source == "yfinance_primary":
+            message = (
+                "Daily primary uses yfinance while EODHD is collected in deferred "
+                "free-tier batches; same-day independent reconciliation remains unavailable."
+            )
+        else:
+            message = "Primary EOD provider fell back to yfinance."
+            if failures:
+                message += " Primary provider failure: " + " | ".join(failures) + "."
+            message += (
+                " Configure sufficient provider entitlement/quota or an independent "
+                "reconciliation_reference_csv_path."
+            )
         return None, "", message
     return None, "", "No independent reconciliation source available for selected primary provider"
 
@@ -361,6 +368,10 @@ def eod_reconciliation_readiness_step(settings: Settings) -> dict[str, object]:
 
 def eod_provider_account_step(settings: Settings) -> dict[str, object]:
     return probe_eod_provider_account(settings)
+
+
+def deferred_eod_reconciliation_step(settings: Settings) -> dict[str, Any]:
+    return collect_deferred_eod_reconciliation(settings)
 
 
 def ingest_daily(
@@ -2068,7 +2079,11 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     sub.add_parser(
         "check-eod-provider-account",
-        help="Verify provider account quota for one configured EOD universe run",
+        help="Verify provider account quota for the configured EOD request batch",
+    )
+    sub.add_parser(
+        "collect-deferred-eod-reconciliation",
+        help="Collect one idempotent free-tier EOD batch for delayed research audit",
     )
     sub.add_parser("compute-features", help="Compute features and save parquet")
     sub.add_parser("score", help="Score T+1 and Swing picks, write reports/daily_signal.json")
@@ -2167,6 +2182,10 @@ def main() -> None:
         print(json.dumps(out, ensure_ascii=True, indent=2))
         if not bool(out.get("ready", False)):
             raise SystemExit(1)
+        return
+    if args.command == "collect-deferred-eod-reconciliation":
+        out = deferred_eod_reconciliation_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "compute-features":
         out = compute_features_step(settings)

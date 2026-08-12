@@ -1,6 +1,6 @@
 # PRD - IDX Trading Lab
 
-Revision: 2026-08-11
+Revision: 2026-08-12
 
 Owner: Project repository
 Status: Active, research/shadow, not final decision
@@ -22,14 +22,14 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   rollout 0%, and no broker order is authorized.
 - Evidence: Daily Pipeline run `31498121174` refreshed production market data
   through 2026-08-11 and pushed artifact commit `9d43504` to `origin/main`.
-- The approved GitHub token secret is present, but EODHD returned HTTP 402. Account
-  metadata reports a free 20-call daily limit already consumed; one 45-ticker run
-  needs at least 45 calls, so primary remained `yfinance_fallback` and
-  independent reconciliation is still unavailable.
-- Primary blocker: dependable provider capacity and then statistical quality, not UI
-  score quantity.
-- Next Action: activate sufficient independent EOD provider capacity and collect
-  qualifying reconciliation evidence.
+- EODHD free capacity cannot validate all 45 tickers on the same day. The approved
+  interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
+  batch once per Jakarta date until delayed research coverage is complete.
+- Deferred evidence can improve historical data auditing, but it is explicitly
+  `final_execution_eligible=false`; same-day independent reconciliation remains unavailable.
+- Primary blocker: same-day provider capacity and then statistical quality, not UI score quantity.
+- Next Action: deploy the deferred collector and verify three distinct daily batches
+  cover all 45 active tickers without duplicate quota consumption.
 - Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
   IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
@@ -178,15 +178,17 @@ Last verified on 2026-08-11:
 - Independent reconciliation is not operational. The REST provider returned HTTP 402,
   ingestion used `yfinance_fallback`, reference source was empty, and 0 rows
   were compared.
-- Provider account metadata reports `subscriptionType=free`,
-  `dailyRateLimit=20`, and `apiRequests=20`. A complete run needs at
-  least 45 ticker calls, so the account cannot satisfy 95% universe coverage.
-- Local DATA-03B hardening adds a fail-closed account/quota probe before ticker fan-out,
-  preserves redacted primary-provider failures through fallback, and keeps the existing
-  per-ticker details, hashed snapshots, and idempotent five-session evidence ledger.
-  This hardening is included in the local branch and is not yet pushed.
-- DATA-03B validation: 37 focused tests and the full 176-test Python regression pass.
-  Secret values are absent from probe results and provider error messages.
+- Provider account metadata reported `subscriptionType=free`,
+  `dailyRateLimit=20`, and `apiRequests=20` on 2026-08-11. A same-day complete run
+  needs at least 45 ticker calls, so the account cannot satisfy 95% universe coverage.
+- Draft PR #2 contains the fail-closed account/quota foundation. The current branch now
+  adds a free-tier deferred collector: Yahoo is the daily 45-ticker source, EODHD is
+  limited to one idempotent 15-ticker historical batch per Jakarta date, and a five-call
+  reserve protects against quota variance.
+- Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
+  Even a passing deferred audit remains research-only and cannot satisfy the same-day
+  production reconciliation or final-execution gate.
+- Deferred validation: 42 focused tests and the full 181-test Python regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
 - `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
@@ -458,10 +460,9 @@ Portfolio quality:
    still require a complete production health check.
 6. Universe history has only two official periods, insufficient for long historical
    survivorship-bias-safe claims.
-7. Independent price reconciliation is unavailable even though `EODHD_API_TOKEN`
-   is configured. EODHD returned HTTP 402 because the free 20-call daily entitlement
-   cannot cover the 45-ticker universe; no qualifying production session exists, and
-   yfinance fallback cannot reconcile against itself.
+7. Same-day independent price reconciliation is unavailable. Free EODHD capacity cannot
+   cover all 45 tickers; the deferred 15-ticker/day collector can create delayed
+   research evidence only and no qualifying production session exists.
 8. No licensed retained 5-minute/pre-open IEP/IEV/order-event feed or compatible
    historical backfill is configured; the pre-open module therefore remains disabled.
 9. No qualified pre-open artifact, timestamp-safe sentiment dataset, or real auction
@@ -597,33 +598,30 @@ and engineering quality without assuming guaranteed returns.
 
 ## Next Action
 
-`DATA-03B Production independent EOD reconciliation activation` is the single next action.
+`DATA-03C Free-tier deferred EOD evidence rollout` is the single next action.
 
-Secret activation and one production run are complete. The remaining step begins with
-a user-controlled provider entitlement decision; measured qualifying evidence is still
-zero sessions.
+The collector is implemented on the PR branch. Production must prove quota-safe rotation
+and delayed audit behavior before this interim path is considered operational.
 
 Acceptance criteria:
 
-1. The user activates an EOD provider plan or approved independent source that covers
-   the actual scheduled workload: at least 45 symbol calls per complete run and enough
-   capacity for retries/scheduled runs without reducing universe coverage.
-2. `check-eod-reconciliation-readiness` and
-   `check-eod-provider-account` both pass before ticker fan-out.
-3. Daily Pipeline records `primary_source=rest`,
-   `reference_source=yfinance_reconciliation`, at least 95% coverage, and
-   preserved provider snapshots. HTTP 402 or fallback remains blocking evidence.
-4. Record at least five consecutive completed market sessions with mismatch ratio at
-   most 5% and no unresolved active anomaly.
-5. Investigate every mismatch rather than suppressing it.
-6. After the evidence window passes, set `reconciliation_required=true` and
-   prove unavailable/failed reconciliation blocks production while execution remains
-   disabled.
-7. Update this PRD with measured evidence and one successor action; do not promote
-   Model V2 or enable broker execution as part of this task.
+1. Daily ingestion obtains all 45 active tickers from `yfinance_primary`; it never attempts
+   a full-universe EODHD fan-out while deferred mode is enabled.
+2. Once per Jakarta date, account preflight permits at most 15 EODHD ticker requests plus
+   a five-call reserve. Scheduled retries perform zero additional ticker/account requests.
+3. Three successful distinct-date batches cover all 45 tickers and persist canonical,
+   deduplicated reference rows with state and SHA-256 cache evidence.
+4. At least five historical sessions reach 95% ticker coverage, mismatch ratio at most
+   5%, and no active unresolved anomaly; every mismatch is investigated.
+5. Reports expose source, batch, cache coverage, lag, mismatch, and
+   `final_execution_eligible=false`. Deferred pass never sets
+   `reconciliation_required=true` or promotes Model V2.
+6. Same-day independent reconciliation remains the later DATA-03B requirement before
+   final decision/execution; paid capacity or an approved licensed CSV/provider is still needed.
+7. Update this PRD with measured production evidence and exactly one successor action.
 
-Likely files: provider account/secret configuration, `config/settings.json`,
-reconciliation reports, nearest price-quality/integration tests, and this PRD.
+Likely files: deferred reconciliation reports/cache/state, Daily Pipeline output,
+nearest data-quality tests, and this PRD.
 
 ## 11. Portfolio Release Checklist
 
@@ -690,6 +688,10 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-12: approved an interim free-tier deferred reconciliation track. Yahoo remains
+  the complete daily source; EODHD rotates 15 historical tickers once per Jakarta date,
+  with idempotent retries, retained cache, and explicit delayed/research-only status.
+  It cannot satisfy same-day final-decision or execution gates.
 - 2026-08-11: activated the approved GitHub EOD token secret and verified successful
   production run 31491250242/commit `b2996b8`. Fresh data exported, but EODHD
   returned HTTP 402 because its free 20-call quota cannot cover 45 tickers; yfinance

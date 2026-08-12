@@ -277,9 +277,11 @@ def test_provider_account_probe_blocks_free_quota_without_leaking_token():
 
     assert result["ready"] is False
     assert result["universe_tickers"] == 45
-    assert result["required_calls"] == 45
+    assert result["planned_tickers"] == 15
+    assert result["quota_scope"] == "deferred_batch"
+    assert result["required_calls"] == 20
     assert result["remaining_calls"] == 0
-    assert "provider_daily_limit_below_universe_requirement" in result["reason_codes"]
+    assert "provider_daily_limit_below_universe_requirement" not in result["reason_codes"]
     assert "provider_remaining_quota_insufficient" in result["reason_codes"]
     assert token not in json.dumps(result)
 
@@ -300,8 +302,29 @@ def test_provider_account_probe_accepts_sufficient_quota():
     )
 
     assert result["ready"] is True
-    assert result["required_calls"] == 45
+    assert result["required_calls"] == 20
     assert result["remaining_calls"] == 99_900
+
+
+def test_provider_account_probe_accepts_fresh_free_daily_batch():
+    settings = load_settings("config/settings.json")
+
+    result = probe_eod_provider_account(
+        settings,
+        environ={"EODHD_API_TOKEN": "test-token"},
+        fetcher=lambda _url, _timeout: {
+            "subscriptionType": "free",
+            "apiRequests": 0,
+            "apiRequestsDate": "2026-08-12",
+            "dailyRateLimit": 20,
+            "extraLimit": 0,
+        },
+    )
+
+    assert result["ready"] is True
+    assert result["planned_tickers"] == 15
+    assert result["reserve_calls"] == 5
+    assert result["required_calls"] == 20
 
 
 def test_provider_account_probe_does_not_call_http_when_token_is_missing():

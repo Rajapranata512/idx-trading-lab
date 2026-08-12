@@ -146,7 +146,10 @@ These rules cannot be weakened to improve presentation or signal count:
 - EOD reconciliation evidence is idempotent by market date; do not enable required
   enforcement until five consecutive real IDX sessions qualify.
 - Secret presence is not provider readiness. Before EOD ticker fan-out, the account
-  entitlement and remaining quota must cover the complete active universe.
+  entitlement and remaining quota must cover the planned request batch.
+- Free-tier deferred reconciliation may rotate a bounded ticker batch and accumulate
+  historical evidence, but it is never same-day evidence or final-execution eligibility.
+  Same-day production reconciliation still requires at least 95% active-universe coverage.
 - Pre-open features use only licensed snapshots at or before the fixed cutoff; IEP
   opening direction and post-open follow-through are separate labels.
 - Order-book withdrawal proxies are not called cancellations without event-level proof.
@@ -214,7 +217,7 @@ node --test tests_js/preopen_watchdog.test.js tests_js/preopen_watchdog_handler.
 EOD reconciliation:
 
 ```powershell
-python -B -m pytest -p no:cacheprovider tests/test_eod_reconciliation_evidence.py tests/test_price_quality.py tests/test_rest_provider.py tests/test_ingest_validation.py tests/test_stage123_configuration.py tests/test_roadmap_ops.py
+python -B -m pytest -p no:cacheprovider tests/test_deferred_eod_reconciliation.py tests/test_eod_reconciliation_evidence.py tests/test_price_quality.py tests/test_rest_provider.py tests/test_ingest_validation.py tests/test_stage123_configuration.py tests/test_roadmap_ops.py
 ```
 Pre-open auction:
 

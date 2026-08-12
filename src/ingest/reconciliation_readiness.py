@@ -46,6 +46,7 @@ def probe_eod_provider_account(
     settings: Settings,
     environ: Mapping[str, str] | None = None,
     fetcher: AccountFetcher | None = None,
+    required_ticker_calls_override: int | None = None,
 ) -> dict[str, object]:
     """Check provider quota without returning account identity or credential values."""
     quality = settings.data.price_quality
@@ -78,15 +79,30 @@ def probe_eod_provider_account(
         }
 
     ticker_count = _universe_ticker_count(settings.data.universe_csv_path)
+    deferred = quality.deferred_eod_reconciliation
+    if required_ticker_calls_override is not None:
+        planned_tickers = max(0, int(required_ticker_calls_override))
+        quota_scope = "explicit_batch"
+    elif bool(deferred.enabled):
+        planned_tickers = min(
+            ticker_count,
+            max(1, int(deferred.batch_size)),
+        )
+        quota_scope = "deferred_batch"
+    else:
+        planned_tickers = ticker_count
+        quota_scope = "full_universe"
     cost_per_ticker = max(1, int(quality.provider_account_call_cost_per_ticker))
     reserve = max(0, int(quality.provider_account_minimum_reserve_calls))
-    required_calls = ticker_count * cost_per_ticker + reserve
+    required_calls = planned_tickers * cost_per_ticker + reserve
     if ticker_count <= 0:
         return {
             "status": "blocked",
             "ready": False,
             "reason_codes": ["provider_account_universe_unavailable"],
             "required_calls": required_calls,
+            "planned_tickers": planned_tickers,
+            "quota_scope": quota_scope,
             "message": "Provider account probe could not determine the active universe",
         }
 
@@ -143,13 +159,15 @@ def probe_eod_provider_account(
         "extra_calls": extra_calls,
         "remaining_calls": remaining_calls,
         "universe_tickers": ticker_count,
+        "planned_tickers": planned_tickers,
+        "quota_scope": quota_scope,
         "call_cost_per_ticker": cost_per_ticker,
         "reserve_calls": reserve,
         "required_calls": required_calls,
         "message": (
-            "Provider account quota is sufficient for one EOD run"
+            "Provider account quota is sufficient for the planned EOD request batch"
             if ready
-            else "Provider account quota is insufficient for the configured EOD universe"
+            else "Provider account quota is insufficient for the planned EOD request batch"
         ),
     }
 
@@ -203,11 +221,27 @@ def assess_eod_reconciliation_readiness(
             and int(quality.provider_account_call_cost_per_ticker) >= 1
         )
     )
+    deferred = quality.deferred_eod_reconciliation
+    deferred_configured = bool(
+        not deferred.enabled
+        or (
+            deferred.use_yfinance_as_daily_primary
+            and 0 < int(deferred.batch_size) <= _universe_ticker_count(
+                settings.data.universe_csv_path
+            )
+            and int(deferred.lookback_calendar_days) >= 7
+            and str(deferred.cache_path).strip()
+            and str(deferred.state_path).strip()
+            and str(deferred.report_path).strip()
+            and str(deferred.details_path).strip()
+        )
+    )
 
     checks = {
         "provider_is_rest": str(provider.kind).strip().lower() == "rest",
         "provider_environment_ready": bool(env_status["ok"]),
         "provider_account_probe_configured": account_probe_configured,
+        "deferred_reconciliation_configured": deferred_configured,
         "reconciliation_enabled": bool(quality.reconciliation_enabled),
         "independent_reference_configured": independent_reference_ok,
         "evidence_collection_enabled": bool(quality.reconciliation_evidence_enabled),

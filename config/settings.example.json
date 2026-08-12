@@ -121,7 +121,18 @@
       "provider_account_status_url": "https://eodhd.com/api/user",
       "provider_account_token_env": "EODHD_API_TOKEN",
       "provider_account_call_cost_per_ticker": 1,
-      "provider_account_minimum_reserve_calls": 0
+      "provider_account_minimum_reserve_calls": 5,
+      "deferred_eod_reconciliation": {
+        "enabled": true,
+        "use_yfinance_as_daily_primary": true,
+        "batch_size": 15,
+        "lookback_calendar_days": 45,
+        "cache_retention_calendar_days": 180,
+        "cache_path": "data/raw/deferred_eodhd_reference.csv",
+        "state_path": "reports/deferred_eod_reconciliation_state.json",
+        "report_path": "reports/deferred_eod_reconciliation.json",
+        "details_path": "reports/deferred_eod_reconciliation_details.csv"
+      }
     }
   },
   "pipeline": {

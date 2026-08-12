@@ -399,6 +399,24 @@ def _reconcile_price_frames_with_details(
     )
 
 
+def reconcile_price_frames_with_details(
+    primary: pd.DataFrame,
+    reference: pd.DataFrame,
+    lookback_sessions: int,
+    max_close_diff_pct: float,
+    max_mismatch_ratio: float,
+    min_coverage_ratio: float = 0.95,
+) -> tuple[dict[str, Any], pd.DataFrame]:
+    return _reconcile_price_frames_with_details(
+        primary=primary,
+        reference=reference,
+        lookback_sessions=lookback_sessions,
+        max_close_diff_pct=max_close_diff_pct,
+        max_mismatch_ratio=max_mismatch_ratio,
+        min_coverage_ratio=min_coverage_ratio,
+    )
+
+
 def reconcile_price_frames(
     primary: pd.DataFrame,
     reference: pd.DataFrame,

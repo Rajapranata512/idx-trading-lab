@@ -2,74 +2,91 @@
 
 ## Purpose
 
-DATA-03B verifies canonical IDX closes against an independent provider before model,
-dashboard, or notification artifacts are treated as production quality. This runbook
-does not authorize model promotion or broker execution.
+DATA-03 verifies canonical IDX closes against an independent source before data is
+eligible for final-decision or execution gates. This runbook defines two distinct modes:
 
-## Source Contract
+- same-day production reconciliation, which can qualify production evidence;
+- free-tier deferred reconciliation, which is delayed research evidence only.
 
-- Primary: configured REST provider, currently EODHD, reported as `rest`.
-- Reference: yfinance used only as `yfinance_reconciliation` while primary is REST.
-- A yfinance primary fallback cannot reconcile against yfinance and remains unavailable.
-- The API token exists only in `EODHD_API_TOKEN`; never put its value in config,
-  source, command arguments, reports, screenshots, or logs.
-- Secret presence alone is not readiness. Provider entitlement, daily limit, and
-  remaining quota must cover the complete active universe before ticker requests begin.
+Neither mode authorizes Model V2 promotion or broker execution by itself.
 
-## Preflight
+## Source Contracts
 
-After loading the token from an approved local or CI secret store, run:
+### Same-Day Production
+
+- Primary: configured paid/licensed REST provider, reported as `rest`.
+- Reference: yfinance, reported as `yfinance_reconciliation`.
+- At least 95% of the active 45-ticker universe must reconcile for the session.
+- Five consecutive completed IDX sessions must pass before required enforcement.
+- This remains unavailable while EODHD free capacity is limited to 20 calls/day.
+
+### Free-Tier Deferred
+
+- Daily primary: Yahoo for all 45 active tickers, reported as `yfinance_primary`.
+- Delayed reference: EODHD free-tier historical batches, reported as
+  `eodhd_deferred`.
+- One Jakarta calendar date may collect at most 15 tickers; five calls remain reserved.
+- Each request retrieves a bounded historical window, so three distinct daily batches
+  can create complete historical session coverage for all 45 tickers.
+- Retries on the same Jakarta date perform zero provider-account and ticker requests.
+- A deferred pass is always `same_day_reconciliation=false` and
+  `final_execution_eligible=false`.
+
+The API token exists only in `EODHD_API_TOKEN`. Never store or print the value
+in config, source, reports, screenshots, command arguments, or logs.
+
+## Commands
+
+Validate configuration without network access:
 
 ```powershell
 python -m src.cli check-eod-reconciliation-readiness
+```
+
+Check whether the current account can cover today's planned batch:
+
+```powershell
 python -m src.cli check-eod-provider-account
 ```
 
-The first command validates configuration without network access. The second contacts
-the provider account endpoint and exits non-zero when the token is missing, the payload
-is invalid, the daily entitlement is below one complete universe, or remaining quota is
-insufficient. Output includes only account class and quota counters, never account
-identity or credential values.
+Collect one idempotent free-tier batch and refresh delayed audit evidence:
 
-For GitHub Actions, set `EODHD_API_TOKEN` through the repository secret UI or
-an approved interactive secret command. Do not pass the value on the command line.
-Creating or changing a secret and dispatching a workflow are external actions requiring
-explicit user approval.
+```powershell
+python -m src.cli collect-deferred-eod-reconciliation
+```
 
-## Verified Production Incident: 2026-08-11
+The collector exits normally when evidence is still collecting or quota is unavailable;
+its structured `status` and `account.reason_codes` carry the truth.
+The production workflow preserves those artifacts for inspection.
 
-- GitHub secret `EODHD_API_TOKEN` was present and Daily Pipeline run
-  `31491250242` completed successfully.
-- The run exported fresh market data through 2026-08-11 in commit `b2996b8`.
-- The primary REST request returned HTTP 402 and ingestion used
-  `yfinance_fallback`, so independent reconciliation remained unavailable.
-- Provider account metadata reported `subscriptionType=free`,
-  `dailyRateLimit=20`, and `apiRequests=20`.
-- The active universe contains 45 tickers and requires at least 45 symbol calls for one
-  complete run. The free account therefore cannot satisfy the source contract.
+## Deferred Artifacts
 
-Do not treat this as a token-format bug, hide the 402, or lower reconciliation coverage.
-A user must activate provider capacity sufficient for the actual scheduled workload or
-approve a genuinely independent alternative source. Purchasing or changing a provider
-plan is never automatic.
+- `data/raw/deferred_eodhd_reference.csv`: canonical deduplicated EODHD cache;
+- `reports/deferred_eod_reconciliation_state.json`: batch rotation and
+  same-day idempotency state;
+- `reports/deferred_eod_reconciliation.json`: quota, coverage, lag, source,
+  mismatch, and eligibility status;
+- `reports/deferred_eod_reconciliation_details.csv`: ticker/session comparison.
 
-## Evidence Produced
+The report includes a SHA-256 digest of the cache. Cache retention is bounded by
+configuration and raw rows are never rewritten to match Yahoo.
 
-Each completed reconciliation writes:
+## Deferred Qualification
 
-- `reports/price_reconciliation.json`: summary and qualification status;
-- `reports/price_reconciliation_details.csv`: expected, matched, and mismatched rows;
-- `data/raw/price_reconciliation/<market-date>/`: provider snapshots, comparison,
-  and SHA-256 evidence;
-- `reports/price_reconciliation_evidence.json`: idempotent per-market-date ledger.
+Deferred research evidence passes only when:
 
-Retries replace the same market-date ledger entry instead of inflating session count.
-The ledger uses `web/idx_market_calendar.json`; missing or expired calendar evidence
-blocks qualification.
+1. all selected provider rows validate as canonical OHLCV;
+2. at least five historical sessions have at least 95% active-universe coverage;
+3. close differences above 1% affect at most 5% of compared rows;
+4. cache and detail evidence persist;
+5. the report remains marked delayed and ineligible for final execution.
 
-## Qualification Gate
+A pass helps detect data errors and supports research dataset quality. It does not count
+toward the five consecutive same-day production sessions.
 
-A session qualifies only when all are true:
+## Same-Day Qualification
+
+A production session qualifies only when:
 
 1. `primary_source=rest`;
 2. `reference_source=yfinance_reconciliation`;
@@ -77,35 +94,32 @@ A session qualifies only when all are true:
 4. coverage is at least 95%;
 5. mismatch ratio is at most 5%;
 6. no active unresolved price anomaly exists;
-7. the date is a valid IDX session in the configured calendar.
+7. the date is a valid IDX session in the verified calendar.
 
-Five consecutive expected IDX sessions must qualify. A missing session, failed session,
-provider substitution, calendar problem, low coverage, mismatch, or unresolved anomaly
-resets the consecutive window.
-
-## Enforcement Sequence
-
-1. Keep `reconciliation_required=false` while collecting the first five real sessions.
-2. Investigate every mismatch and preserve provider evidence; never suppress a row to
-   make the gate pass.
-3. After the ledger reports `qualified=true`, change
-   `reconciliation_required=true` in a reviewed commit.
-4. Prove unavailable and failed reconciliation both block `run-daily`.
-5. Keep `EXECUTION_DISABLED`; DATA-03B does not promote Model V2 or enable orders.
+Only this track may eventually support `reconciliation_required=true`, after
+five consecutive real sessions and a reviewed change.
 
 ## Failure Triage
 
-- `provider_environment_ready=false`: configure the named GitHub secret.
-- `provider_daily_limit_below_universe_requirement`: entitlement cannot cover one
-  complete universe; activate sufficient capacity or an approved independent source.
-- `provider_remaining_quota_insufficient`: wait for quota reset or reduce duplicate
-  scheduled work without reducing universe coverage.
-- HTTP 401: verify credential validity and secret mapping without printing the value.
-- HTTP 402: verify plan entitlement/quota; do not misreport this as a missing token.
-- `unexpected_primary_source`: REST failed and fallback became primary; inspect the
-  preserved provider failure before using the fallback artifact.
-- `unexpected_reference_source`: independent reference is missing or misconfigured.
-- `coverage_below_threshold`: inspect missing ticker/date rows in the details CSV.
-- `mismatch_above_threshold`: compare provider snapshots and corporate-action evidence.
-- `market_calendar_unavailable`: repair or update the verified IDX calendar.
-- `active_unresolved_price_anomaly`: resolve or quarantine using traceable evidence.
+- `provider_account_token_missing`: configure the named secret without printing it.
+- `provider_daily_limit_below_universe_requirement`: the plan cannot cover the
+  planned request scope.
+- `provider_remaining_quota_insufficient`: do not fetch; wait for the next reset.
+- HTTP 401: verify credential validity and secret mapping.
+- HTTP 402: verify entitlement; do not misreport it as a missing token.
+- HTTP 429: stop the batch and preserve partial state; do not retry repeatedly.
+- `collecting`: fewer than 45 cached tickers or fewer than five complete sessions.
+- `failed`: inspect detail rows and corporate-action evidence; never suppress mismatch.
+- Same-day warning `price_reconciliation_unavailable` is expected in deferred mode
+  and must remain visible.
+
+## Upgrade Path
+
+When a user activates sufficient same-day licensed capacity:
+
+1. disable `deferred_eod_reconciliation.use_yfinance_as_daily_primary`;
+2. confirm full-universe provider quota;
+3. restore REST primary plus independent Yahoo reference;
+4. collect five consecutive same-day sessions;
+5. enable required enforcement only in a reviewed commit;
+6. keep `EXECUTION_DISABLED` until all model, risk, broker, and canary gates pass.

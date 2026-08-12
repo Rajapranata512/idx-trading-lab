@@ -28,6 +28,11 @@ def test_production_settings_enable_stage123_fail_closed_gates():
         == "https://eodhd.com/api/user"
     )
     assert settings.data.price_quality.provider_account_token_env == "EODHD_API_TOKEN"
+    deferred = settings.data.price_quality.deferred_eod_reconciliation
+    assert deferred.enabled is True
+    assert deferred.use_yfinance_as_daily_primary is True
+    assert deferred.batch_size == 15
+    assert settings.data.price_quality.provider_account_minimum_reserve_calls == 5
     assert settings.preopen_auction.enabled is False
     assert settings.preopen_auction.shadow_only is True
     assert settings.preopen_auction.data_license_confirmed is False
@@ -39,9 +44,10 @@ def test_production_settings_enable_stage123_fail_closed_gates():
 def test_daily_workflow_preflights_eod_reconciliation_secret():
     workflow = Path(".github/workflows/daily-run.yml").read_text(encoding="utf-8")
 
-    assert "Verify EOD reconciliation readiness" in workflow
+    assert "Verify EOD reconciliation configuration" in workflow
     assert "python -m src.cli check-eod-reconciliation-readiness" in workflow
-    assert "python -m src.cli check-eod-provider-account" in workflow
+    assert "python -m src.cli check-eod-provider-account" not in workflow
+    assert "python -m src.cli collect-deferred-eod-reconciliation" in workflow
     assert "EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}" in workflow
 
 def test_preopen_workflow_has_retry_guard_and_failure_alert():

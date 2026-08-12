@@ -51,12 +51,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Verify EOD reconciliation readiness
+    - name: Verify EOD reconciliation configuration
       env:
         EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}
       run: |
         python -m src.cli check-eod-reconciliation-readiness
-        python -m src.cli check-eod-provider-account
 
     - name: Run Daily Pipeline
       env:
@@ -67,6 +66,12 @@ jobs:
         # Ingestion, Feature Computation, Scoring, and Report Generation
         python -m src.cli run-daily
 
+    - name: Collect Free-Tier Deferred EOD Reconciliation
+      env:
+        EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}
+      run: |
+        # At most one 15-ticker historical batch per Jakarta calendar day.
+        python -m src.cli collect-deferred-eod-reconciliation
 
     - name: Export Static UI Data
       env:
