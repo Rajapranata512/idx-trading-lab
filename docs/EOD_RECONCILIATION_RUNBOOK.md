@@ -59,6 +59,18 @@ The collector exits normally when evidence is still collecting or quota is unava
 its structured `status` and `account.reason_codes` carry the truth.
 The production workflow preserves those artifacts for inspection.
 
+After a successful batch, same-Jakarta-date retries are idempotent:
+
+- the collector does not call the account endpoint or any ticker endpoint;
+- the retry is appended to `state.runs` with `idempotent_skip=true`;
+- the last successful report is not overwritten by an empty retry payload;
+- `last_successful_batch` retains the latest successful batch summary.
+
+When a cycle reaches 45/45, the successful report records the completed cycle before
+state advances: `cycle=1`, `completed_current_cycle=45`, `cycle_completed=true`, and
+`next_cycle=2`. A retry cannot erase that completion evidence. These audit semantics
+are report/state schema version 2.
+
 EODHD resets daily limits at midnight GMT/UTC, but its User API keeps reporting the
 previous active day's `apiRequests` until the first data request after reset. Preflight
 therefore applies these rules:
