@@ -65,6 +65,25 @@ def test_daily_workflow_never_publishes_stale_generated_artifacts():
     assert "git push --force" not in workflow
 
 
+def test_github_workflows_use_node24_action_generations():
+    workflows = {
+        path.name: path.read_text(encoding="utf-8")
+        for path in Path(".github/workflows").glob("*.yml")
+    }
+
+    assert workflows
+    for workflow in workflows.values():
+        assert "actions/checkout@v4" not in workflow
+        assert "actions/setup-python@v5" not in workflow
+        assert "actions/cache@v4" not in workflow
+
+    assert "actions/checkout@v6" in workflows["daily-run.yml"]
+    assert "actions/setup-python@v6" in workflows["daily-run.yml"]
+    assert "actions/cache@v5" in workflows["daily-run.yml"]
+    assert "actions/checkout@v6" in workflows["model-v2-shadow-preopen.yml"]
+    assert "actions/setup-python@v6" in workflows["model-v2-shadow-preopen.yml"]
+
+
 def test_preopen_workflow_has_retry_guard_and_failure_alert():
     workflow = Path(".github/workflows/model-v2-shadow-preopen.yml").read_text(
         encoding="utf-8"

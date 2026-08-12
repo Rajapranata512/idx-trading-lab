@@ -213,7 +213,9 @@ Last verified on 2026-08-12:
   production reconciliation or final-execution gate.
 - The Operations dashboard consumes the deferred report directly and exposes ticker/date
   progress, audit readiness, last-check time, and fail-closed final eligibility.
-- Deferred quota/state validation: 21 focused tests and the full 188-test Python
+- Production workflows use the Node.js 24 generations of GitHub checkout, Python setup,
+  and cache actions; a repository-wide contract prevents Node.js 20 action regressions.
+- Deferred quota/state validation: 21 focused tests and the full 189-test Python
   regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
@@ -719,6 +721,10 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-12: upgraded both GitHub-hosted production workflows to Node.js 24 action
+  generations after production exposed Node.js 20 deprecation warnings. The Python 3.11,
+  cache-key, permissions, scheduling, idempotency, and stale-publication contracts remain
+  unchanged, and a repository-wide test blocks version regression.
 - 2026-08-12: connected schema-v2 deferred rollout evidence to the Operations dashboard.
   Coverage, distinct collection dates, audit readiness, and final eligibility are now
   visible; absent or incomplete evidence remains waiting/blocked and cannot imply approval.
