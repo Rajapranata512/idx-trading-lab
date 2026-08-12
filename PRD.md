@@ -196,10 +196,13 @@ Last verified on 2026-08-12:
 - Cycle-report hardening preserves successful run history, prevents empty retries from
   replacing the latest success report, and records 45/45 completion before advancing
   state to the next cycle.
+- Schema v2 migration reconstructs only provable legacy progress: the current 15/45
+  completed ticker set is retained, while an unavailable historical success list remains
+  empty and is explicitly marked `reconstructed_from_state=true`.
 - Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
   Even a passing deferred audit remains research-only and cannot satisfy the same-day
   production reconciliation or final-execution gate.
-- Reset-aware quota validation: 20 focused tests and the full 185-test Python
+- Deferred quota/state validation: 21 focused tests and the full 186-test Python
   regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
@@ -706,6 +709,7 @@ This PRD stays compact enough for reset recovery.
 - 2026-08-12: production retries proved zero-call idempotency. Hardened audit state so
   retries append rather than replace successful history, successful reports remain
   persisted, and a 45/45 batch reports completion before state advances to cycle 2.
+  Schema v2 migrates legacy progress without fabricating lost success details.
 - 2026-08-12: merged and deployed free-tier deferred reconciliation. Production run
   `31574193633` passed and published commit `ebe3813` after PR #4 corrected EODHD's
   stale previous-day counter behavior. Batch 1/3 succeeded for 15/45 tickers with no

@@ -298,6 +298,28 @@ def collect_deferred_eod_reconciliation(
         for value in state.get("completed_cycle_tickers", [])
         if str(value).strip().upper() in set(universe)
     }
+    last_successful_batch = state.get("last_successful_batch")
+    last_success_date = str(state.get("last_success_date", "")).strip()
+    if not isinstance(last_successful_batch, dict) or not last_successful_batch:
+        if last_success_date:
+            last_completed_cycle = int(state.get("last_completed_cycle", 0) or 0)
+            recovered_completed = set(completed)
+            recovered_cycle = collection_cycle
+            recovered_cycle_completed = False
+            if last_completed_cycle > 0 and not recovered_completed:
+                recovered_cycle = last_completed_cycle
+                recovered_completed = set(universe)
+                recovered_cycle_completed = True
+            state["last_successful_batch"] = {
+                "run_date": last_success_date,
+                "generated_at": "",
+                "cycle": recovered_cycle,
+                "success_tickers": [],
+                "completed_cycle_tickers": sorted(recovered_completed),
+                "completed_current_cycle": len(recovered_completed),
+                "cycle_completed": recovered_cycle_completed,
+                "reconstructed_from_state": True,
+            }
     batch_size = max(1, min(int(deferred.batch_size), len(universe) or 1))
     pending = [ticker for ticker in universe if ticker not in completed]
     if not pending and universe:
@@ -404,8 +426,10 @@ def collect_deferred_eod_reconciliation(
             "generated_at": generated_at,
             "cycle": collection_cycle,
             "success_tickers": success_tickers,
+            "completed_cycle_tickers": sorted(completed_for_report),
             "completed_current_cycle": len(completed_for_report),
             "cycle_completed": cycle_completed,
+            "reconstructed_from_state": False,
         }
     else:
         state["completed_cycle_tickers"] = sorted(completed)
