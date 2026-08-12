@@ -1,19 +1,67 @@
 {
   "schema_version": 1,
   "cycle": 1,
-  "completed_cycle_tickers": [],
-  "last_success_date": "",
+  "completed_cycle_tickers": [
+    "AADI",
+    "ADMR",
+    "ADRO",
+    "AKRA",
+    "AMMN",
+    "AMRT",
+    "ANTM",
+    "ASII",
+    "BBCA",
+    "BBNI",
+    "BBRI",
+    "BBTN",
+    "BMRI",
+    "BRPT",
+    "BUMI"
+  ],
+  "last_success_date": "2026-08-12",
   "last_cycle_completed_at": "",
   "runs": [
     {
       "run_date": "2026-08-12",
-      "generated_at": "2026-08-12T07:07:45.194775+00:00",
+      "generated_at": "2026-08-12T07:31:50.054143+00:00",
       "cycle": 1,
-      "selected_tickers": [],
-      "success_tickers": [],
+      "selected_tickers": [
+        "AADI",
+        "ADMR",
+        "ADRO",
+        "AKRA",
+        "AMMN",
+        "AMRT",
+        "ANTM",
+        "ASII",
+        "BBCA",
+        "BBNI",
+        "BBRI",
+        "BBTN",
+        "BMRI",
+        "BRPT",
+        "BUMI"
+      ],
+      "success_tickers": [
+        "AADI",
+        "ADMR",
+        "ADRO",
+        "AKRA",
+        "AMMN",
+        "AMRT",
+        "ANTM",
+        "ASII",
+        "BBCA",
+        "BBNI",
+        "BBRI",
+        "BBTN",
+        "BMRI",
+        "BRPT",
+        "BUMI"
+      ],
       "failures": [],
       "idempotent_skip": false
     }
   ],
-  "updated_at": "2026-08-12T07:07:45.194775+00:00"
+  "updated_at": "2026-08-12T07:31:50.054143+00:00"
 }

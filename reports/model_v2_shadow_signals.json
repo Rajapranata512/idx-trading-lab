@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-12T07:06:55.301373",
-  "run_id": "20260812_070551",
+  "generated_at": "2026-08-12T07:30:45.088251",
+  "run_id": "20260812_073028",
   "data_date": "2026-08-12",
   "signals": [
     {
@@ -592,11 +592,10 @@
     "blocked_modes": []
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1, swing",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -1080,11 +1079,10 @@
         "metadata_path": "models/model_v2/swing.meta.json"
       }
     },
-    "errors": [],
     "artifact_check": {
       "ready": true,
       "missing_modes": [],
-      "forced_retrain": true
+      "forced_retrain": false
     }
   }
 }
