@@ -20,9 +20,9 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   every model, regime, risk, execution, security, and reconciliation gate passes.
 - Current state: `EXECUTION_DISABLED`; Model V2 is `SHADOW/BLOCKED`,
   rollout 0%, and no broker order is authorized.
-- Evidence: run `31574193633` completed deferred batch 1/3; run `31603631298`
-  migrated its audit state to schema v2 and published artifact commit `b4fcc87` to
-  `origin/main` and Vercel without another provider call.
+- Evidence: production run `31605104835` verified schema-v2 rollout at 1/3 dates and
+  15/45 tickers, used zero provider calls on retry, and published artifact commit
+  `b7bae5d` to `origin/main` for Vercel deployment.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
   interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
   batch once per Jakarta date until delayed research coverage is complete.
@@ -168,9 +168,8 @@ Authoritative paths:
 
 Last verified on 2026-08-12:
 
-- PR #7 was merged as `f537330`. Successful production Daily Pipeline run
-  `31603631298` then published schema-v2 state artifact `b4fcc87`; Vercel reported
-  that deployment complete.
+- PR #9 was merged as `5d05ff9`. Successful production Daily Pipeline run
+  `31605104835` then published rollout-aware artifact `b7bae5d` for Vercel deployment.
 - Production market data is current through 2026-08-12 with 0 stale sessions,
   52,931 rows, 56 represented tickers, no missing critical rows, and no duplicate rows.
   Daily primary source is explicitly `yfinance_primary`.
@@ -186,8 +185,8 @@ Last verified on 2026-08-12:
   limited to one idempotent 15-ticker historical batch per Jakarta date, and a five-call
   reserve protects against quota variance.
 - The reset-aware collector completed AADI through BUMI: 15/15 requests succeeded,
-  no ticker failed, cache coverage is 15/45 (33.3333%), and SHA-256 evidence is
-  `02e280d980a78341f4256fa66b76c1195c67d9db0f0260668bcd34d6436621b2`.
+  no ticker failed, and cache coverage is 15/45 (33.3333%). The deployed rollout block
+  reports one successful date and two remaining dates.
 - Post-batch account metadata reports 15 calls used and five remaining on 2026-08-12.
   Generic preflight for another 15-ticker batch is quota-blocked, while collector state
   prevents the duplicate attempt before any account or ticker request.
@@ -205,10 +204,14 @@ Last verified on 2026-08-12:
 - Schema-v2 rollout progress is derived from unique successful dates per cycle. It
   reports required/remaining dates, completed/remaining tickers, progress ratio, and
   deferred-audit readiness; same-day retries cannot advance these values.
+- Queued run `31603799469` passed its pipeline and collector but its artifact push was
+  rejected after `main` advanced. Daily publication now skips only a proven stale-base
+  or concurrent-main result, never rebases or force-pushes stale output, and preserves
+  hard failures for unrelated push faults.
 - Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
   Even a passing deferred audit remains research-only and cannot satisfy the same-day
   production reconciliation or final-execution gate.
-- Deferred quota/state validation: 21 focused tests and the full 186-test Python
+- Deferred quota/state validation: 21 focused tests and the full 187-test Python
   regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
@@ -714,6 +717,11 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-12: production run `31605104835` verified rollout progress at one of three
+  distinct dates, 15/45 tickers, and zero retry calls, then published `b7bae5d`.
+  A separate stale-base publication guard was added after run `31603799469` exposed a
+  non-fast-forward race; stale generated output is skipped with explicit evidence and
+  genuine push failures remain blocking.
 - 2026-08-12: production retries proved zero-call idempotency. Hardened audit state so
   retries append rather than replace successful history, successful reports remain
   persisted, and a 45/45 batch reports completion before state advances to cycle 2.
