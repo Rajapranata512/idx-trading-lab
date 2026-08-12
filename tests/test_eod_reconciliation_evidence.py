@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -273,6 +274,7 @@ def test_provider_account_probe_blocks_free_quota_without_leaking_token():
             "dailyRateLimit": 20,
             "extraLimit": 0,
         },
+        now=datetime(2026, 8, 11, 12, tzinfo=timezone.utc),
     )
 
     assert result["ready"] is False
@@ -299,6 +301,7 @@ def test_provider_account_probe_accepts_sufficient_quota():
             "dailyRateLimit": 100_000,
             "extraLimit": 0,
         },
+        now=datetime(2026, 8, 11, 12, tzinfo=timezone.utc),
     )
 
     assert result["ready"] is True
@@ -319,12 +322,67 @@ def test_provider_account_probe_accepts_fresh_free_daily_batch():
             "dailyRateLimit": 20,
             "extraLimit": 0,
         },
+        now=datetime(2026, 8, 12, 12, tzinfo=timezone.utc),
     )
 
     assert result["ready"] is True
     assert result["planned_tickers"] == 15
     assert result["reserve_calls"] == 5
     assert result["required_calls"] == 20
+
+
+def test_provider_account_probe_resets_previous_utc_date_usage():
+    settings = load_settings("config/settings.json")
+
+    result = probe_eod_provider_account(
+        settings,
+        environ={"EODHD_API_TOKEN": "test-token"},
+        fetcher=lambda _url, _timeout: {
+            "subscriptionType": "free",
+            "apiRequests": 20,
+            "apiRequestsDate": "2026-08-11",
+            "dailyRateLimit": 20,
+            "extraLimit": 0,
+        },
+        now=datetime(2026, 8, 12, 0, 1, tzinfo=timezone.utc),
+    )
+
+    assert result["ready"] is True
+    assert result["quota_date_utc"] == "2026-08-12"
+    assert result["quota_reset_applied"] is True
+    assert result["reported_used_calls"] == 20
+    assert result["used_calls"] == 0
+    assert result["remaining_calls"] == 20
+
+
+@pytest.mark.parametrize(
+    ("usage_date", "reason_code"),
+    [
+        ("not-a-date", "provider_account_usage_date_invalid"),
+        ("2026-08-13", "provider_account_usage_date_in_future"),
+    ],
+)
+def test_provider_account_probe_blocks_untrusted_usage_dates(
+    usage_date: str,
+    reason_code: str,
+):
+    settings = load_settings("config/settings.json")
+
+    result = probe_eod_provider_account(
+        settings,
+        environ={"EODHD_API_TOKEN": "test-token"},
+        fetcher=lambda _url, _timeout: {
+            "subscriptionType": "free",
+            "apiRequests": 0,
+            "apiRequestsDate": usage_date,
+            "dailyRateLimit": 20,
+            "extraLimit": 0,
+        },
+        now=datetime(2026, 8, 12, 12, tzinfo=timezone.utc),
+    )
+
+    assert result["ready"] is False
+    assert reason_code in result["reason_codes"]
 
 
 def test_provider_account_probe_does_not_call_http_when_token_is_missing():

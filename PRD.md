@@ -20,8 +20,8 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   every model, regime, risk, execution, security, and reconciliation gate passes.
 - Current state: `EXECUTION_DISABLED`; Model V2 is `SHADOW/BLOCKED`,
   rollout 0%, and no broker order is authorized.
-- Evidence: Daily Pipeline run `31498121174` refreshed production market data
-  through 2026-08-11 and pushed artifact commit `9d43504` to `origin/main`.
+- Evidence: Daily Pipeline run `31572506495` refreshed production market data
+  through 2026-08-12 and pushed artifact commit `528cf9f` to `origin/main`.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
   interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
   batch once per Jakarta date until delayed research coverage is complete.
@@ -184,13 +184,17 @@ Last verified on 2026-08-12:
 - The free-tier deferred collector is deployed: Yahoo is the daily 45-ticker source, EODHD is
   limited to one idempotent 15-ticker historical batch per Jakarta date, and a five-call
   reserve protects against quota variance.
-- The first production collector invocation correctly returned `blocked` because EODHD
-  still reported usage date 2026-08-11, 20 used calls, and 0 remaining calls. It issued
-  zero ticker requests; cycle coverage therefore remains 0/45 until quota resets.
+- The first production collector invocation safely issued zero ticker requests but
+  revealed an EODHD counter edge case: the User API keeps the previous day's 20/20
+  value until the first post-reset data request. Reset-aware UTC logic now preserves
+  that reported value while calculating 0 effective used calls for a prior usage date.
+  Live preflight reports 20 remaining calls; production cycle coverage remains 0/45
+  until the corrected collector completes its first batch.
 - Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
   Even a passing deferred audit remains research-only and cannot satisfy the same-day
   production reconciliation or final-execution gate.
-- Deferred validation: 42 focused tests and the full 181-test Python regression pass.
+- Reset-aware quota validation: 20 focused tests and the full 185-test Python
+  regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
 - `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
@@ -610,9 +614,9 @@ Acceptance criteria:
 
 1. **Verified 2026-08-12:** daily ingestion uses `yfinance_primary` and does not attempt
    a full-universe EODHD fan-out while deferred mode is enabled.
-2. **Partially verified:** account preflight planned 15 EODHD ticker requests plus a
-   five-call reserve and blocked at 0 remaining calls without issuing ticker requests.
-   Same-day successful-retry idempotency remains covered by automated tests and awaits
+2. **Partially verified:** live account preflight plans 15 EODHD ticker requests plus a
+   five-call reserve and reports 20 calls remaining after the documented midnight UTC
+   reset. Same-day successful-retry idempotency is covered by automated tests and awaits
    production evidence after the first successful batch.
 3. Three successful distinct-date batches cover all 45 tickers and persist canonical,
    deduplicated reference rows with state and SHA-256 cache evidence.
@@ -695,9 +699,10 @@ This PRD stays compact enough for reset recovery.
 ## 14. Decision Log
 
 - 2026-08-12: merged and deployed free-tier deferred reconciliation. Production run
-  `31572506495` passed and published commit `528cf9f`; the first batch was safely blocked
-  at EODHD 20/20 usage with zero ticker calls. The next action remains accumulating three
-  successful distinct-date batches after provider quota reset.
+  `31572506495` passed and published commit `528cf9f`. Its zero-request blocked batch
+  exposed EODHD's documented stale previous-day counter behavior. Reset-aware UTC
+  preflight is validated against the live account and keeps invalid/future dates
+  fail-closed. The next action remains three successful distinct-date batches.
 - 2026-08-12: approved an interim free-tier deferred reconciliation track. Yahoo remains
   the complete daily source; EODHD rotates 15 historical tickers once per Jakarta date,
   with idempotent retries, retained cache, and explicit delayed/research-only status.

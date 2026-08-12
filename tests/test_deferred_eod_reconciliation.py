@@ -161,7 +161,7 @@ def test_deferred_collection_blocks_without_consuming_ticker_calls_when_quota_is
         account_fetcher=lambda _url, _timeout: {
             "subscriptionType": "free",
             "apiRequests": 20,
-            "apiRequestsDate": "2026-08-11",
+            "apiRequestsDate": "2026-08-12",
             "dailyRateLimit": 20,
             "extraLimit": 0,
         },
@@ -172,6 +172,38 @@ def test_deferred_collection_blocks_without_consuming_ticker_calls_when_quota_is
     assert result["batch"]["selected_tickers"] == []
     assert result["account"]["remaining_calls"] == 0
     assert result["final_execution_eligible"] is False
+
+
+def test_deferred_collection_accepts_previous_utc_usage_date_after_reset(
+    tmp_path: Path,
+):
+    settings, universe, prices = _settings(tmp_path)
+    calls: list[str] = []
+
+    def fetcher(ticker: str, _start: str, _end: str) -> pd.DataFrame:
+        calls.append(ticker)
+        return prices[prices["ticker"].eq(ticker)].copy()
+
+    result = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 12, 10, tzinfo=timezone.utc),
+        fetcher=fetcher,
+        account_fetcher=lambda _url, _timeout: {
+            "subscriptionType": "free",
+            "apiRequests": 20,
+            "apiRequestsDate": "2026-08-11",
+            "dailyRateLimit": 20,
+            "extraLimit": 0,
+        },
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+
+    assert result["status"] == "collecting"
+    assert result["batch"]["success_tickers"] == universe[:15]
+    assert calls == universe[:15]
+    assert result["account"]["quota_reset_applied"] is True
+    assert result["account"]["reported_used_calls"] == 20
+    assert result["account"]["used_calls"] == 0
 
 
 def test_deferred_mode_uses_yfinance_daily_without_calling_full_rest(

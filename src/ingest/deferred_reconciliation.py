@@ -337,6 +337,7 @@ def collect_deferred_eod_reconciliation(
             environ=environ,
             fetcher=account_fetcher,
             required_ticker_calls_override=len(planned_batch),
+            now=current,
         )
         if bool(account.get("ready", False)):
             selected_batch = list(planned_batch)
