@@ -59,6 +59,16 @@ The collector exits normally when evidence is still collecting or quota is unava
 its structured `status` and `account.reason_codes` carry the truth.
 The production workflow preserves those artifacts for inspection.
 
+EODHD resets daily limits at midnight GMT/UTC, but its User API keeps reporting the
+previous active day's `apiRequests` until the first data request after reset. Preflight
+therefore applies these rules:
+
+- when `apiRequestsDate` is before the current UTC date, effective used calls are zero;
+- `reported_used_calls` preserves the provider value and `quota_reset_applied=true`
+  records the adjustment;
+- a same-date counter is enforced as reported;
+- a missing, invalid, or future usage date blocks collection.
+
 ## Deferred Artifacts
 
 - `data/raw/deferred_eodhd_reference.csv`: canonical deduplicated EODHD cache;
@@ -105,6 +115,8 @@ five consecutive real sessions and a reviewed change.
 - `provider_daily_limit_below_universe_requirement`: the plan cannot cover the
   planned request scope.
 - `provider_remaining_quota_insufficient`: do not fetch; wait for the next reset.
+- `provider_account_usage_date_invalid`: do not infer a reset; inspect provider payload.
+- `provider_account_usage_date_in_future`: stop and inspect clock/provider metadata.
 - HTTP 401: verify credential validity and secret mapping.
 - HTTP 402: verify entitlement; do not misreport it as a missing token.
 - HTTP 429: stop the batch and preserve partial state; do not retry repeatedly.

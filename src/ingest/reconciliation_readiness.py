@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import os
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Callable, Mapping
 from urllib import parse, request
@@ -42,11 +43,22 @@ def _as_int(value: object, default: int = 0) -> int:
         return default
 
 
+def _parse_usage_date(value: object) -> date | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        return None
+
+
 def probe_eod_provider_account(
     settings: Settings,
     environ: Mapping[str, str] | None = None,
     fetcher: AccountFetcher | None = None,
     required_ticker_calls_override: int | None = None,
+    now: datetime | None = None,
 ) -> dict[str, object]:
     """Check provider quota without returning account identity or credential values."""
     quality = settings.data.price_quality
@@ -139,10 +151,22 @@ def probe_eod_provider_account(
         }
 
     daily_limit = max(0, _as_int(payload.get("dailyRateLimit")))
-    used_calls = max(0, _as_int(payload.get("apiRequests")))
+    reported_used_calls = max(0, _as_int(payload.get("apiRequests")))
     extra_calls = max(0, _as_int(payload.get("extraLimit")))
-    remaining_calls = max(daily_limit - used_calls, 0) + extra_calls
+    usage_date_text = str(payload.get("apiRequestsDate", "")).strip()
+    usage_date = _parse_usage_date(usage_date_text)
+    current = now or datetime.now(timezone.utc)
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=timezone.utc)
+    current_utc_date = current.astimezone(timezone.utc).date()
+    quota_reset_applied = bool(usage_date and usage_date < current_utc_date)
+    effective_used_calls = 0 if quota_reset_applied else reported_used_calls
+    remaining_calls = max(daily_limit - effective_used_calls, 0) + extra_calls
     reason_codes: list[str] = []
+    if usage_date is None:
+        reason_codes.append("provider_account_usage_date_invalid")
+    elif usage_date > current_utc_date:
+        reason_codes.append("provider_account_usage_date_in_future")
     if daily_limit < required_calls:
         reason_codes.append("provider_daily_limit_below_universe_requirement")
     if remaining_calls < required_calls:
@@ -153,9 +177,12 @@ def probe_eod_provider_account(
         "ready": ready,
         "reason_codes": reason_codes,
         "subscription_type": str(payload.get("subscriptionType", "")),
-        "usage_date": str(payload.get("apiRequestsDate", "")),
+        "usage_date": usage_date_text,
+        "quota_date_utc": current_utc_date.isoformat(),
+        "quota_reset_applied": quota_reset_applied,
         "daily_limit": daily_limit,
-        "used_calls": used_calls,
+        "reported_used_calls": reported_used_calls,
+        "used_calls": effective_used_calls,
         "extra_calls": extra_calls,
         "remaining_calls": remaining_calls,
         "universe_tickers": ticker_count,
