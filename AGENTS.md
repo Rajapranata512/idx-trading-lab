@@ -62,13 +62,17 @@ instead of printing an entire structured file.
 | Direction/status | `PRD.md` only | none unless disputed | verify cited artifact fields |
 | Daily pipeline | `docs/ai-context/03-daily-workflow-run-daily.md` | relevant `src/cli.py` function | nearest CLI/integration test |
 | Config/data | `docs/ai-context/02-repository-map-and-config.md` | `src/config.py` plus affected module | config and nearest test |
+| Intraday 5m/15m | PRD INTRA requirements | `src/intraday/` | `tests/test_intraday_pipeline.py` plus affected tests |
+| Pre-open auction | `docs/PREOPEN_AUCTION_BLUEPRINT.md` | `src/preopen/` | `tests/test_preopen_auction.py`; never send live in tests |
+| Sentiment/events | PRD SENT requirements | timestamped licensed source adapter when introduced | no-leakage, dedupe, and ablation tests |
 | Model V2 | `docs/MODEL_V2_BLUEPRINT.md` | affected `src/model_v2/` module | affected V2 tests |
 | Accuracy/meta-filter | PRD evidence contract | `src/analytics/model_v2_accuracy.py`, `src/model_v2/meta_filter.py` | accuracy/final-stage tests |
 | Promotion/rollback | PRD state machine | `src/model_v2/promotion.py` | promotion/guardrail tests |
 | Universe/price quality | `docs/STAGE_1_3_OPERATIONS.md` | `src/universe/`, `src/ingest/quality.py` | universe/quality tests |
+| EOD reconciliation | `docs/EOD_RECONCILIATION_RUNBOOK.md` | `src/ingest/reconciliation_*`, `src/ingest/quality.py`, REST provider | `tests/test_eod_reconciliation_evidence.py` plus affected ingest tests |
 | No signal/blocked | `docs/ai-context/05-operations-and-debugging.md` | latest funnel, quality, and gate report | focused reproduction |
 | Dashboard | relevant PRD requirement | `web/js/dashboard.js` plus producer | JS/static-dashboard tests |
-| Telegram/pre-open | `docs/STAGE_1_3_OPERATIONS.md` | workflow, guard, sender | delivery tests; do not send live |
+| Daily Telegram | `docs/STAGE_1_3_OPERATIONS.md` | workflow, guard, sender | delivery tests; do not send live |
 | Final execution | PRD Final Execution Contract | order intent, state store, broker adapter when introduced | paper contract/failure tests; never live by default |
 | GitHub/Vercel | failing run or deployed artifact | workflow, `web/`, export/Vercel config | local failed step or exact artifact comparison |
 | Documentation | this file and target doc | linked files only | links and `git diff --check` |
@@ -137,6 +141,22 @@ These rules cannot be weakened to improve presentation or signal count:
 - Holdout and walk-forward evidence must be out-of-sample and reproducible.
 - Sparse ticker evidence shrinks toward a mode prior instead of eager blacklisting.
 - Promotion evidence must match the exact model artifact version.
+- Raw 5-minute bars are immutable inputs; 15-minute model bars are deterministic,
+  session-aligned aggregates with gap and duplicate checks.
+- EOD reconciliation evidence is idempotent by market date; do not enable required
+  enforcement until five consecutive real IDX sessions qualify.
+- Secret presence is not provider readiness. Before EOD ticker fan-out, the account
+  entitlement and remaining quota must cover the planned request batch.
+- Free-tier deferred reconciliation may rotate a bounded ticker batch and accumulate
+  historical evidence, but it is never same-day evidence or final-execution eligibility.
+  Same-day production reconciliation still requires at least 95% active-universe coverage.
+- Pre-open features use only licensed snapshots at or before the fixed cutoff; IEP
+  opening direction and post-open follow-through are separate labels.
+- Order-book withdrawal proxies are not called cancellations without event-level proof.
+- Sentiment joins use publication time available before cutoff, source tier, dedupe,
+  and latency; rumor or an LLM output can never directly authorize an order.
+- GitHub Actions and Vercel Hobby cron are not used for minute-critical pre-open timing;
+  use an idempotent persistent scheduler and synchronized Asia/Jakarta clock.
 - Backtest, shadow, dashboard, and Telegram output are not trade orders.
 - `FINAL_DECISION` is only a prerequisite; only an explicitly activated
   `FINAL_EXECUTION` state may submit a real broker order.
@@ -192,6 +212,17 @@ Production foundation:
 ```powershell
 python -B -m pytest -p no:cacheprovider tests/test_preopen_delivery.py tests/test_stage123_configuration.py tests/test_universe_snapshot.py tests/test_universe_update.py tests/test_price_quality.py tests/test_ingest_validation.py tests/test_integration_cli.py
 node --test tests_js/preopen_watchdog.test.js tests_js/preopen_watchdog_handler.test.js
+```
+
+EOD reconciliation:
+
+```powershell
+python -B -m pytest -p no:cacheprovider tests/test_deferred_eod_reconciliation.py tests/test_eod_reconciliation_evidence.py tests/test_price_quality.py tests/test_rest_provider.py tests/test_ingest_validation.py tests/test_stage123_configuration.py tests/test_roadmap_ops.py
+```
+Pre-open auction:
+
+```powershell
+python -B -m pytest -p no:cacheprovider tests/test_preopen_auction.py tests/test_operational.py tests/test_preopen_delivery.py tests/test_stage123_configuration.py
 ```
 
 Model V2 final-decision surface:

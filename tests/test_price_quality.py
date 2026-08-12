@@ -175,6 +175,7 @@ def test_price_quality_audit_writes_separate_adjusted_and_reports(tmp_path: Path
         verified_price_events_path=str(tmp_path / "events.csv"),
         anomaly_report_path=str(tmp_path / "anomalies.csv"),
         reconciliation_report_path=str(tmp_path / "reconciliation.json"),
+        reconciliation_details_path=str(tmp_path / "reconciliation_details.csv"),
         reconciliation_enabled=True,
         reconciliation_required=False,
     )
@@ -209,6 +210,7 @@ def test_price_quality_audit_preserves_actionable_reconciliation_reason(tmp_path
         verified_price_events_path=str(tmp_path / "events.csv"),
         anomaly_report_path=str(tmp_path / "anomalies.csv"),
         reconciliation_report_path=str(tmp_path / "reconciliation.json"),
+        reconciliation_details_path=str(tmp_path / "reconciliation_details.csv"),
         reconciliation_enabled=True,
         reconciliation_required=False,
     )

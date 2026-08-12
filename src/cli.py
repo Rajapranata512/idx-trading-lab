@@ -12,16 +12,28 @@ from src.analytics import generate_model_v2_accuracy_audit, generate_signal_accu
 from src.backtest import BacktestCosts, pass_live_gate, run_backtest, run_walk_forward, simulate_mode_trades
 from src.config import Settings, load_settings
 from src.features.compute_features import compute_features
+from src.ingest.deferred_reconciliation import collect_deferred_eod_reconciliation
 from src.ingest.load_prices import load_prices_csv, load_prices_from_provider
 from src.ingest.providers.yfinance_provider import YFinanceProvider
 from src.ingest.quality import run_price_quality_audit
+from src.ingest.reconciliation_readiness import (
+    assess_eod_reconciliation_readiness,
+    probe_eod_provider_account,
+)
 from src.ingest.validator import validate_prices
 from src.model_v2 import (
     apply_model_v2_rollout_selection,
     evaluate_and_update_model_v2_promotion,
     run_model_v2_shadow,
 )
-from src.notify import build_daily_message, build_model_v2_shadow_message, send_telegram_message
+from src.notify import (
+    build_daily_message,
+    build_model_v2_shadow_message,
+    build_preopen_auction_message,
+    send_telegram_message,
+)
+from src.preopen.daemon import run_preopen_daemon
+from src.preopen.pipeline import run_preopen_auction_shadow
 from src.report import (
     generate_weekly_kpi_dashboard,
     reconcile_live_signals,
@@ -93,6 +105,7 @@ def _load_price_reconciliation_reference(
     tickers: list[str],
     start_date: str | None,
     end_date: str | None,
+    primary_provider_failures: list[str] | None = None,
 ) -> tuple[pd.DataFrame | None, str, str]:
     cfg = settings.data.price_quality
     reference_path = str(cfg.reconciliation_reference_csv_path).strip()
@@ -131,13 +144,26 @@ def _load_price_reconciliation_reference(
         except Exception as exc:
             return None, "", f"yfinance reconciliation failed: {exc}"
 
-    if primary_source == "yfinance_fallback":
-        return (
-            None,
-            "",
-            "Primary EOD provider fell back to yfinance; configure EODHD_API_TOKEN "
-            "or reconciliation_reference_csv_path to enable independent reconciliation",
-        )
+    if primary_source in {"yfinance_fallback", "yfinance_primary"}:
+        failures = [
+            str(value).strip()
+            for value in (primary_provider_failures or [])
+            if str(value).strip()
+        ]
+        if primary_source == "yfinance_primary":
+            message = (
+                "Daily primary uses yfinance while EODHD is collected in deferred "
+                "free-tier batches; same-day independent reconciliation remains unavailable."
+            )
+        else:
+            message = "Primary EOD provider fell back to yfinance."
+            if failures:
+                message += " Primary provider failure: " + " | ".join(failures) + "."
+            message += (
+                " Configure sufficient provider entitlement/quota or an independent "
+                "reconciliation_reference_csv_path."
+            )
+        return None, "", message
     return None, "", "No independent reconciliation source available for selected primary provider"
 
 
@@ -336,6 +362,18 @@ def _evaluate_data_quality(
     _write_json("reports/data_quality_report.json", payload)
     return payload
 
+def eod_reconciliation_readiness_step(settings: Settings) -> dict[str, object]:
+    return assess_eod_reconciliation_readiness(settings)
+
+
+def eod_provider_account_step(settings: Settings) -> dict[str, object]:
+    return probe_eod_provider_account(settings)
+
+
+def deferred_eod_reconciliation_step(settings: Settings) -> dict[str, Any]:
+    return collect_deferred_eod_reconciliation(settings)
+
+
 def ingest_daily(
     settings: Settings,
     start_date: str | None = None,
@@ -349,6 +387,11 @@ def ingest_daily(
         end_date=end_date,
         tickers=tickers,
     )
+    provider_failures = [
+        str(value)
+        for value in prices.attrs.get("provider_failures", [])
+        if str(value).strip()
+    ]
     prices = prices[prices["ticker"].isin(tickers)].sort_values(["ticker", "date"]).reset_index(drop=True)
     fetched_tickers = set(prices["ticker"].unique().tolist())
     missing_tickers = sorted(set(tickers) - fetched_tickers)
@@ -359,6 +402,7 @@ def ingest_daily(
         tickers=tickers,
         start_date=start_date,
         end_date=end_date,
+        primary_provider_failures=provider_failures,
     )
 
     out_path = settings.data.canonical_prices_path
@@ -382,6 +426,7 @@ def ingest_daily(
         "rows_new": len(prices),
         "tickers": int(to_save["ticker"].nunique()) if not to_save.empty else 0,
         "source": source,
+        "provider_failures": provider_failures,
         "max_data_date": pd.Timestamp(max_date).strftime("%Y-%m-%d") if pd.notna(max_date) else "",
         "min_data_date": pd.Timestamp(min_date).strftime("%Y-%m-%d") if pd.notna(min_date) else "",
         "missing_tickers_count": len(missing_tickers),
@@ -1429,6 +1474,34 @@ def reconcile_live_step(
     )
 
 
+def run_preopen_auction_step(
+    settings: Settings,
+    snapshots_path: str | None = None,
+    as_of: str | None = None,
+    send_telegram: bool = False,
+) -> dict[str, Any]:
+    report = run_preopen_auction_shadow(
+        settings=settings,
+        snapshots_path=snapshots_path,
+        as_of=as_of,
+    )
+    message = build_preopen_auction_message(report)
+    sent = False
+    if send_telegram:
+        sent = send_telegram_message(
+            message=message,
+            bot_token_env=settings.notifications.telegram_bot_token_env,
+            chat_id_env=settings.notifications.telegram_chat_id_env,
+        )
+    return {
+        "status": str(report.get("status", "blocked")),
+        "sent": bool(sent),
+        "send_requested": bool(send_telegram),
+        "report_path": settings.preopen_auction.report_path,
+        "message": message,
+        "report": report,
+    }
+
 def run_daily(
     settings: Settings,
     skip_telegram: bool = False,
@@ -2000,6 +2073,18 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_recal.add_argument("--force", action="store_true", help="Ignore interval and force recalibration attempt")
 
+    sub.add_parser(
+        "check-eod-reconciliation-readiness",
+        help="Validate EOD provider and reconciliation evidence configuration without network access",
+    )
+    sub.add_parser(
+        "check-eod-provider-account",
+        help="Verify provider account quota for the configured EOD request batch",
+    )
+    sub.add_parser(
+        "collect-deferred-eod-reconciliation",
+        help="Collect one idempotent free-tier EOD batch for delayed research audit",
+    )
     sub.add_parser("compute-features", help="Compute features and save parquet")
     sub.add_parser("score", help="Score T+1 and Swing picks, write reports/daily_signal.json")
     sub.add_parser("backtest", help="Run bar-based backtest on scored history")
@@ -2024,6 +2109,23 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Override the maximum allowed market-data age for the shadow report",
     )
 
+    p_preopen = sub.add_parser(
+        "run-preopen-auction",
+        help="Analyze licensed IEP/IEV and order-book snapshots in shadow mode",
+    )
+    p_preopen.add_argument("--snapshots-path", default=None)
+    p_preopen.add_argument("--as-of", default=None, help="Asia/Jakarta timestamp override")
+    p_preopen.add_argument(
+        "--send-telegram",
+        action="store_true",
+        help="Explicitly send the shadow message; default only prints it",
+    )
+    p_preopen_daemon = sub.add_parser(
+        "run-preopen-daemon",
+        help="Run the local precision scheduler for 08:55 and 08:57:40 WIB",
+    )
+    p_preopen_daemon.add_argument("--send-telegram", action="store_true")
+    p_preopen_daemon.add_argument("--max-loops", type=int, default=None)
     p_run = sub.add_parser("run-daily", help="Execute full daily pipeline")
     p_run.add_argument("--skip-telegram", action="store_true")
 
@@ -2067,6 +2169,22 @@ def main() -> None:
         return
     if args.command == "recalibrate-volatility":
         out = maybe_auto_recalibrate_volatility_targets(settings=settings, settings_path=args.settings, force=args.force)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        return
+    if args.command == "check-eod-reconciliation-readiness":
+        out = eod_reconciliation_readiness_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        if not bool(out.get("ready", False)):
+            raise SystemExit(1)
+        return
+    if args.command == "check-eod-provider-account":
+        out = eod_provider_account_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        if not bool(out.get("ready", False)):
+            raise SystemExit(1)
+        return
+    if args.command == "collect-deferred-eod-reconciliation":
+        out = deferred_eod_reconciliation_step(settings)
         print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "compute-features":
@@ -2116,6 +2234,25 @@ def main() -> None:
         print(json.dumps(out, ensure_ascii=True, indent=2))
         if not args.dry_run and not bool(out.get("ok", False)):
             raise SystemExit(1)
+        return
+    if args.command == "run-preopen-auction":
+        out = run_preopen_auction_step(
+            settings=settings,
+            snapshots_path=args.snapshots_path,
+            as_of=args.as_of,
+            send_telegram=args.send_telegram,
+        )
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        if args.send_telegram and not bool(out.get("sent", False)):
+            raise SystemExit(1)
+        return
+    if args.command == "run-preopen-daemon":
+        out = run_preopen_daemon(
+            settings_path=args.settings,
+            send_telegram=args.send_telegram,
+            max_loops=args.max_loops,
+        )
+        print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "run-daily":
         out = run_daily(settings, skip_telegram=args.skip_telegram, settings_path=args.settings)

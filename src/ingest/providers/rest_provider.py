@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from urllib import parse, request
 
@@ -36,6 +37,32 @@ def _resolved_dict(values: dict[str, str]) -> dict[str, str]:
     return {k: _resolve_env_value(v) for k, v in values.items()}
 
 
+_ENV_PLACEHOLDER = re.compile(r"^\$\{([A-Za-z_][A-Za-z0-9_]*)\}$")
+
+
+def inspect_rest_provider_environment(
+    settings: RestProviderSettings,
+    environ: dict[str, str] | None = None,
+) -> dict[str, object]:
+    """Return referenced and missing environment names without exposing values."""
+    active_env = os.environ if environ is None else environ
+    values = [
+        str(settings.base_url or ""),
+        str(settings.base_url_template or ""),
+        *[str(value) for value in (settings.headers or {}).values()],
+        *[str(value) for value in (settings.query_params or {}).values()],
+    ]
+    required = sorted(
+        {
+            match.group(1)
+            for value in values
+            if (match := _ENV_PLACEHOLDER.fullmatch(value.strip())) is not None
+        }
+    )
+    missing = [name for name in required if not str(active_env.get(name, "")).strip()]
+    return {"ok": not missing, "required": required, "missing": missing}
+
+
 class RestEodProvider(PriceProvider):
     """Generic REST provider with configurable query params and column mapping.
 
@@ -46,6 +73,17 @@ class RestEodProvider(PriceProvider):
 
     def __init__(self, settings: RestProviderSettings) -> None:
         self.settings = settings
+
+    def validate_environment(self) -> dict[str, object]:
+        status = inspect_rest_provider_environment(self.settings)
+        missing = status.get("missing", [])
+        if missing:
+            names = ", ".join(str(name) for name in missing)
+            raise RuntimeError(
+                "REST provider environment is incomplete; missing required variable(s): "
+                + names
+            )
+        return status
 
     def _request_json(self, url: str) -> object:
         headers = _resolved_dict(self.settings.headers or {})
@@ -95,6 +133,7 @@ class RestEodProvider(PriceProvider):
         end_date: str | None = None,
         tickers: list[str] | None = None,
     ) -> pd.DataFrame:
+        self.validate_environment()
         base_params: dict[str, str] = _resolved_dict(dict(self.settings.query_params))
         if start_date:
             base_params[self.settings.date_from_param_name] = start_date
@@ -135,6 +174,7 @@ class RestEodProvider(PriceProvider):
         tickers: list[str] | None = None,
         max_rows_per_ticker: int = 500,
     ) -> pd.DataFrame:
+        self.validate_environment()
         base_params: dict[str, str] = _resolved_dict(dict(self.settings.query_params))
         base_params["interval"] = str(timeframe)
         base_params["limit"] = str(max(1, int(max_rows_per_ticker)))

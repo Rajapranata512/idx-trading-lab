@@ -1,6 +1,6 @@
 # PRD - IDX Trading Lab
 
-Revision: 2026-08-11
+Revision: 2026-08-12
 
 Owner: Project repository
 Status: Active, research/shadow, not final decision
@@ -12,20 +12,26 @@ runbooks; volatile run output stays in structured reports.
 
 Read this block after `AGENTS.md`. Do not scan the repository.
 
-- Product: risk-first decision-support and research platform for IDX equities.
-- Modes: T1 and Swing are evaluated and promoted independently.
-- End state: `FINAL_EXECUTION` may submit controlled broker orders after every
-  model, risk, execution, security, and reconciliation gate passes.
+- Product: regime-aware, risk-first decision and execution platform for IDX equities.
+- Policies: every T1/Swing, bullish/sideways/bearish, and long/short/hedge policy is
+  evaluated and promoted independently.
+- End state: an evidence-gated portfolio engine seeks positive after-cost expectancy
+  across a complete market cycle and may submit controlled broker orders only after
+  every model, regime, risk, execution, security, and reconciliation gate passes.
 - Current state: `EXECUTION_DISABLED`; Model V2 is `SHADOW/BLOCKED`,
   rollout 0%, and no broker order is authorized.
-- Evidence: the production data/pipeline run is current as of 2026-08-10, but model
-  edge and promotion evidence do not pass the final-decision contract.
-- Production release: `origin/main` at `e79891b` includes Stage 1-3, REL-01/REL-02,
-  and the verified price-event remediation.
-- The remediation is pushed, but Daily Pipeline failed before artifact export because
-  no independent EOD primary source is currently operational.
-- Primary blocker: statistical quality and stability, not UI score quantity.
-- Next Action: activate dependable independent EOD price reconciliation.
+- Evidence: Daily Pipeline run `31498121174` refreshed production market data
+  through 2026-08-11 and pushed artifact commit `9d43504` to `origin/main`.
+- EODHD free capacity cannot validate all 45 tickers on the same day. The approved
+  interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
+  batch once per Jakarta date until delayed research coverage is complete.
+- Deferred evidence can improve historical data auditing, but it is explicitly
+  `final_execution_eligible=false`; same-day independent reconciliation remains unavailable.
+- Primary blocker: same-day provider capacity and then statistical quality, not UI score quantity.
+- Next Action: deploy the deferred collector and verify three distinct daily batches
+  cover all 45 active tickers without duplicate quota consumption.
+- Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
+  IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
   push/deploy/send externally, or promote without required authority.
 
@@ -34,8 +40,9 @@ requirement being changed. Use `AGENTS.md` for routing and validation.
 
 ## 1. Product Vision
 
-IDX Trading Lab turns Indonesian equity data into auditable candidate rankings,
-risk-aware trade plans, measured outcomes, and eventually controlled final execution.
+IDX Trading Lab turns Indonesian equity data into auditable, regime-aware portfolio
+decisions, risk-controlled trade plans, measured outcomes, and eventually controlled
+final execution across bullish, sideways, and bearish markets.
 It should answer:
 
 1. Is input data trustworthy for the latest completed IDX session?
@@ -49,6 +56,20 @@ It should answer:
 The endpoint is not "always predict stocks that rise." It is a system that abstains
 when evidence is weak and demonstrates calibrated probability, positive
 out-of-sample expectancy, controlled drawdown, and operational reliability.
+
+Long-term multi-regime objective:
+
+1. Bullish: capture verified long momentum/relative-strength edge after costs.
+2. Sideways: use separately validated selective long or mean-reversion policies;
+   otherwise remain in cash through an explicit `NO_TRADE` decision.
+3. Bearish: preserve capital through `RISK_OFF` by default; seek positive expectancy
+   only through a separately modeled, legally/broker-supported short or hedge policy.
+4. Full cycle: combine only promoted policies to pursue positive compounded return
+   after fees, slippage, borrow/hedge costs, and drawdown limits.
+
+This is an engineering and research objective, not a guarantee of profit in every
+session or regime. Capital preservation and abstention remain successful decisions
+when no policy has proven positive edge.
 
 ## 2. Users And Value
 
@@ -71,7 +92,8 @@ outcomes, and traceability from data to score, model, gate, plan, and result.
 In scope:
 
 - point-in-time IDX30/LQ45 universe and EOD price quality;
-- features, V1 ranking, T1/Swing risk plans, event/regime controls;
+- features, V1 ranking, T1/Swing risk plans, point-in-time regime classification,
+  and independently qualified bullish/sideways/bearish policies;
 - realistic labels, backtests, walk-forward evaluation, and accuracy audits;
 - calibrated Model V2 shadow recommendations and independent mode promotion;
 - reconciliation, rollback, kill switch, reports, dashboard, and Telegram shadow;
@@ -85,7 +107,9 @@ Not authorized in the current release:
 - autonomous real-capital execution before the Final Execution Contract passes and
   the user explicitly enables a named account, mode, and risk policy;
 - guaranteed returns or personalized financial advice;
-- derivatives, forex, crypto, or non-IDX markets;
+- short or hedge execution before separate data, model, borrow/fee, broker,
+  compliance, risk, and activation contracts pass;
+- derivatives, forex, crypto, or non-IDX markets in the current release;
 - high-frequency execution;
 - replacing risk gates with model confidence.
 
@@ -136,33 +160,41 @@ Authoritative paths:
 - accuracy audit: `src/analytics/model_v2_accuracy.py`;
 - public dashboard: `web/`;
 - operations: `docs/STAGE_1_3_OPERATIONS.md`;
+- EOD reconciliation activation: `docs/EOD_RECONCILIATION_RUNBOOK.md`;
 - V2 design: `docs/MODEL_V2_BLUEPRINT.md`.
 
 ## Current State
 
 Last verified on 2026-08-11:
 
-- GitHub production main: `e79891b`; the latest successful production data artifacts
-  were generated by the 2026-08-10 Daily Pipeline run before this release.
-- Live backtest generated: 2026-08-10T16:25:38.
-- Live dashboard generated: 2026-08-10T16:26:19+00:00.
-- Production data quality still reports `price_outliers`,
-  `historical_unresolved_price_anomalies`, and `price_reconciliation_unavailable`
-  until the local remediation is released and a new pipeline run completes.
-- Local audit: one historical anomaly, GOTO 2023-05-31 (109 to 147, +34.8624%),
-  is resolved by an exact-date, source-traceable MSCI index-rebalance annotation;
-  unresolved anomalies 0 and quarantined tickers 0. Raw OHLCV remains unchanged.
-- Independent reconciliation remains unavailable because the production primary
-  source falls back to yfinance without `EODHD_API_TOKEN`; yfinance cannot be its
-  own independent reference. This warning remains truthful and unresolved.
-- Maximum production market-data date: 2026-08-10; stale days 0; missing tickers 0.
-- REL-01/REL-02 remain deployed and Vercel/GitHub assets were synchronized when checked.
-- `FINAL_EXECUTION` is the approved product end-state, but the broker execution
-  layer is not implemented and current status is `EXECUTION_DISABLED`.
-- Latest local regression: 153 Python and 7 Node tests passed; watchdog JavaScript
-  syntax passed. Commit `e79891b` is pushed, but Daily Pipeline run 31413187445
-  failed twice before export: EODHD returned 401 with an empty secret and yfinance
-  fallback produced 45 rows with null critical values.
+- GitHub production main is `9d43504`, created by successful Daily Pipeline
+  run `31498121174` after the approved `EODHD_API_TOKEN` secret activation.
+- Production market data is current through 2026-08-11 with 0 stale sessions,
+  52,886 rows, 56 represented tickers, no missing critical rows, and no duplicate rows.
+  The public dashboard artifact was generated at 2026-08-11T13:50:45+00:00.
+- Data quality is `warning/pass`: the historical GOTO 2023-05-31 outlier remains
+  traceable to its verified event, unresolved active anomalies are 0, and the only
+  current warning is `price_reconciliation_unavailable`.
+- Independent reconciliation is not operational. The REST provider returned HTTP 402,
+  ingestion used `yfinance_fallback`, reference source was empty, and 0 rows
+  were compared.
+- Provider account metadata reported `subscriptionType=free`,
+  `dailyRateLimit=20`, and `apiRequests=20` on 2026-08-11. A same-day complete run
+  needs at least 45 ticker calls, so the account cannot satisfy 95% universe coverage.
+- Draft PR #2 contains the fail-closed account/quota foundation. The current branch now
+  adds a free-tier deferred collector: Yahoo is the daily 45-ticker source, EODHD is
+  limited to one idempotent 15-ticker historical batch per Jakarta date, and a five-call
+  reserve protects against quota variance.
+- Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
+  Even a passing deferred audit remains research-only and cannot satisfy the same-day
+  production reconciliation or final-execution gate.
+- Deferred validation: 42 focused tests and the full 181-test Python regression pass.
+- `reconciliation_required` remains false until five consecutive real IDX
+  sessions qualify; no qualifying reconciliation session exists yet.
+- `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
+  unimplemented and the current runtime state is `EXECUTION_DISABLED`.
+- The local pre-open auction foundation remains disabled and unpushed. It has no
+  licensed provider feed, qualified model artifact, or real shadow-session evidence.
 
 Model research baseline from 2026-07-18:
 
@@ -188,6 +220,20 @@ walk-forward evidence.
   unexplained jumps, and independent close reconciliation are machine-readable.
 - `DATA-04 Fail closed`: active unexplained anomalies quarantine affected tickers
   and block production according to configuration.
+- `INTRA-01 Immutable 5m base`: licensed raw 5-minute OHLCV is append-only, timestamped
+  in Asia/Jakarta, versioned, and backfilled for at least three years where available.
+- `INTRA-02 Canonical 15m model bars`: 15-minute bars are deterministic session-aligned
+  aggregates of 5-minute data; gaps, duplicates, partial bars, and corporate actions gate use.
+- `INTRA-03 Effective samples`: evaluation splits by purged market date and reports
+  independent ticker-session counts; snapshot row count cannot inflate sample claims.
+- `PREOPEN-01 Licensed auction feed`: IEP, IEV, rule version, source, receive time, and
+  five-level depth or order events require explicit storage/usage rights and immutable lineage.
+- `PREOPEN-02 Fixed clock`: preliminary analysis is 08:55 WIB, the feature cutoff is
+  08:57:40 WIB, matching/post-open data cannot enter prediction, and late data returns NO_TRADE.
+- `SENT-01 Event provenance`: official disclosures and licensed news store publication/
+  collection time, source tier, ticker mapping, event type, novelty, and confirmation state.
+- `SENT-02 No leakage`: only information published before the decision cutoff may join
+  a candidate; edits, duplicates, and collection latency remain auditable.
 - `REL-01 Market-session freshness`: dashboard freshness uses
   `data_quality_report.stats.max_data_date` against the latest expected completed
   IDX session in Asia/Jakarta, not 24-hour calendar age.
@@ -208,6 +254,15 @@ walk-forward evidence.
   fee/slippage-adjusted R, and mode-specific horizon.
 - `SIG-03 Abstention`: empty output caused by quality/risk gates is a valid
   no-trade result and is distinguishable from pipeline failure.
+- `PREOPEN-03 Separate labels`: opening direction, after-cost 5/15-minute follow-through,
+  and fake-gap reversal are separate point-in-time targets with MAE/MFE.
+- `PREOPEN-04 Artifact gate`: a complete calibrated multi-target artifact, untouched
+  holdout, ECE <= 10%, at least 120 OOS ticker-sessions, and five purged folds are minimum
+  shadow inference requirements; they do not bypass final-decision promotion.
+- `SENT-03 Ablation proof`: sentiment is retained only when technical+auction+sentiment
+  improves untouched after-cost expectancy, calibration, false positives, and drawdown.
+- `SENT-04 Meta-filter only`: rumor, social text, or LLM output can raise event risk or
+  confidence context but can never directly authorize an order.
 - `V2-01 Real artifacts`: a loadable model and versioned metadata are mandatory;
   fallback probability cannot produce recommendation or final state.
 - `V2-02 Calibration`: calibration fits on a separate window and is evaluated
@@ -216,8 +271,17 @@ walk-forward evidence.
   not selected from one attractive small sample.
 - `V2-04 Agreement filter`: initial eligible candidates require V1/V2 agreement,
   positive EV, passing calibration, and a Bayesian ticker-edge filter.
-- `V2-05 Independent modes`: T1 and Swing have separate artifacts, thresholds,
-  audits, shadow sessions, rollout, and rollback.
+- `V2-05 Independent policies`: each mode, regime, and side has separate eligible
+  samples, thresholds, audits, shadow sessions, rollout, and rollback.
+- `REGIME-01 Point-in-time regime`: bullish, sideways, and bearish labels use only
+  information available at decision time and are versioned with every outcome.
+- `REGIME-02 Specialized policy`: no universal threshold may claim all-regime edge;
+  the router selects only a policy promoted for the current regime or returns no-trade.
+- `REGIME-03 Bearish separation`: short/hedge labels include borrow availability,
+  borrow/hedge costs, asymmetric risk, and broker constraints and cannot inherit
+  approval from a long-only model.
+- `REGIME-04 Portfolio orchestration`: the final portfolio combines promoted cells
+  under shared exposure, correlation, drawdown, and capital-preservation limits.
 - `RISK-01 Veto`: regime, liquidity, event risk, size, data quality, kill switch,
   and drawdown can reject any signal.
 - `RISK-02 No guarantee`: the UI and Telegram never describe probability or
@@ -269,19 +333,21 @@ walk-forward evidence.
 
 ## 7. Final Decision Contract
 
-A mode may become final only when all conditions pass on the exact model version:
+A `{mode, regime, side}` policy may become final only when all conditions pass on
+the exact model, regime classifier, label, feature, and cost-model versions:
 
 1. Point-in-time labels match live candidate and execution assumptions.
 2. A real loadable artifact exists; no fallback output is eligible.
 3. Calibration is separate from fitting and evaluated on untouched holdout:
    `calibrated=true`, `evaluated_on_holdout=true`, ECE <= 10%, AUC >= 0.52.
-4. At least five purged walk-forward folds and at least 120 eligible OOS trades exist.
+4. At least five purged walk-forward folds and at least 120 eligible OOS trades exist
+   for the exact policy cell being promoted.
 5. Walk-forward median PF >= 1.25, median expectancy > 0.03R, MaxDD <= 12%, and
    at least 60% of folds are profitable.
 6. The fresh accuracy audit uses model-only output and matches artifact version,
    label contract, mode, costs, threshold, and candidate policy.
 7. Eligible candidates pass V1/V2 agreement, positive EV, calibration, liquidity,
-   regime/event risk, and Bayesian ticker-edge checks.
+   point-in-time regime routing, event risk, and Bayesian ticker-edge checks.
 8. At least 20 real market shadow sessions exist and three consecutive promotion
    evaluations pass. Sessions cannot be fabricated or backfilled.
 9. Canary stages maintain PF, expectancy, ECE, drawdown, data quality, and live
@@ -289,7 +355,7 @@ A mode may become final only when all conditions pass on the exact model version
 10. Risk engine, kill switch, and manual approval remain authoritative at 100%
     model rollout; broker submission remains disabled until section 8 passes.
 
-Promotion state machine, per mode:
+Promotion state machine, per `{mode, regime, side}` policy:
 
 ```text
 SHADOW 0%
@@ -306,7 +372,8 @@ Every transition requires fresh evidence. There is no manual "force final" path.
 `FINAL_DECISION` authorizes a model decision; it does not submit an order.
 `FINAL_EXECUTION` is a separate system-level state and requires all of these:
 
-1. The selected mode is `FINAL 100%` and all section 7 evidence is fresh.
+1. The selected mode, regime, and side policy is `FINAL 100%` and all section 7
+   evidence is fresh.
 2. DATA, REL, RISK, and EXEC requirements pass at submission time.
 3. The broker adapter is contract-tested for success, reject, timeout, duplicate
    retry, disconnect, partial fill, market close, and protection failure.
@@ -341,13 +408,21 @@ to the safest valid state. There is no direct path from SHADOW to broker executi
 
 ## 9. Success Metrics
 
-Model quality, per mode:
+Model quality, per `{mode, regime, side}` policy:
 
-- expectancy R and profit factor after costs;
+- expectancy R and profit factor after all applicable costs;
 - precision at top 3/top 5 and false-positive rate;
 - calibrated ECE/Brier score and reliability bins;
 - OOS trade count, profitable-fold ratio, and threshold stability;
 - MaxDD, MAE/MFE, average win/loss R, and signal decay.
+
+Full-cycle portfolio quality:
+
+- positive compounded return after costs across untouched multi-regime evaluation;
+- contribution, exposure, turnover, and drawdown segmented by market regime;
+- bearish downside protection and short/hedge performance reported separately;
+- no-trade frequency and avoided-loss evidence, without counting abstention as profit;
+- policy correlation and portfolio-level drawdown under shared risk limits.
 
 Operational quality:
 
@@ -379,20 +454,26 @@ Portfolio quality:
 1. T1 has too few eligible OOS trades and no profitable fold in the recorded baseline.
 2. Swing holdout calibration and fold stability fail the contract.
 3. Candidate pools do not yet demonstrate stable positive edge after costs.
-4. Pre-open Vercel secrets, watchdog dispatch, and duplicate-free external delivery
+4. No bullish/sideways/bearish policy matrix has sufficient independent OOS evidence;
+   the bearish short/hedge track is not implemented or authorized.
+5. Pre-open Vercel secrets, watchdog dispatch, and duplicate-free external delivery
    still require a complete production health check.
-5. Universe history has only two official periods, insufficient for long historical
+6. Universe history has only two official periods, insufficient for long historical
    survivorship-bias-safe claims.
-6. Independent price reconciliation is unavailable because production lacks an
-   active independent EOD source; `EODHD_API_TOKEN` is not configured and the
-   yfinance fallback cannot reconcile against itself.
-7. Real shadow sessions, consecutive passes, and live reconciliation are insufficient
-   for canary promotion.
-8. No production broker adapter, immutable order-intent store, or broker execution
-   state machine exists yet.
-9. Paper execution, failure-injection, kill-switch drill, and live-canary evidence
-   required by section 8 have not been collected.
-10. Live account activation is intentionally absent; current execution status is
+7. Same-day independent price reconciliation is unavailable. Free EODHD capacity cannot
+   cover all 45 tickers; the deferred 15-ticker/day collector can create delayed
+   research evidence only and no qualifying production session exists.
+8. No licensed retained 5-minute/pre-open IEP/IEV/order-event feed or compatible
+   historical backfill is configured; the pre-open module therefore remains disabled.
+9. No qualified pre-open artifact, timestamp-safe sentiment dataset, or real auction
+   shadow-session evidence exists; no current ticker may be called an auction recommendation.
+10. Real shadow sessions, consecutive passes, and live reconciliation are insufficient
+    for canary promotion.
+11. No production broker adapter, immutable order-intent store, or broker execution
+    state machine exists yet.
+12. Paper execution, failure-injection, kill-switch drill, and live-canary evidence
+    required by section 8 have not been collected.
+13. Live account activation is intentionally absent; current execution status is
     `EXECUTION_DISABLED`.
 
 These blockers are work items, not reasons to weaken thresholds or relabel the product.
@@ -434,7 +515,7 @@ Exit: satisfied for release `e67d859`; renew the market calendar before its 2026
 
 ### Phase 3 - Research Data Depth
 
-Status: code pushed; production evidence blocked by failed EOD ingestion.
+Status: production data is fresh; independent reconciliation is blocked by provider capacity.
 
 - Import older official universe periods.
 - Establish dependable independent EOD reconciliation.
@@ -442,6 +523,10 @@ Status: code pushed; production evidence blocked by failed EOD ingestion.
   without modifying raw or adjusted OHLCV; GOTO 2023-05-31 is the first entry.
 - Resolve/annotate corporate actions and recurrent price outliers.
 - Version immutable research datasets and feature contracts.
+- Backfill licensed raw 5-minute bars, derive canonical 15-minute bars, and record
+  effective ticker-session samples without treating correlated snapshots as independent.
+- Acquire licensed historical/forward IEP, IEV, order-book/event data and timestamp-safe
+  official disclosure/news events under explicit retention terms.
 
 Exit: reproducible point-in-time research window with documented coverage and no
 unresolved active quality blocker.
@@ -450,7 +535,13 @@ unresolved active quality blocker.
 
 Status: pending; T1 first, Swing remains 0%.
 
-- Add market/sector-relative, liquidity, regime, and entry-gap features.
+- Add market/sector-relative, liquidity, point-in-time regime, and entry-gap features.
+- Qualify a separate pre-open auction policy for opening, follow-through, and fake-gap
+  outcomes; its alert is shadow observation until its own promotion evidence passes.
+- Compare technical baseline, plus IEP/IEV, plus order book, and plus sentiment through
+  a versioned ablation before accepting additional complexity.
+- Define independent bullish-long, sideways-selective, and bearish-risk-off policy
+  cells; research short/hedge only as a separately authorized track.
 - Evaluate discovery data, then confirm on a later untouched period.
 - Reject complexity that does not improve stable after-cost expectancy.
 - Increase eligible OOS samples without lowering quality thresholds.
@@ -461,7 +552,8 @@ Exit: candidate edge passes minimum folds/trades and final numeric contract.
 
 Status: pending.
 
-- Fit and version separate T1/Swing models.
+- Fit and version separate T1/Swing models by eligible regime and side.
+- Keep any bearish short/hedge model isolated from long-policy promotion evidence.
 - Calibrate on dedicated windows and test on untouched holdout.
 - Lock thresholds before final evaluation.
 - Produce version-matched accuracy, false-positive, and calibration audits.
@@ -473,7 +565,8 @@ Exit: all section 7 gates pass for one mode. T1 may progress while Swing stays b
 Status: pending.
 
 - Collect at least 20 real market sessions and three consecutive passing evaluations.
-- Promote independently through 10%, 30%, 60%, and 100%.
+- Promote each `{mode, regime, side}` policy independently through 10%, 30%, 60%,
+  and 100%; an unqualified cell remains `NO_TRADE`.
 - Require reconciliation and automatic rollback at each stage.
 
 Exit: one mode reaches 100% without violating any safety or evidence contract.
@@ -505,24 +598,30 @@ and engineering quality without assuming guaranteed returns.
 
 ## Next Action
 
-`DATA-03B Production independent EOD reconciliation activation` is the single next action.
+`DATA-03C Free-tier deferred EOD evidence rollout` is the single next action.
+
+The collector is implemented on the PR branch. Production must prove quota-safe rotation
+and delayed audit behavior before this interim path is considered operational.
 
 Acceptance criteria:
 
-1. Configure `EODHD_API_TOKEN` as a GitHub Actions secret through an approved external
-   action; never store or print the value in repository files or logs.
-2. Release the verified-event remediation with explicit push/deploy approval, then run
-   Daily Pipeline and confirm `primary_source=rest`, `reference_source=yfinance_reconciliation`.
-3. Record at least five consecutive completed market sessions with reconciliation
-   coverage at least 95%, mismatch ratio at most 5%, and no unresolved active anomaly.
-4. Investigate any mismatch rather than suppressing it; preserve raw provider evidence.
-5. After the evidence window passes, set `reconciliation_required=true` and prove that
-   unavailable/failed reconciliation blocks production while execution stays disabled.
-6. Update this PRD with measured evidence and one successor action; do not promote Model
-   V2 or enable broker execution as part of this data-quality task.
+1. Daily ingestion obtains all 45 active tickers from `yfinance_primary`; it never attempts
+   a full-universe EODHD fan-out while deferred mode is enabled.
+2. Once per Jakarta date, account preflight permits at most 15 EODHD ticker requests plus
+   a five-call reserve. Scheduled retries perform zero additional ticker/account requests.
+3. Three successful distinct-date batches cover all 45 tickers and persist canonical,
+   deduplicated reference rows with state and SHA-256 cache evidence.
+4. At least five historical sessions reach 95% ticker coverage, mismatch ratio at most
+   5%, and no active unresolved anomaly; every mismatch is investigated.
+5. Reports expose source, batch, cache coverage, lag, mismatch, and
+   `final_execution_eligible=false`. Deferred pass never sets
+   `reconciliation_required=true` or promotes Model V2.
+6. Same-day independent reconciliation remains the later DATA-03B requirement before
+   final decision/execution; paid capacity or an approved licensed CSV/provider is still needed.
+7. Update this PRD with measured production evidence and exactly one successor action.
 
-Likely files: GitHub Actions secret/config, `config/settings.json`, reconciliation reports,
-nearest price-quality/integration tests, and this PRD.
+Likely files: deferred reconciliation reports/cache/state, Daily Pipeline output,
+nearest data-quality tests, and this PRD.
 
 ## 11. Portfolio Release Checklist
 
@@ -535,6 +634,8 @@ A public portfolio release is ready when:
 - [ ] Data lineage and point-in-time universe behavior are documented.
 - [ ] Model card states training/calibration/test windows and per-mode metrics.
 - [ ] Accuracy audit shows sample sizes and uncertainty, not only headline win rate.
+- [ ] Bullish, sideways, and bearish results are segmented; unsupported regimes are
+  visibly no-trade and no result implies guaranteed all-weather profit.
 - [ ] Risk, kill switch, rollback, and no-trade paths are demonstrated.
 - [ ] GitHub and Vercel revisions can be reconciled.
 - [ ] Case study names failures, decisions, tradeoffs, and next experiments.
@@ -587,6 +688,25 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-12: approved an interim free-tier deferred reconciliation track. Yahoo remains
+  the complete daily source; EODHD rotates 15 historical tickers once per Jakarta date,
+  with idempotent retries, retained cache, and explicit delayed/research-only status.
+  It cannot satisfy same-day final-decision or execution gates.
+- 2026-08-11: activated the approved GitHub EOD token secret and verified successful
+  production run 31491250242/commit `b2996b8`. Fresh data exported, but EODHD
+  returned HTTP 402 because its free 20-call quota cannot cover 45 tickers; yfinance
+  fallback left reconciliation unavailable. A local fail-closed quota probe now prevents
+  wasteful ticker fan-out. Provider-plan choice remains user-controlled and execution
+  stays disabled.
+- 2026-08-11: approved raw 5-minute storage with canonical 15-minute modeling,
+  timestamp-safe official/licensed sentiment, and a separate IEP/IEV/order-book
+  pre-open shadow track. Alerts target 08:55 and 08:57:40 WIB; opening direction,
+  follow-through, and fake gaps are separate labels, and no feed/model means NO_TRADE.
+
+- 2026-08-11: set the long-term goal to an evidence-gated multi-regime portfolio
+  engine. Bullish long, sideways selective/no-trade, and bearish risk-off or separately
+  qualified short/hedge policies must prove after-cost edge independently; profit is
+  an objective, never a guarantee, and unsupported cells remain no-trade.
 - 2026-08-11: pushed verified price-event remediation as `e79891b`. Daily Pipeline
   run 31413187445 and one rerun failed before export because `EODHD_API_TOKEN` was
   empty and yfinance returned 45 invalid rows; no validator or production gate was weakened.

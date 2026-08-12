@@ -10,6 +10,7 @@ import pandas as pd
 from src.config import Settings
 from src.features.compute_features import compute_features
 from src.ingest.load_prices import load_intraday_from_provider
+from src.intraday.aggregation import aggregate_5m_to_15m
 from src.report.render_report import write_signal_json
 from src.risk.manager import apply_global_position_limit, propose_trade_plan
 from src.strategy.intraday_model import score_intraday_candidates
@@ -114,7 +115,24 @@ def compute_intraday_features_step(settings: Settings) -> dict[str, Any]:
         prices = prices.rename(columns={"date": "timestamp"})
     prices["timestamp"] = pd.to_datetime(prices["timestamp"], errors="coerce")
     prices = prices.dropna(subset=["timestamp", "ticker"]).copy()
-    timeframe = str(prices["timeframe"].iloc[0]) if "timeframe" in prices.columns and not prices.empty else cfg.timeframe
+    storage_timeframe = str(prices["timeframe"].iloc[0]) if "timeframe" in prices.columns and not prices.empty else cfg.timeframe
+    model_timeframe = str(cfg.model_timeframe).strip().lower()
+    aggregation_info: dict[str, Any] = {
+        "source_timeframe": storage_timeframe,
+        "model_timeframe": storage_timeframe,
+        "input_rows": int(len(prices)),
+        "output_rows": int(len(prices)),
+    }
+    if storage_timeframe == "5m" and model_timeframe == "15m":
+        prices, aggregation_info = aggregate_5m_to_15m(
+            prices=prices,
+            timezone=settings.data.timezone,
+            require_complete_bars=bool(cfg.require_complete_model_bars),
+        )
+        model_prices_path = Path(cfg.model_prices_path)
+        model_prices_path.parent.mkdir(parents=True, exist_ok=True)
+        prices.to_parquet(model_prices_path, index=False)
+    timeframe = model_timeframe if storage_timeframe == "5m" and model_timeframe == "15m" else storage_timeframe
 
     base = prices.rename(columns={"timestamp": "date"})
     min_bars = 20
@@ -161,6 +179,9 @@ def compute_intraday_features_step(settings: Settings) -> dict[str, Any]:
         "rows": len(feats),
         "out_path": out_path,
         "timeframe": timeframe,
+        "storage_timeframe": storage_timeframe,
+        "model_prices_path": cfg.model_prices_path,
+        "aggregation": aggregation_info,
         "eligible_tickers": int(len(eligible_tickers)),
         "skipped_tickers": skipped_tickers[:20],
         "min_bars_per_ticker": min_bars,

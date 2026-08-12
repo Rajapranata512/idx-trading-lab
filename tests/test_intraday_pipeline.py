@@ -7,6 +7,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.config import load_settings
+from src.intraday.aggregation import aggregate_5m_to_15m
 from src.intraday.daemon import run_intraday_daemon
 from src.intraday.pipeline import run_intraday_once
 
@@ -18,8 +19,13 @@ def _write_runtime_files(tmp_path: Path) -> Path:
 
     (tmp_path / "data/reference/universe.csv").write_text("ticker\nBBCA\nTLKM\n", encoding="utf-8")
 
-    now = pd.Timestamp.utcnow().tz_localize(None)
-    intraday_dates = pd.date_range(end=now, periods=120, freq="5min")
+    session_date = pd.Timestamp.utcnow().tz_localize(None).normalize()
+    while session_date.weekday() > 3:
+        session_date += pd.Timedelta(days=1)
+    intraday_dates = pd.DatetimeIndex(
+        list(pd.date_range(session_date + pd.Timedelta(hours=9), periods=36, freq="5min"))
+        + list(pd.date_range(session_date + pd.Timedelta(hours=13, minutes=30), periods=27, freq="5min"))
+    )
     rows = ["timestamp,ticker,open,high,low,close,volume,timeframe"]
     for i, ts in enumerate(intraday_dates):
         rows.append(
@@ -48,10 +54,13 @@ def _write_runtime_files(tmp_path: Path) -> Path:
             "intraday": {
                 "enabled": True,
                 "timeframe": "5m",
+                "model_timeframe": "15m",
                 "lookback_minutes": 300,
                 "poll_seconds": 10,
                 "max_rows_per_ticker": 300,
                 "canonical_prices_path": "data/raw/prices_intraday.csv",
+                "model_prices_path": "data/processed/prices_intraday_15m.parquet",
+                "require_complete_model_bars": True,
                 "fallback_csv_path": "data/raw/prices_intraday.sample.csv",
                 "websocket_enabled": False,
                 "websocket_url": "",
@@ -142,6 +151,10 @@ def test_run_intraday_once_generates_outputs(tmp_path, monkeypatch):
 
     out = run_intraday_once(settings)
     assert out["signals"]["signal_count"] >= 1
+    assert out["features"]["storage_timeframe"] == "5m"
+    assert out["features"]["timeframe"] == "15m"
+    assert out["features"]["aggregation"]["output_rows"] >= 40
+    assert Path("data/processed/prices_intraday_15m.parquet").exists()
     assert Path("reports/intraday_signal.json").exists()
     payload = json.loads(Path("reports/intraday_signal.json").read_text(encoding="utf-8"))
     assert len(payload.get("signals", [])) >= 1
@@ -157,3 +170,23 @@ def test_run_intraday_daemon_writes_state(tmp_path, monkeypatch):
     state = json.loads(state_path.read_text(encoding="utf-8"))
     assert state.get("status") in {"ok", "error"}
 
+
+
+def test_aggregate_5m_to_15m_drops_partial_bars():
+    prices = pd.DataFrame(
+        [
+            {"timestamp": "2026-08-11T09:00:00+07:00", "ticker": "BBCA", "open": 100, "high": 102, "low": 99, "close": 101, "volume": 1000},
+            {"timestamp": "2026-08-11T09:05:00+07:00", "ticker": "BBCA", "open": 101, "high": 103, "low": 100, "close": 102, "volume": 1200},
+            {"timestamp": "2026-08-11T09:10:00+07:00", "ticker": "BBCA", "open": 102, "high": 104, "low": 101, "close": 103, "volume": 1400},
+            {"timestamp": "2026-08-11T09:15:00+07:00", "ticker": "BBCA", "open": 103, "high": 104, "low": 102, "close": 103.5, "volume": 900},
+        ]
+    )
+
+    aggregated, report = aggregate_5m_to_15m(prices, require_complete_bars=True)
+
+    assert len(aggregated) == 1
+    assert aggregated.iloc[0]["open"] == 100
+    assert aggregated.iloc[0]["close"] == 103
+    assert aggregated.iloc[0]["volume"] == 3600
+    assert aggregated.iloc[0]["source_bar_count"] == 3
+    assert report["partial_bars_dropped"] == 1

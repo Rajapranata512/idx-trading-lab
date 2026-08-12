@@ -7,7 +7,11 @@ import pandas as pd
 import pytest
 
 from src.config import Settings
-from src.ingest.load_prices import load_prices_csv, load_prices_from_provider
+from src.ingest.load_prices import (
+    _format_provider_error,
+    load_prices_csv,
+    load_prices_from_provider,
+)
 from src.ingest.validator import validate_prices
 
 
@@ -131,6 +135,19 @@ def test_rest_provider_fallback_to_csv(tmp_path):
     df, source = load_prices_from_provider(settings, tickers=["BBCA"])
     assert source == "csv_fallback"
     assert not df.empty
+    assert any(failure.startswith("rest=") for failure in df.attrs["provider_failures"])
+
+
+def test_provider_error_redacts_credentials_from_urls():
+    message = _format_provider_error(
+        RuntimeError(
+            "request failed: "
+            "https://eodhd.com/api/eod/BBCA.JK?api_token=secret-value&fmt=json"
+        )
+    )
+
+    assert "secret-value" not in message
+    assert "api_token=***" in message
 
 
 def test_load_prices_from_provider_surfaces_provider_chain_when_all_sources_fail(tmp_path):
