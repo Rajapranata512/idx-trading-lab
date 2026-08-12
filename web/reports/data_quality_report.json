@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-11T13:49:33.007552+00:00",
+  "generated_at": "2026-08-12T07:06:00.873080+00:00",
   "status": "warning",
   "pass": true,
   "reason_codes": [],
@@ -16,9 +16,9 @@
     "reconciliation_ok": true
   },
   "stats": {
-    "rows_total": 52886,
+    "rows_total": 52931,
     "ticker_total": 56,
-    "max_data_date": "2026-08-11",
+    "max_data_date": "2026-08-12",
     "stale_days": 0,
     "missing_rows": 0,
     "duplicate_rows": 0,
@@ -27,7 +27,7 @@
     "unresolved_anomaly_count": 0,
     "active_unresolved_count": 0,
     "reconciliation_rows": 0,
-    "reconciliation_mismatch_ratio": null
+    "reconciliation_mismatch_ratio": 0.0
   },
   "price_quality": {
     "adjusted_prices_path": "data/processed/prices_daily_adjusted.csv",
@@ -44,11 +44,103 @@
     "reconciliation": {
       "status": "unavailable",
       "pass": true,
-      "message": "Primary EOD provider fell back to yfinance; configure EODHD_API_TOKEN or reconciliation_reference_csv_path to enable independent reconciliation",
+      "message": "Daily primary uses yfinance while EODHD is collected in deferred free-tier batches; same-day independent reconciliation remains unavailable.",
+      "market_date": "",
+      "session_dates": [],
+      "rows_expected": 0,
       "rows_compared": 0,
+      "coverage_ratio": 0.0,
+      "mismatch_rows": 0,
+      "mismatch_ratio": 0.0,
       "required": false,
-      "primary_source": "yfinance_fallback",
-      "reference_source": ""
+      "primary_source": "yfinance_primary",
+      "reference_source": "",
+      "details_path": "reports/price_reconciliation_details.csv",
+      "evidence": {
+        "status": "collecting",
+        "qualified": false,
+        "history_path": "reports/price_reconciliation_evidence.json",
+        "qualification": {
+          "qualified": false,
+          "required_consecutive_sessions": 5,
+          "consecutive_passes": 0,
+          "latest_market_date": "2026-08-12",
+          "expected_session_dates": [
+            "2026-08-06",
+            "2026-08-07",
+            "2026-08-10",
+            "2026-08-11",
+            "2026-08-12"
+          ],
+          "missing_session_dates": [
+            "2026-08-06",
+            "2026-08-07",
+            "2026-08-10",
+            "2026-08-11"
+          ],
+          "failing_session_dates": [
+            "2026-08-12"
+          ],
+          "calendar_error": "",
+          "enforcement_enabled": false
+        }
+      }
+    },
+    "reconciliation_evidence": {
+      "status": "collecting",
+      "qualified": false,
+      "history_path": "reports/price_reconciliation_evidence.json",
+      "session": {
+        "market_date": "2026-08-12",
+        "recorded_at": "2026-08-12T07:06:00.741558+00:00",
+        "eligible": false,
+        "reasons": [
+          "reconciliation_not_passed",
+          "unexpected_primary_source",
+          "unexpected_reference_source",
+          "coverage_below_threshold"
+        ],
+        "status": "unavailable",
+        "primary_source": "yfinance_primary",
+        "reference_source": "",
+        "coverage_ratio": 0.0,
+        "mismatch_ratio": 0.0,
+        "active_unresolved_count": 0,
+        "rows_compared": 0,
+        "evidence": {
+          "primary_path": "data/raw/price_reconciliation/2026-08-12/primary_yfinance_primary.csv",
+          "primary_sha256": "a22c3f2803dcb65f52f12ba4615866f87e923cb8e0c6b0553b4f7f1f5d3dd0da",
+          "reference_path": "",
+          "reference_sha256": "",
+          "comparison_path": "data/raw/price_reconciliation/2026-08-12/comparison.csv",
+          "comparison_sha256": "c5b2bc343c9338acc855fd6b5b05cee65400460d2565007bcb0ea70fde6f29c8",
+          "summary_path": "data/raw/price_reconciliation/2026-08-12/summary.json"
+        }
+      },
+      "qualification": {
+        "qualified": false,
+        "required_consecutive_sessions": 5,
+        "consecutive_passes": 0,
+        "latest_market_date": "2026-08-12",
+        "expected_session_dates": [
+          "2026-08-06",
+          "2026-08-07",
+          "2026-08-10",
+          "2026-08-11",
+          "2026-08-12"
+        ],
+        "missing_session_dates": [
+          "2026-08-06",
+          "2026-08-07",
+          "2026-08-10",
+          "2026-08-11"
+        ],
+        "failing_session_dates": [
+          "2026-08-12"
+        ],
+        "calendar_error": "",
+        "enforcement_enabled": false
+      }
     }
   },
   "message": "Data quality checks passed with warnings: price_reconciliation_unavailable"

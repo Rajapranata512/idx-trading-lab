@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "cycle": 1,
+  "completed_cycle_tickers": [],
+  "last_success_date": "",
+  "last_cycle_completed_at": "",
+  "runs": [
+    {
+      "run_date": "2026-08-12",
+      "generated_at": "2026-08-12T07:07:45.194775+00:00",
+      "cycle": 1,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": false
+    }
+  ],
+  "updated_at": "2026-08-12T07:07:45.194775+00:00"
+}

@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-12T07:07:45.194775+00:00",
+  "run_date": "2026-08-12",
+  "status": "blocked",
+  "mode": "deferred_free_tier",
+  "same_day_reconciliation": false,
+  "final_execution_eligible": false,
+  "research_evidence_eligible": false,
+  "sources": {
+    "daily_primary": "yfinance_primary",
+    "deferred_reference": "eodhd_deferred"
+  },
+  "batch": {
+    "cycle": 1,
+    "batch_size": 15,
+    "planned_tickers": [
+      "AADI",
+      "ADMR",
+      "ADRO",
+      "AKRA",
+      "AMMN",
+      "AMRT",
+      "ANTM",
+      "ASII",
+      "BBCA",
+      "BBNI",
+      "BBRI",
+      "BBTN",
+      "BMRI",
+      "BRPT",
+      "BUMI"
+    ],
+    "selected_tickers": [],
+    "success_tickers": [],
+    "failures": [],
+    "idempotent_skip": false,
+    "completed_current_cycle": 0,
+    "universe_tickers": 45,
+    "start_date": "2026-06-28",
+    "end_date": "2026-08-12"
+  },
+  "account": {
+    "status": "blocked",
+    "ready": false,
+    "reason_codes": [
+      "provider_remaining_quota_insufficient"
+    ],
+    "subscription_type": "free",
+    "usage_date": "2026-08-11",
+    "daily_limit": 20,
+    "used_calls": 20,
+    "extra_calls": 0,
+    "remaining_calls": 0,
+    "universe_tickers": 45,
+    "planned_tickers": 15,
+    "quota_scope": "explicit_batch",
+    "call_cost_per_ticker": 1,
+    "reserve_calls": 5,
+    "required_calls": 20,
+    "message": "Provider account quota is insufficient for the planned EOD request batch"
+  },
+  "audit": {
+    "status": "collecting",
+    "message": "Deferred EODHD cache has no validated rows yet",
+    "research_evidence_eligible": false
+  },
+  "artifacts": {
+    "cache_path": "data/raw/deferred_eodhd_reference.csv",
+    "cache_sha256": "",
+    "state_path": "reports/deferred_eod_reconciliation_state.json",
+    "details_path": "reports/deferred_eod_reconciliation_details.csv"
+  },
+  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled"
+}
