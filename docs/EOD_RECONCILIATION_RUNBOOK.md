@@ -76,6 +76,19 @@ progress but no `last_successful_batch`, it reconstructs only provable fields. T
 summary carries `reconstructed_from_state=true`, leaves `success_tickers` empty, and
 uses `completed_cycle_tickers` for cumulative progress; it never invents a lost batch.
 
+The schema-v2 `rollout` block is the machine-readable progress contract:
+
+- `successful_dates` contains unique successful Jakarta dates for the current cycle;
+- `successful_date_count` is compared with `minimum_successful_dates_required`;
+- `completed_tickers`, `remaining_tickers`, and `ticker_progress_ratio` track coverage;
+- `ready_for_deferred_audit=true` requires both 45/45 coverage and the minimum unique
+  successful dates; retries never increase either counter;
+- `last_completed_rollout` preserves a completed cycle while the active state begins
+  the next cycle.
+
+An idempotent retry may enrich a legacy persisted report with schema, rollout, and
+`last_checked_at`, but it must retain the successful `batch` evidence unchanged.
+
 EODHD resets daily limits at midnight GMT/UTC, but its User API keeps reporting the
 previous active day's `apiRequests` until the first data request after reset. Preflight
 therefore applies these rules:
