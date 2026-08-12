@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "cycle": 1,
   "completed_cycle_tickers": [
     "AADI",
@@ -29,7 +29,18 @@
       "success_tickers": [],
       "failures": [],
       "idempotent_skip": true
+    },
+    {
+      "run_date": "2026-08-12",
+      "generated_at": "2026-08-12T13:46:59.915923+00:00",
+      "cycle": 1,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": true,
+      "completed_current_cycle": 15,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-08-12T12:03:07.455818+00:00"
+  "updated_at": "2026-08-12T13:46:59.915923+00:00"
 }
