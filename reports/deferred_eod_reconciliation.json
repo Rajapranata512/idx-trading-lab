@@ -187,5 +187,6 @@
     "state_path": "reports/deferred_eod_reconciliation_state.json",
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
-  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled"
+  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled",
+  "last_checked_at": "2026-08-13T12:03:26.446864+00:00"
 }
