@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-08-12T12:03:07.455818+00:00",
-  "run_date": "2026-08-12",
+  "generated_at": "2026-08-13T11:11:43.092830+00:00",
+  "run_date": "2026-08-13",
   "status": "collecting",
   "mode": "deferred_free_tier",
   "same_day_reconciliation": false,
@@ -13,6 +13,8 @@
   },
   "batch": {
     "cycle": 1,
+    "next_cycle": 1,
+    "cycle_completed": false,
     "batch_size": 15,
     "planned_tickers": [
       "CPIN",
@@ -31,61 +33,86 @@
       "ISAT",
       "ITMG"
     ],
-    "selected_tickers": [],
-    "success_tickers": [],
+    "selected_tickers": [
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
+    ],
+    "success_tickers": [
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
+    ],
     "failures": [],
-    "idempotent_skip": true,
-    "completed_current_cycle": 15,
+    "idempotent_skip": false,
+    "completed_current_cycle": 30,
     "universe_tickers": 45,
-    "start_date": "2026-06-28",
-    "end_date": "2026-08-12"
+    "start_date": "2026-06-29",
+    "end_date": "2026-08-13"
   },
-  "account": {
-    "status": "not_checked_idempotent_skip",
-    "ready": true,
-    "required_calls": 0
-  },
-  "audit": {
-    "minimum_tickers_per_session": 43,
-    "universe_tickers": 45,
-    "cache_tickers": 15,
-    "cache_ticker_coverage_ratio": 0.333333,
-    "fully_covered_session_count": 0,
-    "fully_covered_session_dates": [],
-    "status": "collecting",
-    "message": "Deferred reference is collecting full-universe history; 0/5 required sessions ready",
-    "research_evidence_eligible": false
-  },
-  "artifacts": {
-    "cache_path": "data/raw/deferred_eodhd_reference.csv",
-    "cache_sha256": "c3c06ef0bca865545bd55d09c8d46ede4459bacc8c9b217995a942f940888f78",
-    "state_path": "reports/deferred_eod_reconciliation_state.json",
-    "details_path": "reports/deferred_eod_reconciliation_details.csv"
-  },
-  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled",
   "rollout": {
     "cycle": 1,
     "status": "collecting",
     "successful_dates": [
-      "2026-08-12"
+      "2026-08-13"
     ],
     "successful_date_count": 1,
     "minimum_successful_dates_required": 3,
     "remaining_successful_dates": 2,
-    "completed_tickers": 15,
+    "completed_tickers": 30,
     "universe_tickers": 45,
-    "remaining_tickers": 30,
-    "ticker_progress_ratio": 0.333333,
+    "remaining_tickers": 15,
+    "ticker_progress_ratio": 0.666667,
     "cycle_completed": false,
     "ready_for_deferred_audit": false,
     "same_day_reconciliation": false,
     "final_execution_eligible": false
   },
   "last_successful_batch": {
-    "run_date": "2026-08-12",
-    "generated_at": "",
+    "run_date": "2026-08-13",
+    "generated_at": "2026-08-13T11:11:43.092830+00:00",
     "cycle": 1,
-    "success_tickers": [],
+    "success_tickers": [
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
+    ],
     "completed_cycle_tickers": [
       "AADI",
       "ADMR",
@@ -101,11 +128,64 @@
       "BBTN",
       "BMRI",
       "BRPT",
-      "BUMI"
+      "BUMI",
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
     ],
-    "completed_current_cycle": 15,
+    "completed_current_cycle": 30,
     "cycle_completed": false,
-    "reconstructed_from_state": true
+    "reconstructed_from_state": false
   },
-  "last_checked_at": "2026-08-12T16:32:53.871834+00:00"
+  "account": {
+    "status": "ready",
+    "ready": true,
+    "reason_codes": [],
+    "subscription_type": "free",
+    "usage_date": "2026-08-12",
+    "quota_date_utc": "2026-08-13",
+    "quota_reset_applied": true,
+    "daily_limit": 20,
+    "reported_used_calls": 15,
+    "used_calls": 0,
+    "extra_calls": 0,
+    "remaining_calls": 20,
+    "universe_tickers": 45,
+    "planned_tickers": 15,
+    "quota_scope": "explicit_batch",
+    "call_cost_per_ticker": 1,
+    "reserve_calls": 5,
+    "required_calls": 20,
+    "message": "Provider account quota is sufficient for the planned EOD request batch"
+  },
+  "audit": {
+    "minimum_tickers_per_session": 43,
+    "universe_tickers": 45,
+    "cache_tickers": 30,
+    "cache_ticker_coverage_ratio": 0.666667,
+    "fully_covered_session_count": 0,
+    "fully_covered_session_dates": [],
+    "status": "collecting",
+    "message": "Deferred reference is collecting full-universe history; 0/5 required sessions ready",
+    "research_evidence_eligible": false
+  },
+  "artifacts": {
+    "cache_path": "data/raw/deferred_eodhd_reference.csv",
+    "cache_sha256": "1f06faea5d5fb790af5fd7ce107915817d58c8346b9189696a284f14ade085dc",
+    "state_path": "reports/deferred_eod_reconciliation_state.json",
+    "details_path": "reports/deferred_eod_reconciliation_details.csv"
+  },
+  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled"
 }
