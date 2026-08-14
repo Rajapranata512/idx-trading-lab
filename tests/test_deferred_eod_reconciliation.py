@@ -409,6 +409,75 @@ def test_three_daily_batches_build_full_universe_five_session_research_audit(
     assert len(details) == 45 * 5
 
 
+def test_same_day_retry_refreshes_persisted_audit_without_provider_calls(
+    tmp_path: Path,
+):
+    settings, universe, prices = _settings(tmp_path)
+
+    def fetcher(ticker: str, _start: str, _end: str) -> pd.DataFrame:
+        return prices[prices["ticker"].eq(ticker)].copy()
+
+    for day in [12, 13, 14]:
+        collect_deferred_eod_reconciliation(
+            settings,
+            now=datetime(2026, 8, day, 10, tzinfo=timezone.utc),
+            fetcher=fetcher,
+            account_fetcher=_account_payload,
+            environ={"EODHD_API_TOKEN": "test-secret"},
+        )
+
+    report_path = Path(
+        settings.data.price_quality.deferred_eod_reconciliation.report_path
+    )
+    initial_report = json.loads(report_path.read_text(encoding="utf-8"))
+    initial_generated_at = initial_report["generated_at"]
+    canonical_path = Path(settings.data.canonical_prices_path)
+    canonical = pd.read_csv(canonical_path)
+    target = canonical["ticker"].eq(universe[0]) & canonical["date"].eq("2026-08-11")
+    ohlc_columns = ["open", "high", "low", "close"]
+    original_ohlc = canonical.loc[target, ohlc_columns].copy()
+    canonical.loc[target, ohlc_columns] *= 1.20
+    canonical.to_csv(canonical_path, index=False)
+
+    stale = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 14, 11, tzinfo=timezone.utc),
+        fetcher=lambda *_args: pytest.fail("same-day retry must not fetch tickers"),
+        account_fetcher=lambda *_args: pytest.fail(
+            "same-day retry must not call account endpoint"
+        ),
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+    stale_report = json.loads(report_path.read_text(encoding="utf-8"))
+
+    assert stale["batch"]["idempotent_skip"] is True
+    assert stale["account"]["required_calls"] == 0
+    assert stale["audit"]["mismatch_rows"] == 1
+    assert stale_report["audit"] == stale["audit"]
+    assert stale_report["status"] == stale["status"]
+    assert stale_report["generated_at"] == initial_generated_at
+    assert stale_report["last_checked_at"] == stale["generated_at"]
+
+    canonical.loc[target, ohlc_columns] = original_ohlc.to_numpy()
+    canonical.to_csv(canonical_path, index=False)
+    corrected = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 14, 12, tzinfo=timezone.utc),
+        fetcher=lambda *_args: pytest.fail("same-day retry must not fetch tickers"),
+        account_fetcher=lambda *_args: pytest.fail(
+            "same-day retry must not call account endpoint"
+        ),
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+    corrected_report = json.loads(report_path.read_text(encoding="utf-8"))
+
+    assert corrected["audit"]["mismatch_rows"] == 0
+    assert corrected_report["audit"] == corrected["audit"]
+    assert corrected_report["research_evidence_eligible"] is True
+    assert corrected_report["generated_at"] == initial_generated_at
+    assert corrected_report["last_checked_at"] == corrected["generated_at"]
+
+
 def test_deferred_collection_blocks_without_consuming_ticker_calls_when_quota_is_low(
     tmp_path: Path,
 ):

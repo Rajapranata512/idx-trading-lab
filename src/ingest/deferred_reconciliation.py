@@ -655,6 +655,13 @@ def collect_deferred_eod_reconciliation(
                 "last_successful_batch",
                 {},
             )
+            persisted_report["status"] = payload["status"]
+            persisted_report["research_evidence_eligible"] = payload[
+                "research_evidence_eligible"
+            ]
+            persisted_report["audit"] = payload["audit"]
+            persisted_report["artifacts"] = payload["artifacts"]
+            persisted_report["message"] = payload["message"]
             persisted_report["last_checked_at"] = generated_at
             payload["rollout"] = persisted_rollout
             payload["last_successful_batch"] = persisted_report[
