@@ -41,6 +41,7 @@ for historical reconciliation differences. It is evidence, not a correction feed
 - never edit a raw provider value to force agreement;
 - record the original primary/reference values and immutable evidence paths;
 - mark an incident resolved only after the ingestion fix and a rerun prove the result;
+- bind a resolved row to its production workflow, artifact commit, and resolution time;
 - keep same-day and final-execution eligibility independent from incident status.
 
 ## Event Risk
