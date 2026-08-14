@@ -174,6 +174,11 @@ These rules cannot be weakened to improve presentation or signal count:
 - Training, calibration, threshold selection, and final test windows stay separate.
 - Labels use point-in-time candidates, next-session-open entry, first-touch stop/TP,
   and configured fee/slippage.
+- Historical training, candidate audits, backtests, and walk-forward folds enforce
+  official membership for the row date through `src.universe` research filters.
+  Uncovered dates are excluded with diagnostics or fail closed; the current universe
+  is never substituted for missing history. Outcome bars remain available after a
+  ticker leaves the universe, but cannot become new eligible entries.
 - Thresholds are never lowered merely to produce more signals.
 - Holdout and walk-forward evidence must be out-of-sample and reproducible.
 - Sparse ticker evidence shrinks toward a mode prior instead of eager blacklisting.

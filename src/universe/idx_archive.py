@@ -114,7 +114,7 @@ def _find_workbook_name(names: list[str], index_name: str) -> str:
     return matches[0]
 
 
-def _validate_universe_history(
+def validate_universe_history(
     history: pd.DataFrame,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     missing = [column for column in _HISTORY_COLUMNS if column not in history.columns]
@@ -318,7 +318,7 @@ def import_idx_universe_archive(
         subset=["ticker", "index", "effective_from", "effective_until"],
         keep="last",
     )
-    combined, history_summary = _validate_universe_history(combined)
+    combined, history_summary = validate_universe_history(combined)
 
     history_file.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = history_file.with_suffix(history_file.suffix + ".tmp")

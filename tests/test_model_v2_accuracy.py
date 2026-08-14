@@ -121,7 +121,7 @@ def _features() -> pd.DataFrame:
         rows.append(
             {
                 "date": date.strftime("%Y-%m-%d"),
-                "ticker": "AAA",
+                "ticker": "AAAA",
                 "open": close_aaa - 0.5,
                 "high": close_aaa + 9.0,
                 "low": close_aaa - 1.0,
@@ -145,7 +145,7 @@ def _features() -> pd.DataFrame:
         rows.append(
             {
                 "date": date.strftime("%Y-%m-%d"),
-                "ticker": "BBB",
+                "ticker": "BBBB",
                 "open": close_bbb + 0.5,
                 "high": close_bbb + 1.0,
                 "low": close_bbb - 8.0,
@@ -167,11 +167,15 @@ def _features() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def test_model_v2_accuracy_audit_writes_reports_and_improves_selection(tmp_path: Path, monkeypatch: Any) -> None:
+def test_model_v2_accuracy_audit_writes_reports_and_improves_selection(
+    tmp_path: Path,
+    monkeypatch: Any,
+    official_universe_history: Path,
+) -> None:
     def fake_infer_shadow_scores(candidates: pd.DataFrame, settings: Settings) -> tuple[pd.DataFrame, dict[str, Any]]:
         out = candidates.copy()
-        out["shadow_p_win"] = out["ticker"].map({"AAA": 0.8, "BBB": 0.4}).fillna(0.5)
-        out["shadow_expected_r"] = out["ticker"].map({"AAA": 0.9, "BBB": -0.4}).fillna(0.0)
+        out["shadow_p_win"] = out["ticker"].map({"AAAA": 0.8, "BBBB": 0.4}).fillna(0.5)
+        out["shadow_expected_r"] = out["ticker"].map({"AAAA": 0.9, "BBBB": -0.4}).fillna(0.0)
         out["shadow_threshold"] = float(settings.model_v2.min_prob_threshold_t1)
         out["shadow_recommended"] = out["shadow_p_win"] >= out["shadow_threshold"]
         out["shadow_model_source"] = "model"
@@ -186,6 +190,7 @@ def test_model_v2_accuracy_audit_writes_reports_and_improves_selection(tmp_path:
     monkeypatch.setattr("src.analytics.model_v2_accuracy.infer_shadow_scores", fake_infer_shadow_scores)
 
     settings = _settings(tmp_path)
+    settings.data.universe_auto_update.history_path = str(official_universe_history)
     payload = generate_model_v2_accuracy_audit(features=_features(), settings=settings)
 
     assert payload["status"] == "ok"
@@ -197,6 +202,7 @@ def test_model_v2_accuracy_audit_writes_reports_and_improves_selection(tmp_path:
     assert payload["best_thresholds"]["t1"]["threshold"] in {0.3, 0.55, 0.7}
     assert payload["precision_at_k"]["combined"][0]["sample_count"] > 0
     assert payload["calibration_v2_recommended"]["status"] == "ok"
+    assert payload["input"]["research_universe"]["eligible_rows"] == len(_features())
 
     report_paths = payload["report_paths"]
     assert Path(report_paths["json"]).exists()
@@ -205,8 +211,8 @@ def test_model_v2_accuracy_audit_writes_reports_and_improves_selection(tmp_path:
     assert Path(report_paths["threshold_candidates_csv"]).exists()
 
     by_ticker = pd.read_csv(report_paths["by_ticker_csv"])
-    aaa = by_ticker.loc[by_ticker["ticker"] == "AAA"].iloc[0]
-    bbb = by_ticker.loc[by_ticker["ticker"] == "BBB"].iloc[0]
+    aaa = by_ticker.loc[by_ticker["ticker"] == "AAAA"].iloc[0]
+    bbb = by_ticker.loc[by_ticker["ticker"] == "BBBB"].iloc[0]
     assert float(aaa["v2_expectancy_r"]) > float(bbb["all_expectancy_r"])
 
     thresholds = pd.read_csv(report_paths["threshold_candidates_csv"])

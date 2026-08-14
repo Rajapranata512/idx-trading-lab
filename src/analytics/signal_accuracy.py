@@ -8,6 +8,7 @@ import pandas as pd
 
 from src.config import Settings
 from src.strategy import score_history_modes
+from src.universe import filter_point_in_time_universe
 from src.utils import atomic_write_json
 
 
@@ -325,9 +326,14 @@ def _simulate_signal(
     return row
 
 
-def _build_audit_trades(features: pd.DataFrame, settings: Settings) -> pd.DataFrame:
+def _build_audit_trades(
+    features: pd.DataFrame,
+    settings: Settings,
+    candidate_features: pd.DataFrame | None = None,
+) -> pd.DataFrame:
     max_rank = max([int(k) for k in settings.signal_accuracy.precision_top_k] + [int(settings.signal_accuracy.max_signals_per_day), 1])
-    candidates = _candidate_signals(features, settings, max_rank=max_rank)
+    candidate_input = features if candidate_features is None else candidate_features
+    candidates = _candidate_signals(candidate_input, settings, max_rank=max_rank)
     if candidates.empty:
         return pd.DataFrame()
 
@@ -573,12 +579,27 @@ def generate_signal_accuracy_audit(features: pd.DataFrame, settings: Settings) -
     by_regime_path.parent.mkdir(parents=True, exist_ok=True)
     by_score_bucket_path.parent.mkdir(parents=True, exist_ok=True)
 
-    trades = _build_audit_trades(features=features, settings=settings)
+    candidate_features, universe_diagnostics = filter_point_in_time_universe(
+        features,
+        history_path=settings.data.universe_auto_update.history_path,
+        timezone=settings.data.timezone,
+        uncovered_policy="exclude",
+    )
+    trades = _build_audit_trades(
+        features=features,
+        settings=settings,
+        candidate_features=candidate_features,
+    )
     if trades.empty:
         payload = {
             "generated_at": datetime.utcnow().isoformat(),
             "status": "no_trades",
             "message": "No complete signal outcomes available for accuracy audit",
+            "input": {
+                "feature_rows": int(len(features)),
+                "point_in_time_candidate_rows": int(len(candidate_features)),
+                "research_universe": universe_diagnostics,
+            },
             "report_paths": {
                 "json": str(out_json),
                 "by_ticker_csv": str(by_ticker_path),
@@ -623,6 +644,7 @@ def generate_signal_accuracy_audit(features: pd.DataFrame, settings: Settings) -
         "message": "Signal accuracy audit generated",
         "input": {
             "feature_rows": int(len(features)),
+            "point_in_time_candidate_rows": int(len(candidate_features)),
             "audited_trade_count": int(len(trades)),
             "live_threshold_trade_count": int(len(live_trades)),
             "active_modes": list(settings.pipeline.active_modes),
@@ -637,6 +659,7 @@ def generate_signal_accuracy_audit(features: pd.DataFrame, settings: Settings) -
                 "swing": float(settings.pipeline.min_live_score_swing),
             },
             "roundtrip_cost_pct": round(float(settings.backtest.buy_fee_pct + settings.backtest.sell_fee_pct + (2 * settings.backtest.slippage_pct)), 4),
+            "research_universe": universe_diagnostics,
         },
         "report_paths": {
             "json": str(out_json),

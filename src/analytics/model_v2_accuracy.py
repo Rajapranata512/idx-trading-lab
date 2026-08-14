@@ -23,6 +23,7 @@ from src.model_v2.meta_filter import (
     build_bayesian_ticker_edge_profile,
 )
 from src.model_v2.predict import infer_shadow_scores
+from src.universe import filter_point_in_time_universe
 from src.utils import atomic_write_json
 
 
@@ -240,10 +241,15 @@ def _model_source_summary(df: pd.DataFrame, infer_info: dict[str, Any]) -> dict[
     }
 
 
-def _build_v2_trade_rows(features: pd.DataFrame, settings: Settings) -> tuple[pd.DataFrame, dict[str, Any], int]:
+def _build_v2_trade_rows(
+    features: pd.DataFrame,
+    settings: Settings,
+    candidate_features: pd.DataFrame | None = None,
+) -> tuple[pd.DataFrame, dict[str, Any], int]:
     cfg = settings.model_v2_accuracy
     max_rank = max([int(k) for k in cfg.precision_top_k] + [int(cfg.max_candidates_per_day), 1])
-    candidates = _candidate_signals(features, settings, max_rank=max_rank)
+    candidate_input = features if candidate_features is None else candidate_features
+    candidates = _candidate_signals(candidate_input, settings, max_rank=max_rank)
     if candidates.empty:
         return pd.DataFrame(), {"status": "empty", "message": "No scored candidates", "modes": {}}, 0
 
@@ -301,7 +307,17 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
     for path in [out_json, by_ticker_path, by_regime_path, threshold_path]:
         path.parent.mkdir(parents=True, exist_ok=True)
 
-    trades, infer_info, candidate_count = _build_v2_trade_rows(features=features, settings=settings)
+    candidate_features, universe_diagnostics = filter_point_in_time_universe(
+        features,
+        history_path=settings.data.universe_auto_update.history_path,
+        timezone=settings.data.timezone,
+        uncovered_policy="exclude",
+    )
+    trades, infer_info, candidate_count = _build_v2_trade_rows(
+        features=features,
+        settings=settings,
+        candidate_features=candidate_features,
+    )
     if trades.empty:
         pd.DataFrame().to_csv(by_ticker_path, index=False)
         pd.DataFrame().to_csv(by_regime_path, index=False)
@@ -312,7 +328,9 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
             "message": "No complete Model V2 candidate outcomes available for audit",
             "input": {
                 "feature_rows": int(len(features)),
+                "point_in_time_candidate_rows": int(len(candidate_features)),
                 "candidate_count": int(candidate_count),
+                "research_universe": universe_diagnostics,
             },
             "infer": infer_info,
             "report_paths": {
@@ -379,6 +397,7 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
         ),
         "input": {
             "feature_rows": int(len(features)),
+            "point_in_time_candidate_rows": int(len(candidate_features)),
             "candidate_count": int(candidate_count),
             "audited_trade_count": int(len(trades)),
             "v2_recommended_count": int(len(v2_recommended)),
@@ -386,6 +405,7 @@ def generate_model_v2_accuracy_audit(features: pd.DataFrame, settings: Settings)
             "max_candidates_per_day": int(cfg.max_candidates_per_day),
             "precision_top_k": [int(k) for k in cfg.precision_top_k],
             "probability_threshold_grid": [float(x) for x in cfg.probability_threshold_grid],
+            "research_universe": universe_diagnostics,
         },
         "report_paths": {
             "json": str(out_json),

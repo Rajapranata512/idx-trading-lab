@@ -1,10 +1,13 @@
 """Leakage-safe trade outcome labels for Model V2 training."""
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
+
+from src.universe import filter_point_in_time_universe
 
 
 LABEL_COLUMNS = [
@@ -247,6 +250,8 @@ def build_training_dataset(
     min_live_score: float = 0.0,
     top_n_per_date: int = 10,
     horizon_exit_min_r: float = 0.0,
+    universe_history_path: str | Path | None = None,
+    universe_timezone: str = "Asia/Jakarta",
 ) -> pd.DataFrame:
     """Build outcome labels, optionally restricted to the V1 live candidate set."""
     if scored_history.empty:
@@ -269,6 +274,19 @@ def build_training_dataset(
     if mode_df.empty:
         return pd.DataFrame()
 
+    universe_diagnostics: dict[str, Any] = {}
+    if universe_history_path is not None:
+        mode_df, universe_diagnostics = filter_point_in_time_universe(
+            mode_df,
+            history_path=universe_history_path,
+            timezone=universe_timezone,
+            uncovered_policy="exclude",
+        )
+    if mode_df.empty:
+        out = pd.DataFrame()
+        out.attrs["point_in_time_universe"] = universe_diagnostics
+        return out
+
     candidate_pool_rows = int(len(mode_df))
     if candidate_alignment_enabled:
         mode_df = _align_to_live_candidates(
@@ -282,7 +300,9 @@ def build_training_dataset(
         mode_df["candidate_score_floor"] = float(min_live_score)
         mode_df["candidate_top_n"] = int(top_n_per_date)
     if mode_df.empty:
-        return pd.DataFrame()
+        out = pd.DataFrame()
+        out.attrs["point_in_time_universe"] = universe_diagnostics
+        return out
 
     tickers = mode_df["ticker"].unique()
     all_bars = df[df["ticker"].isin(tickers)].copy()
@@ -312,4 +332,5 @@ def build_training_dataset(
     out["candidate_pool_rows"] = candidate_pool_rows
     out["selected_candidate_rows"] = selected_candidate_rows
     out["entry_rejected_rows"] = entry_rejected_rows
+    out.attrs["point_in_time_universe"] = universe_diagnostics
     return out

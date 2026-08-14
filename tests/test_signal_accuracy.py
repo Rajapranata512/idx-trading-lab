@@ -103,7 +103,7 @@ def _features() -> pd.DataFrame:
         rows.append(
             {
                 "date": date.strftime("%Y-%m-%d"),
-                "ticker": "AAA",
+                "ticker": "AAAA",
                 "open": close_aaa - 0.5,
                 "high": close_aaa + 9.0,
                 "low": close_aaa - 1.0,
@@ -127,7 +127,7 @@ def _features() -> pd.DataFrame:
         rows.append(
             {
                 "date": date.strftime("%Y-%m-%d"),
-                "ticker": "BBB",
+                "ticker": "BBBB",
                 "open": close_bbb + 0.5,
                 "high": close_bbb + 1.0,
                 "low": close_bbb - 8.0,
@@ -149,8 +149,12 @@ def _features() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def test_signal_accuracy_audit_writes_reports_and_flags_false_positives(tmp_path: Path) -> None:
+def test_signal_accuracy_audit_writes_reports_and_flags_false_positives(
+    tmp_path: Path,
+    official_universe_history: Path,
+) -> None:
     settings = _settings(tmp_path)
+    settings.data.universe_auto_update.history_path = str(official_universe_history)
     payload = generate_signal_accuracy_audit(features=_features(), settings=settings)
 
     assert payload["status"] == "ok"
@@ -168,9 +172,10 @@ def test_signal_accuracy_audit_writes_reports_and_flags_false_positives(tmp_path
     assert Path(report_paths["by_score_bucket_csv"]).exists()
 
     by_ticker = pd.read_csv(report_paths["by_ticker_csv"])
-    aaa_expectancy = float(by_ticker.loc[by_ticker["ticker"] == "AAA", "expectancy_r"].iloc[0])
-    bbb_expectancy = float(by_ticker.loc[by_ticker["ticker"] == "BBB", "expectancy_r"].iloc[0])
+    aaa_expectancy = float(by_ticker.loc[by_ticker["ticker"] == "AAAA", "expectancy_r"].iloc[0])
+    bbb_expectancy = float(by_ticker.loc[by_ticker["ticker"] == "BBBB", "expectancy_r"].iloc[0])
     assert aaa_expectancy > bbb_expectancy
+    assert payload["input"]["research_universe"]["eligible_rows"] == len(_features())
 
     outcomes = {row["outcome"] for row in payload["recent_trades"]}
     assert "tp2_hit" in outcomes

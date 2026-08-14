@@ -32,6 +32,12 @@ The required artifact set covers canonical and adjusted prices, the feature matr
 current and historical point-in-time universes, corporate actions, verified price
 events, deferred reconciliation cache/report/details, and incident dispositions.
 
+The manifest proves which history and features were used, while runtime research
+diagnostics prove which dated ticker rows were eligible. Training, signal audits,
+Model V2 audits, backtests, and walk-forward reports must bind their
+`research_universe` diagnostics to the same `source_revision` and dataset
+identity before their metrics can be compared or promoted.
+
 CSV and JSON fingerprints use canonical UTF-8 bytes with LF line endings; Parquet uses
 its binary bytes. This keeps SHA-256, byte size, and dataset identity stable across Git
 checkouts on Linux and Windows without ignoring any logical text change.
