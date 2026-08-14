@@ -92,6 +92,74 @@ def test_tracked_history_contains_current_august_2026_snapshot():
     assert {"INDY", "NCKL"} <= set(active["ticker"])
 
 
+@pytest.mark.parametrize(
+    ("as_of", "expected_from", "expected_until"),
+    [
+        (date(2024, 11, 15), "2024-11-01", "2025-01-31"),
+        (date(2025, 2, 10), "2025-02-03", "2025-04-30"),
+        (date(2025, 5, 10), "2025-05-02", "2025-07-31"),
+        (date(2025, 8, 10), "2025-08-01", "2025-10-31"),
+        (date(2025, 11, 10), "2025-11-03", "2026-01-30"),
+        (date(2026, 2, 10), "2026-02-02", "2026-04-30"),
+        (date(2026, 5, 10), "2026-05-04", "2026-07-31"),
+        (date(2026, 8, 10), "2026-08-03", "2026-10-30"),
+    ],
+)
+def test_tracked_history_resolves_each_official_period(
+    as_of,
+    expected_from,
+    expected_until,
+):
+    active, metadata = active_universe_from_history(
+        history_path="data/reference/universe_history.csv",
+        as_of=as_of,
+        expected_lq45=45,
+        expected_idx30=30,
+    )
+
+    assert metadata["effective_from"] == expected_from
+    assert metadata["effective_until"] == expected_until
+    assert metadata["counts"] == {"lq45": 45, "idx30": 30, "combined": 45}
+    assert active["ticker"].nunique() == 45
+
+
+def test_tracked_history_has_traceable_non_overlapping_official_periods():
+    history = pd.read_csv("data/reference/universe_history.csv")
+    periods = history[["effective_from", "effective_until"]].drop_duplicates()
+
+    assert len(history) == 600
+    assert len(periods) == 8
+    assert history["source_document"].nunique() == 8
+    assert history["source"].eq("IDX_OFFICIAL_ANNOUNCEMENT").all()
+    assert history["source_document"].str.startswith(
+        ("https://www.idx.id/", "https://www.idx.co.id/")
+    ).all()
+    assert pd.to_datetime(
+        history["imported_at"],
+        errors="coerce",
+        format="mixed",
+        utc=True,
+    ).notna().all()
+
+    previous_end = None
+    for period in periods.sort_values("effective_from").itertuples(index=False):
+        start = pd.Timestamp(period.effective_from)
+        end = pd.Timestamp(period.effective_until)
+        assert previous_end is None or start > previous_end
+        previous_end = end
+
+        rows = history[
+            history["effective_from"].eq(period.effective_from)
+            & history["effective_until"].eq(period.effective_until)
+        ]
+        lq45 = set(rows.loc[rows["index"].eq("LQ45"), "ticker"])
+        idx30 = set(rows.loc[rows["index"].eq("IDX30"), "ticker"])
+        assert len(lq45) == 45
+        assert len(idx30) == 30
+        assert idx30 <= lq45
+        assert rows["source_document"].nunique() == 1
+
+
 def test_point_in_time_universe_blocks_expired_snapshot(tmp_path):
     settings = _settings(tmp_path)
     pd.DataFrame(
@@ -148,5 +216,46 @@ def test_import_official_idx_archive_writes_history(tmp_path):
     assert result["counts"] == {"lq45": 45, "idx30": 30, "combined": 45}
     assert result["effective_from"] == "2026-05-04"
     assert result["effective_until"] == "2026-07-31"
+    assert result["history"] == {
+        "rows": 75,
+        "period_count": 1,
+        "earliest_effective_from": "2026-05-04",
+        "latest_effective_until": "2026-07-31",
+        "source_document_count": 1,
+    }
     history = pd.read_csv(tmp_path / "history.csv")
     assert len(history) == 75
+
+    repeated = import_idx_universe_archive(
+        archive_path=archive,
+        history_path=tmp_path / "history.csv",
+        source_document="https://www.idx.id/official.zip",
+    )
+    repeated_history = pd.read_csv(tmp_path / "history.csv")
+
+    assert repeated["history"]["rows"] == 75
+    assert repeated_history.duplicated(
+        subset=["ticker", "index", "effective_from", "effective_until"]
+    ).sum() == 0
+    assert set(repeated_history["source_document"]) == {
+        "https://www.idx.id/official.zip"
+    }
+
+
+def test_import_official_idx_archive_rejects_overlapping_history(tmp_path):
+    archive = tmp_path / "official.zip"
+    with ZipFile(archive, "w", compression=ZIP_DEFLATED) as bundle:
+        bundle.writestr("1 Lamp - IDX30 - Mayor.xlsx", _workbook("IDX30", 30))
+        bundle.writestr("2 Lamp - LQ45 - Mayor.xlsx", _workbook("LQ45", 45))
+
+    existing = pd.DataFrame(
+        _history_rows("2026-04-01", "2026-05-31")
+    )
+    existing.to_csv(tmp_path / "history.csv", index=False)
+
+    with pytest.raises(ValueError, match="overlapping effective periods"):
+        import_idx_universe_archive(
+            archive_path=archive,
+            history_path=tmp_path / "history.csv",
+            source_document="https://www.idx.id/official.zip",
+        )
