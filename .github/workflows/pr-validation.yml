@@ -1,0 +1,54 @@
+name: IDX Trading Lab - PR Validation
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: idx-trading-lab-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Python tests
+        run: python -m pytest -q
+
+  javascript-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Run JavaScript tests
+        run: >-
+          node --test
+          tests_js/market_freshness.test.js
+          tests_js/preopen_watchdog.test.js
+          tests_js/preopen_watchdog_handler.test.js
+
+      - name: Check serverless API syntax
+        run: node --check web/api/preopen-watchdog.js
