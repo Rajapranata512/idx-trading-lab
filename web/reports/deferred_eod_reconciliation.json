@@ -76,20 +76,21 @@
   },
   "rollout": {
     "cycle": 1,
-    "status": "collecting",
+    "status": "complete",
     "successful_dates": [
+      "2026-08-12",
       "2026-08-13",
       "2026-08-14"
     ],
-    "successful_date_count": 2,
+    "successful_date_count": 3,
     "minimum_successful_dates_required": 3,
-    "remaining_successful_dates": 1,
+    "remaining_successful_dates": 0,
     "completed_tickers": 45,
     "universe_tickers": 45,
     "remaining_tickers": 0,
     "ticker_progress_ratio": 1.0,
     "cycle_completed": true,
-    "ready_for_deferred_audit": false,
+    "ready_for_deferred_audit": true,
     "same_day_reconciliation": false,
     "final_execution_eligible": false
   },
@@ -271,5 +272,5 @@
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
   "message": "Deferred reconciliation passed for research evidence; it is not same-day execution evidence",
-  "last_checked_at": "2026-08-14T11:22:21.210167+00:00"
+  "last_checked_at": "2026-08-14T11:30:33.662406+00:00"
 }

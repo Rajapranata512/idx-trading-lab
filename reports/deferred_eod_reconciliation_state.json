@@ -187,9 +187,20 @@
       "idempotent_skip": true,
       "completed_current_cycle": 0,
       "cycle_completed": false
+    },
+    {
+      "run_date": "2026-08-14",
+      "generated_at": "2026-08-14T11:30:33.662406+00:00",
+      "cycle": 2,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": true,
+      "completed_current_cycle": 0,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-08-14T11:22:21.210167+00:00",
+  "updated_at": "2026-08-14T11:30:33.662406+00:00",
   "last_successful_batch": {
     "run_date": "2026-08-14",
     "generated_at": "2026-08-14T11:09:33.903903+00:00",
@@ -281,20 +292,21 @@
   "last_completed_cycle": 1,
   "last_completed_rollout": {
     "cycle": 1,
-    "status": "collecting",
+    "status": "complete",
     "successful_dates": [
+      "2026-08-12",
       "2026-08-13",
       "2026-08-14"
     ],
-    "successful_date_count": 2,
+    "successful_date_count": 3,
     "minimum_successful_dates_required": 3,
-    "remaining_successful_dates": 1,
+    "remaining_successful_dates": 0,
     "completed_tickers": 45,
     "universe_tickers": 45,
     "remaining_tickers": 0,
     "ticker_progress_ratio": 1.0,
     "cycle_completed": true,
-    "ready_for_deferred_audit": false,
+    "ready_for_deferred_audit": true,
     "same_day_reconciliation": false,
     "final_execution_eligible": false
   }
