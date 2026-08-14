@@ -529,6 +529,49 @@ def collect_deferred_eod_reconciliation(
     state["rollout"] = rollout
     if cycle_completed:
         state["last_completed_rollout"] = rollout
+    else:
+        last_completed_cycle = int(state.get("last_completed_cycle", 0) or 0)
+        last_successful = state.get("last_successful_batch", {})
+        existing_completed = state.get("last_completed_rollout", {})
+        if (
+            last_completed_cycle > 0
+            and isinstance(last_successful, dict)
+            and int(last_successful.get("cycle", 0) or 0) == last_completed_cycle
+            and bool(last_successful.get("cycle_completed", False))
+        ):
+            recovered_tickers = {
+                str(value).strip().upper()
+                for value in last_successful.get("completed_cycle_tickers", [])
+                if str(value).strip().upper() in set(universe)
+            }
+            recovered_completed = _rollout_progress(
+                state=state,
+                cycle=last_completed_cycle,
+                completed_tickers=recovered_tickers,
+                universe_size=len(universe),
+                batch_size=batch_size,
+                cycle_completed=True,
+            )
+            existing_dates = {
+                str(value).strip()
+                for value in (
+                    existing_completed.get("successful_dates", [])
+                    if isinstance(existing_completed, dict)
+                    else []
+                )
+                if str(value).strip()
+            }
+            recovered_dates = set(recovered_completed["successful_dates"])
+            existing_tickers = (
+                int(existing_completed.get("completed_tickers", 0) or 0)
+                if isinstance(existing_completed, dict)
+                else 0
+            )
+            if (
+                existing_dates.issubset(recovered_dates)
+                and recovered_completed["completed_tickers"] >= existing_tickers
+            ):
+                state["last_completed_rollout"] = recovered_completed
     _write_json(state_path, state)
 
     audit, details = _audit_cache(
@@ -613,6 +656,10 @@ def collect_deferred_eod_reconciliation(
                 {},
             )
             persisted_report["last_checked_at"] = generated_at
+            payload["rollout"] = persisted_rollout
+            payload["last_successful_batch"] = persisted_report[
+                "last_successful_batch"
+            ]
             _write_json(report_path, persisted_report)
     else:
         _write_json(report_path, payload)

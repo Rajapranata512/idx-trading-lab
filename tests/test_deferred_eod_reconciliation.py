@@ -240,6 +240,46 @@ def test_v1_migration_preserves_first_success_date_through_full_rollout(
     assert final["rollout"]["ready_for_deferred_audit"] is True
     assert final["rollout"]["final_execution_eligible"] is False
 
+    incomplete_rollout = dict(final["rollout"])
+    incomplete_rollout.update(
+        {
+            "status": "collecting",
+            "successful_dates": ["2026-08-13", "2026-08-14"],
+            "successful_date_count": 2,
+            "remaining_successful_dates": 1,
+            "ready_for_deferred_audit": False,
+        }
+    )
+    completed_state = json.loads(state_path.read_text(encoding="utf-8"))
+    completed_state["last_completed_rollout"] = incomplete_rollout
+    state_path.write_text(json.dumps(completed_state), encoding="utf-8")
+    report_path = Path(
+        settings.data.price_quality.deferred_eod_reconciliation.report_path
+    )
+    incomplete_report = json.loads(report_path.read_text(encoding="utf-8"))
+    incomplete_report["rollout"] = incomplete_rollout
+    report_path.write_text(json.dumps(incomplete_report), encoding="utf-8")
+
+    recovered = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 14, 11, tzinfo=timezone.utc),
+        fetcher=lambda *_args: pytest.fail("recovery retry must not fetch tickers"),
+        account_fetcher=lambda *_args: pytest.fail(
+            "recovery retry must not call account endpoint"
+        ),
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+    recovered_state = json.loads(state_path.read_text(encoding="utf-8"))
+    recovered_report = json.loads(report_path.read_text(encoding="utf-8"))
+
+    assert recovered["batch"]["idempotent_skip"] is True
+    assert recovered["account"]["required_calls"] == 0
+    assert recovered["rollout"]["successful_date_count"] == 3
+    assert recovered["rollout"]["ready_for_deferred_audit"] is True
+    assert recovered_state["last_completed_rollout"]["successful_date_count"] == 3
+    assert recovered_report["rollout"]["successful_date_count"] == 3
+    assert recovered_report["rollout"]["completed_tickers"] == 45
+
 
 def test_three_daily_batches_build_full_universe_five_session_research_audit(
     tmp_path: Path,
