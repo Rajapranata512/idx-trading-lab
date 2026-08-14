@@ -545,6 +545,11 @@ def test_deferred_mode_uses_yfinance_daily_without_calling_full_rest(
     today = pd.Timestamp.utcnow().strftime("%Y-%m-%d")
     one = prices[prices["ticker"].eq("T00")].tail(1).copy()
     one["date"] = today
+    one.attrs["provider_quality"] = {
+        "input_rows": 2,
+        "valid_rows": 1,
+        "dropped_incomplete_rows": 1,
+    }
 
     monkeypatch.setattr(
         RestEodProvider,
@@ -564,3 +569,4 @@ def test_deferred_mode_uses_yfinance_daily_without_calling_full_rest(
     assert source == "yfinance_primary"
     assert len(frame) == 1
     assert frame.attrs["provider_failures"] == []
+    assert frame.attrs["provider_quality"]["dropped_incomplete_rows"] == 1

@@ -427,6 +427,7 @@ def ingest_daily(
         for value in prices.attrs.get("provider_failures", [])
         if str(value).strip()
     ]
+    provider_quality = dict(prices.attrs.get("provider_quality", {}))
     prices = prices[prices["ticker"].isin(tickers)].sort_values(["ticker", "date"]).reset_index(drop=True)
     fetched_tickers = set(prices["ticker"].unique().tolist())
     missing_tickers = sorted(set(tickers) - fetched_tickers)
@@ -462,6 +463,7 @@ def ingest_daily(
         "tickers": int(to_save["ticker"].nunique()) if not to_save.empty else 0,
         "source": source,
         "provider_failures": provider_failures,
+        "provider_quality": provider_quality,
         "max_data_date": pd.Timestamp(max_date).strftime("%Y-%m-%d") if pd.notna(max_date) else "",
         "min_data_date": pd.Timestamp(min_date).strftime("%Y-%m-%d") if pd.notna(min_date) else "",
         "missing_tickers_count": len(missing_tickers),
