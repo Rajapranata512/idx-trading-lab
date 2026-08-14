@@ -97,6 +97,51 @@ def test_missing_artifact_bypasses_recent_training_interval(
     assert result["artifact_check"]["ready"] is True
 
 
+def test_missing_diagnostics_schema_triggers_one_time_retrain(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    settings = _settings(tmp_path)
+    Path(settings.model_v2.state_path).write_text(
+        json.dumps(
+            {
+                "last_success_at": datetime.utcnow().isoformat(),
+                "modes": {"t1": {"status": "trained", "walk_forward": {}}},
+            }
+        ),
+        encoding="utf-8",
+    )
+    trained = {"called": False}
+
+    monkeypatch.setattr(
+        "src.model_v2.train.load_model_bundle",
+        lambda model_dir, mode: (object(), {"trained_at": "now"}),
+    )
+    monkeypatch.setattr(
+        "src.model_v2.train._training_rows_for_mode",
+        lambda **kwargs: pd.DataFrame({"y": [0, 1] * 100}),
+    )
+
+    def fake_train_one_mode(**kwargs):
+        trained["called"] = True
+        return object(), {
+            "walk_forward": {"diagnostics_schema_version": 1},
+            "calibration": {"evaluated_on_holdout": True},
+        }
+
+    monkeypatch.setattr("src.model_v2.train._train_one_mode", fake_train_one_mode)
+    monkeypatch.setattr(
+        "src.model_v2.train.save_model_bundle",
+        lambda **kwargs: {"artifact_path": "test.joblib", "metadata_path": "test.meta.json"},
+    )
+
+    result = maybe_auto_train_model_v2(pd.DataFrame(), settings)
+
+    assert trained["called"] is True
+    assert result["artifact_check"]["forced_retrain"] is True
+    assert result["artifact_check"]["diagnostics_refresh_modes"] == ["t1"]
+
+
 def test_rollout_never_selects_fallback_rows(tmp_path: Path) -> None:
     settings = _settings(tmp_path)
     settings.risk.max_positions = 2

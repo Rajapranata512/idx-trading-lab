@@ -17,7 +17,16 @@ from src.model_v2.meta_filter import (
     build_bayesian_ticker_edge_profile,
 )
 from src.model_v2.promotion import apply_model_v2_rollout_selection
-from src.model_v2.train import _walk_forward_date_splits
+from src.model_v2.train import (
+    WALK_FORWARD_EVIDENCE_ROLE,
+    WALK_FORWARD_PROMOTION_ELIGIBLE,
+    _build_logreg_pipeline,
+    _build_walk_forward_challengers,
+    _probability_threshold_diagnostics,
+    _select_fold_challenger,
+    _training_experiment_contract,
+    _walk_forward_date_splits,
+)
 
 
 def test_auto_calibration_fits_posthoc_model_on_calibration_window() -> None:
@@ -70,6 +79,123 @@ def test_walk_forward_splits_are_purged_and_have_five_folds() -> None:
         test_start = prepared.loc[test_idx, "date"].min()
         assert (calibration_start - fit_end).days > 10
         assert (test_start - calibration_end).days > 10
+
+
+def test_probability_diagnostics_explain_zero_trade_fold() -> None:
+    diagnostics = _probability_threshold_diagnostics(
+        pd.Series([0.12, 0.31, np.nan, np.inf, 0.519]),
+        threshold=0.52,
+    )
+
+    assert diagnostics["input_rows"] == 5
+    assert diagnostics["valid_rows"] == 3
+    assert diagnostics["non_finite_rows"] == 2
+    assert diagnostics["selected_rows"] == 0
+    assert diagnostics["selected_rate_pct"] == 0.0
+    assert diagnostics["max"] == 0.519
+    assert diagnostics["abstention_reason"] == "all_probabilities_below_threshold"
+
+
+def test_probability_diagnostics_report_threshold_coverage() -> None:
+    diagnostics = _probability_threshold_diagnostics(
+        [0.4, 0.52, 0.7, 0.8],
+        threshold=0.52,
+    )
+
+    assert diagnostics["selected_rows"] == 3
+    assert diagnostics["selected_rate_pct"] == 75.0
+    assert diagnostics["median"] == 0.61
+    assert diagnostics["abstention_reason"] == "selected"
+
+
+def test_fold_challenger_selection_never_reads_outer_rows(monkeypatch) -> None:
+    fit_index = pd.Index([10, 11, 12, 13])
+    x_fit = pd.DataFrame({"score": [1.0, 2.0, 3.0, 4.0]}, index=fit_index)
+    y_fit = pd.Series([0, 1, 0, 1], index=fit_index)
+    dates_fit = pd.Series(pd.date_range("2026-01-01", periods=4), index=fit_index)
+    weights = pd.Series([1.0] * 4, index=fit_index)
+    observed_indices: list[list[int]] = []
+
+    def fake_time_cv_auc(pipeline, X, y, dates, **kwargs):
+        observed_indices.append(list(X.index))
+        class_weight = pipeline.named_steps["clf"].class_weight
+        return 0.6 if class_weight == "balanced" else 0.55
+
+    monkeypatch.setattr("src.model_v2.train._time_cv_auc", fake_time_cv_auc)
+    name, _, diagnostics = _select_fold_challenger(
+        challengers=[
+            ("logreg_balanced_full", _build_logreg_pipeline("balanced")),
+            ("logreg_unweighted_full", _build_logreg_pipeline(None)),
+        ],
+        x_fit=x_fit,
+        y_fit=y_fit,
+        dates_fit=dates_fit,
+        sample_weight_fit=weights,
+        gap_dates=1,
+        tree_min_cv_auc_gain=0.02,
+    )
+
+    assert name == "logreg_balanced_full"
+    assert observed_indices == [list(fit_index), list(fit_index)]
+    assert diagnostics["outer_test_used_for_selection"] is False
+    assert diagnostics["selected_cv_auc"] == 0.6
+
+
+def test_walk_forward_challengers_include_bounded_feature_ablations() -> None:
+    challengers = dict(_build_walk_forward_challengers())
+
+    assert "logreg_balanced_full" in challengers
+    assert "logreg_unweighted_full" in challengers
+    assert "logreg_balanced_no_raw_levels" in challengers
+    assert "logreg_balanced_no_score" in challengers
+    assert (
+        getattr(
+            challengers["logreg_balanced_no_raw_levels"],
+            "_model_v2_feature_contract",
+        )
+        == "model-v2-no-raw-levels-v1"
+    )
+
+
+def test_challenger_comparison_is_never_promotion_evidence() -> None:
+    assert WALK_FORWARD_EVIDENCE_ROLE == "nested_challenger_selection_research"
+    assert WALK_FORWARD_PROMOTION_ELIGIBLE is False
+
+
+def test_training_experiment_identity_is_order_stable_and_data_sensitive() -> None:
+    settings = load_settings("config/settings.json")
+    frame = pd.DataFrame(
+        {
+            "date": ["2026-01-02", "2026-01-01"],
+            "ticker": ["BBB", "AAA"],
+            "score": [90.0, 95.0],
+            "y": [0, 1],
+            "net_return": [-0.2, 0.4],
+        }
+    )
+    challengers = _build_walk_forward_challengers()
+
+    first = _training_experiment_contract(frame, "t1", settings, 1, challengers)
+    reordered = _training_experiment_contract(
+        frame.iloc[::-1].reset_index(drop=True),
+        "t1",
+        settings,
+        1,
+        challengers,
+    )
+    changed = frame.copy()
+    changed.loc[0, "y"] = 1
+    changed_contract = _training_experiment_contract(
+        changed,
+        "t1",
+        settings,
+        1,
+        challengers,
+    )
+
+    assert first["experiment_id"] == reordered["experiment_id"]
+    assert first["training_frame_sha256"] == reordered["training_frame_sha256"]
+    assert first["experiment_id"] != changed_contract["experiment_id"]
 
 
 def test_bayesian_ticker_edge_waits_for_samples_then_blocks(tmp_path: Path) -> None:
