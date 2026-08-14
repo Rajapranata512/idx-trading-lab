@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import sys
 from datetime import datetime
+from types import SimpleNamespace
 
 import pandas as pd
 import pytest
@@ -12,6 +14,7 @@ from src.ingest.load_prices import (
     load_prices_csv,
     load_prices_from_provider,
 )
+from src.ingest.providers.yfinance_provider import YFinanceProvider
 from src.ingest.validator import validate_prices
 
 
@@ -36,6 +39,47 @@ def test_load_prices_csv_returns_canonical_columns(tmp_path):
         "ingested_at",
     ]
     assert df.loc[0, "ticker"] == "BBCA"
+
+
+def test_yfinance_provider_drops_incomplete_placeholder_rows(monkeypatch):
+    history = pd.DataFrame(
+        {
+            "Open": [100.0, float("nan")],
+            "High": [105.0, float("nan")],
+            "Low": [99.0, float("nan")],
+            "Close": [104.0, float("nan")],
+            "Volume": [1_000_000.0, float("nan")],
+        },
+        index=pd.DatetimeIndex(["2026-08-13", "2026-08-14"], name="Date"),
+    )
+
+    class FakeTicker:
+        def history(self, **_kwargs):
+            return history.copy()
+
+    monkeypatch.setitem(
+        sys.modules,
+        "yfinance",
+        SimpleNamespace(Ticker=lambda _symbol: FakeTicker()),
+    )
+
+    result = YFinanceProvider().fetch_daily(
+        end_date="2026-08-14",
+        tickers=["BBCA"],
+    )
+
+    assert result[["date", "ticker", "close"]].to_dict(orient="records") == [
+        {"date": "2026-08-13", "ticker": "BBCA", "close": 104.0}
+    ]
+    assert result.attrs["provider_quality"] == {
+        "input_rows": 2,
+        "valid_rows": 1,
+        "dropped_incomplete_rows": 1,
+        "dropped_ticker_count": 1,
+        "dropped_tickers_sample": ["BBCA"],
+        "dropped_date_count": 1,
+        "dropped_dates_sample": ["2026-08-14"],
+    }
 
 
 def test_validate_prices_missing_column_raises():

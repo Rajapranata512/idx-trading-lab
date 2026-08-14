@@ -62,8 +62,10 @@ def load_prices_from_provider(
                 end_date=end_date,
                 tickers=tickers,
             )
+            provider_quality = dict(raw.attrs.get("provider_quality", {}))
             canonical, _ = validate_prices(raw, source="yfinance_primary")
             canonical.attrs["provider_failures"] = []
+            canonical.attrs["provider_quality"] = provider_quality
             return canonical, "yfinance_primary"
         except Exception as exc:
             failures.append(f"yfinance_primary={_format_provider_error(exc)}")
@@ -107,8 +109,10 @@ def load_prices_from_provider(
                 try:
                     yf_provider = YFinanceProvider(settings.data.provider.yfinance_ticker_suffix)
                     raw = yf_provider.fetch_daily(start_date=start_date, end_date=end_date, tickers=tickers)
+                    provider_quality = dict(raw.attrs.get("provider_quality", {}))
                     canonical, _ = validate_prices(raw, source="yfinance_fallback")
                     canonical.attrs["provider_failures"] = list(failures)
+                    canonical.attrs["provider_quality"] = provider_quality
                     return canonical, "yfinance_fallback"
                 except Exception as yf_exc:
                     failures.append(f"yfinance_fallback={_format_provider_error(yf_exc)}")
