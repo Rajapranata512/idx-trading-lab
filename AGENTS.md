@@ -38,6 +38,8 @@ After a new session, token reset, or context compaction:
    worktree or task branch without resetting user work.
 6. Classify the task, follow one route below, and stop reading when the affected
    contract, source file, and nearest test are known.
+7. Unless the latest request pauses or redirects work, begin the PRD Next Action
+   immediately. Do not spend a turn asking whether to continue.
 
 Default recovery budget: this file, four short PRD sections, one optional context
 document, one or two source files, one or two nearest tests, and one specific report
@@ -94,9 +96,9 @@ full suites for narrow edits, regenerate reports merely to inspect known fields,
 append activity diaries. Do not ask whether to continue when the next internally
 safe step is already inside the user's explicit objective.
 
-## 6. Autonomous Work Loop
+## 6. Continuous Autonomous Execution Loop
 
-Within the current session and the user's objective:
+Continuation is the default. Within an active session and the user's objective:
 
 1. Select the highest-priority unblocked item from PRD Next Action.
 2. Confirm its requirement ID, safety boundary, affected files, and test.
@@ -105,25 +107,60 @@ Within the current session and the user's objective:
 5. Inspect the diff for unrelated changes, secrets, and generated churn.
 6. Update only material PRD state as described in section 11.
 7. Set exactly one recommended next action.
-8. Continue only when the next item remains in scope, is locally safe, and has no
-   external side effect.
+8. If that action is unblocked, in scope, and allowed by section 7, start it in the
+   same session instead of ending with a recommendation.
+9. Repeat the loop while each iteration produces a measurable code, test, data-quality,
+   reliability, documentation, or deployment improvement.
 
-Do not claim background or asynchronous work. Stop at a real boundary and report it.
+A completed milestone is not a handoff boundary while a safe PRD Next Action remains.
+Do not ask the user to continue, do not merely restate the recommendation, and do not
+repeat repository orientation between iterations. Treat the recommendation as the next
+work item and route back to step 1.
+
+The maximum autonomous point is reached only when all currently unblocked roadmap work
+is complete and every remaining item meets at least one terminal boundary:
+
+- it requires a missing credential, licensed dataset, external account change, elapsed
+  real-market evidence, or a product/risk decision that cannot be inferred safely;
+- it requires an external side effect outside the standing authorization in section 7;
+- it would weaken a data, model, risk, security, reconciliation, or execution gate;
+- the same evidence-backed remediation has failed and no new diagnostic path remains;
+- acceptance criteria are satisfied and PRD has no further material unblocked action;
+- the user explicitly asks to pause, stop, discuss, or report status only.
+
+At a terminal boundary, record the exact blocker, preserve one resumable Next Action,
+and report the highest completed point. Continuous execution means persistence within
+available active sessions plus deterministic recovery from AGENTS/PRD; never claim
+background or asynchronous work after a response ends.
 
 ## 7. External Side-Effect Boundary
 
-Explicit user approval is required before:
+Approval may be one-time, task-scoped, or standing. Do not repeatedly request approval
+for an unchanged scope already granted by the user and recorded here or in PRD.
 
-- pushing, force-pushing, merging, opening a PR, or changing branch protection;
-- deploying or changing Vercel production settings;
-- sending Telegram messages or triggering production workflows;
-- changing secrets, credentials, admin accounts, or external services;
-- enabling live, canary, or final rollout;
-- activating a live broker account or placing any real broker order;
+The repository owner's continuous-execution directive is standing authorization for:
+
+- local implementation, tests, documentation, and conservative cleanup;
+- creating task branches and commits, pushing them, opening PRs, and merging only after
+  applicable local validation and required repository checks pass;
+- ordinary configured CI, data-refresh jobs, and passive Vercel deployments triggered
+  by those approved repository updates;
+- read-only GitHub, workflow, provider-status, and public-deployment verification.
+
+This standing authorization never includes:
+
+- force-pushing, rewriting shared history, or changing branch protection;
+- manually dispatching a production workflow, changing Vercel production settings, or
+  sending Telegram messages;
+- changing secrets, credentials, admin accounts, billing, or external services;
+- enabling shadow-to-canary, live, or final model rollout;
+- activating a broker account, submitting an order, or changing
+  `EXECUTION_DISABLED`;
 - deleting non-reproducible data, model artifacts, audit evidence, or user files.
 
-Local implementation, focused tests, documentation maintenance, and conservative
-cleanup can proceed when requested. A successful local test is not a deployment.
+The latest user request can narrow or revoke standing authorization at any time. A
+successful local test is not a deployment, and passive deployment is not execution
+authorization.
 
 ## 8. Trading And Model Safety Invariants
 
@@ -252,6 +289,9 @@ Do not add formatting churn, generated timestamps, assumptions, repetitive comma
 logs, or scores copied from screenshots. Replace stale state instead of appending a
 second version. Add at most one Decision Log entry per material decision.
 
+After updating PRD, return to section 6 and execute its Next Action unless a terminal
+boundary applies. PRD maintenance is a checkpoint, not a reason to stop.
+
 ## 12. Cleanup Policy
 
 A file may be deleted automatically only when all are true:
@@ -268,7 +308,7 @@ file is not automatically unnecessary.
 
 ## 13. Definition Of Done And Handoff
 
-A task is complete only when:
+A material milestone is complete only when:
 
 - requested behavior or analysis is delivered;
 - focused validation passes, or the exact blocker is recorded;
@@ -276,7 +316,10 @@ A task is complete only when:
 - PRD material state and Next Action are current;
 - Git and external-side-effect state are stated honestly.
 
-The final handoff states: what changed, tests/evidence, remaining blocker, whether
-work was committed/pushed/deployed, and one recommended next action.
+Do not send a final handoff after an intermediate milestone while another safe,
+unblocked PRD action can be executed in the active session. A final handoff is for a
+terminal boundary, an achieved end state, or an explicit user pause/status request.
+It states: what changed, tests/evidence, remaining blocker, whether work was
+committed/pushed/deployed, and one resumable next action.
 
 Never say production, final decision, deployed, or accurate without current evidence.

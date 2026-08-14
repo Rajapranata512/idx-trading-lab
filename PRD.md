@@ -20,6 +20,10 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   every model, regime, risk, execution, security, and reconciliation gate passes.
 - Current state: `EXECUTION_DISABLED`; Model V2 is `SHADOW/BLOCKED`,
   rollout 0%, and no broker order is authorized.
+- Standing development authority: continue unblocked PRD actions through implementation,
+  validation, commit, PR, merge, configured CI/data refresh, and passive Vercel sync
+  without asking for `lanjutkan` again. Telegram, secrets, manual workflow dispatch,
+  model rollout, and broker execution remain separately authorized.
 - Evidence: production run `31796307962` verified the completed deferred rollout at
   3/3 dates and 45/45 tickers, used zero provider calls on recovery, and published
   artifact commit `b85ade4` to `origin/main` for Vercel deployment.
@@ -720,6 +724,10 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-14: established continuous autonomous execution as the repository default.
+  Agents now move directly from a completed milestone to the next safe PRD action and
+  reuse standing development-publication authority without repetitive prompts. Explicit
+  stop conditions preserve licensed-data, external-service, rollout, and broker controls.
 - 2026-08-14: completed DATA-03C delayed research rollout through PR #13 and PR #14.
   Production run `31796307962` recovered 3/3 unique dates and 45/45 tickers with zero
   provider calls; artifact `b85ade4` reports 100% five-session coverage, 1.7778% aggregate
