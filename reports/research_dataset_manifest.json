@@ -39,6 +39,7 @@
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "active_universe",
       "path": "data/reference/universe_lq45_idx30.csv",
       "required": true,
@@ -104,17 +105,18 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-08-14T13:04:35.779014+00:00",
+          "max": "2026-08-14T13:15:36.636954+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "adjusted_prices",
       "path": "data/processed/prices_daily_adjusted.csv",
       "required": true,
       "role": "feature_price_input",
       "rows": 53021,
-      "sha256": "898ef8ea8049eda634f09f8ecb0399083f403800957d371c43c01ffe211b7667",
+      "sha256": "0dd48fbfa3659485dc831e7126273ad62ef873fd5692feed4345ed8158a6075f",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -166,17 +168,18 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-08-14T13:04:35.779014+00:00",
+          "max": "2026-08-14T13:15:36.636954+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "canonical_prices",
       "path": "data/raw/prices_daily.csv",
       "required": true,
       "role": "raw_canonical_price_audit",
       "rows": 53021,
-      "sha256": "a3c0d82ae5ce205c8b76af48db7b1ecc78941ae108bf00fbbbe8da7231749979",
+      "sha256": "74ef1955ca27fe023cddf7020af898864358591bc48b25963b620e900a47cc89",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -212,6 +215,7 @@
       ],
       "date_coverage": {},
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "corporate_actions",
       "path": "data/reference/corporate_actions.csv",
       "required": true,
@@ -269,17 +273,18 @@
           "min": "2026-06-29T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-08-14T13:07:34.455285+00:00",
-          "min": "2026-08-14T13:07:34.455285+00:00"
+          "max": "2026-08-14T13:16:23.250302+00:00",
+          "min": "2026-08-14T13:16:23.250302+00:00"
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "deferred_reconciliation_cache",
       "path": "data/raw/deferred_eodhd_reference.csv",
       "required": true,
       "role": "independent_delayed_price_reference",
       "rows": 1500,
-      "sha256": "11b92518e24d968a3f7096ab27e3257aa194c1ad875f491d75b354ab4877a45f",
+      "sha256": "d023fa8284762896d7032e24e23e2f63f6d22f8c235918656b6379c2c27a025d",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 45
@@ -324,6 +329,7 @@
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "deferred_reconciliation_details",
       "path": "reports/deferred_eod_reconciliation_details.csv",
       "required": true,
@@ -338,12 +344,13 @@
     {
       "byte_size": 6054,
       "format": "json",
+      "hash_mode": "normalized_utf8_lf",
       "json_type": "dict",
       "name": "deferred_reconciliation_report",
       "path": "reports/deferred_eod_reconciliation.json",
       "required": true,
       "role": "independent_price_comparison_summary",
-      "sha256": "eebf2d37b68cc1eb765157c4610b73fa252c0136be3e62d8e50d0fe1e08f03b2",
+      "sha256": "b765d921b53fca9dc1ac06a5a7c1b50b937a785178d4d0fcff8d1a1e0d39a036",
       "top_level_keys": [
         "account",
         "artifacts",
@@ -365,7 +372,7 @@
       ]
     },
     {
-      "byte_size": 14068389,
+      "byte_size": 14066516,
       "columns": [
         {
           "dtype": "datetime64[us]",
@@ -570,17 +577,18 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-08-14T13:04:36.719441+00:00",
-          "min": "2026-08-14T13:04:36.719441+00:00"
+          "max": "2026-08-14T13:15:37.284651+00:00",
+          "min": "2026-08-14T13:15:37.284651+00:00"
         }
       },
       "format": "parquet",
+      "hash_mode": "binary_bytes",
       "name": "features",
       "path": "data/processed/features.parquet",
       "required": true,
       "role": "model_feature_matrix",
       "rows": 53021,
-      "sha256": "36cb4ddb2e9a8f470915eca1adcc601bf686c8d8f6b6bf8f43bf1a91c10f7ea9",
+      "sha256": "f8b3b7d74d260da7131d5f837ce377e4940ffbd0e936b142f4dae9aa343df197",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -665,6 +673,7 @@
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "price_reconciliation_incidents",
       "path": "data/reference/price_reconciliation_incidents.csv",
       "required": true,
@@ -723,6 +732,7 @@
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "universe_history",
       "path": "data/reference/universe_history.csv",
       "required": true,
@@ -765,6 +775,7 @@
         }
       },
       "format": "csv",
+      "hash_mode": "normalized_utf8_lf",
       "name": "verified_price_events",
       "path": "data/reference/verified_price_events.csv",
       "required": true,
@@ -777,7 +788,7 @@
       }
     }
   ],
-  "dataset_id": "d54bfe554db0caa8b2e59196e279684a56c606c93d7abb31d547eb0ce6b49949",
+  "dataset_id": "7481f3dfff62621cf7d52b3865b9a39028515fb7b34fa9f28997411d71f16b86",
   "feature_contract": {
     "canonical_input_columns": [
       "date",
@@ -845,11 +856,11 @@
     "sha256": "d84dc909e8f4fef2749724a459915db8054524f105b76b597a2b2b6c6ec2d9ad",
     "version": "eod-technical-v1"
   },
-  "manifest_schema_version": 1,
+  "manifest_schema_version": 2,
   "safety": {
     "contains_data_payloads": false,
     "contains_secrets": false,
     "final_execution_eligible": false
   },
-  "source_revision": "40fcb23b32d1493ea276cb1abcd2f185bebe783f"
+  "source_revision": "5a2100a0b4281f61ec733e4c81e642fd85a680f7"
 }
