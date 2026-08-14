@@ -24,17 +24,17 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   validation, commit, PR, merge, configured CI/data refresh, and passive Vercel sync
   without asking for `lanjutkan` again. Telegram, secrets, manual workflow dispatch,
   model rollout, and broker execution remain separately authorized.
-- Evidence: production run `31796307962` verified the completed deferred rollout at
-  3/3 dates and 45/45 tickers, used zero provider calls on recovery, and published
-  artifact commit `b85ade4` to `origin/main` for Vercel deployment.
+- Evidence: production run `31801281241` verified the completed deferred rollout at
+  3/3 dates, 45/45 tickers, and 225/225 rows with zero mismatch, used zero provider
+  calls on retry, and published artifact `44f4fb0` to `origin/main`.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
   interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
   batch once per Jakarta date until delayed research coverage is complete.
 - Deferred evidence can improve historical data auditing, but it is explicitly
   `final_execution_eligible=false`; same-day independent reconciliation remains unavailable.
 - Primary blocker: same-day provider capacity and then statistical quality, not UI score quantity.
-- Next Action: investigate and disposition the four 2026-08-06 deferred close mismatches
-  without rewriting raw evidence or weakening the audit threshold.
+- Next Action: create a deterministic, versioned research-dataset manifest and feature
+  contract so every model result can be reproduced from explicit source artifacts.
 - Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
   IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
@@ -194,14 +194,16 @@ Last verified on 2026-08-14:
   reserve protects against quota variance.
 - Deferred cycle 1 completed across 2026-08-12, 2026-08-13, and 2026-08-14. Cache
   coverage is 45/45 (100%), with 22 fully covered historical sessions.
-- The five-session deferred audit compared 225/225 rows at 100% coverage. Four rows
-  differ by more than 1%, producing an overall mismatch ratio of 1.7778%, below the
-  5% research threshold; the audit status is `pass`.
-- All four mismatches occur on 2026-08-06: ISAT 1.0526%, MAPI 1.4793%, MBMA 1.8868%,
-  and TLKM 1.5094%. They require source-level disposition before this interim data path
-  is considered fully explained.
-- Recovery run `31796307962` used `idempotent_skip=true`, selected zero tickers,
-  skipped the account endpoint, and reported `required_calls=0`.
+- DATA-03D traced the four 2026-08-06 differences to mixed string/Timestamp
+  `ingested_at` ordering, which retained stale `yfinance_fallback` rows. A fresh Yahoo
+  fetch matched EODHD close and volume for ISAT, MAPI, MBMA, and TLKM.
+- PR #17 normalized canonical merge ordering and production run `31800492500` refreshed
+  all four rows. PR #18 made idempotent retries persist the newly computed audit instead
+  of retaining the previous report payload.
+- Production run `31801281241` used `idempotent_skip=true`, selected zero tickers,
+  skipped the provider account endpoint, and reported `required_calls=0`. Artifact
+  `44f4fb0` records 225/225 rows, 100% coverage, zero mismatch, research eligibility,
+  and `final_execution_eligible=false`.
 - Cycle-report hardening preserves successful run history, prevents empty retries from
   replacing the latest success report, and records 45/45 completion before advancing
   state to the next cycle.
@@ -224,8 +226,8 @@ Last verified on 2026-08-14:
   progress, audit readiness, last-check time, and fail-closed final eligibility.
 - Production workflows use the Node.js 24 generations of GitHub checkout, Python setup,
   and cache actions; a repository-wide contract prevents Node.js 20 action regressions.
-- Deferred migration validation: 7 direct tests and the full 190-test Python regression
-  pass.
+- Deferred reconciliation validation: 8 direct tests and the full 192-test Python
+  regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
 - `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
@@ -636,28 +638,31 @@ and engineering quality without assuming guaranteed returns.
 
 ## Next Action
 
-`DATA-03D Deferred mismatch disposition` is the single next action.
+`DATA-04A Reproducible research dataset manifest` is the single next action.
 
-DATA-03C is complete for delayed research evidence: production has 3/3 dates, 45/45
-ticker coverage, and a passing five-session aggregate audit. Four 2026-08-06 close
-differences remain unexplained and must be resolved without modifying raw observations.
+DATA-03D is complete. Production evidence now has 3/3 dates, 45/45 ticker coverage,
+225/225 compared rows, and zero unexplained mismatch. The next unblocked Phase 3 need
+is deterministic dataset identity and a machine-readable feature contract.
 
 Acceptance criteria:
 
-1. Trace ISAT, MAPI, MBMA, and TLKM on 2026-08-06 through immutable Yahoo and EODHD
-   evidence, including session date, adjustment semantics, and corporate-action context.
-2. Classify each difference as a provider convention, verified market event, or source
-   defect. Store evidence and rationale; never overwrite raw closes to force agreement.
-3. Repair ingestion only when a source-contract defect is proven. Legitimate provider
-   differences remain visible and receive a durable, reviewable annotation.
-4. Rerun the five-session audit at 100% coverage, keep aggregate mismatch at or below 5%,
-   and ensure every mismatch has a disposition with no active unexplained anomaly.
-5. Keep `same_day_reconciliation=false`, `final_execution_eligible=false`, and Model V2
-   blocked. DATA-03B still requires sufficient licensed same-day capacity.
-6. Record measured evidence and replace this section with exactly one successor action.
+1. Define a versioned manifest schema for canonical prices, adjusted prices, features,
+   point-in-time universe, corporate actions, event annotations, and reconciliation
+   evidence. Record path, SHA-256, byte size, row count, columns/dtypes, date coverage,
+   and ticker coverage where applicable.
+2. Generate the manifest deterministically without network access or wall-clock-dependent
+   identity. Bind it to the Git source revision and explicit feature-contract version.
+3. Add a validator and regression tests that fail on missing required artifacts, invalid
+   schema, hash mismatch, or an undeclared feature-contract change.
+4. Integrate generation after feature computation and export the machine-readable artifact
+   for CI/portfolio reproducibility without exposing secrets or licensed raw payloads.
+5. Keep all trading states unchanged: `EXECUTION_DISABLED`, Model V2 `SHADOW/BLOCKED`,
+   rollout 0%, and `final_execution_eligible=false`.
+6. Validate locally and in production, record measured evidence, and replace this section
+   with exactly one successor action.
 
-Likely files: immutable source evidence, verified event/annotation data, deferred audit
-details, nearest data-quality tests, runbook, and this PRD.
+Likely files: a focused manifest module, CLI/pipeline integration, configuration or
+contract constants, tests, report export list, data-lineage documentation, and this PRD.
 
 ## 11. Portfolio Release Checklist
 
@@ -724,6 +729,11 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-14: completed DATA-03D through PR #17 and PR #18. Mixed-type ingestion
+  timestamps had retained four stale Yahoo fallback rows; normalized UTC ordering fixed
+  the canonical merge, and idempotent retries now refresh persisted audits without
+  provider calls. Production run `31801281241` published artifact `44f4fb0` with 225/225
+  rows, zero mismatch, and research-only eligibility. DATA-04A dataset identity is next.
 - 2026-08-14: established continuous autonomous execution as the repository default.
   Agents now move directly from a completed milestone to the next safe PRD action and
   reuse standing development-publication authority without repetitive prompts. Explicit

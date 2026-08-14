@@ -141,6 +141,11 @@ equal or invalid timestamp ties. A provider refetch may therefore correct a stal
 canonical snapshot, while the incident registry and referenced Git commit preserve the
 original values for audit. Never copy the reference close into the primary dataset.
 
+A same-day idempotent collector retry does not call the provider or replace the last
+successful batch metadata. It does recompute and persist audit status, detail rows,
+eligibility, artifact hashes, and `last_checked_at` from the current canonical dataset so
+the public report cannot retain a resolved mismatch.
+
 The static dashboard Operations page loads the deferred report directly. It shows
 ticker/date progress, audit readiness, last-check time, and final-execution eligibility;
 missing or incomplete evidence is displayed as waiting/blocked rather than inferred.
