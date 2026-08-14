@@ -1,0 +1,855 @@
+{
+  "artifacts": [
+    {
+      "byte_size": 8257,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "str",
+          "name": "index"
+        },
+        {
+          "dtype": "str",
+          "name": "effective_from"
+        },
+        {
+          "dtype": "str",
+          "name": "effective_until"
+        },
+        {
+          "dtype": "str",
+          "name": "source"
+        },
+        {
+          "dtype": "str",
+          "name": "source_document"
+        }
+      ],
+      "date_coverage": {
+        "effective_from": {
+          "max": "2026-08-03T00:00:00+00:00",
+          "min": "2026-08-03T00:00:00+00:00"
+        },
+        "effective_until": {
+          "max": "2026-10-30T00:00:00+00:00",
+          "min": "2026-10-30T00:00:00+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "active_universe",
+      "path": "data/reference/universe_lq45_idx30.csv",
+      "required": true,
+      "role": "point_in_time_universe_current",
+      "rows": 45,
+      "sha256": "7363b0e3719afa27b468b23672f005d7ad65b235a435aba64ea5f8c9f207be2d",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 45
+      }
+    },
+    {
+      "byte_size": 5784291,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "date"
+        },
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "float64",
+          "name": "open"
+        },
+        {
+          "dtype": "float64",
+          "name": "high"
+        },
+        {
+          "dtype": "float64",
+          "name": "low"
+        },
+        {
+          "dtype": "float64",
+          "name": "close"
+        },
+        {
+          "dtype": "float64",
+          "name": "volume"
+        },
+        {
+          "dtype": "str",
+          "name": "source"
+        },
+        {
+          "dtype": "str",
+          "name": "ingested_at"
+        },
+        {
+          "dtype": "float64",
+          "name": "adjustment_factor"
+        },
+        {
+          "dtype": "str",
+          "name": "price_basis"
+        }
+      ],
+      "date_coverage": {
+        "date": {
+          "max": "2026-08-14T00:00:00+00:00",
+          "min": "2021-06-30T00:00:00+00:00"
+        },
+        "ingested_at": {
+          "max": "2026-08-14T13:04:35.779014+00:00",
+          "min": "2026-05-19T07:25:56.245063+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "adjusted_prices",
+      "path": "data/processed/prices_daily_adjusted.csv",
+      "required": true,
+      "role": "feature_price_input",
+      "rows": 53021,
+      "sha256": "898ef8ea8049eda634f09f8ecb0399083f403800957d371c43c01ffe211b7667",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 56
+      }
+    },
+    {
+      "byte_size": 5360093,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "date"
+        },
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "float64",
+          "name": "open"
+        },
+        {
+          "dtype": "float64",
+          "name": "high"
+        },
+        {
+          "dtype": "float64",
+          "name": "low"
+        },
+        {
+          "dtype": "float64",
+          "name": "close"
+        },
+        {
+          "dtype": "float64",
+          "name": "volume"
+        },
+        {
+          "dtype": "str",
+          "name": "source"
+        },
+        {
+          "dtype": "str",
+          "name": "ingested_at"
+        }
+      ],
+      "date_coverage": {
+        "date": {
+          "max": "2026-08-14T00:00:00+00:00",
+          "min": "2021-06-30T00:00:00+00:00"
+        },
+        "ingested_at": {
+          "max": "2026-08-14T13:04:35.779014+00:00",
+          "min": "2026-05-19T07:25:56.245063+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "canonical_prices",
+      "path": "data/raw/prices_daily.csv",
+      "required": true,
+      "role": "raw_canonical_price_audit",
+      "rows": 53021,
+      "sha256": "a3c0d82ae5ce205c8b76af48db7b1ecc78941ae108bf00fbbbe8da7231749979",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 56
+      }
+    },
+    {
+      "byte_size": 54,
+      "columns": [
+        {
+          "dtype": "object",
+          "name": "ticker"
+        },
+        {
+          "dtype": "object",
+          "name": "effective_date"
+        },
+        {
+          "dtype": "object",
+          "name": "action_type"
+        },
+        {
+          "dtype": "object",
+          "name": "ratio"
+        },
+        {
+          "dtype": "object",
+          "name": "status"
+        },
+        {
+          "dtype": "object",
+          "name": "source"
+        }
+      ],
+      "date_coverage": {},
+      "format": "csv",
+      "name": "corporate_actions",
+      "path": "data/reference/corporate_actions.csv",
+      "required": true,
+      "role": "price_adjustment_events",
+      "rows": 0,
+      "sha256": "292fd97120537a9da802734e953f925009743d546292a8327325631e2eb3fee4",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 0
+      }
+    },
+    {
+      "byte_size": 129263,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "date"
+        },
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "int64",
+          "name": "open"
+        },
+        {
+          "dtype": "int64",
+          "name": "high"
+        },
+        {
+          "dtype": "int64",
+          "name": "low"
+        },
+        {
+          "dtype": "int64",
+          "name": "close"
+        },
+        {
+          "dtype": "int64",
+          "name": "volume"
+        },
+        {
+          "dtype": "str",
+          "name": "source"
+        },
+        {
+          "dtype": "str",
+          "name": "ingested_at"
+        }
+      ],
+      "date_coverage": {
+        "date": {
+          "max": "2026-08-14T00:00:00+00:00",
+          "min": "2026-06-29T00:00:00+00:00"
+        },
+        "ingested_at": {
+          "max": "2026-08-14T13:07:34.455285+00:00",
+          "min": "2026-08-14T13:07:34.455285+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "deferred_reconciliation_cache",
+      "path": "data/raw/deferred_eodhd_reference.csv",
+      "required": true,
+      "role": "independent_delayed_price_reference",
+      "rows": 1500,
+      "sha256": "11b92518e24d968a3f7096ab27e3257aa194c1ad875f491d75b354ab4877a45f",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 45
+      }
+    },
+    {
+      "byte_size": 9659,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "date"
+        },
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "float64",
+          "name": "close_primary"
+        },
+        {
+          "dtype": "int64",
+          "name": "close_reference"
+        },
+        {
+          "dtype": "bool",
+          "name": "matched"
+        },
+        {
+          "dtype": "float64",
+          "name": "close_diff_pct"
+        },
+        {
+          "dtype": "bool",
+          "name": "mismatch"
+        }
+      ],
+      "date_coverage": {
+        "date": {
+          "max": "2026-08-11T00:00:00+00:00",
+          "min": "2026-08-05T00:00:00+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "deferred_reconciliation_details",
+      "path": "reports/deferred_eod_reconciliation_details.csv",
+      "required": true,
+      "role": "independent_price_comparison_rows",
+      "rows": 225,
+      "sha256": "add88bb21ad0b0aa9a1876b57391856902b9fa995faee0de53242591b12e1d90",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 45
+      }
+    },
+    {
+      "byte_size": 6054,
+      "format": "json",
+      "json_type": "dict",
+      "name": "deferred_reconciliation_report",
+      "path": "reports/deferred_eod_reconciliation.json",
+      "required": true,
+      "role": "independent_price_comparison_summary",
+      "sha256": "eebf2d37b68cc1eb765157c4610b73fa252c0136be3e62d8e50d0fe1e08f03b2",
+      "top_level_keys": [
+        "account",
+        "artifacts",
+        "audit",
+        "batch",
+        "final_execution_eligible",
+        "generated_at",
+        "last_checked_at",
+        "last_successful_batch",
+        "message",
+        "mode",
+        "research_evidence_eligible",
+        "rollout",
+        "run_date",
+        "same_day_reconciliation",
+        "schema_version",
+        "sources",
+        "status"
+      ]
+    },
+    {
+      "byte_size": 14068389,
+      "columns": [
+        {
+          "dtype": "datetime64[us]",
+          "name": "date"
+        },
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "float64",
+          "name": "open"
+        },
+        {
+          "dtype": "float64",
+          "name": "high"
+        },
+        {
+          "dtype": "float64",
+          "name": "low"
+        },
+        {
+          "dtype": "float64",
+          "name": "close"
+        },
+        {
+          "dtype": "float64",
+          "name": "volume"
+        },
+        {
+          "dtype": "str",
+          "name": "source"
+        },
+        {
+          "dtype": "datetime64[us]",
+          "name": "ingested_at"
+        },
+        {
+          "dtype": "float64",
+          "name": "ret_1d"
+        },
+        {
+          "dtype": "float64",
+          "name": "ret_5d"
+        },
+        {
+          "dtype": "float64",
+          "name": "ret_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "ma_20"
+        },
+        {
+          "dtype": "float64",
+          "name": "ma_50"
+        },
+        {
+          "dtype": "float64",
+          "name": "ma_200"
+        },
+        {
+          "dtype": "float64",
+          "name": "vol_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "avg_vol_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "turnover"
+        },
+        {
+          "dtype": "float64",
+          "name": "turnover_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "rsi_14"
+        },
+        {
+          "dtype": "float64",
+          "name": "atr_14"
+        },
+        {
+          "dtype": "float64",
+          "name": "atr_pct"
+        },
+        {
+          "dtype": "float64",
+          "name": "ma_slope_20"
+        },
+        {
+          "dtype": "float64",
+          "name": "ma_slope_50"
+        },
+        {
+          "dtype": "float64",
+          "name": "dist_ma_20"
+        },
+        {
+          "dtype": "float64",
+          "name": "dist_ma_50"
+        },
+        {
+          "dtype": "float64",
+          "name": "vol_60d"
+        },
+        {
+          "dtype": "float64",
+          "name": "vol_ratio"
+        },
+        {
+          "dtype": "float64",
+          "name": "ret_5d_20d_ratio"
+        },
+        {
+          "dtype": "float64",
+          "name": "high_low_range"
+        },
+        {
+          "dtype": "float64",
+          "name": "close_position"
+        },
+        {
+          "dtype": "float64",
+          "name": "volume_ratio_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "turnover_ratio_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "rsi_slope"
+        },
+        {
+          "dtype": "float64",
+          "name": "obv_slope"
+        },
+        {
+          "dtype": "float64",
+          "name": "mfi_14"
+        },
+        {
+          "dtype": "float64",
+          "name": "high_20"
+        },
+        {
+          "dtype": "float64",
+          "name": "low_20"
+        },
+        {
+          "dtype": "float64",
+          "name": "dist_high_20"
+        },
+        {
+          "dtype": "float64",
+          "name": "dist_low_20"
+        },
+        {
+          "dtype": "float64",
+          "name": "ma_gap_20_50"
+        },
+        {
+          "dtype": "float64",
+          "name": "ma_stack_bullish"
+        },
+        {
+          "dtype": "float64",
+          "name": "rank_ret_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "rank_vol_20d"
+        },
+        {
+          "dtype": "float64",
+          "name": "market_breadth_ma20_pct"
+        },
+        {
+          "dtype": "float64",
+          "name": "market_breadth_ma50_pct"
+        },
+        {
+          "dtype": "float64",
+          "name": "market_avg_ret20_pct"
+        },
+        {
+          "dtype": "float64",
+          "name": "market_median_atr_pct"
+        },
+        {
+          "dtype": "float64",
+          "name": "relative_ret_20d"
+        }
+      ],
+      "date_coverage": {
+        "date": {
+          "max": "2026-08-14T00:00:00+00:00",
+          "min": "2021-06-30T00:00:00+00:00"
+        },
+        "ingested_at": {
+          "max": "2026-08-14T13:04:36.719441+00:00",
+          "min": "2026-08-14T13:04:36.719441+00:00"
+        }
+      },
+      "format": "parquet",
+      "name": "features",
+      "path": "data/processed/features.parquet",
+      "required": true,
+      "role": "model_feature_matrix",
+      "rows": 53021,
+      "sha256": "36cb4ddb2e9a8f470915eca1adcc601bf686c8d8f6b6bf8f43bf1a91c10f7ea9",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 56
+      }
+    },
+    {
+      "byte_size": 1973,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "market_date"
+        },
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "str",
+          "name": "primary_source"
+        },
+        {
+          "dtype": "str",
+          "name": "reference_source"
+        },
+        {
+          "dtype": "float64",
+          "name": "primary_close_before"
+        },
+        {
+          "dtype": "float64",
+          "name": "reference_close"
+        },
+        {
+          "dtype": "float64",
+          "name": "primary_volume_before"
+        },
+        {
+          "dtype": "float64",
+          "name": "reference_volume"
+        },
+        {
+          "dtype": "str",
+          "name": "classification"
+        },
+        {
+          "dtype": "str",
+          "name": "root_cause"
+        },
+        {
+          "dtype": "str",
+          "name": "status"
+        },
+        {
+          "dtype": "int64",
+          "name": "evidence_commit"
+        },
+        {
+          "dtype": "str",
+          "name": "evidence_paths"
+        },
+        {
+          "dtype": "str",
+          "name": "verification"
+        },
+        {
+          "dtype": "int64",
+          "name": "resolution_run"
+        },
+        {
+          "dtype": "str",
+          "name": "resolution_commit"
+        },
+        {
+          "dtype": "str",
+          "name": "resolved_at"
+        }
+      ],
+      "date_coverage": {
+        "market_date": {
+          "max": "2026-08-06T00:00:00+00:00",
+          "min": "2026-08-06T00:00:00+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "price_reconciliation_incidents",
+      "path": "data/reference/price_reconciliation_incidents.csv",
+      "required": true,
+      "role": "reconciliation_incident_disposition",
+      "rows": 4,
+      "sha256": "249775dc2645cffb8c2c1d306100a13c30d4f9d38077b326431814af8212232c",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 4
+      }
+    },
+    {
+      "byte_size": 31789,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "str",
+          "name": "index"
+        },
+        {
+          "dtype": "str",
+          "name": "effective_from"
+        },
+        {
+          "dtype": "str",
+          "name": "effective_until"
+        },
+        {
+          "dtype": "str",
+          "name": "source"
+        },
+        {
+          "dtype": "str",
+          "name": "source_document"
+        },
+        {
+          "dtype": "str",
+          "name": "imported_at"
+        }
+      ],
+      "date_coverage": {
+        "effective_from": {
+          "max": "2026-08-03T00:00:00+00:00",
+          "min": "2026-05-04T00:00:00+00:00"
+        },
+        "effective_until": {
+          "max": "2026-10-30T00:00:00+00:00",
+          "min": "2026-07-31T00:00:00+00:00"
+        },
+        "imported_at": {
+          "max": "2026-08-10T11:46:28.816408+00:00",
+          "min": "2026-07-20T04:49:36.885353+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "universe_history",
+      "path": "data/reference/universe_history.csv",
+      "required": true,
+      "role": "point_in_time_universe_history",
+      "rows": 150,
+      "sha256": "fd01121c830970d74814a5e6d13caeee618fb464cbf06eb64d3e3c023955ef5f",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 47
+      }
+    },
+    {
+      "byte_size": 152,
+      "columns": [
+        {
+          "dtype": "str",
+          "name": "ticker"
+        },
+        {
+          "dtype": "str",
+          "name": "event_date"
+        },
+        {
+          "dtype": "str",
+          "name": "event_type"
+        },
+        {
+          "dtype": "str",
+          "name": "status"
+        },
+        {
+          "dtype": "str",
+          "name": "source"
+        }
+      ],
+      "date_coverage": {
+        "event_date": {
+          "max": "2023-05-31T00:00:00+00:00",
+          "min": "2023-05-31T00:00:00+00:00"
+        }
+      },
+      "format": "csv",
+      "name": "verified_price_events",
+      "path": "data/reference/verified_price_events.csv",
+      "required": true,
+      "role": "non_corporate_price_event_annotations",
+      "rows": 1,
+      "sha256": "fa51685a528ea7a6a5e06e168cc41ed486f46f30c24ec8522dc69ddd24ebc2fa",
+      "ticker_coverage": {
+        "column": "ticker",
+        "unique_count": 1
+      }
+    }
+  ],
+  "dataset_id": "d54bfe554db0caa8b2e59196e279684a56c606c93d7abb31d547eb0ce6b49949",
+  "feature_contract": {
+    "canonical_input_columns": [
+      "date",
+      "ticker",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "source",
+      "ingested_at"
+    ],
+    "generator": "src.features.compute_features.compute_features",
+    "output_columns": [
+      "date",
+      "ticker",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "source",
+      "ingested_at",
+      "ret_1d",
+      "ret_5d",
+      "ret_20d",
+      "ma_20",
+      "ma_50",
+      "ma_200",
+      "vol_20d",
+      "avg_vol_20d",
+      "turnover",
+      "turnover_20d",
+      "rsi_14",
+      "atr_14",
+      "atr_pct",
+      "ma_slope_20",
+      "ma_slope_50",
+      "dist_ma_20",
+      "dist_ma_50",
+      "vol_60d",
+      "vol_ratio",
+      "ret_5d_20d_ratio",
+      "high_low_range",
+      "close_position",
+      "volume_ratio_20d",
+      "turnover_ratio_20d",
+      "rsi_slope",
+      "obv_slope",
+      "mfi_14",
+      "high_20",
+      "low_20",
+      "dist_high_20",
+      "dist_low_20",
+      "ma_gap_20_50",
+      "ma_stack_bullish",
+      "rank_ret_20d",
+      "rank_vol_20d",
+      "market_breadth_ma20_pct",
+      "market_breadth_ma50_pct",
+      "market_avg_ret20_pct",
+      "market_median_atr_pct",
+      "relative_ret_20d"
+    ],
+    "sha256": "d84dc909e8f4fef2749724a459915db8054524f105b76b597a2b2b6c6ec2d9ad",
+    "version": "eod-technical-v1"
+  },
+  "manifest_schema_version": 1,
+  "safety": {
+    "contains_data_payloads": false,
+    "contains_secrets": false,
+    "final_execution_eligible": false
+  },
+  "source_revision": "40fcb23b32d1493ea276cb1abcd2f185bebe783f"
+}
