@@ -1,7 +1,7 @@
 # Beginner Coaching Note
 
-- generated_at: 2026-08-14T13:16:21.551283
-- run_id: 20260814_131527
+- generated_at: 2026-08-14T13:44:23.257732
+- run_id: 20260814_134245
 - status: NO_TRADE
 - action_reason: Mode blocked by risk gate
 
