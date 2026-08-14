@@ -33,6 +33,16 @@ Only confirmed `stock_split` and `reverse_split` rows adjust historical OHLCV. `
 means new shares divided by old shares. Keep the source traceable; never mark an event
 confirmed from an unexplained price jump alone.
 
+## Price Reconciliation Incidents
+
+`price_reconciliation_incidents.csv` preserves source values and root-cause disposition
+for historical reconciliation differences. It is evidence, not a correction feed:
+
+- never edit a raw provider value to force agreement;
+- record the original primary/reference values and immutable evidence paths;
+- mark an incident resolved only after the ingestion fix and a rerun prove the result;
+- keep same-day and final-execution eligibility independent from incident status.
+
 ## Event Risk
 
 `event_risk_blacklist.csv` blocks risky tickers from live signals. The frequently refreshed

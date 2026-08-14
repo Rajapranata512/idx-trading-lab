@@ -6,7 +6,14 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.cli import _apply_liquidity_cost_estimate, compute_features_step, ingest_daily, run_daily, score_step
+from src.cli import (
+    _apply_liquidity_cost_estimate,
+    _merge_with_existing_prices,
+    compute_features_step,
+    ingest_daily,
+    run_daily,
+    score_step,
+)
 from src.config import load_settings
 
 
@@ -98,6 +105,53 @@ def _write_runtime_files(tmp_path: Path) -> Path:
     settings_path = tmp_path / "config/settings.json"
     settings_path.write_text(json.dumps(settings), encoding="utf-8")
     return settings_path
+
+
+def test_daily_merge_prefers_newer_timestamp_across_mixed_timestamp_types(
+    tmp_path: Path,
+):
+    path = tmp_path / "prices.csv"
+    pd.DataFrame(
+        [
+            {
+                "date": "2026-08-06",
+                "ticker": "ISAT",
+                "open": 1895.0,
+                "high": 1925.0,
+                "low": 1865.0,
+                "close": 1920.0,
+                "volume": 20_146_600.0,
+                "source": "yfinance_fallback",
+                "ingested_at": "2026-08-06 12:17:34.047669",
+            }
+        ]
+    ).to_csv(path, index=False)
+    incoming = pd.DataFrame(
+        [
+            {
+                "date": pd.Timestamp("2026-08-06"),
+                "ticker": "ISAT",
+                "open": 1895.0,
+                "high": 1925.0,
+                "low": 1865.0,
+                "close": 1900.0,
+                "volume": 28_310_300.0,
+                "source": "yfinance_primary",
+                "ingested_at": pd.Timestamp("2026-08-14 12:20:41.376346"),
+            }
+        ]
+    )
+
+    merged = _merge_with_existing_prices(str(path), incoming)
+    row = merged.iloc[0]
+
+    assert len(merged) == 1
+    assert row["close"] == 1900.0
+    assert row["volume"] == 28_310_300.0
+    assert row["source"] == "yfinance_primary"
+    assert pd.Timestamp(row["ingested_at"]) == pd.Timestamp(
+        "2026-08-14 12:20:41.376346"
+    )
 
 
 def test_pipeline_steps_generate_outputs(tmp_path, monkeypatch):
