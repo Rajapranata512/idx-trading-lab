@@ -93,8 +93,18 @@ def _merge_with_existing_prices(out_path: str, incoming: pd.DataFrame) -> pd.Dat
     ].copy()
 
     merged = pd.concat([existing, incoming], ignore_index=True, sort=False)
-    merged = merged.sort_values(["ticker", "date", "ingested_at"])
+    merged["_ingested_at_order"] = pd.to_datetime(
+        merged["ingested_at"],
+        errors="coerce",
+        utc=True,
+    )
+    merged["_arrival_order"] = range(len(merged))
+    merged = merged.sort_values(
+        ["ticker", "date", "_ingested_at_order", "_arrival_order"],
+        na_position="first",
+    )
     merged = merged.drop_duplicates(subset=["ticker", "date"], keep="last")
+    merged = merged.drop(columns=["_ingested_at_order", "_arrival_order"])
     merged = merged.reset_index(drop=True)
     return merged
 

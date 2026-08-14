@@ -128,10 +128,18 @@ therefore applies these rules:
   same-day idempotency state;
 - `reports/deferred_eod_reconciliation.json`: quota, coverage, lag, source,
   mismatch, and eligibility status;
-- `reports/deferred_eod_reconciliation_details.csv`: ticker/session comparison.
+- `reports/deferred_eod_reconciliation_details.csv`: ticker/session comparison;
+- `data/reference/price_reconciliation_incidents.csv`: immutable pre-fix values,
+  root-cause classification, evidence commit, and resolution status.
 
 The report includes a SHA-256 digest of the cache. Cache retention is bounded by
 configuration and raw rows are never rewritten to match Yahoo.
+
+Canonical daily refreshes normalize mixed string/datetime `ingested_at` values into a
+UTC sort key before deduplication. The newest observation wins; arrival order resolves
+equal or invalid timestamp ties. A provider refetch may therefore correct a stale
+canonical snapshot, while the incident registry and referenced Git commit preserve the
+original values for audit. Never copy the reference close into the primary dataset.
 
 The static dashboard Operations page loads the deferred report directly. It shows
 ticker/date progress, audit readiness, last-check time, and final-execution eligibility;
