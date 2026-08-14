@@ -87,10 +87,13 @@ The schema-v2 `rollout` block is the machine-readable progress contract:
 - `ready_for_deferred_audit=true` requires both 45/45 coverage and the minimum unique
   successful dates; repeated retries never add a second copy of the same date;
 - `last_completed_rollout` preserves a completed cycle while the active state begins
-  the next cycle.
+  the next cycle;
+- retained completed-cycle evidence is recovered monotonically when legacy run records
+  prove additional dates; recovery may add evidence but never remove a persisted date.
 
 An idempotent retry may enrich a legacy persisted report with schema, rollout, and
 `last_checked_at`, but it must retain the successful `batch` evidence unchanged.
+Its command output and persisted report expose the same retained completed rollout.
 
 ## Workflow Artifact Publication Safety
 
