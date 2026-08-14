@@ -19,7 +19,7 @@ unreadable, outside the repository, or inconsistent with the feature contract.
 
 ## Identity Contract
 
-Manifest schema `1` records:
+Manifest schema `2` records:
 
 - full Git source revision;
 - deterministic dataset ID derived from the manifest content;
@@ -31,6 +31,10 @@ Manifest schema `1` records:
 The required artifact set covers canonical and adjusted prices, the feature matrix,
 current and historical point-in-time universes, corporate actions, verified price
 events, deferred reconciliation cache/report/details, and incident dispositions.
+
+CSV and JSON fingerprints use canonical UTF-8 bytes with LF line endings; Parquet uses
+its binary bytes. This keeps SHA-256, byte size, and dataset identity stable across Git
+checkouts on Linux and Windows without ignoring any logical text change.
 
 `eod-technical-v1` declares 49 feature-matrix columns. Adding, removing, or
 reordering a column without updating the versioned contract blocks manifest generation.
