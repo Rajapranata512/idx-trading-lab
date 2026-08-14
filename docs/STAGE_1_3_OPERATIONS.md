@@ -88,6 +88,24 @@ Live scoring filters feature rows to the active universe. Historical model
 research must use `universe_history.csv` point-in-time membership and must not
 retroactively apply today's constituents to old dates.
 
+Research enforcement is centralized in
+`src/universe/research.py`:
+
+- `annotate_point_in_time_universe` preserves every bar and adds eligibility,
+  exclusion reason, effective period, index membership, and official source provenance;
+- `filter_point_in_time_universe` returns only eligible candidate rows;
+- uncovered dates are never replaced with the current universe;
+- training and accuracy audits exclude uncovered/non-member entries while retaining
+  full future bars for realistic outcomes;
+- backtest and walk-forward engines apply membership and score thresholds only to entry
+  rows, so future-close construction is not distorted.
+
+Machine-readable diagnostics are embedded in `reports/backtest_metrics.json`,
+`reports/walk_forward_metrics.json`, `reports/signal_accuracy_audit.json`,
+`reports/model_v2_accuracy_audit.json`, and saved Model V2 metadata. Review
+`eligible_rows`, both excluded-row counts, coverage boundaries, source-period
+count, and `current_universe_substitution=false` before citing a historical result.
+
 ## 3. Price And Corporate-Action Quality
 
 The canonical raw file remains unadjusted and auditable:

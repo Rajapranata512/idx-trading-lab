@@ -320,6 +320,8 @@ def _training_rows_for_mode(
     min_live_score: float = 0.0,
     top_n_per_date: int = 10,
     horizon_exit_min_r: float = 0.0,
+    universe_history_path: str | None = None,
+    universe_timezone: str = "Asia/Jakarta",
 ) -> pd.DataFrame:
     """Build labeled training rows.
 
@@ -342,6 +344,8 @@ def _training_rows_for_mode(
             min_live_score=min_live_score,
             top_n_per_date=top_n_per_date,
             horizon_exit_min_r=horizon_exit_min_r,
+            universe_history_path=universe_history_path,
+            universe_timezone=universe_timezone,
         )
         if not v2_df.empty and "y" in v2_df.columns:
             return v2_df
@@ -1195,6 +1199,11 @@ def maybe_auto_train_model_v2(
                 if mode == "t1"
                 else cfg.horizon_exit_min_r_swing
             ),
+            universe_history_path=settings.data.universe_auto_update.history_path,
+            universe_timezone=settings.data.timezone,
+        )
+        universe_diagnostics = dict(
+            train_df.attrs.get("point_in_time_universe", {})
         )
 
         if len(train_df) < int(cfg.min_train_rows_per_mode):
@@ -1202,6 +1211,7 @@ def maybe_auto_train_model_v2(
                 "status": "skipped_min_rows",
                 "rows": int(len(train_df)),
                 "min_rows": int(cfg.min_train_rows_per_mode),
+                "research_universe": universe_diagnostics,
             }
             continue
 
@@ -1212,6 +1222,10 @@ def maybe_auto_train_model_v2(
                 settings=settings,
                 horizon_days=horizon_days,
             )
+            metadata = {
+                **metadata,
+                "research_universe": universe_diagnostics,
+            }
             saved = save_model_bundle(
                 model_dir=cfg.model_dir,
                 mode=mode,
@@ -1234,6 +1248,7 @@ def maybe_auto_train_model_v2(
                 "status": "error",
                 "rows": int(len(train_df)),
                 "error": str(exc),
+                "research_universe": universe_diagnostics,
             }
             errors.append(f"{mode}: {exc}")
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+from itertools import product
 from pathlib import Path
 
 import pandas as pd
@@ -25,6 +26,34 @@ def _write_runtime_files(tmp_path: Path) -> Path:
     universe = "ticker\nBBCA\nTLKM\n"
     (tmp_path / "data/reference/universe.csv").write_text(universe, encoding="utf-8")
 
+    generated = [
+        "".join(chars)
+        for chars in product("ABCDEFGHIJKLMNOPQRSTUVWXYZ", repeat=4)
+    ]
+    lq45 = ["BBCA", "TLKM", *[ticker for ticker in generated if ticker not in {"BBCA", "TLKM"}]][:45]
+    history_rows: list[dict[str, str]] = []
+    for start, end, document in [
+        ("2026-05-04", "2026-07-31", "period-1.zip"),
+        ("2026-08-03", "2026-10-30", "period-2.zip"),
+    ]:
+        for index_name, members in [("LQ45", lq45), ("IDX30", lq45[:30])]:
+            history_rows.extend(
+                {
+                    "ticker": ticker,
+                    "index": index_name,
+                    "effective_from": start,
+                    "effective_until": end,
+                    "source": "IDX_OFFICIAL_ANNOUNCEMENT",
+                    "source_document": f"https://www.idx.id/{document}",
+                    "imported_at": "2026-08-14T12:00:00Z",
+                }
+                for ticker in members
+            )
+    pd.DataFrame(history_rows).to_csv(
+        tmp_path / "data/reference/universe_history.csv",
+        index=False,
+    )
+
     today = datetime.utcnow().date()
     dates = pd.date_range(end=today, periods=60, freq="D")
     rows = ["date,ticker,open,high,low,close,volume"]
@@ -39,7 +68,10 @@ def _write_runtime_files(tmp_path: Path) -> Path:
             "canonical_prices_path": "data/raw/prices_daily.csv",
             "fallback_csv_path": "data/raw/prices_daily.csv",
             "universe_csv_path": "data/reference/universe.csv",
-            "universe_auto_update": {"enabled": False},
+            "universe_auto_update": {
+                "enabled": False,
+                "history_path": "data/reference/universe_history.csv",
+            },
             "provider": {
                 "kind": "csv",
                 "rest": {

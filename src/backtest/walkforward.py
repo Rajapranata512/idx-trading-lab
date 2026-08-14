@@ -305,7 +305,13 @@ def run_walk_forward(
     df = df.dropna(subset=["date", "ticker", "close", "mode", "score"]).copy()
     df = df.sort_values(["date", "ticker"]).reset_index(drop=True)
 
-    unique_dates = sorted(df["date"].drop_duplicates().tolist())
+    eligible_dates = df
+    if "universe_eligible" in df.columns:
+        eligible = df["universe_eligible"]
+        if eligible.dtype != bool:
+            eligible = eligible.astype(str).str.lower().isin({"true", "1", "yes"})
+        eligible_dates = df[eligible.fillna(False)].copy()
+    unique_dates = sorted(eligible_dates["date"].drop_duplicates().tolist())
     folds = _build_folds(
         unique_dates=unique_dates,
         train_days=int(train_days),

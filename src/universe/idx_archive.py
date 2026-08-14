@@ -71,7 +71,8 @@ def parse_idx_constituent_workbook(
         raise ValueError(f"Expected member count is required for index {normalized_index}")
 
     frame = pd.read_excel(BytesIO(workbook_bytes), header=None)
-    header_text = " ".join(frame.head(8).astype(str).to_numpy().ravel().tolist()).upper()
+    header_values = frame.head(8).to_numpy(dtype=object).ravel().tolist()
+    header_text = " ".join(str(value) for value in header_values).upper()
     if normalized_index not in header_text:
         raise ValueError(f"Workbook does not identify itself as {normalized_index}")
 
@@ -114,7 +115,7 @@ def _find_workbook_name(names: list[str], index_name: str) -> str:
     return matches[0]
 
 
-def _validate_universe_history(
+def validate_universe_history(
     history: pd.DataFrame,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     missing = [column for column in _HISTORY_COLUMNS if column not in history.columns]
@@ -318,7 +319,7 @@ def import_idx_universe_archive(
         subset=["ticker", "index", "effective_from", "effective_until"],
         keep="last",
     )
-    combined, history_summary = _validate_universe_history(combined)
+    combined, history_summary = validate_universe_history(combined)
 
     history_file.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = history_file.with_suffix(history_file.suffix + ".tmp")

@@ -49,7 +49,11 @@ from src.risk import maybe_auto_recalibrate_volatility_targets, maybe_auto_updat
 from src.risk.manager import apply_global_position_limit, propose_trade_plan
 from src.risk.profit_quality import apply_profit_quality_gate
 from src.strategy import rank_all_modes, score_history_modes
-from src.universe import import_idx_universe_archive, maybe_auto_update_universe
+from src.universe import (
+    annotate_point_in_time_universe,
+    import_idx_universe_archive,
+    maybe_auto_update_universe,
+)
 from src.utils import JsonRunLogger
 
 
@@ -734,21 +738,6 @@ def score_step(
     }
 
 
-def _apply_live_score_filters(scored: pd.DataFrame, settings: Settings) -> pd.DataFrame:
-    min_score_t1 = float(settings.pipeline.min_live_score_t1)
-    min_score_swing = float(settings.pipeline.min_live_score_swing)
-    return scored[
-        (
-            (scored["mode"] == "t1") &
-            (scored["score"] >= min_score_t1)
-        ) |
-        (
-            (scored["mode"] == "swing") &
-            (scored["score"] >= min_score_swing)
-        )
-    ].copy()
-
-
 def _load_event_risk_active(settings: Settings, as_of_date: str | None = None) -> pd.DataFrame:
     cfg = settings.pipeline.event_risk
     path = Path(cfg.blacklist_csv_path)
@@ -990,7 +979,7 @@ def _evaluate_market_regime(features: pd.DataFrame, settings: Settings) -> dict[
     }
 
 
-def _evaluate_kill_switch(scored_live: pd.DataFrame, costs: BacktestCosts, settings: Settings) -> dict[str, Any]:
+def _evaluate_kill_switch(scored_history: pd.DataFrame, costs: BacktestCosts, settings: Settings) -> dict[str, Any]:
     cfg = settings.guardrail
     mode_horizon = {"t1": 1, "swing": 10}
     rolling_trades = max(1, int(cfg.rolling_trades))
@@ -1003,10 +992,15 @@ def _evaluate_kill_switch(scored_live: pd.DataFrame, costs: BacktestCosts, setti
 
     for mode, horizon_days in mode_horizon.items():
         trades = simulate_mode_trades(
-            scored_features=scored_live,
+            scored_features=scored_history,
             mode=mode,
             horizon_days=horizon_days,
             costs=costs,
+            min_score=float(
+                settings.pipeline.min_live_score_t1
+                if mode == "t1"
+                else settings.pipeline.min_live_score_swing
+            ),
         )
         recent = trades.tail(rolling_trades).copy()
         returns = recent["return"].astype(float) if "return" in recent.columns else pd.Series(dtype=float)
@@ -1134,6 +1128,12 @@ def _apply_kill_switch_cooldown(
 def walk_forward_step(settings: Settings) -> dict[str, Any]:
     feats = pd.read_parquet("data/processed/features.parquet")
     scored = score_history_modes(feats, min_avg_volume_20d=settings.pipeline.min_avg_volume_20d)
+    scored, universe_diagnostics = annotate_point_in_time_universe(
+        scored,
+        history_path=settings.data.universe_auto_update.history_path,
+        timezone=settings.data.timezone,
+        uncovered_policy="exclude",
+    )
     costs = BacktestCosts(
         buy_fee_pct=settings.backtest.buy_fee_pct,
         sell_fee_pct=settings.backtest.sell_fee_pct,
@@ -1150,6 +1150,7 @@ def walk_forward_step(settings: Settings) -> dict[str, Any]:
         threshold_grid_t1=settings.validation.threshold_grid_t1,
         threshold_grid_swing=settings.validation.threshold_grid_swing,
     )
+    wf["research_universe"] = universe_diagnostics
 
     out_path = Path("reports/walk_forward_metrics.json")
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1180,9 +1181,12 @@ def model_v2_accuracy_audit_step(settings: Settings) -> dict[str, Any]:
 def backtest_step(settings: Settings, persist_guardrail_state: bool = False) -> dict[str, Any]:
     feats = pd.read_parquet("data/processed/features.parquet")
     scored_full = score_history_modes(feats, min_avg_volume_20d=settings.pipeline.min_avg_volume_20d)
-
-    # Keep backtest and live policy consistent by applying the same min-score filters.
-    scored_live = _apply_live_score_filters(scored_full, settings)
+    scored_full, universe_diagnostics = annotate_point_in_time_universe(
+        scored_full,
+        history_path=settings.data.universe_auto_update.history_path,
+        timezone=settings.data.timezone,
+        uncovered_policy="exclude",
+    )
 
     costs = BacktestCosts(
         buy_fee_pct=settings.backtest.buy_fee_pct,
@@ -1190,9 +1194,11 @@ def backtest_step(settings: Settings, persist_guardrail_state: bool = False) -> 
         slippage_pct=settings.backtest.slippage_pct,
     )
     results = run_backtest(
-        scored_live,
+        scored_full,
         costs=costs,
         equity_allocation_pct=settings.backtest.equity_allocation_pct,
+        min_score_t1=float(settings.pipeline.min_live_score_t1),
+        min_score_swing=float(settings.pipeline.min_live_score_swing),
     )
 
     gate_insample = {
@@ -1255,7 +1261,7 @@ def backtest_step(settings: Settings, persist_guardrail_state: bool = False) -> 
         gate_model = gate_insample
 
     regime = _evaluate_market_regime(feats, settings)
-    kill_eval = _evaluate_kill_switch(scored_live, costs=costs, settings=settings)
+    kill_eval = _evaluate_kill_switch(scored_full, costs=costs, settings=settings)
     kill_state = _apply_kill_switch_cooldown(
         kill_eval=kill_eval,
         settings=settings,
@@ -1293,6 +1299,7 @@ def backtest_step(settings: Settings, persist_guardrail_state: bool = False) -> 
             "min_train_trades": settings.validation.min_train_trades,
             "min_oos_trades": settings.validation.min_oos_trades,
         },
+        "research_universe": universe_diagnostics,
         "metrics": results,
         "walk_forward": wf,
         "regime": regime,
@@ -1317,6 +1324,7 @@ def backtest_step(settings: Settings, persist_guardrail_state: bool = False) -> 
                 "gate_pass_oos": gate_oos,
                 "gate_pass_model": gate_model,
                 "gate_pass": gate_final,
+                "research_universe": universe_diagnostics,
             },
             ensure_ascii=True,
             indent=2,

@@ -24,6 +24,15 @@ def _prepare_latest(features: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def _eligible_entry_mask(rows: pd.DataFrame) -> pd.Series:
+    if "universe_eligible" not in rows.columns:
+        return pd.Series(True, index=rows.index, dtype=bool)
+    values = rows["universe_eligible"]
+    if values.dtype == bool:
+        return values.fillna(False)
+    return values.astype(str).str.lower().isin({"true", "1", "yes"})
+
+
 def _simulate_horizon_returns(
     features: pd.DataFrame,
     horizon_days: int,
@@ -43,6 +52,7 @@ def _simulate_horizon_returns(
     df = df.merge(bars[["ticker", "date", "fwd_close"]], on=["ticker", "date"], how="left")
 
     score_df = df[df[mode_col] == mode_value].copy()
+    score_df = score_df[_eligible_entry_mask(score_df)].copy()
     if min_score is not None and score_col in score_df.columns:
         score_df = score_df[score_df[score_col] >= float(min_score)].copy()
     score_df = score_df.sort_values(["date", score_col], ascending=[True, False])
@@ -80,6 +90,7 @@ def simulate_mode_trades(
     df = df.merge(bars[["ticker", "date", "fwd_close"]], on=["ticker", "date"], how="left")
 
     trades = df[df["mode"] == mode].copy()
+    trades = trades[_eligible_entry_mask(trades)].copy()
     if min_score is not None and "score" in trades.columns:
         trades = trades[trades["score"] >= float(min_score)].copy()
     trades = trades.sort_values(["date", "score"], ascending=[True, False])
@@ -125,6 +136,8 @@ def run_backtest(
     scored_features: pd.DataFrame,
     costs: BacktestCosts,
     equity_allocation_pct: float = 100.0,
+    min_score_t1: float | None = None,
+    min_score_swing: float | None = None,
 ) -> dict[str, dict[str, float]]:
     """Run bar-based backtest for T+1 and Swing modes."""
     t1_metrics, _, _ = evaluate_mode_backtest(
@@ -133,6 +146,7 @@ def run_backtest(
         horizon_days=1,
         costs=costs,
         equity_allocation_pct=equity_allocation_pct,
+        min_score=min_score_t1,
     )
     sw_metrics, _, _ = evaluate_mode_backtest(
         scored_features,
@@ -140,6 +154,7 @@ def run_backtest(
         horizon_days=10,
         costs=costs,
         equity_allocation_pct=equity_allocation_pct,
+        min_score=min_score_swing,
     )
     return {
         "t1": t1_metrics,
