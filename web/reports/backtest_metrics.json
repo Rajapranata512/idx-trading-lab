@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-13T13:55:00.104255",
+  "generated_at": "2026-08-14T11:08:29.699902",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -14,11 +14,11 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 41.69463087248322,
-      "ProfitFactor": 0.6450671640746082,
-      "Expectancy": -0.0066174178233302395,
-      "Trades": 1192,
-      "CAGR": -4.909060823769263,
+      "WinRate": 41.74350377200335,
+      "ProfitFactor": 0.647688985649503,
+      "Expectancy": -0.006563030314402322,
+      "Trades": 1193,
+      "CAGR": -4.869993077154334,
       "MaxDD": -21.68696487811302
     },
     "swing": {
@@ -1129,15 +1129,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-08-13",
-    "pass": false,
-    "status": "risk_off",
-    "reason": "Failed checks: breadth_ma20_ok",
+    "as_of_date": "2026-08-14",
+    "pass": true,
+    "status": "risk_on",
+    "reason": "All regime checks passed",
     "values": {
-      "breadth_ma50_pct": 69.6969696969697,
-      "breadth_ma20_pct": 44.44444444444444,
-      "avg_ret20_pct": 5.0308504107948275,
-      "median_atr_pct": 3.6247131380764768,
+      "breadth_ma50_pct": 78.78787878787878,
+      "breadth_ma20_pct": 64.44444444444444,
+      "avg_ret20_pct": 5.775245178292015,
+      "median_atr_pct": 3.456118888643779,
       "sample_tickers": 45
     },
     "thresholds": {
@@ -1148,7 +1148,7 @@
     },
     "checks": {
       "breadth_ma50_ok": true,
-      "breadth_ma20_ok": false,
+      "breadth_ma20_ok": true,
       "avg_ret20_ok": true,
       "median_atr_ok": true
     }
@@ -1171,8 +1171,8 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.47661400359996176,
-        "rolling_expectancy": -0.009916871466450594,
+        "rolling_pf": 0.47661400359995304,
+        "rolling_expectancy": -0.009916871466450757,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
@@ -1189,7 +1189,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-08-13",
+    "as_of_date": "2026-08-14",
     "active": true,
     "active_modes": [
       "swing",
@@ -1199,7 +1199,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-08-16",
+    "cooldown_until": "2026-08-17",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {
@@ -1217,13 +1217,13 @@
   "gate_components": {
     "t1": {
       "model_gate_ok": false,
-      "regime_ok": false,
+      "regime_ok": true,
       "kill_switch_ok": false,
       "final_ok": false
     },
     "swing": {
       "model_gate_ok": false,
-      "regime_ok": false,
+      "regime_ok": true,
       "kill_switch_ok": false,
       "final_ok": false
     }
