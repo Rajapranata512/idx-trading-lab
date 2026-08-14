@@ -4,6 +4,7 @@
     "canonical_prices_path": "data/raw/prices_daily.csv",
     "fallback_csv_path": "data/raw/prices_daily.sample.csv",
     "universe_csv_path": "data/reference/universe_lq45_idx30.csv",
+    "research_manifest_path": "reports/research_dataset_manifest.json",
     "universe_auto_update": {
       "enabled": true,
       "interval_days": 7,

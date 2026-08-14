@@ -78,6 +78,8 @@ python -m src.cli recalibrate-volatility --force
 python -m src.cli ingest-daily
 python -m src.cli backfill-history --years 2
 python -m src.cli compute-features
+python -m src.cli build-research-manifest
+python -m src.cli validate-research-manifest
 python -m src.cli score
 python -m src.cli backtest
 python -m src.cli model-v2-promotion
@@ -110,6 +112,10 @@ Model v2 integration blueprint:
 - `docs/MODEL_V2_BLUEPRINT.md`
 - `docs/TRADER_BEGINNER_PLAYBOOK.md`
 
+Research dataset identity:
+
+- `docs/RESEARCH_DATASET_MANIFEST.md`
+
 Backward compatibility:
 
 ```bash
@@ -127,6 +133,7 @@ python -m src.run_daily run-daily
 - `reports/daily_report.html`
 - `reports/daily_signal.json`
 - `reports/backtest_metrics.json`
+- `reports/research_dataset_manifest.json`
 - `reports/event_risk_active.csv`
 - `reports/event_risk_excluded.csv`
 - `reports/universe_update_state.json`

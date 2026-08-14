@@ -73,6 +73,11 @@ jobs:
         # At most one 15-ticker historical batch per Jakarta calendar day.
         python -m src.cli collect-deferred-eod-reconciliation
 
+    - name: Build and Validate Research Dataset Manifest
+      run: |
+        # Bind exact data and feature contracts to the checked-out source revision.
+        python -m src.cli build-research-manifest
+
     - name: Export Static UI Data
       env:
         PYTHONPATH: .
