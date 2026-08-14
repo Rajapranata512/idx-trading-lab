@@ -183,8 +183,38 @@ def test_manifest_validation_detects_artifact_hash_drift(tmp_path: Path):
         encoding="utf-8",
     )
 
-    with pytest.raises(ResearchManifestError, match="hash mismatch"):
+    with pytest.raises(
+        ResearchManifestError,
+        match="(byte size|hash) mismatch",
+    ):
         validate_research_dataset_manifest_file(settings, root=tmp_path)
+
+
+def test_manifest_hashes_are_stable_across_text_line_endings(tmp_path: Path):
+    settings = _fixture(tmp_path)
+    build_research_dataset_manifest(
+        settings,
+        root=tmp_path,
+        source_revision=SOURCE_REVISION,
+    )
+    universe_path = Path(settings.data.universe_csv_path)
+    original = universe_path.read_bytes()
+    crlf = bytes([13, 10])
+    lf = bytes([10])
+    if crlf in original:
+        alternate = original.replace(crlf, lf)
+    else:
+        alternate = original.replace(lf, crlf)
+    assert alternate != original
+    universe_path.write_bytes(alternate)
+
+    validation = validate_research_dataset_manifest_file(
+        settings,
+        root=tmp_path,
+    )
+
+    assert validation["status"] == "pass"
+    assert validation["hashes_verified"] is True
 
 
 def test_manifest_build_fails_when_required_artifact_is_missing(tmp_path: Path):

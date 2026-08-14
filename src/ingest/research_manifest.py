@@ -20,7 +20,7 @@ from src.features.contract import (
 from src.utils.io import atomic_write_text
 
 
-MANIFEST_SCHEMA_VERSION = 1
+MANIFEST_SCHEMA_VERSION = 2
 _REVISION_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 REQUIRED_ARTIFACT_NAMES = frozenset(
     {
@@ -126,15 +126,25 @@ def _canonical_digest(payload: Any) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def _file_digest(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        while True:
-            chunk = handle.read(1024 * 1024)
-            if not chunk:
-                break
-            digest.update(chunk)
-    return digest.hexdigest()
+def _artifact_bytes(path: Path, artifact_format: str) -> tuple[bytes, str]:
+    raw = path.read_bytes()
+    if artifact_format in {"csv", "json"}:
+        text = raw.decode("utf-8-sig")
+        normalized = text.replace(chr(13) + chr(10), chr(10)).replace(
+            chr(13),
+            chr(10),
+        )
+        return normalized.encode("utf-8"), "normalized_utf8_lf"
+    return raw, "binary_bytes"
+
+
+def _artifact_fingerprint(path: Path, artifact_format: str) -> dict[str, Any]:
+    content, hash_mode = _artifact_bytes(path, artifact_format)
+    return {
+        "byte_size": len(content),
+        "sha256": hashlib.sha256(content).hexdigest(),
+        "hash_mode": hash_mode,
+    }
 
 
 def _resolve_path(root: Path, raw_path: str | Path) -> Path:
@@ -218,8 +228,7 @@ def _inspect_artifact(
         "path": portable_path,
         "format": spec["format"],
         "required": True,
-        "byte_size": int(path.stat().st_size),
-        "sha256": _file_digest(path),
+        **_artifact_fingerprint(path, spec["format"]),
     }
     if spec["format"] == "csv":
         metadata.update(_tabular_metadata(pd.read_csv(path, low_memory=False)))
@@ -313,10 +322,23 @@ def validate_research_dataset_manifest(
             raise ResearchManifestError(
                 f"Manifest artifact is missing: {artifact.get('path')}"
             )
-        if verify_hashes and _file_digest(path) != str(artifact.get("sha256", "")):
-            raise ResearchManifestError(
-                f"Manifest hash mismatch: {artifact.get('name')}"
+        if verify_hashes:
+            fingerprint = _artifact_fingerprint(
+                path,
+                str(artifact.get("format", "")),
             )
+            if artifact.get("hash_mode") != fingerprint["hash_mode"]:
+                raise ResearchManifestError(
+                    f"Manifest hash mode mismatch: {artifact.get('name')}"
+                )
+            if artifact.get("byte_size") != fingerprint["byte_size"]:
+                raise ResearchManifestError(
+                    f"Manifest byte size mismatch: {artifact.get('name')}"
+                )
+            if artifact.get("sha256") != fingerprint["sha256"]:
+                raise ResearchManifestError(
+                    f"Manifest hash mismatch: {artifact.get('name')}"
+                )
         if artifact.get("name") == "features":
             declared_columns = [
                 str(column.get("name", ""))
