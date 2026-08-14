@@ -69,7 +69,7 @@ Import an official IDX announcement ZIP:
 ```powershell
 python -m src.cli import-idx-universe-archive `
   --archive C:\path\official-idx-announcement.zip `
-  --source-document "https://www.idx.co.id/...official-announcement..."
+  --source-document "https://www.idx.id/...official-announcement..."
 
 python -m src.cli update-universe --force
 ```
@@ -78,9 +78,11 @@ The currently tracked official period is `2026-08-03` through `2026-10-30`.
 Import the next official archive before `2026-10-31`; otherwise the freshness
 gate intentionally blocks the pipeline.
 
-The tracked history contains the periods starting 2026-05-04 and 2026-08-03. It is
-sufficient for current live constituent freshness, but not for survivorship-bias-safe
-long-horizon backtests. Import older official periods before claiming complete coverage.
+The tracked history contains eight official periods from `2024-11-01` through
+`2026-10-30`, with exactly 45 LQ45 and 30 IDX30 constituents per period. Each period
+retains its official IDX archive URL. The free official archive range located for this
+repository does not cover dates before `2024-11-01`, so earlier research remains an
+explicit coverage gap and cannot claim survivorship-bias-safe universe membership.
 
 Live scoring filters feature rows to the active universe. Historical model
 research must use `universe_history.csv` point-in-time membership and must not

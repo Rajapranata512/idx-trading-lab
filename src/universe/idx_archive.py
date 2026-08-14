@@ -30,6 +30,15 @@ _PERIOD_RE = re.compile(
 )
 _TICKER_RE = re.compile(r"^[A-Z]{4,6}$")
 _EXPECTED_MEMBERS = {"LQ45": 45, "IDX30": 30}
+_HISTORY_COLUMNS = [
+    "ticker",
+    "index",
+    "effective_from",
+    "effective_until",
+    "source",
+    "source_document",
+    "imported_at",
+]
 
 
 def _parse_id_date(day: str, month: str, year: str) -> pd.Timestamp:
@@ -105,6 +114,138 @@ def _find_workbook_name(names: list[str], index_name: str) -> str:
     return matches[0]
 
 
+def _validate_universe_history(
+    history: pd.DataFrame,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    missing = [column for column in _HISTORY_COLUMNS if column not in history.columns]
+    if missing:
+        raise ValueError(f"Universe history is missing columns: {missing}")
+
+    frame = history[_HISTORY_COLUMNS].copy()
+    frame["ticker"] = frame["ticker"].astype(str).str.upper().str.strip()
+    frame["index"] = frame["index"].astype(str).str.upper().str.strip()
+    frame["source"] = frame["source"].astype(str).str.strip()
+    frame["source_document"] = frame["source_document"].astype(str).str.strip()
+    frame["imported_at"] = frame["imported_at"].astype(str).str.strip()
+    frame["effective_from"] = pd.to_datetime(
+        frame["effective_from"],
+        errors="coerce",
+    )
+    frame["effective_until"] = pd.to_datetime(
+        frame["effective_until"],
+        errors="coerce",
+    )
+    imported_at = pd.to_datetime(
+        frame["imported_at"],
+        errors="coerce",
+        format="mixed",
+        utc=True,
+    )
+    invalid_conditions = pd.DataFrame(
+        {
+            "ticker": ~frame["ticker"].str.fullmatch(_TICKER_RE),
+            "index": ~frame["index"].isin(_EXPECTED_MEMBERS),
+            "effective_from": frame["effective_from"].isna(),
+            "effective_until": frame["effective_until"].isna()
+            | frame["effective_until"].lt(frame["effective_from"]),
+            "source": frame["source"].ne("IDX_OFFICIAL_ANNOUNCEMENT"),
+            "source_document": ~frame["source_document"].str.startswith(
+                ("https://www.idx.id/", "https://www.idx.co.id/")
+            ),
+            "imported_at": imported_at.isna(),
+        },
+        index=frame.index,
+    )
+    invalid = invalid_conditions.any(axis=1)
+    if bool(invalid.any()):
+        sample = frame.loc[
+            invalid,
+            [
+                "ticker",
+                "index",
+                "effective_from",
+                "effective_until",
+                "source",
+                "source_document",
+                "imported_at",
+            ],
+        ].head(3)
+        sample["invalid_fields"] = [
+            ",".join(invalid_conditions.columns[conditions].tolist())
+            for _, conditions in invalid_conditions.loc[sample.index].iterrows()
+        ]
+        raise ValueError(
+            "Universe history contains invalid or untraceable rows. Sample: "
+            + sample.astype(str).to_json(orient="records")
+        )
+
+    duplicate = frame.duplicated(
+        subset=["ticker", "index", "effective_from", "effective_until"],
+        keep=False,
+    )
+    if bool(duplicate.any()):
+        raise ValueError("Universe history contains duplicate membership rows")
+
+    periods = (
+        frame[["effective_from", "effective_until"]]
+        .drop_duplicates()
+        .sort_values(["effective_from", "effective_until"])
+        .reset_index(drop=True)
+    )
+    previous_end: pd.Timestamp | None = None
+    for period in periods.itertuples(index=False):
+        start = pd.Timestamp(period.effective_from)
+        end = pd.Timestamp(period.effective_until)
+        if previous_end is not None and start <= previous_end:
+            raise ValueError("Universe history contains overlapping effective periods")
+        previous_end = end
+
+        period_rows = frame[
+            frame["effective_from"].eq(start)
+            & frame["effective_until"].eq(end)
+        ]
+        lq45 = set(period_rows.loc[period_rows["index"].eq("LQ45"), "ticker"])
+        idx30 = set(period_rows.loc[period_rows["index"].eq("IDX30"), "ticker"])
+        if len(lq45) != _EXPECTED_MEMBERS["LQ45"]:
+            raise ValueError(
+                f"LQ45 period {start.date()} has {len(lq45)} members; expected 45"
+            )
+        if len(idx30) != _EXPECTED_MEMBERS["IDX30"]:
+            raise ValueError(
+                f"IDX30 period {start.date()} has {len(idx30)} members; expected 30"
+            )
+        if not idx30.issubset(lq45):
+            raise ValueError(
+                f"IDX30 period {start.date()} contains members outside LQ45"
+            )
+        if period_rows["source_document"].nunique() != 1:
+            raise ValueError(
+                f"Universe period {start.date()} has conflicting source documents"
+            )
+
+    frame["effective_from"] = frame["effective_from"].dt.date.astype(str)
+    frame["effective_until"] = frame["effective_until"].dt.date.astype(str)
+    frame = frame.sort_values(["effective_from", "index", "ticker"]).reset_index(
+        drop=True
+    )
+    summary = {
+        "rows": int(len(frame)),
+        "period_count": int(len(periods)),
+        "earliest_effective_from": (
+            pd.Timestamp(periods.iloc[0]["effective_from"]).date().isoformat()
+            if not periods.empty
+            else ""
+        ),
+        "latest_effective_until": (
+            pd.Timestamp(periods.iloc[-1]["effective_until"]).date().isoformat()
+            if not periods.empty
+            else ""
+        ),
+        "source_document_count": int(frame["source_document"].nunique()),
+    }
+    return frame, summary
+
+
 def import_idx_universe_archive(
     archive_path: str | Path,
     history_path: str | Path,
@@ -152,15 +293,7 @@ def import_idx_universe_archive(
         )
 
     history_file = Path(history_path)
-    columns = [
-        "ticker",
-        "index",
-        "effective_from",
-        "effective_until",
-        "source",
-        "source_document",
-        "imported_at",
-    ]
+    columns = list(_HISTORY_COLUMNS)
     incoming = pd.DataFrame(rows, columns=columns)
     if history_file.exists():
         existing = pd.read_csv(history_file)
@@ -184,7 +317,8 @@ def import_idx_universe_archive(
     combined = combined.drop_duplicates(
         subset=["ticker", "index", "effective_from", "effective_until"],
         keep="last",
-    ).sort_values(["effective_from", "index", "ticker"])
+    )
+    combined, history_summary = _validate_universe_history(combined)
 
     history_file.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = history_file.with_suffix(history_file.suffix + ".tmp")
@@ -203,4 +337,5 @@ def import_idx_universe_archive(
             "idx30": len(parsed["IDX30"][0]),
             "combined": len(set(parsed["LQ45"][0]) | set(parsed["IDX30"][0])),
         },
+        "history": history_summary,
     }
