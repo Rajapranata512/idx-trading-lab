@@ -28,6 +28,7 @@ DEFAULT_GATE = {
     "min_fold_profitable_pct": 0.60,  # at least 60% of folds must be profitable
     "min_folds": 5,
 }
+REQUIRED_WALK_FORWARD_DIAGNOSTICS_SCHEMA_VERSION = 1
 
 
 def _model_readiness(settings: Settings, mode: str | None = None) -> dict[str, Any]:
@@ -44,6 +45,11 @@ def _model_readiness(settings: Settings, mode: str | None = None) -> dict[str, A
         metadata = metadata if isinstance(metadata, dict) else {}
 
         calibration = metadata.get("calibration", {}) if isinstance(metadata, dict) else {}
+        walk_forward = metadata.get("walk_forward", {}) if isinstance(metadata, dict) else {}
+        experiment = metadata.get("experiment", {}) if isinstance(metadata, dict) else {}
+        research_universe = (
+            metadata.get("research_universe", {}) if isinstance(metadata, dict) else {}
+        )
         holdout_ok = bool(calibration.get("evaluated_on_holdout", False))
         ece = float(calibration.get("ece", 999.0) or 999.0)
         ece_ok = ece <= float(cfg.max_calibration_ece_pct) / 100.0
@@ -52,6 +58,37 @@ def _model_readiness(settings: Settings, mode: str | None = None) -> dict[str, A
         artifact_exists = artifact_path.exists() and artifact_path.stat().st_size > 0
         artifact_loadable = model is not None
         metadata_ok = metadata_path.exists() and bool(metadata)
+        diagnostics_schema_ok = int(
+            walk_forward.get("diagnostics_schema_version", 0) or 0
+        ) >= REQUIRED_WALK_FORWARD_DIAGNOSTICS_SCHEMA_VERSION
+        nested_policy_ok = bool(
+            walk_forward.get("model_selection_policy")
+            == "nested_train_only_time_cv_auc"
+            and all(
+                isinstance(fold, dict)
+                and fold.get("model_selection", {}).get("outer_test_used_for_selection")
+                is False
+                for fold in (walk_forward.get("folds", []) or [])
+            )
+            and bool(walk_forward.get("folds", []))
+        )
+        locked_artifact_evaluation_ok = bool(
+            walk_forward.get("promotion_eligible") is True
+            and walk_forward.get("evidence_role") == "locked_artifact_outer_evaluation"
+        )
+        experiment_id = str(experiment.get("experiment_id", ""))
+        training_frame_sha256 = str(experiment.get("training_frame_sha256", ""))
+        experiment_identity_ok = bool(
+            len(experiment_id) == 64
+            and len(training_frame_sha256) == 64
+            and int(experiment.get("random_seed", -1)) >= 0
+        )
+        point_in_time_universe_ok = bool(
+            str(research_universe.get("status", "")) == "ok"
+            and int(research_universe.get("eligible_rows", 0) or 0) > 0
+            and int(research_universe.get("source_period_count", 0) or 0) > 0
+            and research_universe.get("current_universe_substitution") is False
+        )
         mode_ready = bool(
             artifact_exists
             and artifact_loadable
@@ -59,6 +96,11 @@ def _model_readiness(settings: Settings, mode: str | None = None) -> dict[str, A
             and holdout_ok
             and ece_ok
             and holdout_auc_ok
+            and diagnostics_schema_ok
+            and nested_policy_ok
+            and locked_artifact_evaluation_ok
+            and experiment_identity_ok
+            and point_in_time_universe_ok
         )
         ready = ready and mode_ready
 
@@ -76,7 +118,18 @@ def _model_readiness(settings: Settings, mode: str | None = None) -> dict[str, A
             "holdout_auc": holdout_auc,
             "holdout_auc_minimum": float(cfg.min_holdout_auc),
             "holdout_auc_ok": holdout_auc_ok,
-            "walk_forward": metadata.get("walk_forward", {}),
+            "diagnostics_schema_ok": diagnostics_schema_ok,
+            "nested_model_selection_ok": nested_policy_ok,
+            "locked_artifact_evaluation_ok": locked_artifact_evaluation_ok,
+            "walk_forward_evidence_role": str(walk_forward.get("evidence_role", "")),
+            "walk_forward_promotion_block_reason": str(
+                walk_forward.get("promotion_block_reason", "")
+            ),
+            "experiment_identity_ok": experiment_identity_ok,
+            "point_in_time_universe_ok": point_in_time_universe_ok,
+            "experiment_id": experiment_id,
+            "training_frame_sha256": training_frame_sha256,
+            "walk_forward": walk_forward,
             "version": version,
         }
 

@@ -1,6 +1,6 @@
 # PRD - IDX Trading Lab
 
-Revision: 2026-08-14
+Revision: 2026-08-15
 
 Owner: Project repository
 Status: Active, research/shadow, not final decision
@@ -24,10 +24,10 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   validation, commit, PR, merge, configured CI/data refresh, and passive Vercel sync
   without asking for `lanjutkan` again. Telegram, secrets, manual workflow dispatch,
   model rollout, and broker execution remain separately authorized.
-- Evidence: production run `31805911649` published manifest schema v2 for 11
+- Evidence: production run `31824308667` published manifest schema v2 for 11
   research artifacts and dataset
-  `e8c5d07a7e9d7e6c33408c42bad8cff53a2fe9e6a08ed04af7db3ff199ccb54b`
-  from source revision `2bd8143`. GitHub and Vercel expose the same manifest.
+  `1cb9682a3d166001a21ada14abfa13ce1e9abc1e258a133fb389e22d6e6fa5c2`
+  from source revision `6f49421`. GitHub and Vercel expose the same manifest.
 - Official universe history now contains 600 membership rows across eight traceable,
   non-overlapping periods from `2024-11-01` through `2026-10-30`.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
@@ -35,9 +35,10 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   batch once per Jakarta date until delayed research coverage is complete.
 - Deferred evidence can improve historical data auditing, but it is explicitly
   `final_execution_eligible=false`; same-day independent reconciliation remains unavailable.
-- Primary blocker: same-day provider capacity and then statistical quality, not UI score quantity.
-- Next Action: enforce official point-in-time membership in Model V2 research datasets,
-  candidate audits, and baseline evaluation before using the expanded history as evidence.
+- Primary blocker: Model V2 has no stable after-cost OOS edge; same-day independent
+  reconciliation is a separate production-data blocker. UI score quantity is not evidence.
+- Next Action: run `MODEL-05A`, a leakage-safe OOS edge-recovery and abstention
+  diagnosis for T1 and Swing against the frozen point-in-time baseline.
 - Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
   IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
@@ -173,97 +174,60 @@ Authoritative paths:
 
 ## Current State
 
-Last verified on 2026-08-14:
+Last verified on 2026-08-15:
 
-- PR #13 merged the legacy-date recovery as `47f0819`; production run
-  `31795789753` proved zero-call idempotency and exposed an incomplete completed-cycle
-  snapshot after state had advanced to cycle 2.
-- PR #14 merged monotonic completed-cycle recovery as `d98287b`. Production run
-  `31796307962` then reported 3/3 dates, 45/45 tickers, and
-  `ready_for_deferred_audit=true`, and published artifact `b85ade4`.
-- Production market data is current through 2026-08-14 with 0 stale sessions,
-  53,021 rows, 56 represented tickers, no missing critical rows, and no duplicate rows.
-  Daily primary source is explicitly `yfinance_primary`.
-- Data quality is `warning/pass`: the historical GOTO 2023-05-31 outlier remains
-  traceable to its verified event, unresolved active anomalies are 0, and the only
-  current warning is `price_reconciliation_unavailable`.
-- Same-day independent reconciliation is not operational. Reference source is empty,
-  0 rows were compared, and no qualifying production reconciliation session exists.
-- Provider account metadata reported `subscriptionType=free`,
-  `dailyRateLimit=20`, and `apiRequests=20` on 2026-08-11. A same-day complete run
-  needs at least 45 ticker calls, so the account cannot satisfy 95% universe coverage.
-- The free-tier deferred collector is deployed: Yahoo is the daily 45-ticker source, EODHD is
-  limited to one idempotent 15-ticker historical batch per Jakarta date, and a five-call
-  reserve protects against quota variance.
-- Deferred cycle 1 completed across 2026-08-12, 2026-08-13, and 2026-08-14. Cache
-  coverage is 45/45 (100%), with 22 fully covered historical sessions.
-- DATA-03D traced the four 2026-08-06 differences to mixed string/Timestamp
-  `ingested_at` ordering, which retained stale `yfinance_fallback` rows. A fresh Yahoo
-  fetch matched EODHD close and volume for ISAT, MAPI, MBMA, and TLKM.
-- PR #17 normalized canonical merge ordering and production run `31800492500` refreshed
-  all four rows. PR #18 made idempotent retries persist the newly computed audit instead
-  of retaining the previous report payload.
-- Production run `31801281241` used `idempotent_skip=true`, selected zero tickers,
-  skipped the provider account endpoint, and reported `required_calls=0`. Artifact
-  `44f4fb0` records 225/225 rows, 100% coverage, zero mismatch, research eligibility,
-  and `final_execution_eligible=false`.
-- Cycle-report hardening preserves successful run history, prevents empty retries from
-  replacing the latest success report, and records 45/45 completion before advancing
-  state to the next cycle.
-- Schema v2 migration reconstructs only provable legacy progress. A same-date
-  idempotent record with positive same-cycle progress can recover its unique success date,
-  but cannot invent ticker-level details or increase provider calls.
-- Completed-cycle recovery is monotonic: retained evidence may add a previously omitted
-  date, but can never remove a persisted date or alter final-execution eligibility.
-- Schema-v2 rollout progress is derived from unique successful dates per cycle. It
-  reports required/remaining dates, completed/remaining tickers, progress ratio, and
-  deferred-audit readiness; retries cannot create duplicate dates or unsupported progress.
-- Queued run `31603799469` passed its pipeline and collector but its artifact push was
-  rejected after `main` advanced. Daily publication now skips only a proven stale-base
-  or concurrent-main result, never rebases or force-pushes stale output, and preserves
-  hard failures for unrelated push faults.
-- Deferred cache, state, coverage, mismatch, lag, and details are machine-readable.
-  Even a passing deferred audit remains research-only and cannot satisfy the same-day
-  production reconciliation or final-execution gate.
-- The Operations dashboard consumes the deferred report directly and exposes ticker/date
-  progress, audit readiness, last-check time, and fail-closed final eligibility.
-- Production workflows use the Node.js 24 generations of GitHub checkout, Python setup,
-  and cache actions; a repository-wide contract prevents Node.js 20 action regressions.
-- DATA-04A is deployed. Manifest schema v2 records deterministic metadata and canonical
-  SHA-256 fingerprints for 11 required artifacts, binds them to Git revision
-  `5a2100a`, and freezes 49 feature columns as `eod-technical-v1`.
-- Production artifact `f91bc50` identifies 53,021 feature rows, 56 represented
-  tickers, and 2021-06-30 through 2026-08-14 coverage. Vercel serves the same dataset ID
-  with HTTP 200, while `final_execution_eligible=false` remains explicit.
-- CSV/JSON fingerprints normalize UTF-8 line endings and Parquet fingerprints binary
-  bytes. The Linux-generated artifact validates unchanged after a Windows checkout.
-- Validation has 5 direct manifest tests; the DATA-04B full regression passes 207 tests.
-- DATA-04B is deployed. The official universe history now has 600 membership rows,
-  8 effective periods, 8 official IDX archive references, 61 represented tickers, no
-  duplicate membership, and coverage from 2024-11-01 through 2026-10-30. Production run
-  `31805911649` and Vercel expose dataset
-  `e8c5d07a7e9d7e6c33408c42bad8cff53a2fe9e6a08ed04af7db3ff199ccb54b`.
-- Training and historical accuracy paths do not yet consume `universe_history.csv`;
-  storing point-in-time membership alone therefore does not make old Model V2 evidence
-  survivorship-bias-safe.
-- `reconciliation_required` remains false until five consecutive real IDX
-  sessions qualify; no qualifying reconciliation session exists yet.
-- `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
-  unimplemented and the current runtime state is `EXECUTION_DISABLED`.
-- The local pre-open auction foundation remains disabled and unpushed. It has no
-  licensed provider feed, qualified model artifact, or real shadow-session evidence.
+- PR #25 deployed point-in-time research-universe enforcement. Training, candidate
+  alignment, labels, and historical accuracy audits now reject uncovered dates and
+  non-members without substituting the current universe.
+- PR #26 (`6f49421`) drops incomplete Yahoo daily placeholders before canonicalization,
+  preserves fail-closed behavior when no valid row remains, and publishes bounded
+  provider-quality diagnostics. Python validation passes 217 tests; JavaScript passes 16.
+- Production Daily Pipeline run `31824308667` succeeded. Ingestion received 1,035 rows,
+  retained 990 valid rows, and dropped 45 incomplete 2026-08-14 placeholders across
+  45 tickers. Canonical data remains current through 2026-08-14 with 53,021 rows,
+  56 tickers, zero missing critical rows, zero duplicates, and zero active anomalies.
+- Data quality is `warning/pass`. The only current warning is
+  `price_reconciliation_unavailable`; same-day independent reconciliation remains
+  unavailable and deferred EODHD evidence is research-only.
+- Manifest schema v2 identifies dataset
+  `1cb9682a3d166001a21ada14abfa13ce1e9abc1e258a133fb389e22d6e6fa5c2`, source
+  revision `6f49421`, 11 required artifacts, 53,021 feature rows, and 600 official
+  universe-history rows. GitHub and Vercel serve the same dataset and model timestamp.
+- The enforced point-in-time research panel covers 2024-11-01 through 2026-10-30:
+  20,107 of 71,185 scored rows are eligible, 51,078 are excluded, 424 dates and
+  52 tickers are eligible, and `current_universe_substitution=false`.
+- The production Model V2 artifacts were retrained at
+  `2026-08-14T17:32:01.108150` with separate calibration and untouched holdout windows.
+- T1: 1,482 labeled rows, holdout AUC 0.5289, ECE 6.525%, five purged folds, and
+  zero OOS trades at the locked 0.52 threshold. Calibration passes numerically, but
+  candidate abstention prevents edge evidence and fails the 120-trade contract.
+- Swing: 490 labeled rows, holdout AUC 0.5012, ECE 19.5131%, five purged folds, and
+  140 OOS trades. Only fold 1 is positive; folds 2-4 have PF below 1 and negative
+  expectancy, while fold 5 abstains. Calibration and stability fail.
+- The accuracy audit contains 3,992 resolved candidates and 0 V2 recommendations.
+  Overall candidate PF is 0.5616 with -0.1519R expectancy; both T1 and Swing remain
+  negative after costs. No fallback/non-model candidate is treated as model evidence.
+- MODEL-05A implementation is locally validated but not yet production-published. Each
+  outer fold now records probability/threshold coverage, explicit abstention reason,
+  seven bounded model/weight/feature challengers selected only inside its fit window,
+  deterministic seed 42, feature contract, rejection status, and experiment fingerprint.
+  Full validation passes 226 Python tests and 16 JavaScript tests.
+- The local nested comparison remains negative. T1 selects 36 trades in one of five
+  folds (PF 0.5806, expectancy -0.0637R) and abstains in four; Swing selects 165 trades,
+  has no profitable fold, and reaches expectancy as low as -0.8354R. No challenger is
+  eligible to become a locked candidate from this evidence.
+- Challenger comparison is explicitly `promotion_eligible=false`. Promotion readiness
+  now also requires a separately locked exact-artifact outer evaluation, diagnostics
+  schema v1, a deterministic experiment identity, and valid point-in-time provenance.
+  This prevents heterogeneous research folds from authorizing a different saved model.
+- `FINAL_EXECUTION` remains the approved end-state. Runtime remains
+  `EXECUTION_DISABLED`; Model V2 is `SHADOW/BLOCKED`, rollout is 0%, and no broker
+  order is authorized.
+- The 5m/15m, sentiment, and pre-open auction foundations remain disabled until licensed
+  data, qualified artifacts, timestamp-safe evidence, and real shadow sessions exist.
 
-Model research baseline from 2026-07-18:
-
-- T1: 2,080 labeled rows, holdout AUC 0.5286, ECE 1.88%, five purged folds,
-  41 eligible OOS trades, and no profitable fold.
-- Swing 10-day: 748 labeled rows, holdout AUC 0.6206, ECE 17.39%, five folds,
-  141 OOS trades, and only one profitable fold.
-- Unfiltered candidate expectancy was negative after costs for both modes.
-- Model V2 therefore remains `SHADOW/BLOCKED`; website score cannot override it.
-
-Replace this baseline only with newer versioned, reproducible holdout and
-walk-forward evidence.
+This baseline may be replaced only by a newer versioned experiment using the same
+point-in-time, after-cost, leakage-safe evidence contract.
 
 ## 6. Product Requirements
 
@@ -508,15 +472,18 @@ Portfolio quality:
 
 ## Active Blockers
 
-1. T1 has too few eligible OOS trades and no profitable fold in the recorded baseline.
-2. Swing holdout calibration and fold stability fail the contract.
-3. Candidate pools do not yet demonstrate stable positive edge after costs.
+1. T1 produces zero eligible OOS trades at its locked threshold across all five current
+   folds, so it cannot satisfy the 120-trade evidence contract.
+2. Swing holdout AUC is 0.5012 and ECE is 19.5131%; only one of five folds is
+   profitable and the latest fold abstains.
+3. Point-in-time candidate pools are negative after costs: the latest resolved-candidate
+   audit has PF 0.5616 and expectancy -0.1519R.
 4. No bullish/sideways/bearish policy matrix has sufficient independent OOS evidence;
    the bearish short/hedge track is not implemented or authorized.
 5. Pre-open Vercel secrets, watchdog dispatch, and duplicate-free external delivery
    still require a complete production health check.
-6. Official universe coverage starts at 2024-11-01, and Model V2 training/backtest paths
-   do not yet enforce that point-in-time membership. Earlier dates remain an explicit gap.
+6. Official universe coverage starts at 2024-11-01. Enforcement is operational, but
+   earlier dates remain uncovered and may not be used or replaced by current membership.
 7. Same-day independent price reconciliation is unavailable. Free EODHD capacity cannot
    cover all 45 tickers; the deferred 15-ticker/day collector can create delayed
    research evidence only and no qualifying production session exists.
@@ -572,9 +539,9 @@ Exit: satisfied for release `e67d859`; renew the market calendar before its 2026
 
 ### Phase 3 - Research Data Depth
 
-Status: deferred research reconciliation, deterministic dataset identity, and eight
-official point-in-time universe periods are operational; research filtering and same-day
-production reconciliation remain incomplete.
+Status: deferred research reconciliation, deterministic dataset identity, eight official
+point-in-time universe periods, and research-path membership enforcement are operational;
+same-day production reconciliation remains incomplete.
 
 - Maintain and extend the eight imported official universe periods when archives exist.
 - Establish dependable independent EOD reconciliation.
@@ -657,37 +624,45 @@ and engineering quality without assuming guaranteed returns.
 
 ## Next Action
 
-`DATA-04C Point-in-time research-universe enforcement` is the single next action.
+`MODEL-05A OOS edge recovery and abstention diagnosis` is the single next action.
 
-DATA-04B is complete and publicly verified. The repository now stores eight official
-periods, but Model V2 labeling, candidate audits, and historical evaluation can still read
-feature rows without checking membership on that date. DATA-04C must turn the expanded
-history into an enforced research contract before any baseline is reconsidered.
+DATA-04C is complete and production-verified. The point-in-time rebuild removed the
+survivorship-unsafe evidence but exposed the real blocker: T1 abstains on every outer fold,
+while Swing has weak discrimination, poor calibration, and unstable negative returns.
+MODEL-05A must diagnose and test bounded challengers without selecting on outer-fold
+results or weakening the Final Decision Contract.
 
 Acceptance criteria:
 
-1. Add one reusable point-in-time membership join/filter for dated ticker rows. It must
-   validate the same official history contract, preserve membership provenance, and reject
-   uncovered dates, ambiguous overlaps, invalid periods, and missing ticker/date columns.
-2. Apply it before Model V2 candidate alignment and label construction and in historical
-   signal/accuracy audits. Live scoring continues to use the separately activated current
-   universe.
-3. Emit machine-readable coverage diagnostics: input/eligible/excluded rows, covered date
-   range, excluded dates/tickers, and source-period count. Never silently substitute the
-   current universe for an uncovered historical date.
-4. Add boundary, membership-change, non-member, uncovered-date, and malformed-history
-   regression tests. Existing current-universe behavior must remain unchanged.
-5. Rebuild the T1 and Swing research baseline only on eligible dates from 2024-11-01
-   onward, using the existing purged time splits, after-cost labels, and candidate contract.
-   Compare row/trade counts, AUC, ECE, expectancy, PF, folds, and false positives with the
-   recorded baseline; do not promote on a favorable small sample.
-6. Publish versioned diagnostics and manifest evidence while keeping
+1. Freeze dataset
+   `1cb9682a3d166001a21ada14abfa13ce1e9abc1e258a133fb389e22d6e6fa5c2`, the
+   point-in-time membership filter, after-cost labels, purged date splits, and candidate
+   policy as the baseline. Any contract change must create a separately named experiment.
+2. Publish per-mode and per-fold probability diagnostics before model changes: score
+   quantiles, threshold coverage, selected/non-selected counts, class balance, AUC, ECE,
+   PF, expectancy, MaxDD, and explicit abstention reasons. T1's zero-trade result must be
+   reproducible and distinguish model confidence collapse from candidate-filter rejection.
+3. Compare a bounded challenger set that matches available sample size, including a
+   regularized linear baseline, the current tree model, class-weight alternatives, and
+   train-only feature ablations. Deep learning remains excluded until effective sample
+   depth and an untouched validation budget justify it.
+4. Use nested, chronological evaluation: all feature/model/calibration/threshold choices
+   are made inside training/calibration windows; each outer fold remains untouched until
+   its single evaluation. Persist every attempted configuration, seed, feature contract,
+   rejection reason, and aggregate/segment result to prevent winner-only reporting.
+5. Evaluate T1 and Swing independently against section 7 without relaxing it: at least
+   five purged folds, at least 120 eligible OOS trades, holdout ECE <= 10%, AUC >= 0.52,
+   median PF >= 1.25, median expectancy > 0.03R, MaxDD <= 12%, and at least 60% profitable
+   folds. A mode that cannot meet the sample or edge requirements remains no-trade.
+6. Add regression tests for leakage boundaries, deterministic experiment identity,
+   zero-trade diagnostics, outer-fold isolation, and fail-closed promotion. Publish a
+   versioned research comparison, update the manifest/PRD, and keep
    `EXECUTION_DISABLED`, Model V2 `SHADOW/BLOCKED`, rollout 0%, and
-   `final_execution_eligible=false`. Replace this section with one successor action
-   only after local and production validation.
+   `final_execution_eligible=false` unless every later promotion stage separately passes.
 
-Likely files: universe research filter, Model V2 labeling/training, accuracy audits,
-regression tests, versioned reports, runbook, manifest evidence, and this PRD.
+Likely files: `src/model_v2/train.py`, a focused research-comparison module,
+Model V2 diagnostics/reports, configuration, regression tests, manifest evidence,
+runbook, and this PRD.
 
 ## 11. Portfolio Release Checklist
 

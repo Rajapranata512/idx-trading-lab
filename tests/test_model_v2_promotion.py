@@ -128,11 +128,18 @@ def _write_supporting_gates(tmp_path: Path) -> None:
                     "holdout_auc": 0.7,
                 },
                 "walk_forward": {
+                    "diagnostics_schema_version": 1,
                     "status": "ok",
+                    "model_selection_policy": "nested_train_only_time_cv_auc",
+                    "evidence_role": "locked_artifact_outer_evaluation",
+                    "promotion_eligible": True,
                     "completed_folds": 5,
                     "total_oos_trades": 150,
                     "folds": [
                         {
+                            "model_selection": {
+                                "outer_test_used_for_selection": False,
+                            },
                             "metrics": {
                                 "ProfitFactor": 1.4,
                                 "Expectancy": 0.08,
@@ -142,6 +149,17 @@ def _write_supporting_gates(tmp_path: Path) -> None:
                         }
                         for _ in range(5)
                     ],
+                },
+                "experiment": {
+                    "experiment_id": "a" * 64,
+                    "training_frame_sha256": "b" * 64,
+                    "random_seed": 42,
+                },
+                "research_universe": {
+                    "status": "ok",
+                    "eligible_rows": 1000,
+                    "source_period_count": 8,
+                    "current_universe_substitution": False,
                 },
             }
         ),
@@ -205,6 +223,48 @@ def test_promotion_steps_up_after_consecutive_passes(tmp_path, monkeypatch):
     out2 = evaluate_and_update_model_v2_promotion(settings)
     assert out2["rollout_pct"] == 30
     assert out2["live_active"] is True
+
+
+def test_promotion_rejects_legacy_model_without_experiment_identity(tmp_path, monkeypatch):
+    settings_path = _write_settings(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    settings = load_settings(settings_path)
+    _write_supporting_gates(tmp_path)
+    metadata_path = Path(settings.model_v2.model_dir) / "t1.meta.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata.pop("experiment")
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
+    out = evaluate_and_update_model_v2_promotion(settings)
+    model_gate = out["modes"]["t1"]["model_gate"]["modes"]["t1"]
+
+    assert out["rollout_by_mode"]["t1"] == 0
+    assert model_gate["experiment_identity_ok"] is False
+    assert model_gate["ready"] is False
+
+
+def test_promotion_rejects_challenger_comparison_as_artifact_evidence(tmp_path, monkeypatch):
+    settings_path = _write_settings(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    settings = load_settings(settings_path)
+    _write_supporting_gates(tmp_path)
+    metadata_path = Path(settings.model_v2.model_dir) / "t1.meta.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["walk_forward"].update(
+        {
+            "evidence_role": "nested_challenger_selection_research",
+            "promotion_eligible": False,
+            "promotion_block_reason": "locked artifact evaluation required",
+        }
+    )
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
+    out = evaluate_and_update_model_v2_promotion(settings)
+    model_gate = out["modes"]["t1"]["model_gate"]["modes"]["t1"]
+
+    assert out["rollout_by_mode"]["t1"] == 0
+    assert model_gate["locked_artifact_evaluation_ok"] is False
+    assert model_gate["walk_forward_evidence_role"] == "nested_challenger_selection_research"
 
 
 def test_promotion_rolls_back_on_bad_live_metrics(tmp_path, monkeypatch):

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import hashlib
+import json
 from datetime import datetime, timedelta
 from typing import Any
 
 import numpy as np
 import pandas as pd
+from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
@@ -81,6 +84,17 @@ MODEL_FEATURES = [
     "market_median_atr_pct",
     "relative_ret_20d",
 ]
+MODEL_RANDOM_SEED = 42
+MODEL_FEATURE_CONTRACT = "model-v2-full-v1"
+WALK_FORWARD_DIAGNOSTICS_SCHEMA_VERSION = 1
+WALK_FORWARD_EVIDENCE_ROLE = "nested_challenger_selection_research"
+WALK_FORWARD_PROMOTION_ELIGIBLE = False
+MODEL_NO_RAW_LEVEL_FEATURES = [
+    feature
+    for feature in MODEL_FEATURES
+    if feature not in {"avg_vol_20d", "close", "ma_20", "ma_50"}
+]
+MODEL_NO_SCORE_FEATURES = [feature for feature in MODEL_FEATURES if feature != "score"]
 
 REGIME_THRESHOLD_MIN_ROWS = 40
 
@@ -145,6 +159,112 @@ def _profit_factor_from_returns(values: pd.Series) -> float:
     if gross_loss <= 0:
         return 999.0 if gross_profit > 0 else 0.0
     return gross_profit / gross_loss
+
+
+def _probability_threshold_diagnostics(
+    probs: pd.Series | np.ndarray | list[float],
+    threshold: float,
+) -> dict[str, Any]:
+    """Summarize probability coverage without using outcome information."""
+    raw = pd.to_numeric(pd.Series(probs), errors="coerce")
+    finite = raw[np.isfinite(raw)].astype(float)
+    selected = finite[finite >= float(threshold)]
+
+    if finite.empty:
+        reason = "no_valid_probabilities"
+    elif selected.empty and float(finite.max()) < float(threshold):
+        reason = "all_probabilities_below_threshold"
+    elif selected.empty:
+        reason = "no_probabilities_selected"
+    else:
+        reason = "selected"
+
+    quantiles = finite.quantile([0.05, 0.25, 0.5, 0.75, 0.95]) if not finite.empty else None
+
+    def _rounded(value: float | None) -> float | None:
+        return round(float(value), 6) if value is not None else None
+
+    return {
+        "input_rows": int(len(raw)),
+        "valid_rows": int(len(finite)),
+        "non_finite_rows": int(len(raw) - len(finite)),
+        "threshold": round(float(threshold), 4),
+        "selected_rows": int(len(selected)),
+        "selected_rate_pct": round(float(len(selected) / len(finite) * 100.0), 4)
+        if len(finite)
+        else 0.0,
+        "min": _rounded(float(finite.min()) if not finite.empty else None),
+        "p05": _rounded(float(quantiles.loc[0.05]) if quantiles is not None else None),
+        "p25": _rounded(float(quantiles.loc[0.25]) if quantiles is not None else None),
+        "median": _rounded(float(quantiles.loc[0.5]) if quantiles is not None else None),
+        "p75": _rounded(float(quantiles.loc[0.75]) if quantiles is not None else None),
+        "p95": _rounded(float(quantiles.loc[0.95]) if quantiles is not None else None),
+        "max": _rounded(float(finite.max()) if not finite.empty else None),
+        "mean": _rounded(float(finite.mean()) if not finite.empty else None),
+        "abstention_reason": reason,
+    }
+
+
+def _training_experiment_contract(
+    prepared: pd.DataFrame,
+    mode: str,
+    settings: Settings,
+    horizon_days: int,
+    challengers: list[tuple[str, Pipeline]],
+) -> dict[str, Any]:
+    """Build a deterministic identity for the exact research input and policy."""
+    base = pd.DataFrame(index=prepared.index)
+    base["date"] = pd.to_datetime(prepared.get("date"), errors="coerce").dt.strftime(
+        "%Y-%m-%d"
+    )
+    base["ticker"] = prepared.get(
+        "ticker",
+        pd.Series([""] * len(prepared), index=prepared.index),
+    ).astype(str)
+    base["y"] = pd.to_numeric(prepared.get("y"), errors="coerce")
+    base["net_return"] = pd.to_numeric(prepared.get("net_return"), errors="coerce")
+    frame = pd.concat([base, _build_feature_frame(prepared)], axis=1)
+    frame = frame.sort_values(["date", "ticker"], kind="mergesort").reset_index(drop=True)
+    row_hashes = pd.util.hash_pandas_object(frame, index=False).to_numpy(dtype="uint64")
+    training_frame_sha256 = hashlib.sha256(row_hashes.tobytes()).hexdigest()
+    challenger_contracts = [
+        {
+            "model": name,
+            "feature_contract": str(
+                getattr(pipeline, "_model_v2_feature_contract", MODEL_FEATURE_CONTRACT)
+            ),
+        }
+        for name, pipeline in challengers
+    ]
+    contract: dict[str, Any] = {
+        "schema_version": 1,
+        "mode": str(mode).lower(),
+        "horizon_days": int(horizon_days),
+        "training_rows": int(len(frame)),
+        "training_frame_sha256": training_frame_sha256,
+        "random_seed": MODEL_RANDOM_SEED,
+        "features": list(MODEL_FEATURES),
+        "challengers": challenger_contracts,
+        "calibration_method": str(settings.model_v2.calibration_method),
+        "walk_forward_folds": max(5, int(settings.model_v2.walk_forward_folds)),
+        "probability_floor": float(
+            settings.model_v2.min_prob_threshold_t1
+            if str(mode).lower() == "t1"
+            else settings.model_v2.min_prob_threshold_swing
+        ),
+        "candidate_aligned_training": bool(settings.model_v2.candidate_aligned_training),
+        "roundtrip_cost_pct": round(
+            float(settings.backtest.buy_fee_pct)
+            + float(settings.backtest.sell_fee_pct)
+            + (2.0 * float(settings.backtest.slippage_pct)),
+            8,
+        ),
+    }
+    encoded = json.dumps(contract, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return {
+        **contract,
+        "experiment_id": hashlib.sha256(encoded).hexdigest(),
+    }
 
 
 def _pick_probability_threshold(
@@ -390,13 +510,20 @@ def _training_rows_v1(
 # ---------------------------------------------------------------------------
 # Multi-model training — LogReg + LightGBM + XGBoost, pick best by CV AUC
 # ---------------------------------------------------------------------------
-def _build_logreg_pipeline() -> Pipeline:
+def _build_logreg_pipeline(class_weight: str | None = "balanced") -> Pipeline:
     """Baseline logistic regression pipeline."""
     return Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="median")),
             ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(max_iter=1000, class_weight="balanced")),
+            (
+                "clf",
+                LogisticRegression(
+                    max_iter=1000,
+                    class_weight=class_weight,
+                    random_state=MODEL_RANDOM_SEED,
+                ),
+            ),
         ]
     )
 
@@ -417,6 +544,7 @@ def _build_lgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None
         "class_weight": "balanced",
         "verbose": -1,
         "n_jobs": 2,
+        "random_state": MODEL_RANDOM_SEED,
     }
     if params:
         default_params.update(params)
@@ -446,6 +574,7 @@ def _build_xgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None
         "eval_metric": "logloss",
         "verbosity": 0,
         "n_jobs": 2,
+        "random_state": MODEL_RANDOM_SEED,
     }
     if params:
         default_params.update(params)
@@ -455,6 +584,89 @@ def _build_xgb_pipeline(params: dict[str, Any] | None = None) -> Pipeline | None
             ("clf", xgb.XGBClassifier(**default_params)),
         ]
     )
+
+
+def _with_feature_subset(
+    pipeline: Pipeline,
+    features: list[str],
+    contract: str,
+) -> Pipeline:
+    subset = ColumnTransformer(
+        [("selected", "passthrough", features)],
+        remainder="drop",
+        verbose_feature_names_out=False,
+    )
+    challenger = Pipeline(
+        steps=[("feature_subset", subset), *pipeline.steps],
+    )
+    setattr(challenger, "_model_v2_feature_contract", contract)
+    return challenger
+
+
+def _tag_feature_contract(pipeline: Pipeline, contract: str) -> Pipeline:
+    setattr(pipeline, "_model_v2_feature_contract", contract)
+    return pipeline
+
+
+def _build_walk_forward_challengers() -> list[tuple[str, Pipeline]]:
+    """Return the bounded, untuned model set allowed in outer-fold comparison."""
+    challengers: list[tuple[str, Pipeline]] = [
+        (
+            "logreg_balanced_full",
+            _tag_feature_contract(
+                _build_logreg_pipeline(class_weight="balanced"),
+                MODEL_FEATURE_CONTRACT,
+            ),
+        ),
+        (
+            "logreg_unweighted_full",
+            _tag_feature_contract(
+                _build_logreg_pipeline(class_weight=None),
+                MODEL_FEATURE_CONTRACT,
+            ),
+        ),
+        (
+            "logreg_balanced_no_raw_levels",
+            _with_feature_subset(
+                _build_logreg_pipeline(class_weight="balanced"),
+                MODEL_NO_RAW_LEVEL_FEATURES,
+                "model-v2-no-raw-levels-v1",
+            ),
+        ),
+        (
+            "logreg_balanced_no_score",
+            _with_feature_subset(
+                _build_logreg_pipeline(class_weight="balanced"),
+                MODEL_NO_SCORE_FEATURES,
+                "model-v2-no-score-v1",
+            ),
+        ),
+    ]
+    lgb_balanced = _build_lgb_pipeline()
+    if lgb_balanced is not None:
+        challengers.append(
+            (
+                "lightgbm_balanced_full",
+                _tag_feature_contract(lgb_balanced, MODEL_FEATURE_CONTRACT),
+            )
+        )
+    lgb_unweighted = _build_lgb_pipeline({"class_weight": None})
+    if lgb_unweighted is not None:
+        challengers.append(
+            (
+                "lightgbm_unweighted_full",
+                _tag_feature_contract(lgb_unweighted, MODEL_FEATURE_CONTRACT),
+            )
+        )
+    xgb_default = _build_xgb_pipeline()
+    if xgb_default is not None:
+        challengers.append(
+            (
+                "xgboost_unweighted_full",
+                _tag_feature_contract(xgb_default, MODEL_FEATURE_CONTRACT),
+            )
+        )
+    return challengers
 
 
 # ---------------------------------------------------------------------------
@@ -546,7 +758,10 @@ def _optuna_search(
     # --- LightGBM Optuna search ---
     if _HAS_LGB:
         try:
-            study_lgb = optuna.create_study(direction="maximize")
+            study_lgb = optuna.create_study(
+                direction="maximize",
+                sampler=optuna.samplers.TPESampler(seed=MODEL_RANDOM_SEED),
+            )
             study_lgb.optimize(
                 lambda trial: _optuna_lgb_objective(
                     trial, X, y, dates, sample_weight, gap_dates
@@ -566,7 +781,10 @@ def _optuna_search(
     # --- XGBoost Optuna search ---
     if _HAS_XGB:
         try:
-            study_xgb = optuna.create_study(direction="maximize")
+            study_xgb = optuna.create_study(
+                direction="maximize",
+                sampler=optuna.samplers.TPESampler(seed=MODEL_RANDOM_SEED),
+            )
             study_xgb.optimize(
                 lambda trial: _optuna_xgb_objective(
                     trial, X, y, dates, sample_weight, gap_dates
@@ -725,12 +943,101 @@ def _walk_forward_date_splits(
     return splits
 
 
+def _select_fold_challenger(
+    challengers: list[tuple[str, Pipeline]],
+    x_fit: pd.DataFrame,
+    y_fit: pd.Series,
+    dates_fit: pd.Series,
+    sample_weight_fit: pd.Series,
+    gap_dates: int,
+    tree_min_cv_auc_gain: float,
+) -> tuple[str, Pipeline, dict[str, Any]]:
+    """Select a fold model using only that fold's fit window."""
+    if not challengers:
+        raise ValueError("At least one walk-forward challenger is required")
+
+    attempts: list[dict[str, Any]] = []
+    evaluated: list[tuple[str, Pipeline, float]] = []
+    for name, pipeline in challengers:
+        feature_contract = str(
+            getattr(pipeline, "_model_v2_feature_contract", MODEL_FEATURE_CONTRACT)
+        )
+        try:
+            cv_auc = float(
+                _time_cv_auc(
+                    pipeline,
+                    x_fit,
+                    y_fit,
+                    dates_fit,
+                    sample_weight=sample_weight_fit,
+                    n_splits=3,
+                    gap_dates=gap_dates,
+                )
+            )
+            status = "ok" if cv_auc > 0.0 else "insufficient_temporal_cv"
+            attempts.append(
+                {
+                    "model": name,
+                    "status": status,
+                    "cv_auc": round(cv_auc, 6),
+                    "feature_contract": feature_contract,
+                    "random_seed": MODEL_RANDOM_SEED,
+                }
+            )
+            evaluated.append((name, pipeline, cv_auc))
+        except Exception as exc:
+            attempts.append(
+                {
+                    "model": name,
+                    "status": "error",
+                    "cv_auc": None,
+                    "feature_contract": feature_contract,
+                    "random_seed": MODEL_RANDOM_SEED,
+                    "rejection_reason": f"{type(exc).__name__}:{exc}",
+                }
+            )
+
+    if not evaluated:
+        raise ValueError("All walk-forward challengers failed")
+
+    linear = [row for row in evaluated if row[0].startswith("logreg_")]
+    best_linear_auc = max((row[2] for row in linear), default=None)
+    winner_pool = list(linear)
+    for row in evaluated:
+        if row[0].startswith("logreg_"):
+            continue
+        if best_linear_auc is None or row[2] >= best_linear_auc + tree_min_cv_auc_gain:
+            winner_pool.append(row)
+    if not winner_pool:
+        winner_pool = list(evaluated)
+
+    winner_pool.sort(key=lambda row: row[2], reverse=True)
+    selected_name, selected_pipeline, selected_auc = winner_pool[0]
+    return selected_name, selected_pipeline, {
+        "strategy": "nested_train_only_time_cv_auc",
+        "outer_test_used_for_selection": False,
+        "fit_rows": int(len(x_fit)),
+        "fit_date_min": str(pd.to_datetime(dates_fit, errors="coerce").min().date()),
+        "fit_date_max": str(pd.to_datetime(dates_fit, errors="coerce").max().date()),
+        "tree_min_cv_auc_gain": round(float(tree_min_cv_auc_gain), 6),
+        "best_linear_cv_auc": round(float(best_linear_auc), 6)
+        if best_linear_auc is not None
+        else None,
+        "selected_model": selected_name,
+        "selected_feature_contract": str(
+            getattr(selected_pipeline, "_model_v2_feature_contract", MODEL_FEATURE_CONTRACT)
+        ),
+        "selected_cv_auc": round(float(selected_auc), 6),
+        "attempts": attempts,
+    }
+
+
 def _walk_forward_validate_model(
     prepared: pd.DataFrame,
     x: pd.DataFrame,
     y: pd.Series,
     sample_weight: pd.Series,
-    pipeline: Pipeline,
+    challengers: list[tuple[str, Pipeline]],
     mode: str,
     settings: Settings,
     horizon_days: int,
@@ -746,6 +1053,9 @@ def _walk_forward_validate_model(
         else settings.model_v2.min_prob_threshold_swing
     )
     requested_folds = max(5, int(getattr(settings.model_v2, "walk_forward_folds", 5)))
+    tree_min_cv_auc_gain = float(
+        getattr(settings.model_v2, "tree_model_min_cv_auc_gain", 0.02)
+    )
     splits = _walk_forward_date_splits(
         prepared,
         n_splits=requested_folds,
@@ -760,7 +1070,16 @@ def _walk_forward_validate_model(
         if min(y_fit.nunique(), y_calibration.nunique(), y_test.nunique()) < 2:
             continue
 
-        fold_pipeline = clone(pipeline)
+        selected_name, selected_pipeline, selection = _select_fold_challenger(
+            challengers=challengers,
+            x_fit=x.loc[fit_idx],
+            y_fit=y_fit,
+            dates_fit=prepared.loc[fit_idx, "date"],
+            sample_weight_fit=sample_weight.loc[fit_idx],
+            gap_dates=horizon_days,
+            tree_min_cv_auc_gain=tree_min_cv_auc_gain,
+        )
+        fold_pipeline = clone(selected_pipeline)
         _fit_pipeline(
             fold_pipeline,
             x.loc[fit_idx],
@@ -791,11 +1110,23 @@ def _walk_forward_validate_model(
             index=test_idx,
             dtype=float,
         )
+        calibration_probability = _probability_threshold_diagnostics(
+            calibration_prob,
+            threshold=locked_threshold,
+        )
+        test_probability = _probability_threshold_diagnostics(
+            test_prob,
+            threshold=locked_threshold,
+        )
         selected_idx = test_prob.index[test_prob >= locked_threshold]
         selected_returns = pd.to_numeric(
             prepared.loc[selected_idx, "net_return"],
             errors="coerce",
         ).dropna()
+        if selected_returns.empty and len(selected_idx) > 0:
+            abstention_reason = "selected_returns_missing"
+        else:
+            abstention_reason = str(test_probability["abstention_reason"])
         test_diag = evaluate_calibration(
             y_test.to_numpy(),
             test_prob.to_numpy(),
@@ -809,8 +1140,15 @@ def _walk_forward_validate_model(
                 "test_rows": int(len(test_idx)),
                 "locked_threshold": round(float(locked_threshold), 4),
                 "calibration_method": str(getattr(calibrated, "calibration_method", "")),
+                "selected_model": selected_name,
+                "model_selection": selection,
                 "holdout_auc": round(float(roc_auc_score(y_test, test_prob)), 4),
                 "holdout_ece": float(test_diag["ece"]),
+                "positive_rate": round(float(y_test.mean()), 6),
+                "candidate_stage": "post_candidate_alignment",
+                "calibration_probability": calibration_probability,
+                "test_probability": test_probability,
+                "abstention_reason": abstention_reason,
                 "metrics": {
                     "ProfitFactor": round(_profit_factor_from_returns(selected_returns), 6),
                     "Expectancy": round(float(selected_returns.mean()), 6) if not selected_returns.empty else 0.0,
@@ -832,19 +1170,35 @@ def _walk_forward_validate_model(
         if int(fold.get("metrics", {}).get("Trades", 0)) > 0
     ]
     total_oos_trades = sum(int(fold.get("metrics", {}).get("Trades", 0)) for fold in folds)
+    abstention_reasons: dict[str, int] = {}
+    for fold in folds:
+        reason = str(fold.get("abstention_reason", "unknown"))
+        abstention_reasons[reason] = abstention_reasons.get(reason, 0) + 1
     recommended_threshold = (
         round(float(np.median(thresholds)), 4)
         if thresholds
         else round(configured_threshold, 4)
     )
     return {
+        "diagnostics_schema_version": WALK_FORWARD_DIAGNOSTICS_SCHEMA_VERSION,
+        "evidence_role": WALK_FORWARD_EVIDENCE_ROLE,
+        "promotion_eligible": WALK_FORWARD_PROMOTION_ELIGIBLE,
+        "promotion_block_reason": (
+            "Challenger folds may select different model/feature contracts; "
+            "a separately locked exact-artifact outer evaluation is required."
+        ),
         "status": "ok" if len(folds) >= requested_folds else "insufficient_folds",
         "requested_folds": requested_folds,
         "completed_folds": int(len(folds)),
         "purge_gap_dates": int(horizon_days),
         "threshold_policy": "calibration_locked_per_fold",
+        "model_selection_policy": "nested_train_only_time_cv_auc",
         "recommended_threshold": recommended_threshold,
         "total_oos_trades": int(total_oos_trades),
+        "zero_trade_folds": int(
+            sum(int(fold.get("metrics", {}).get("Trades", 0)) == 0 for fold in folds)
+        ),
+        "abstention_reasons": abstention_reasons,
         "folds": folds,
     }
 
@@ -974,12 +1328,13 @@ def _train_one_mode(
     winner_pool.sort(key=lambda r: r[2], reverse=True)
     winner_name, winner_pipe, winner_cv_auc = winner_pool[0]
 
+    walk_forward_challengers = _build_walk_forward_challengers()
     walk_forward = _walk_forward_validate_model(
         prepared=prepared,
         x=x,
         y=y,
         sample_weight=sample_weight,
-        pipeline=winner_pipe,
+        challengers=walk_forward_challengers,
         mode=mode,
         settings=settings,
         horizon_days=horizon_days,
@@ -1069,6 +1424,13 @@ def _train_one_mode(
         base_threshold_override=walk_forward_threshold,
     )
     return_profile = _build_return_profile(prepared.loc[fit_idx])
+    experiment = _training_experiment_contract(
+        prepared=prepared,
+        mode=mode,
+        settings=settings,
+        horizon_days=horizon_days,
+        challengers=walk_forward_challengers,
+    )
 
     model_comparison = {
         name: round(auc, 4) for name, _, auc in evaluated_results
@@ -1085,6 +1447,7 @@ def _train_one_mode(
         "model_comparison": model_comparison,
         "calibration": calibration_info,
         "walk_forward": walk_forward,
+        "experiment": experiment,
         "available_models": [name for name, _, _ in evaluated_results],
         "label_strategy": str(
             prepared.get(
@@ -1142,10 +1505,22 @@ def maybe_auto_train_model_v2(
         model, metadata = load_model_bundle(cfg.model_dir, mode)
         if model is None or not metadata:
             missing_artifact_modes.append(str(mode))
+    diagnostics_refresh_modes = [
+        str(mode)
+        for mode in active_modes
+        if int(
+            state.get("modes", {})
+            .get(str(mode), {})
+            .get("walk_forward", {})
+            .get("diagnostics_schema_version", 0)
+            or 0
+        )
+        < WALK_FORWARD_DIAGNOSTICS_SCHEMA_VERSION
+    ]
 
     if not force:
         last_at = state.get("last_success_at", "")
-        if last_at and not missing_artifact_modes:
+        if last_at and not missing_artifact_modes and not diagnostics_refresh_modes:
             try:
                 last_dt = datetime.fromisoformat(last_at)
                 if (now - last_dt) < timedelta(days=max(1, int(cfg.auto_train_interval_days))):
@@ -1158,6 +1533,7 @@ def maybe_auto_train_model_v2(
                         "artifact_check": {
                             "ready": True,
                             "missing_modes": [],
+                            "diagnostics_refresh_modes": [],
                             "forced_retrain": False,
                         },
                     }
@@ -1292,6 +1668,9 @@ def maybe_auto_train_model_v2(
         "artifact_check": {
             "ready": not remaining_missing_modes,
             "missing_modes": remaining_missing_modes,
-            "forced_retrain": bool(missing_artifact_modes and not force),
+            "diagnostics_refresh_modes": diagnostics_refresh_modes,
+            "forced_retrain": bool(
+                (missing_artifact_modes or diagnostics_refresh_modes) and not force
+            ),
         },
     }
