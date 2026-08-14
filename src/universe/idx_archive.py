@@ -71,7 +71,8 @@ def parse_idx_constituent_workbook(
         raise ValueError(f"Expected member count is required for index {normalized_index}")
 
     frame = pd.read_excel(BytesIO(workbook_bytes), header=None)
-    header_text = " ".join(frame.head(8).astype(str).to_numpy().ravel().tolist()).upper()
+    header_values = frame.head(8).to_numpy(dtype=object).ravel().tolist()
+    header_text = " ".join(str(value) for value in header_values).upper()
     if normalized_index not in header_text:
         raise ValueError(f"Workbook does not identify itself as {normalized_index}")
 
