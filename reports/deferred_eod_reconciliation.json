@@ -270,5 +270,6 @@
     "state_path": "reports/deferred_eod_reconciliation_state.json",
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
-  "message": "Deferred reconciliation passed for research evidence; it is not same-day execution evidence"
+  "message": "Deferred reconciliation passed for research evidence; it is not same-day execution evidence",
+  "last_checked_at": "2026-08-14T11:22:21.210167+00:00"
 }
