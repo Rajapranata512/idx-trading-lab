@@ -24,18 +24,20 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   validation, commit, PR, merge, configured CI/data refresh, and passive Vercel sync
   without asking for `lanjutkan` again. Telegram, secrets, manual workflow dispatch,
   model rollout, and broker execution remain separately authorized.
-- Evidence: production run `31803811613` built cross-platform manifest schema v2
-  for 11 research artifacts, published dataset
-  `7481f3dfff62621cf7d52b3865b9a39028515fb7b34fa9f28997411d71f16b86`
-  in artifact `f91bc50`, and the same file validates on Linux, Windows, and Vercel.
+- Evidence: production run `31805911649` published manifest schema v2 for 11
+  research artifacts and dataset
+  `e8c5d07a7e9d7e6c33408c42bad8cff53a2fe9e6a08ed04af7db3ff199ccb54b`
+  from source revision `2bd8143`. GitHub and Vercel expose the same manifest.
+- Official universe history now contains 600 membership rows across eight traceable,
+  non-overlapping periods from `2024-11-01` through `2026-10-30`.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
   interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
   batch once per Jakarta date until delayed research coverage is complete.
 - Deferred evidence can improve historical data auditing, but it is explicitly
   `final_execution_eligible=false`; same-day independent reconciliation remains unavailable.
 - Primary blocker: same-day provider capacity and then statistical quality, not UI score quantity.
-- Next Action: expand official LQ45/IDX30 point-in-time universe history so historical
-  research stops projecting the current constituents into older periods.
+- Next Action: enforce official point-in-time membership in Model V2 research datasets,
+  candidate audits, and baseline evaluation before using the expanded history as evidence.
 - Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
   IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
@@ -235,7 +237,15 @@ Last verified on 2026-08-14:
   with HTTP 200, while `final_execution_eligible=false` remains explicit.
 - CSV/JSON fingerprints normalize UTF-8 line endings and Parquet fingerprints binary
   bytes. The Linux-generated artifact validates unchanged after a Windows checkout.
-- Validation has 5 direct manifest tests and the full 197-test Python regression pass.
+- Validation has 5 direct manifest tests; the DATA-04B full regression passes 207 tests.
+- DATA-04B is deployed. The official universe history now has 600 membership rows,
+  8 effective periods, 8 official IDX archive references, 61 represented tickers, no
+  duplicate membership, and coverage from 2024-11-01 through 2026-10-30. Production run
+  `31805911649` and Vercel expose dataset
+  `e8c5d07a7e9d7e6c33408c42bad8cff53a2fe9e6a08ed04af7db3ff199ccb54b`.
+- Training and historical accuracy paths do not yet consume `universe_history.csv`;
+  storing point-in-time membership alone therefore does not make old Model V2 evidence
+  survivorship-bias-safe.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
 - `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
@@ -505,8 +515,8 @@ Portfolio quality:
    the bearish short/hedge track is not implemented or authorized.
 5. Pre-open Vercel secrets, watchdog dispatch, and duplicate-free external delivery
    still require a complete production health check.
-6. Universe history has only two official periods, insufficient for long historical
-   survivorship-bias-safe claims.
+6. Official universe coverage starts at 2024-11-01, and Model V2 training/backtest paths
+   do not yet enforce that point-in-time membership. Earlier dates remain an explicit gap.
 7. Same-day independent price reconciliation is unavailable. Free EODHD capacity cannot
    cover all 45 tickers; the deferred 15-ticker/day collector can create delayed
    research evidence only and no qualifying production session exists.
@@ -562,11 +572,11 @@ Exit: satisfied for release `e67d859`; renew the market calendar before its 2026
 
 ### Phase 3 - Research Data Depth
 
-Status: deferred research reconciliation and deterministic dataset identity are
-operational; point-in-time history depth and same-day production reconciliation remain
-incomplete.
+Status: deferred research reconciliation, deterministic dataset identity, and eight
+official point-in-time universe periods are operational; research filtering and same-day
+production reconciliation remain incomplete.
 
-- Import older official universe periods.
+- Maintain and extend the eight imported official universe periods when archives exist.
 - Establish dependable independent EOD reconciliation.
 - Verified non-corporate event annotations resolve exact-date historical outliers
   without modifying raw or adjusted OHLCV; GOTO 2023-05-31 is the first entry.
@@ -647,32 +657,37 @@ and engineering quality without assuming guaranteed returns.
 
 ## Next Action
 
-`DATA-04B Point-in-time universe history expansion` is the single next action.
+`DATA-04C Point-in-time research-universe enforcement` is the single next action.
 
-DATA-04A is complete and publicly verified. Universe history still contains only two
-official effective periods, so older backtests cannot yet make strong survivorship-bias-
-safe claims. The next free, unblocked data-depth action is official archive expansion.
+DATA-04B is complete and publicly verified. The repository now stores eight official
+periods, but Model V2 labeling, candidate audits, and historical evaluation can still read
+feature rows without checking membership on that date. DATA-04C must turn the expanded
+history into an enforced research contract before any baseline is reconsidered.
 
 Acceptance criteria:
 
-1. Locate official IDX LQ45 and IDX30 constituent announcements covering at least eight
-   distinct historical effective periods or the maximum freely accessible range, with a
-   target of at least two years before the current period.
-2. Preserve each official archive/document reference and import membership through the
-   existing point-in-time importer. Never infer historical membership from today's list,
-   prices, or third-party summaries.
-3. Validate ticker normalization, expected constituent counts, index labels, effective
-   dates, period boundaries, duplicate membership, and overlapping contradictory records.
-4. Add regression coverage for repeated imports, source traceability, and point-in-time
-   membership queries. Any unavailable period remains an explicit coverage gap.
-5. Rebuild manifest schema v2 so the expanded history receives a new dataset ID, while
-   keeping `EXECUTION_DISABLED`, Model V2 `SHADOW/BLOCKED`, rollout 0%, and
-   `final_execution_eligible=false`.
-6. Validate locally and in production, record measured coverage, and replace this section
-   with exactly one successor action.
+1. Add one reusable point-in-time membership join/filter for dated ticker rows. It must
+   validate the same official history contract, preserve membership provenance, and reject
+   uncovered dates, ambiguous overlaps, invalid periods, and missing ticker/date columns.
+2. Apply it before Model V2 candidate alignment and label construction and in historical
+   signal/accuracy audits. Live scoring continues to use the separately activated current
+   universe.
+3. Emit machine-readable coverage diagnostics: input/eligible/excluded rows, covered date
+   range, excluded dates/tickers, and source-period count. Never silently substitute the
+   current universe for an uncovered historical date.
+4. Add boundary, membership-change, non-member, uncovered-date, and malformed-history
+   regression tests. Existing current-universe behavior must remain unchanged.
+5. Rebuild the T1 and Swing research baseline only on eligible dates from 2024-11-01
+   onward, using the existing purged time splits, after-cost labels, and candidate contract.
+   Compare row/trade counts, AUC, ECE, expectancy, PF, folds, and false positives with the
+   recorded baseline; do not promote on a favorable small sample.
+6. Publish versioned diagnostics and manifest evidence while keeping
+   `EXECUTION_DISABLED`, Model V2 `SHADOW/BLOCKED`, rollout 0%, and
+   `final_execution_eligible=false`. Replace this section with one successor action
+   only after local and production validation.
 
-Likely files: official IDX announcement archives, `universe_history.csv`, importer
-validation and tests, universe operations documentation, manifest evidence, and this PRD.
+Likely files: universe research filter, Model V2 labeling/training, accuracy audits,
+regression tests, versioned reports, runbook, manifest evidence, and this PRD.
 
 ## 11. Portfolio Release Checklist
 
@@ -739,6 +754,14 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-14: completed DATA-04B through PR #23. Six additional official IDX archives
+  expanded universe history to 600 rows and eight non-overlapping periods from 2024-11-01
+  through 2026-10-30. Import validation enforces source traceability, exact 45/30 counts,
+  IDX30 subset membership, timestamp validity, idempotency, and overlap rejection. Full
+  regression passed 207 tests. Production run `31805911649` published dataset
+  `e8c5d07a7e9d7e6c33408c42bad8cff53a2fe9e6a08ed04af7db3ff199ccb54b`
+  from `2bd8143`, and Vercel serves the same fail-closed manifest. DATA-04C
+  point-in-time research-universe enforcement is next.
 - 2026-08-14: completed DATA-04A through PR #20 and PR #21. Production run
   `31803811613` published manifest schema v2 in artifact `f91bc50` for 11 artifacts
   and feature contract `eod-technical-v1`. Canonical text hashing fixed LF/CRLF
