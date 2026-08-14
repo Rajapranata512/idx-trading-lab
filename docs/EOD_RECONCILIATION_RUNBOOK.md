@@ -75,6 +75,9 @@ When schema v2 first reads an older state that has `last_success_date` and cycle
 progress but no `last_successful_batch`, it reconstructs only provable fields. The
 summary carries `reconstructed_from_state=true`, leaves `success_tickers` empty, and
 uses `completed_cycle_tickers` for cumulative progress; it never invents a lost batch.
+The first same-date idempotent record retains that date plus its positive cycle progress,
+so later rollout calculations can recover the proven date after the reconstructed batch
+summary is replaced by newer successful batches.
 
 The schema-v2 `rollout` block is the machine-readable progress contract:
 
@@ -82,7 +85,7 @@ The schema-v2 `rollout` block is the machine-readable progress contract:
 - `successful_date_count` is compared with `minimum_successful_dates_required`;
 - `completed_tickers`, `remaining_tickers`, and `ticker_progress_ratio` track coverage;
 - `ready_for_deferred_audit=true` requires both 45/45 coverage and the minimum unique
-  successful dates; retries never increase either counter;
+  successful dates; repeated retries never add a second copy of the same date;
 - `last_completed_rollout` preserves a completed cycle while the active state begins
   the next cycle.
 

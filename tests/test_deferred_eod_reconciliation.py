@@ -176,6 +176,71 @@ def test_deferred_collection_reconstructs_v1_success_progress_without_provider_c
     assert result["rollout"]["completed_tickers"] == 15
 
 
+def test_v1_migration_preserves_first_success_date_through_full_rollout(
+    tmp_path: Path,
+):
+    settings, universe, prices = _settings(tmp_path)
+    state_path = Path(
+        settings.data.price_quality.deferred_eod_reconciliation.state_path
+    )
+    state_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "cycle": 1,
+                "completed_cycle_tickers": universe[:15],
+                "last_success_date": "2026-08-12",
+                "runs": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 12, 12, tzinfo=timezone.utc),
+        fetcher=lambda *_args: pytest.fail("migration retry must not fetch tickers"),
+        account_fetcher=lambda *_args: pytest.fail(
+            "migration retry must not call account endpoint"
+        ),
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+
+    def fetcher(ticker: str, _start: str, _end: str) -> pd.DataFrame:
+        return prices[prices["ticker"].eq(ticker)].copy()
+
+    second = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 13, 10, tzinfo=timezone.utc),
+        fetcher=fetcher,
+        account_fetcher=_account_payload,
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+    final = collect_deferred_eod_reconciliation(
+        settings,
+        now=datetime(2026, 8, 14, 10, tzinfo=timezone.utc),
+        fetcher=fetcher,
+        account_fetcher=_account_payload,
+        environ={"EODHD_API_TOKEN": "test-secret"},
+    )
+
+    assert second["rollout"]["successful_dates"] == [
+        "2026-08-12",
+        "2026-08-13",
+    ]
+    assert second["rollout"]["successful_date_count"] == 2
+    assert second["rollout"]["completed_tickers"] == 30
+    assert final["rollout"]["successful_dates"] == [
+        "2026-08-12",
+        "2026-08-13",
+        "2026-08-14",
+    ]
+    assert final["rollout"]["successful_date_count"] == 3
+    assert final["rollout"]["completed_tickers"] == 45
+    assert final["rollout"]["ready_for_deferred_audit"] is True
+    assert final["rollout"]["final_execution_eligible"] is False
+
+
 def test_three_daily_batches_build_full_universe_five_session_research_audit(
     tmp_path: Path,
 ):

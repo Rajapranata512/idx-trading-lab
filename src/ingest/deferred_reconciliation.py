@@ -49,7 +49,13 @@ def _rollout_progress(
         for row in state.get("runs", [])
         if isinstance(row, dict)
         and int(row.get("cycle", 0) or 0) == cycle
-        and bool(row.get("success_tickers"))
+        and (
+            bool(row.get("success_tickers"))
+            or (
+                bool(row.get("idempotent_skip"))
+                and int(row.get("completed_current_cycle", 0) or 0) > 0
+            )
+        )
         and str(row.get("run_date", "")).strip()
     }
     last_successful = state.get("last_successful_batch", {})
