@@ -24,17 +24,18 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   validation, commit, PR, merge, configured CI/data refresh, and passive Vercel sync
   without asking for `lanjutkan` again. Telegram, secrets, manual workflow dispatch,
   model rollout, and broker execution remain separately authorized.
-- Evidence: production run `31801281241` verified the completed deferred rollout at
-  3/3 dates, 45/45 tickers, and 225/225 rows with zero mismatch, used zero provider
-  calls on retry, and published artifact `44f4fb0` to `origin/main`.
+- Evidence: production run `31803811613` built cross-platform manifest schema v2
+  for 11 research artifacts, published dataset
+  `7481f3dfff62621cf7d52b3865b9a39028515fb7b34fa9f28997411d71f16b86`
+  in artifact `f91bc50`, and the same file validates on Linux, Windows, and Vercel.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
   interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
   batch once per Jakarta date until delayed research coverage is complete.
 - Deferred evidence can improve historical data auditing, but it is explicitly
   `final_execution_eligible=false`; same-day independent reconciliation remains unavailable.
 - Primary blocker: same-day provider capacity and then statistical quality, not UI score quantity.
-- Next Action: create a deterministic, versioned research-dataset manifest and feature
-  contract so every model result can be reproduced from explicit source artifacts.
+- Next Action: expand official LQ45/IDX30 point-in-time universe history so historical
+  research stops projecting the current constituents into older periods.
 - Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
   IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
@@ -226,8 +227,15 @@ Last verified on 2026-08-14:
   progress, audit readiness, last-check time, and fail-closed final eligibility.
 - Production workflows use the Node.js 24 generations of GitHub checkout, Python setup,
   and cache actions; a repository-wide contract prevents Node.js 20 action regressions.
-- Deferred reconciliation validation: 8 direct tests and the full 192-test Python
-  regression pass.
+- DATA-04A is deployed. Manifest schema v2 records deterministic metadata and canonical
+  SHA-256 fingerprints for 11 required artifacts, binds them to Git revision
+  `5a2100a`, and freezes 49 feature columns as `eod-technical-v1`.
+- Production artifact `f91bc50` identifies 53,021 feature rows, 56 represented
+  tickers, and 2021-06-30 through 2026-08-14 coverage. Vercel serves the same dataset ID
+  with HTTP 200, while `final_execution_eligible=false` remains explicit.
+- CSV/JSON fingerprints normalize UTF-8 line endings and Parquet fingerprints binary
+  bytes. The Linux-generated artifact validates unchanged after a Windows checkout.
+- Validation has 5 direct manifest tests and the full 197-test Python regression pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
 - `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
@@ -554,8 +562,9 @@ Exit: satisfied for release `e67d859`; renew the market calendar before its 2026
 
 ### Phase 3 - Research Data Depth
 
-Status: deferred research reconciliation is operational; same-day production
-reconciliation remains blocked by provider capacity.
+Status: deferred research reconciliation and deterministic dataset identity are
+operational; point-in-time history depth and same-day production reconciliation remain
+incomplete.
 
 - Import older official universe periods.
 - Establish dependable independent EOD reconciliation.
@@ -638,31 +647,32 @@ and engineering quality without assuming guaranteed returns.
 
 ## Next Action
 
-`DATA-04A Reproducible research dataset manifest` is the single next action.
+`DATA-04B Point-in-time universe history expansion` is the single next action.
 
-DATA-03D is complete. Production evidence now has 3/3 dates, 45/45 ticker coverage,
-225/225 compared rows, and zero unexplained mismatch. The next unblocked Phase 3 need
-is deterministic dataset identity and a machine-readable feature contract.
+DATA-04A is complete and publicly verified. Universe history still contains only two
+official effective periods, so older backtests cannot yet make strong survivorship-bias-
+safe claims. The next free, unblocked data-depth action is official archive expansion.
 
 Acceptance criteria:
 
-1. Define a versioned manifest schema for canonical prices, adjusted prices, features,
-   point-in-time universe, corporate actions, event annotations, and reconciliation
-   evidence. Record path, SHA-256, byte size, row count, columns/dtypes, date coverage,
-   and ticker coverage where applicable.
-2. Generate the manifest deterministically without network access or wall-clock-dependent
-   identity. Bind it to the Git source revision and explicit feature-contract version.
-3. Add a validator and regression tests that fail on missing required artifacts, invalid
-   schema, hash mismatch, or an undeclared feature-contract change.
-4. Integrate generation after feature computation and export the machine-readable artifact
-   for CI/portfolio reproducibility without exposing secrets or licensed raw payloads.
-5. Keep all trading states unchanged: `EXECUTION_DISABLED`, Model V2 `SHADOW/BLOCKED`,
-   rollout 0%, and `final_execution_eligible=false`.
-6. Validate locally and in production, record measured evidence, and replace this section
+1. Locate official IDX LQ45 and IDX30 constituent announcements covering at least eight
+   distinct historical effective periods or the maximum freely accessible range, with a
+   target of at least two years before the current period.
+2. Preserve each official archive/document reference and import membership through the
+   existing point-in-time importer. Never infer historical membership from today's list,
+   prices, or third-party summaries.
+3. Validate ticker normalization, expected constituent counts, index labels, effective
+   dates, period boundaries, duplicate membership, and overlapping contradictory records.
+4. Add regression coverage for repeated imports, source traceability, and point-in-time
+   membership queries. Any unavailable period remains an explicit coverage gap.
+5. Rebuild manifest schema v2 so the expanded history receives a new dataset ID, while
+   keeping `EXECUTION_DISABLED`, Model V2 `SHADOW/BLOCKED`, rollout 0%, and
+   `final_execution_eligible=false`.
+6. Validate locally and in production, record measured coverage, and replace this section
    with exactly one successor action.
 
-Likely files: a focused manifest module, CLI/pipeline integration, configuration or
-contract constants, tests, report export list, data-lineage documentation, and this PRD.
+Likely files: official IDX announcement archives, `universe_history.csv`, importer
+validation and tests, universe operations documentation, manifest evidence, and this PRD.
 
 ## 11. Portfolio Release Checklist
 
@@ -729,6 +739,11 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-14: completed DATA-04A through PR #20 and PR #21. Production run
+  `31803811613` published manifest schema v2 in artifact `f91bc50` for 11 artifacts
+  and feature contract `eod-technical-v1`. Canonical text hashing fixed LF/CRLF
+  portability; the Linux artifact validates on Windows and Vercel serves it with HTTP 200.
+  DATA-04B official point-in-time universe expansion is next.
 - 2026-08-14: completed DATA-03D through PR #17 and PR #18. Mixed-type ingestion
   timestamps had retained four stale Yahoo fallback rows; normalized UTC ordering fixed
   the canonical merge, and idempotent retries now refresh persisted audits without
