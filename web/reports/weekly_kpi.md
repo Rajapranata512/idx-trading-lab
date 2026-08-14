@@ -1,6 +1,6 @@
 # Weekly KPI Dashboard
 
-- generated_at: 2026-08-14T12:01:18.608402
+- generated_at: 2026-08-14T12:31:30.437744
 - lookback_days: 7
 
 ## Run Stability
@@ -11,12 +11,12 @@
 - runs_risk_blocked: 25
 
 ## Event Risk Feed
-- update_ok: 24
+- update_ok: 25
 - update_error: 0
 
 ## Strategy Snapshot (Swing)
-- ProfitFactor: 1.347496498245886
-- Expectancy: 0.02072654368875715
+- ProfitFactor: 1.3464595749467074
+- Expectancy: 0.020680610164545282
 - MaxDD(%): -22.966926729485163
 - Trades: 951
 
