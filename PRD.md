@@ -1,6 +1,6 @@
 # PRD - IDX Trading Lab
 
-Revision: 2026-08-12
+Revision: 2026-08-14
 
 Owner: Project repository
 Status: Active, research/shadow, not final decision
@@ -20,17 +20,17 @@ Read this block after `AGENTS.md`. Do not scan the repository.
   every model, regime, risk, execution, security, and reconciliation gate passes.
 - Current state: `EXECUTION_DISABLED`; Model V2 is `SHADOW/BLOCKED`,
   rollout 0%, and no broker order is authorized.
-- Evidence: production run `31605104835` verified schema-v2 rollout at 1/3 dates and
-  15/45 tickers, used zero provider calls on retry, and published artifact commit
-  `b7bae5d` to `origin/main` for Vercel deployment.
+- Evidence: production run `31796307962` verified the completed deferred rollout at
+  3/3 dates and 45/45 tickers, used zero provider calls on recovery, and published
+  artifact commit `b85ade4` to `origin/main` for Vercel deployment.
 - EODHD free capacity cannot validate all 45 tickers on the same day. The approved
   interim design keeps Yahoo as daily primary and rotates a 15-ticker EODHD historical
   batch once per Jakarta date until delayed research coverage is complete.
 - Deferred evidence can improve historical data auditing, but it is explicitly
   `final_execution_eligible=false`; same-day independent reconciliation remains unavailable.
 - Primary blocker: same-day provider capacity and then statistical quality, not UI score quantity.
-- Next Action: complete the remaining two deferred collection dates so the rotating
-  batches advance from 15/45 to 45/45 tickers without duplicate quota consumption.
+- Next Action: investigate and disposition the four 2026-08-06 deferred close mismatches
+  without rewriting raw evidence or weakening the audit threshold.
 - Parallel research foundation: raw 5m/15m, timestamp-safe sentiment, and licensed
   IEP/IEV/order-book pre-open analysis are approved directions but remain disabled.
 - Never bypass a gate, lower thresholds for signal quantity, fabricate evidence,
@@ -166,12 +166,16 @@ Authoritative paths:
 
 ## Current State
 
-Last verified on 2026-08-12:
+Last verified on 2026-08-14:
 
-- PR #9 was merged as `5d05ff9`. Successful production Daily Pipeline run
-  `31605104835` then published rollout-aware artifact `b7bae5d` for Vercel deployment.
-- Production market data is current through 2026-08-12 with 0 stale sessions,
-  52,931 rows, 56 represented tickers, no missing critical rows, and no duplicate rows.
+- PR #13 merged the legacy-date recovery as `47f0819`; production run
+  `31795789753` proved zero-call idempotency and exposed an incomplete completed-cycle
+  snapshot after state had advanced to cycle 2.
+- PR #14 merged monotonic completed-cycle recovery as `d98287b`. Production run
+  `31796307962` then reported 3/3 dates, 45/45 tickers, and
+  `ready_for_deferred_audit=true`, and published artifact `b85ade4`.
+- Production market data is current through 2026-08-14 with 0 stale sessions,
+  53,021 rows, 56 represented tickers, no missing critical rows, and no duplicate rows.
   Daily primary source is explicitly `yfinance_primary`.
 - Data quality is `warning/pass`: the historical GOTO 2023-05-31 outlier remains
   traceable to its verified event, unresolved active anomalies are 0, and the only
@@ -184,26 +188,27 @@ Last verified on 2026-08-12:
 - The free-tier deferred collector is deployed: Yahoo is the daily 45-ticker source, EODHD is
   limited to one idempotent 15-ticker historical batch per Jakarta date, and a five-call
   reserve protects against quota variance.
-- The reset-aware collector completed AADI through BUMI: 15/15 requests succeeded,
-  no ticker failed, and cache coverage is 15/45 (33.3333%). The deployed rollout block
-  reports one successful date and two remaining dates.
-- Post-batch account metadata reports 15 calls used and five remaining on 2026-08-12.
-  Generic preflight for another 15-ticker batch is quota-blocked, while collector state
-  prevents the duplicate attempt before any account or ticker request.
-- Scheduled retries `31590541944` and `31594420952` both passed with
-  `idempotent_skip=true`, zero selected tickers, account status
-  `not_checked_idempotent_skip`, and `required_calls=0`.
+- Deferred cycle 1 completed across 2026-08-12, 2026-08-13, and 2026-08-14. Cache
+  coverage is 45/45 (100%), with 22 fully covered historical sessions.
+- The five-session deferred audit compared 225/225 rows at 100% coverage. Four rows
+  differ by more than 1%, producing an overall mismatch ratio of 1.7778%, below the
+  5% research threshold; the audit status is `pass`.
+- All four mismatches occur on 2026-08-06: ISAT 1.0526%, MAPI 1.4793%, MBMA 1.8868%,
+  and TLKM 1.5094%. They require source-level disposition before this interim data path
+  is considered fully explained.
+- Recovery run `31796307962` used `idempotent_skip=true`, selected zero tickers,
+  skipped the account endpoint, and reported `required_calls=0`.
 - Cycle-report hardening preserves successful run history, prevents empty retries from
   replacing the latest success report, and records 45/45 completion before advancing
   state to the next cycle.
-- Schema v2 migration reconstructs only provable legacy progress: the current 15/45
-  completed ticker set is retained, while an unavailable historical success list remains
-  empty and is explicitly marked `reconstructed_from_state=true`.
-- Production state confirms schema 2, cycle 1, 15 completed tickers, three retained
-  run records, 15 reconstructed progress tickers, and zero provider calls during migration.
+- Schema v2 migration reconstructs only provable legacy progress. A same-date
+  idempotent record with positive same-cycle progress can recover its unique success date,
+  but cannot invent ticker-level details or increase provider calls.
+- Completed-cycle recovery is monotonic: retained evidence may add a previously omitted
+  date, but can never remove a persisted date or alter final-execution eligibility.
 - Schema-v2 rollout progress is derived from unique successful dates per cycle. It
   reports required/remaining dates, completed/remaining tickers, progress ratio, and
-  deferred-audit readiness; same-day retries cannot advance these values.
+  deferred-audit readiness; retries cannot create duplicate dates or unsupported progress.
 - Queued run `31603799469` passed its pipeline and collector but its artifact push was
   rejected after `main` advanced. Daily publication now skips only a proven stale-base
   or concurrent-main result, never rebases or force-pushes stale output, and preserves
@@ -215,8 +220,8 @@ Last verified on 2026-08-12:
   progress, audit readiness, last-check time, and fail-closed final eligibility.
 - Production workflows use the Node.js 24 generations of GitHub checkout, Python setup,
   and cache actions; a repository-wide contract prevents Node.js 20 action regressions.
-- Deferred quota/state validation: 21 focused tests and the full 189-test Python
-  regression pass.
+- Deferred migration validation: 7 direct tests and the full 190-test Python regression
+  pass.
 - `reconciliation_required` remains false until five consecutive real IDX
   sessions qualify; no qualifying reconciliation session exists yet.
 - `FINAL_EXECUTION` remains the approved end-state, while the broker layer is
@@ -543,7 +548,8 @@ Exit: satisfied for release `e67d859`; renew the market calendar before its 2026
 
 ### Phase 3 - Research Data Depth
 
-Status: production data is fresh; independent reconciliation is blocked by provider capacity.
+Status: deferred research reconciliation is operational; same-day production
+reconciliation remains blocked by provider capacity.
 
 - Import older official universe periods.
 - Establish dependable independent EOD reconciliation.
@@ -626,35 +632,28 @@ and engineering quality without assuming guaranteed returns.
 
 ## Next Action
 
-`DATA-03C Free-tier deferred EOD evidence rollout` is the single next action.
+`DATA-03D Deferred mismatch disposition` is the single next action.
 
-The collector is deployed and the first successful production batch is verified.
-Production must complete two more distinct-date batches and then evaluate delayed audit
-behavior before this interim path is considered operational.
+DATA-03C is complete for delayed research evidence: production has 3/3 dates, 45/45
+ticker coverage, and a passing five-session aggregate audit. Four 2026-08-06 close
+differences remain unexplained and must be resolved without modifying raw observations.
 
 Acceptance criteria:
 
-1. **Verified 2026-08-12:** daily ingestion uses `yfinance_primary` and does not attempt
-   a full-universe EODHD fan-out while deferred mode is enabled.
-2. **Verified 2026-08-12:** production used exactly 15 calls and retained the five-call
-   reserve. Two scheduled retries selected zero tickers and skipped the account endpoint
-   with `required_calls=0`.
-3. **In progress, 1/3 dates:** the first batch persisted 15/45 canonical tickers with
-   no failures and SHA-256 cache evidence. Schema-v2 rollout must report one unique
-   successful date, 15 completed tickers, and two remaining dates until production
-   evidence advances it. Two successful distinct-date batches remain.
-4. At least five historical sessions reach 95% ticker coverage, mismatch ratio at most
-   5%, and no active unresolved anomaly; every mismatch is investigated.
-5. Reports expose source, batch, cache coverage, lag, mismatch, and
-   `final_execution_eligible=false`. Deferred pass never sets
-   `reconciliation_required=true` or promotes Model V2.
-6. Same-day independent reconciliation remains the later DATA-03B requirement before
-   final decision/execution; paid capacity or an approved licensed CSV/provider is still needed.
-7. After three successful dates, update this PRD with measured coverage/mismatch evidence
-   and exactly one successor action.
+1. Trace ISAT, MAPI, MBMA, and TLKM on 2026-08-06 through immutable Yahoo and EODHD
+   evidence, including session date, adjustment semantics, and corporate-action context.
+2. Classify each difference as a provider convention, verified market event, or source
+   defect. Store evidence and rationale; never overwrite raw closes to force agreement.
+3. Repair ingestion only when a source-contract defect is proven. Legitimate provider
+   differences remain visible and receive a durable, reviewable annotation.
+4. Rerun the five-session audit at 100% coverage, keep aggregate mismatch at or below 5%,
+   and ensure every mismatch has a disposition with no active unexplained anomaly.
+5. Keep `same_day_reconciliation=false`, `final_execution_eligible=false`, and Model V2
+   blocked. DATA-03B still requires sufficient licensed same-day capacity.
+6. Record measured evidence and replace this section with exactly one successor action.
 
-Likely files: deferred reconciliation reports/cache/state, Daily Pipeline output,
-nearest data-quality tests, and this PRD.
+Likely files: immutable source evidence, verified event/annotation data, deferred audit
+details, nearest data-quality tests, runbook, and this PRD.
 
 ## 11. Portfolio Release Checklist
 
@@ -721,6 +720,11 @@ This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
 
+- 2026-08-14: completed DATA-03C delayed research rollout through PR #13 and PR #14.
+  Production run `31796307962` recovered 3/3 unique dates and 45/45 tickers with zero
+  provider calls; artifact `b85ade4` reports 100% five-session coverage, 1.7778% aggregate
+  mismatch, and research audit pass. Deferred evidence remains ineligible for final
+  execution; DATA-03D source-level mismatch disposition is next.
 - 2026-08-12: upgraded both GitHub-hosted production workflows to Node.js 24 action
   generations after production exposed Node.js 20 deprecation warnings. The Python 3.11,
   cache-key, permissions, scheduling, idempotency, and stale-publication contracts remain
@@ -742,7 +746,7 @@ This PRD stays compact enough for reset recovery.
   `31574193633` passed and published commit `ebe3813` after PR #4 corrected EODHD's
   stale previous-day counter behavior. Batch 1/3 succeeded for 15/45 tickers with no
   failures, retained five calls, and remained research/final-execution ineligible.
-  The next action is the two remaining distinct-date batches.
+  At that point, two distinct-date batches remained.
 - 2026-08-12: approved an interim free-tier deferred reconciliation track. Yahoo remains
   the complete daily source; EODHD rotates 15 historical tickers once per Jakarta date,
   with idempotent retries, retained cache, and explicit delayed/research-only status.
