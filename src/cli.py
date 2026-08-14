@@ -20,6 +20,10 @@ from src.ingest.reconciliation_readiness import (
     assess_eod_reconciliation_readiness,
     probe_eod_provider_account,
 )
+from src.ingest.research_manifest import (
+    build_research_dataset_manifest,
+    validate_research_dataset_manifest_file,
+)
 from src.ingest.validator import validate_prices
 from src.model_v2 import (
     apply_model_v2_rollout_selection,
@@ -382,6 +386,23 @@ def eod_provider_account_step(settings: Settings) -> dict[str, object]:
 
 def deferred_eod_reconciliation_step(settings: Settings) -> dict[str, Any]:
     return collect_deferred_eod_reconciliation(settings)
+
+
+def build_research_manifest_step(settings: Settings) -> dict[str, Any]:
+    manifest = build_research_dataset_manifest(settings)
+    return {
+        "status": "pass",
+        "path": settings.data.research_manifest_path,
+        "dataset_id": manifest["dataset_id"],
+        "source_revision": manifest["source_revision"],
+        "artifact_count": len(manifest["artifacts"]),
+        "feature_contract_version": manifest["feature_contract"]["version"],
+        "final_execution_eligible": False,
+    }
+
+
+def validate_research_manifest_step(settings: Settings) -> dict[str, Any]:
+    return validate_research_dataset_manifest_file(settings)
 
 
 def ingest_daily(
@@ -2095,6 +2116,14 @@ def _build_parser() -> argparse.ArgumentParser:
         "collect-deferred-eod-reconciliation",
         help="Collect one idempotent free-tier EOD batch for delayed research audit",
     )
+    sub.add_parser(
+        "build-research-manifest",
+        help="Build and validate deterministic research dataset identity",
+    )
+    sub.add_parser(
+        "validate-research-manifest",
+        help="Validate research dataset paths, hashes, and feature contract",
+    )
     sub.add_parser("compute-features", help="Compute features and save parquet")
     sub.add_parser("score", help="Score T+1 and Swing picks, write reports/daily_signal.json")
     sub.add_parser("backtest", help="Run bar-based backtest on scored history")
@@ -2195,6 +2224,14 @@ def main() -> None:
         return
     if args.command == "collect-deferred-eod-reconciliation":
         out = deferred_eod_reconciliation_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        return
+    if args.command == "build-research-manifest":
+        out = build_research_manifest_step(settings)
+        print(json.dumps(out, ensure_ascii=True, indent=2))
+        return
+    if args.command == "validate-research-manifest":
+        out = validate_research_manifest_step(settings)
         print(json.dumps(out, ensure_ascii=True, indent=2))
         return
     if args.command == "compute-features":

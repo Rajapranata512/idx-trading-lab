@@ -191,6 +191,7 @@ class DataSettings(BaseModel):
     canonical_prices_path: str = "data/raw/prices_daily.csv"
     fallback_csv_path: str = "data/raw/prices_daily.sample.csv"
     universe_csv_path: str = "data/reference/universe_lq45_idx30.csv"
+    research_manifest_path: str = "reports/research_dataset_manifest.json"
     provider: ProviderSettings
     intraday: IntradaySettings = Field(default_factory=IntradaySettings)
     universe_auto_update: UniverseAutoUpdateSettings = Field(default_factory=UniverseAutoUpdateSettings)

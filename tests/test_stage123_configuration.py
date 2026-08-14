@@ -15,6 +15,7 @@ def test_production_settings_enable_stage123_fail_closed_gates():
     assert settings.data.universe_auto_update.fail_on_stale is True
     assert settings.data.universe_auto_update.expected_lq45_members == 45
     assert settings.data.universe_auto_update.expected_idx30_members == 30
+    assert settings.data.research_manifest_path == "reports/research_dataset_manifest.json"
     assert settings.data.price_quality.use_adjusted_for_features is True
     assert settings.data.price_quality.verified_price_events_path.endswith("verified_price_events.csv")
     assert settings.data.price_quality.block_on_active_unresolved_action is True
@@ -48,6 +49,13 @@ def test_daily_workflow_preflights_eod_reconciliation_secret():
     assert "python -m src.cli check-eod-reconciliation-readiness" in workflow
     assert "python -m src.cli check-eod-provider-account" not in workflow
     assert "python -m src.cli collect-deferred-eod-reconciliation" in workflow
+    assert "python -m src.cli build-research-manifest" in workflow
+    assert workflow.index("collect-deferred-eod-reconciliation") < workflow.index(
+        "build-research-manifest"
+    )
+    assert workflow.index("build-research-manifest") < workflow.index(
+        "scripts/export_static_web.py"
+    )
     assert "EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}" in workflow
 
 
