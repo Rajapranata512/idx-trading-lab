@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-14T18:28:39.096343+00:00",
+  "generated_at": "2026-08-17T10:48:35.332738+00:00",
   "signals": {
-    "generated_at": "2026-08-14T18:28:33.293029",
+    "generated_at": "2026-08-17T10:48:22.110532",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 2800.0,
         "volume": 19243500.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-14 18:26:54.640328",
+        "ingested_at": "2026-08-17 10:47:35.428901",
         "ret_1d": 0.0646387832699619,
         "ret_5d": 0.0980392156862746,
         "ret_20d": 0.0852713178294573,
@@ -106,7 +106,7 @@
         "close": 2320.0,
         "volume": 9061000.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-14 18:26:54.640328",
+        "ingested_at": "2026-08-17 10:47:35.428901",
         "ret_1d": 0.0265486725663717,
         "ret_5d": 0.0545454545454544,
         "ret_20d": 0.1207729468599034,
@@ -189,7 +189,7 @@
         "close": 2540.0,
         "volume": 106332700.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-14 18:26:54.640328",
+        "ingested_at": "2026-08-17 10:47:35.428901",
         "ret_1d": 0.0283400809716598,
         "ret_5d": 0.1705069124423963,
         "ret_20d": 0.3368421052631578,
@@ -270,7 +270,7 @@
         "close": 7425.0,
         "volume": 3755500.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-14 18:26:54.640328",
+        "ingested_at": "2026-08-17 10:47:35.428901",
         "ret_1d": 0.0102040816326529,
         "ret_5d": -0.0033557046979866,
         "ret_20d": 0.1082089552238805,
@@ -351,7 +351,7 @@
         "close": 7600.0,
         "volume": 3782100.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-08-14 18:26:54.640328",
+        "ingested_at": "2026-08-17 10:47:35.428901",
         "ret_1d": 0.0066225165562914,
         "ret_5d": -0.0193548387096774,
         "ret_20d": 0.1094890510948904,
@@ -513,8 +513,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-08-14T18:28:33.373177",
-    "run_id": "20260814_182647",
+    "generated_at": "2026-08-17T10:48:22.190540",
+    "run_id": "20260817_104727",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -562,7 +562,7 @@
       "v2_profit_factor_r": 0.0
     },
     "score_funnel": {
-      "generated_at": "2026-08-14T18:26:55.947725",
+      "generated_at": "2026-08-17T10:47:40.764642",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -631,7 +631,7 @@
         "excluded_swing": 0
       },
       "profit_quality": {
-        "generated_at": "2026-08-14T18:26:55.928499",
+        "generated_at": "2026-08-17T10:47:40.745531",
         "stage": "score",
         "status": "ok",
         "enabled": true,
@@ -665,7 +665,7 @@
         "reason": "Penghentian Sementara Perdagangan Saham PT Saranacentral Bajatama Tbk. (BAJA)",
         "start_date": "2026-08-03",
         "end_date": "2026-08-17",
-        "updated_at": "2026-08-14",
+        "updated_at": "2026-08-17",
         "source": "idx_announcement_suspend"
       },
       {
@@ -674,7 +674,7 @@
         "reason": "UMA atas Saham PT Citra Buana Prasida Tbk. (CBPE)",
         "start_date": "2026-08-06",
         "end_date": "2026-08-20",
-        "updated_at": "2026-08-14",
+        "updated_at": "2026-08-17",
         "source": "idx_announcement_uma"
       },
       {
@@ -683,7 +683,7 @@
         "reason": "Penghentian Sementara Perdagangan Efek PT Indo Komoditi Korpora Tbk (INCF)",
         "start_date": "2026-08-12",
         "end_date": "2026-08-26",
-        "updated_at": "2026-08-14",
+        "updated_at": "2026-08-17",
         "source": "idx_announcement_suspend"
       }
     ],
@@ -717,6 +717,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20260817.json",
+      "run_id": "20260817_104727",
+      "started_at": "2026-08-17T10:47:27.952223",
+      "ended_at": "2026-08-17T10:48:22.785634",
+      "source": "yfinance_primary",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 21,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_on | All regime checks passed | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20260814.json",
       "run_id": "20260814_182647",
@@ -905,33 +932,6 @@
       "status_category_label": "Protective warning",
       "status_tone": "protective",
       "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260814.json",
-      "run_id": "20260814_115947",
-      "started_at": "2026-08-14T11:59:47.498795",
-      "ended_at": "2026-08-14T12:01:18.611968",
-      "source": "yfinance_primary",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 21,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_on | All regime checks passed | Kill switch=triggered",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
     }
   ],
   "report": {
@@ -972,7 +972,7 @@
       "rows_total": 53021,
       "ticker_total": 56,
       "max_data_date": "2026-08-14",
-      "stale_days": 0,
+      "stale_days": 3,
       "missing_rows": 0,
       "duplicate_rows": 0,
       "missing_tickers_count": 0,
