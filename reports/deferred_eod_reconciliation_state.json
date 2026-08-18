@@ -425,9 +425,20 @@
       "idempotent_skip": false,
       "completed_current_cycle": 30,
       "cycle_completed": false
+    },
+    {
+      "run_date": "2026-08-18",
+      "generated_at": "2026-08-18T11:44:29.185977+00:00",
+      "cycle": 2,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": true,
+      "completed_current_cycle": 30,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-08-18T10:45:59.424801+00:00",
+  "updated_at": "2026-08-18T11:44:29.185977+00:00",
   "last_successful_batch": {
     "run_date": "2026-08-18",
     "generated_at": "2026-08-18T10:45:59.424801+00:00",
