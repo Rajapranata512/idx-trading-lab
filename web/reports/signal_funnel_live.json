@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-20T11:45:56.921149",
-  "run_id": "20260820_114523",
+  "generated_at": "2026-08-20T13:25:35.965564",
+  "run_id": "20260820_132439",
   "gate_pass": {
     "t1": false,
     "swing": false
@@ -48,7 +48,7 @@
     "v2_profit_factor_r": 0.0
   },
   "score_funnel": {
-    "generated_at": "2026-08-20T11:45:33.392934",
+    "generated_at": "2026-08-20T13:24:54.623560",
     "thresholds": {
       "min_live_score_t1": 95.0,
       "min_live_score_swing": 68.0,
@@ -117,7 +117,7 @@
       "excluded_swing": 0
     },
     "profit_quality": {
-      "generated_at": "2026-08-20T11:45:33.371749",
+      "generated_at": "2026-08-20T13:24:54.604383",
       "stage": "score",
       "status": "ok",
       "enabled": true,
