@@ -235,9 +235,10 @@
   },
   "artifacts": {
     "cache_path": "data/raw/deferred_eodhd_reference.csv",
-    "cache_sha256": "9d52d869d07dc08a2a21df59cbfaa5ce25e56c3e860cb6fcfe6767f322174a05",
+    "cache_sha256": "7a973dfbc9f4c1b21344013b2a303ff860d948435fe3f05ac2fe8f63597033e1",
     "state_path": "reports/deferred_eod_reconciliation_state.json",
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
-  "message": "Deferred reconciliation passed for research evidence; it is not same-day execution evidence"
+  "message": "Deferred reconciliation passed for research evidence; it is not same-day execution evidence",
+  "last_checked_at": "2026-08-20T11:45:59.271346+00:00"
 }
