@@ -21,21 +21,21 @@
       "qualified": false,
       "required_consecutive_sessions": 5,
       "consecutive_passes": 0,
-      "latest_market_date": "2026-08-20",
+      "latest_market_date": "2026-08-21",
       "expected_session_dates": [
-        "2026-08-13",
         "2026-08-14",
         "2026-08-18",
         "2026-08-19",
-        "2026-08-20"
+        "2026-08-20",
+        "2026-08-21"
       ],
       "missing_session_dates": [],
       "failing_session_dates": [
-        "2026-08-13",
         "2026-08-14",
         "2026-08-18",
         "2026-08-19",
-        "2026-08-20"
+        "2026-08-20",
+        "2026-08-21"
       ],
       "calendar_error": "",
       "enforcement_enabled": false
