@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-21T13:24:06.420370",
+  "generated_at": "2026-08-24T10:52:11.520106",
   "stage": "score",
   "status": "ok",
   "enabled": true,
-  "input_count": 9,
-  "output_count": 9,
+  "input_count": 10,
+  "output_count": 10,
   "blocked_count": 0,
-  "watch_count": 9,
+  "watch_count": 10,
   "pass_count": 0,
   "profile_path": "reports/ticker_edge_profile.csv",
   "profile_rows": 0,
@@ -21,6 +21,6 @@
   },
   "blocked_preview": [],
   "action_counts": {
-    "watch": 9
+    "watch": 10
   }
 }
