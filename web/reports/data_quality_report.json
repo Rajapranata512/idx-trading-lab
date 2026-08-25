@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-24T13:27:52.795416+00:00",
+  "generated_at": "2026-08-25T10:48:18.956011+00:00",
   "status": "warning",
   "pass": true,
   "reason_codes": [],
@@ -19,7 +19,7 @@
     "rows_total": 53246,
     "ticker_total": 56,
     "max_data_date": "2026-08-24",
-    "stale_days": 0,
+    "stale_days": 1,
     "missing_rows": 0,
     "duplicate_rows": 0,
     "missing_tickers_count": 0,
@@ -91,7 +91,7 @@
       "history_path": "reports/price_reconciliation_evidence.json",
       "session": {
         "market_date": "2026-08-24",
-        "recorded_at": "2026-08-24T13:27:52.735355+00:00",
+        "recorded_at": "2026-08-25T10:48:18.845539+00:00",
         "eligible": false,
         "reasons": [
           "reconciliation_not_passed",
@@ -108,7 +108,7 @@
         "rows_compared": 0,
         "evidence": {
           "primary_path": "data/raw/price_reconciliation/2026-08-24/primary_yfinance_primary.csv",
-          "primary_sha256": "20be0e5b756f434a605a322c828f4067efda1d471e61f825027ad267b6a609c9",
+          "primary_sha256": "44b87e89c2f2b5eed09d36e83cc1e075a07417234589afb8b0191e30a7f320ba",
           "reference_path": "",
           "reference_sha256": "",
           "comparison_path": "data/raw/price_reconciliation/2026-08-24/comparison.csv",
