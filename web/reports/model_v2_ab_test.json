@@ -1,22 +1,22 @@
 {
-  "generated_at": "2026-08-25T13:26:09.976883",
-  "run_id": "20260825_132543",
+  "generated_at": "2026-08-26T10:50:54.977314",
+  "run_id": "20260826_105031",
   "max_positions": 3,
   "v1_top": [
     "HRTA",
-    "BUMI",
-    "MEDC"
+    "MDKA",
+    "AMMN"
   ],
   "v2_top": [],
   "overlap_count": 0,
   "overlap_tickers": [],
   "only_v1": [
-    "BUMI",
+    "AMMN",
     "HRTA",
-    "MEDC"
+    "MDKA"
   ],
   "only_v2": [],
   "jaccard_overlap": 0.0,
-  "v1_avg_score": 99.1367,
+  "v1_avg_score": 99.3333,
   "v2_avg_p_win": 0.0
 }
