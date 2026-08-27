@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-08-27T21:04:14.783485+00:00",
+  "generated_at": "2026-08-27T22:28:02.249370+00:00",
   "run_date": "2026-08-28",
   "status": "blocked",
   "mode": "deferred_free_tier",
@@ -217,11 +217,11 @@
     "threshold_mismatch_ratio": 0.05,
     "threshold_coverage_ratio": 0.95,
     "research_evidence_eligible": true,
-    "lag_sessions": 1
+    "lag_sessions": 2
   },
   "artifacts": {
     "cache_path": "data/raw/deferred_eodhd_reference.csv",
-    "cache_sha256": "22142342858f364d7141778f3c4c8ac9b7b3041d631545c72982d0b53ae9d55b",
+    "cache_sha256": "af33232e9cafec35b82d7fcafd4ec24d4fb7c76203c72d9a7c94586a7205427f",
     "state_path": "reports/deferred_eod_reconciliation_state.json",
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
