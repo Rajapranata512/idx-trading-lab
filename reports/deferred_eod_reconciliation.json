@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-08-31T18:02:42.639776+00:00",
+  "generated_at": "2026-08-31T19:11:58.280055+00:00",
   "run_date": "2026-09-01",
   "status": "blocked",
   "mode": "deferred_free_tier",
@@ -233,7 +233,7 @@
   },
   "artifacts": {
     "cache_path": "data/raw/deferred_eodhd_reference.csv",
-    "cache_sha256": "bacf17870e87d2a931651f4630de9930e6d778025c1f6e21a3ffccab8b4a5d58",
+    "cache_sha256": "d6084abff64c1d2f8261a57453d03ebf2a52b6353ba2e4e1a813f2afd6b00fd9",
     "state_path": "reports/deferred_eod_reconciliation_state.json",
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
