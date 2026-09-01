@@ -1,0 +1,27 @@
+{
+  "market_date": "2026-09-01",
+  "recorded_at": "2026-09-01T14:51:52.485973+00:00",
+  "eligible": false,
+  "reasons": [
+    "reconciliation_not_passed",
+    "unexpected_primary_source",
+    "unexpected_reference_source",
+    "coverage_below_threshold"
+  ],
+  "status": "unavailable",
+  "primary_source": "yfinance_primary",
+  "reference_source": "",
+  "coverage_ratio": 0.0,
+  "mismatch_ratio": 0.0,
+  "active_unresolved_count": 0,
+  "rows_compared": 0,
+  "evidence": {
+    "primary_path": "data/raw/price_reconciliation/2026-09-01/primary_yfinance_primary.csv",
+    "primary_sha256": "f9ecc47eae1c46282350eaeefd577e74ed342659d6903bc75fddf9e7a12ce7ce",
+    "reference_path": "",
+    "reference_sha256": "",
+    "comparison_path": "data/raw/price_reconciliation/2026-09-01/comparison.csv",
+    "comparison_sha256": "c5b2bc343c9338acc855fd6b5b05cee65400460d2565007bcb0ea70fde6f29c8",
+    "summary_path": "data/raw/price_reconciliation/2026-09-01/summary.json"
+  }
+}
