@@ -1,17 +1,17 @@
 # Weekly KPI Dashboard
 
-- generated_at: 2026-09-03T15:02:42.110986
+- generated_at: 2026-09-03T16:35:36.881074
 - lookback_days: 7
 
 ## Run Stability
-- runs_total: 16
+- runs_total: 17
 - runs_failed: 0
 - error_rate_pct: 0.0
 - runs_live_allowed: 0
-- runs_risk_blocked: 16
+- runs_risk_blocked: 17
 
 ## Event Risk Feed
-- update_ok: 16
+- update_ok: 17
 - update_error: 0
 
 ## Strategy Snapshot (Swing)
