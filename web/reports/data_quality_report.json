@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T16:34:43.118750+00:00",
+  "generated_at": "2026-09-04T14:20:16.134242+00:00",
   "status": "warning",
   "pass": true,
   "reason_codes": [],
@@ -16,9 +16,9 @@
     "reconciliation_ok": true
   },
   "stats": {
-    "rows_total": 53561,
+    "rows_total": 53628,
     "ticker_total": 56,
-    "max_data_date": "2026-09-03",
+    "max_data_date": "2026-09-04",
     "stale_days": 0,
     "missing_rows": 0,
     "duplicate_rows": 0,
@@ -64,22 +64,22 @@
           "qualified": false,
           "required_consecutive_sessions": 5,
           "consecutive_passes": 0,
-          "latest_market_date": "2026-09-03",
+          "latest_market_date": "2026-09-04",
           "expected_session_dates": [
-            "2026-08-28",
             "2026-08-31",
             "2026-09-01",
             "2026-09-02",
-            "2026-09-03"
+            "2026-09-03",
+            "2026-09-04"
           ],
           "missing_session_dates": [
             "2026-08-31"
           ],
           "failing_session_dates": [
-            "2026-08-28",
             "2026-09-01",
             "2026-09-02",
-            "2026-09-03"
+            "2026-09-03",
+            "2026-09-04"
           ],
           "calendar_error": "",
           "enforcement_enabled": false
@@ -91,8 +91,8 @@
       "qualified": false,
       "history_path": "reports/price_reconciliation_evidence.json",
       "session": {
-        "market_date": "2026-09-03",
-        "recorded_at": "2026-09-03T16:34:43.007567+00:00",
+        "market_date": "2026-09-04",
+        "recorded_at": "2026-09-04T14:20:16.005024+00:00",
         "eligible": false,
         "reasons": [
           "reconciliation_not_passed",
@@ -108,35 +108,35 @@
         "active_unresolved_count": 0,
         "rows_compared": 0,
         "evidence": {
-          "primary_path": "data/raw/price_reconciliation/2026-09-03/primary_yfinance_primary.csv",
-          "primary_sha256": "50b2df23bd89c1ebff405c9e3af93f77a7af113be2cadb77d0e6c13c80076f18",
+          "primary_path": "data/raw/price_reconciliation/2026-09-04/primary_yfinance_primary.csv",
+          "primary_sha256": "1a31ed04cd1e6f2f5916586efbc595c1866ec8c1f093ade94d47cb4d88b13005",
           "reference_path": "",
           "reference_sha256": "",
-          "comparison_path": "data/raw/price_reconciliation/2026-09-03/comparison.csv",
+          "comparison_path": "data/raw/price_reconciliation/2026-09-04/comparison.csv",
           "comparison_sha256": "c5b2bc343c9338acc855fd6b5b05cee65400460d2565007bcb0ea70fde6f29c8",
-          "summary_path": "data/raw/price_reconciliation/2026-09-03/summary.json"
+          "summary_path": "data/raw/price_reconciliation/2026-09-04/summary.json"
         }
       },
       "qualification": {
         "qualified": false,
         "required_consecutive_sessions": 5,
         "consecutive_passes": 0,
-        "latest_market_date": "2026-09-03",
+        "latest_market_date": "2026-09-04",
         "expected_session_dates": [
-          "2026-08-28",
           "2026-08-31",
           "2026-09-01",
           "2026-09-02",
-          "2026-09-03"
+          "2026-09-03",
+          "2026-09-04"
         ],
         "missing_session_dates": [
           "2026-08-31"
         ],
         "failing_session_dates": [
-          "2026-08-28",
           "2026-09-01",
           "2026-09-02",
-          "2026-09-03"
+          "2026-09-03",
+          "2026-09-04"
         ],
         "calendar_error": "",
         "enforcement_enabled": false

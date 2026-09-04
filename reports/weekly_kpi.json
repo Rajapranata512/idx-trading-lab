@@ -1,23 +1,23 @@
 {
-  "generated_at": "2026-09-03T16:35:36.881074",
+  "generated_at": "2026-09-04T14:21:15.405095",
   "lookback_days": 7,
   "run_stats": {
-    "runs_total": 17,
+    "runs_total": 15,
     "runs_failed": 0,
     "runs_live_allowed": 0,
-    "runs_risk_blocked": 17,
+    "runs_risk_blocked": 15,
     "setup_errors": 0,
     "error_rate_pct": 0.0
   },
   "event_risk_update": {
-    "ok_count": 17,
+    "ok_count": 15,
     "error_count": 0
   },
   "strategy_snapshot": {
-    "swing_profit_factor": 1.1421469302196967,
-    "swing_expectancy": 0.006129899483827909,
-    "swing_max_dd_pct": -13.488570260690844,
-    "swing_trades": 297
+    "swing_profit_factor": 1.1431359476175695,
+    "swing_expectancy": 0.006144549999935743,
+    "swing_max_dd_pct": -13.445620642386555,
+    "swing_trades": 299
   },
   "live_reconciliation": {
     "status": "no_signals",
