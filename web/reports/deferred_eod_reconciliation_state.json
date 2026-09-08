@@ -7,17 +7,6 @@
   "runs": [
     {
       "run_date": "2026-08-25",
-      "generated_at": "2026-08-25T11:47:23.186300+00:00",
-      "cycle": 4,
-      "selected_tickers": [],
-      "success_tickers": [],
-      "failures": [],
-      "idempotent_skip": true,
-      "completed_current_cycle": 15,
-      "cycle_completed": false
-    },
-    {
-      "run_date": "2026-08-25",
       "generated_at": "2026-08-25T13:26:47.751855+00:00",
       "cycle": 4,
       "selected_tickers": [],
@@ -590,9 +579,20 @@
       "idempotent_skip": false,
       "completed_current_cycle": 45,
       "cycle_completed": true
+    },
+    {
+      "run_date": "2026-09-08",
+      "generated_at": "2026-09-08T14:32:21.829048+00:00",
+      "cycle": 7,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": true,
+      "completed_current_cycle": 0,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-09-08T13:55:01.475716+00:00",
+  "updated_at": "2026-09-08T14:32:21.829048+00:00",
   "last_successful_batch": {
     "run_date": "2026-09-08",
     "generated_at": "2026-09-08T13:55:01.475716+00:00",
@@ -666,22 +666,18 @@
     "reconstructed_from_state": false
   },
   "rollout": {
-    "cycle": 6,
-    "status": "complete",
-    "successful_dates": [
-      "2026-09-04",
-      "2026-09-07",
-      "2026-09-08"
-    ],
-    "successful_date_count": 3,
+    "cycle": 7,
+    "status": "collecting",
+    "successful_dates": [],
+    "successful_date_count": 0,
     "minimum_successful_dates_required": 3,
-    "remaining_successful_dates": 0,
-    "completed_tickers": 45,
+    "remaining_successful_dates": 3,
+    "completed_tickers": 0,
     "universe_tickers": 45,
-    "remaining_tickers": 0,
-    "ticker_progress_ratio": 1.0,
-    "cycle_completed": true,
-    "ready_for_deferred_audit": true,
+    "remaining_tickers": 45,
+    "ticker_progress_ratio": 0.0,
+    "cycle_completed": false,
+    "ready_for_deferred_audit": false,
     "same_day_reconciliation": false,
     "final_execution_eligible": false
   },
