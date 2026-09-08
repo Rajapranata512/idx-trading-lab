@@ -37,7 +37,7 @@ jobs:
 
       - name: Upload availability report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: idx-membership-source-availability
           path: reports/idx_membership_source_availability.json

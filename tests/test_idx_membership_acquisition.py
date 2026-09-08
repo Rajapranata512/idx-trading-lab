@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 import pytest
 from src.ingest.idx_membership_acquisition import probe_idx_membership_source_availability
@@ -28,5 +28,5 @@ def test_invalid_timeout(tmp_path):
 
 def test_workflow_is_read_only():
     text=Path(".github/workflows/idx-membership-source-monitor.yml").read_text(encoding="utf-8")
-    assert "contents: read" in text and "upload-artifact@v4" in text
+    assert "contents: read" in text and "upload-artifact@v6" in text
     assert "git push" not in text and "send-telegram" not in text
