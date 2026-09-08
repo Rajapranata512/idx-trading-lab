@@ -1,6 +1,6 @@
 # PRD - IDX Trading Lab
 
-Revision: 2026-08-15
+Revision: 2026-09-08
 
 Owner: Project repository
 Status: Active, research/shadow, not final decision
@@ -174,7 +174,7 @@ Authoritative paths:
 
 ## Current State
 
-Last verified on 2026-08-15:
+Last verified on 2026-09-08:
 
 - PR #25 deployed point-in-time research-universe enforcement. Training, candidate
   alignment, labels, and historical accuracy audits now reject uncovered dates and
@@ -728,6 +728,10 @@ Stable implementation details belong in runbooks. Runtime metrics belong in repo
 This PRD stays compact enough for reset recovery.
 
 ## 14. Decision Log
+
+- 2026-09-08: added a read-only scheduled monitor for five missing official IDX
+  membership archive candidates. The baseline probe returned HTTP 404 for all five.
+  Reports require human review and remain ineligible for model or execution use.
 
 - 2026-08-14: completed DATA-04B through PR #23. Six additional official IDX archives
   expanded universe history to 600 rows and eight non-overlapping periods from 2024-11-01

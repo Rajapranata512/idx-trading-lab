@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "status": "research_candidates_only",
+  "source_boundary": "Announcement identifiers and expected official URLs are research leads only. They cannot enter the active manifest until the official local ZIP is inspected and SHA-256 pinned.",
+  "candidates": [
+    {
+      "announcement_id": "Peng-00210/BEI.POP/07-2021",
+      "publish_date": "2021-07-26",
+      "expected_source_url": "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Peng-00210_BEI.POP_07-2021-ID.zip",
+      "archive_file": "Peng-00210-BEI-POP-07-2021-ID.zip",
+      "expected_effective_from": "2021-08-02",
+      "expected_effective_to": "2022-01-31",
+      "verification_status": "unverified_research_candidate",
+      "discovery_sources": [
+        "https://id.scribd.com/document/543747719/Peng-00210-IDX30-LQ45-IDX80-26-Jul-2021"
+      ]
+    },
+    {
+      "announcement_id": "Peng-00023/BEI.POP/01-2022",
+      "publish_date": "2022-01-25",
+      "expected_source_url": "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Peng-00023_BEI.POP_01-2022-ID.zip",
+      "archive_file": "Peng-00023-BEI-POP-01-2022-ID.zip",
+      "expected_effective_from": "2022-02-01",
+      "expected_effective_to": "2022-07-31",
+      "verification_status": "unverified_research_candidate",
+      "discovery_sources": [
+        "https://www.bloglq45.my.id/2022/02/indeks-saham-lq45-periode-februari-juli-2022.html"
+      ]
+    },
+    {
+      "announcement_id": "Peng-00184/BEI.POP/07-2022",
+      "publish_date": "2022-07-25",
+      "expected_source_url": "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Peng-00184_BEI.POP_07-2022-ID.zip",
+      "archive_file": "Peng-00184-BEI-POP-07-2022-ID.zip",
+      "expected_effective_from": "2022-08-01",
+      "expected_effective_to": "2023-01-31",
+      "verification_status": "unverified_research_candidate",
+      "discovery_sources": [
+        "https://www.idxchannel.com/market-news/terbaru-daftar-saham-lq45-dan-idx30-periode-agustus-2022-januari-2023/all"
+      ]
+    },
+    {
+      "announcement_id": "Peng-00018/BEI.POP/01-2023",
+      "publish_date": "2023-01-25",
+      "expected_source_url": "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Peng-00018_BEI.POP_01-2023-ID.zip",
+      "archive_file": "Peng-00018-BEI-POP-01-2023-ID.zip",
+      "expected_effective_from": "2023-02-01",
+      "expected_effective_to": "2023-07-31",
+      "verification_status": "unverified_research_candidate",
+      "discovery_sources": [
+        "https://media.bareksa.com/uploads/file_doc/2023/09/AAKXK30_prospectus.pdf"
+      ]
+    },
+    {
+      "announcement_id": "Peng-00190/BEI.POP/07-2023",
+      "publish_date": "2023-07-25",
+      "expected_source_url": "https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Peng-00190_BEI.POP_07-2023-ID.zip",
+      "archive_file": "Peng-00190-BEI-POP-07-2023-ID.zip",
+      "expected_effective_from": "2023-08-01",
+      "expected_effective_to": "2024-01-31",
+      "verification_status": "unverified_research_candidate",
+      "discovery_sources": [
+        "https://repo.undiksha.ac.id/25095/9/2117041136-LAMPIRAN.pdf"
+      ]
+    }
+  ]
+}

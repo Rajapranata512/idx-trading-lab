@@ -1,0 +1,45 @@
+name: IDX Membership Source Monitor
+
+on:
+  schedule:
+    - cron: "23 1 * * *" # 08:23 WIB
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: idx-membership-source-monitor
+  cancel-in-progress: true
+
+jobs:
+  probe-official-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Probe official IDX archive URLs with HEAD only
+        run: python -c "from src.ingest.idx_membership_acquisition import probe_idx_membership_source_availability as p; p()"
+
+      - name: Upload availability report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: idx-membership-source-availability
+          path: reports/idx_membership_source_availability.json
+          if-no-files-found: error
+          retention-days: 30
