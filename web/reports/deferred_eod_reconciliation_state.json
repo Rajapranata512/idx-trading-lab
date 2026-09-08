@@ -6,17 +6,6 @@
   "last_cycle_completed_at": "2026-09-08T13:55:01.475716+00:00",
   "runs": [
     {
-      "run_date": "2026-08-25",
-      "generated_at": "2026-08-25T13:26:47.751855+00:00",
-      "cycle": 4,
-      "selected_tickers": [],
-      "success_tickers": [],
-      "failures": [],
-      "idempotent_skip": true,
-      "completed_current_cycle": 15,
-      "cycle_completed": false
-    },
-    {
       "run_date": "2026-08-26",
       "generated_at": "2026-08-26T10:51:16.718157+00:00",
       "cycle": 4,
@@ -590,9 +579,20 @@
       "idempotent_skip": true,
       "completed_current_cycle": 0,
       "cycle_completed": false
+    },
+    {
+      "run_date": "2026-09-08",
+      "generated_at": "2026-09-08T15:10:41.247172+00:00",
+      "cycle": 7,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": true,
+      "completed_current_cycle": 0,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-09-08T14:32:21.829048+00:00",
+  "updated_at": "2026-09-08T15:10:41.247172+00:00",
   "last_successful_batch": {
     "run_date": "2026-09-08",
     "generated_at": "2026-09-08T13:55:01.475716+00:00",
