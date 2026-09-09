@@ -105,7 +105,7 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-09-09T15:09:12.764951+00:00",
+          "max": "2026-09-09T16:47:27.291854+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
@@ -116,7 +116,7 @@
       "required": true,
       "role": "feature_price_input",
       "rows": 53763,
-      "sha256": "e710d8121269778652a756f479e365a0f0f620bde585a3fd7c4a1940a4949561",
+      "sha256": "98c8478a6da30d9cefed9e589fdc5175b13856ac1ab7ccd56bf137ecefe2efdf",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -168,7 +168,7 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-09-09T15:09:12.764951+00:00",
+          "max": "2026-09-09T16:47:27.291854+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
@@ -179,7 +179,7 @@
       "required": true,
       "role": "raw_canonical_price_audit",
       "rows": 53763,
-      "sha256": "984d8c5a546eef1d863118571295e30caedfcd92181840bf6e3016aeb694c702",
+      "sha256": "08d3118f4635da27a857b05226bcf0da9a4dfdca17b4828d4d27ee9f3ac794bf",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -273,8 +273,8 @@
           "min": "2026-06-29T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-09-09T15:09:44.145556+00:00",
-          "min": "2026-09-09T15:09:44.145556+00:00"
+          "max": "2026-09-09T16:48:14.476495+00:00",
+          "min": "2026-09-09T16:48:14.476495+00:00"
         }
       },
       "format": "csv",
@@ -284,7 +284,7 @@
       "required": true,
       "role": "independent_delayed_price_reference",
       "rows": 2307,
-      "sha256": "700784500b85fe4a3abf4d25a8b0b9b8d617d9f7277184af514cec693aaa0b89",
+      "sha256": "26610331b2d674b4bf6301bdfe1b42df2c576ab4ddebbe06dc0a4b12685c6520",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 45
@@ -350,7 +350,7 @@
       "path": "reports/deferred_eod_reconciliation.json",
       "required": true,
       "role": "independent_price_comparison_summary",
-      "sha256": "a41b10209f6f2df44b67930f59b8acec915028bc1d959e262c9b813f488d62d3",
+      "sha256": "9806aced1bfa4abfd24f1edfcc517bde49e3a24433964b89f85c48b58cd163af",
       "top_level_keys": [
         "account",
         "artifacts",
@@ -577,8 +577,8 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-09-09T15:09:13.403470+00:00",
-          "min": "2026-09-09T15:09:13.403470+00:00"
+          "max": "2026-09-09T16:47:28.220032+00:00",
+          "min": "2026-09-09T16:47:28.220032+00:00"
         }
       },
       "format": "parquet",
@@ -588,7 +588,7 @@
       "required": true,
       "role": "model_feature_matrix",
       "rows": 53763,
-      "sha256": "57c7cc3b7b7a239e4a8fb20f8e7e65744f9a1e4a28c22139f902116136d28499",
+      "sha256": "4298f8fc98c0cf4c918cf004c3c5aab5fd547056b3e8ad6f3d51742099c6b573",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -788,7 +788,7 @@
       }
     }
   ],
-  "dataset_id": "8a8a6508e4d26899a8b0b856c0a12d112a467ff5458de9e07abda472a4c46e2f",
+  "dataset_id": "b04f54fc4f24afa6659bffff11aa17feb6b67e90d66dea6449e2bf9aac85424c",
   "feature_contract": {
     "canonical_input_columns": [
       "date",
@@ -862,5 +862,5 @@
     "contains_secrets": false,
     "final_execution_eligible": false
   },
-  "source_revision": "6c71775906986e321153277e0d19da38fc832720"
+  "source_revision": "6f9a09219826095001fa6a5bf9f927a563d12307"
 }
