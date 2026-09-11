@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T16:34:13.058775",
+  "generated_at": "2026-09-11T14:24:56.545276",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -21,17 +21,17 @@
       "LQ45"
     ],
     "timezone": "Asia/Jakarta",
-    "input_rows": 72352,
-    "eligible_rows": 21274,
+    "input_rows": 72414,
+    "eligible_rows": 21336,
     "excluded_rows": 51078,
     "excluded_uncovered_rows": 46391,
     "excluded_non_member_rows": 4687,
-    "input_unique_dates": 1234,
+    "input_unique_dates": 1235,
     "input_unique_tickers": 56,
-    "eligible_unique_dates": 442,
+    "eligible_unique_dates": 443,
     "eligible_unique_tickers": 52,
     "input_date_min": "2021-07-28",
-    "input_date_max": "2026-09-10",
+    "input_date_max": "2026-09-11",
     "coverage_effective_from": "2024-11-01",
     "coverage_effective_until": "2026-10-30",
     "source_period_count": 8,
@@ -83,20 +83,20 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 33.56973995271868,
-      "ProfitFactor": 0.48921938091941053,
-      "Expectancy": -0.00896230567655718,
-      "Trades": 423,
-      "CAGR": -6.548549482257593,
+      "WinRate": 33.490566037735846,
+      "ProfitFactor": 0.4885588937784045,
+      "Expectancy": -0.008964833206072323,
+      "Trades": 424,
+      "CAGR": -6.550339371369695,
       "MaxDD": -11.288339938472088
     },
     "swing": {
-      "WinRate": 44.370860927152314,
-      "ProfitFactor": 1.128960966436993,
-      "Expectancy": 0.005562688948244071,
-      "Trades": 302,
-      "CAGR": 4.098059279587596,
-      "MaxDD": -13.853836952718998
+      "WinRate": 44.224422442244226,
+      "ProfitFactor": 1.1195811085865417,
+      "Expectancy": 0.005184140359224569,
+      "Trades": 303,
+      "CAGR": 3.8017350604387934,
+      "MaxDD": -14.135890345178062
     }
   },
   "walk_forward": {
@@ -314,15 +314,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-09-10",
-    "pass": true,
-    "status": "risk_on",
-    "reason": "All regime checks passed",
+    "as_of_date": "2026-09-11",
+    "pass": false,
+    "status": "risk_off",
+    "reason": "Failed checks: breadth_ma20_ok",
     "values": {
-      "breadth_ma50_pct": 69.6969696969697,
-      "breadth_ma20_pct": 51.11111111111111,
-      "avg_ret20_pct": 4.833084619752871,
-      "median_atr_pct": 3.2344364094684006,
+      "breadth_ma50_pct": 60.60606060606061,
+      "breadth_ma20_pct": 35.55555555555556,
+      "avg_ret20_pct": 2.792809156784333,
+      "median_atr_pct": 3.2865399601802645,
       "sample_tickers": 45
     },
     "thresholds": {
@@ -333,7 +333,7 @@
     },
     "checks": {
       "breadth_ma50_ok": true,
-      "breadth_ma20_ok": true,
+      "breadth_ma20_ok": false,
       "avg_ret20_ok": true,
       "median_atr_ok": true
     }
@@ -356,16 +356,16 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.35745776127510653,
-        "rolling_expectancy": -0.011902083046600342,
+        "rolling_pf": 0.347991553977069,
+        "rolling_expectancy": -0.012159207610269366,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
       "swing": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.15597448993951313,
-        "rolling_expectancy": -0.05223039310712152,
+        "rolling_pf": 0.1537917714711525,
+        "rolling_expectancy": -0.05310867179649705,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       }
@@ -374,7 +374,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-09-10",
+    "as_of_date": "2026-09-11",
     "active": true,
     "active_modes": [
       "swing",
@@ -384,7 +384,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-09-13",
+    "cooldown_until": "2026-09-14",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {
@@ -402,13 +402,13 @@
   "gate_components": {
     "t1": {
       "model_gate_ok": false,
-      "regime_ok": true,
+      "regime_ok": false,
       "kill_switch_ok": false,
       "final_ok": false
     },
     "swing": {
       "model_gate_ok": false,
-      "regime_ok": true,
+      "regime_ok": false,
       "kill_switch_ok": false,
       "final_ok": false
     }
