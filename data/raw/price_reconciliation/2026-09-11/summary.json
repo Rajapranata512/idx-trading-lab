@@ -1,6 +1,6 @@
 {
   "market_date": "2026-09-11",
-  "recorded_at": "2026-09-11T16:38:16.970129+00:00",
+  "recorded_at": "2026-09-14T18:07:26.196049+00:00",
   "eligible": false,
   "reasons": [
     "reconciliation_not_passed",
@@ -17,7 +17,7 @@
   "rows_compared": 0,
   "evidence": {
     "primary_path": "data/raw/price_reconciliation/2026-09-11/primary_yfinance_primary.csv",
-    "primary_sha256": "66eacc18188771e09dad4a12c2c3a456d4e8c47ffc1c9e448ed61c2ba988094f",
+    "primary_sha256": "d6ce59b076610c1b5cb1e789f58f99b073afe58e60f6a1e1c0ac781477000ca9",
     "reference_path": "",
     "reference_sha256": "",
     "comparison_path": "data/raw/price_reconciliation/2026-09-11/comparison.csv",

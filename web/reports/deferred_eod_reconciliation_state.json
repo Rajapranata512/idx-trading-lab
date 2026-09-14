@@ -23,49 +23,6 @@
   "runs": [
     {
       "run_date": "2026-09-01",
-      "generated_at": "2026-09-01T14:52:45.653726+00:00",
-      "cycle": 5,
-      "selected_tickers": [
-        "AADI",
-        "ADMR",
-        "ADRO",
-        "AKRA",
-        "AMMN",
-        "AMRT",
-        "ANTM",
-        "ASII",
-        "BBCA",
-        "BBNI",
-        "BBRI",
-        "BBTN",
-        "BMRI",
-        "BRPT",
-        "BUMI"
-      ],
-      "success_tickers": [
-        "AADI",
-        "ADMR",
-        "ADRO",
-        "AKRA",
-        "AMMN",
-        "AMRT",
-        "ANTM",
-        "ASII",
-        "BBCA",
-        "BBNI",
-        "BBRI",
-        "BBTN",
-        "BMRI",
-        "BRPT",
-        "BUMI"
-      ],
-      "failures": [],
-      "idempotent_skip": false,
-      "completed_current_cycle": 15,
-      "cycle_completed": false
-    },
-    {
-      "run_date": "2026-09-01",
       "generated_at": "2026-09-01T15:29:50.516013+00:00",
       "cycle": 5,
       "selected_tickers": [],
@@ -670,9 +627,20 @@
       "idempotent_skip": true,
       "completed_current_cycle": 15,
       "cycle_completed": false
+    },
+    {
+      "run_date": "2026-09-15",
+      "generated_at": "2026-09-14T18:09:11.059787+00:00",
+      "cycle": 8,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": false,
+      "completed_current_cycle": 15,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-09-14T16:59:49.316250+00:00",
+  "updated_at": "2026-09-14T18:09:11.059787+00:00",
   "last_successful_batch": {
     "run_date": "2026-09-14",
     "generated_at": "2026-09-14T16:23:07.512780+00:00",
