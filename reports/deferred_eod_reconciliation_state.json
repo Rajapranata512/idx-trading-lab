@@ -38,49 +38,6 @@
   "runs": [
     {
       "run_date": "2026-09-02",
-      "generated_at": "2026-09-02T14:28:36.213031+00:00",
-      "cycle": 5,
-      "selected_tickers": [
-        "CPIN",
-        "CUAN",
-        "DEWA",
-        "EMTK",
-        "ESSA",
-        "EXCL",
-        "GOTO",
-        "HRTA",
-        "ICBP",
-        "INCO",
-        "INDF",
-        "INDY",
-        "INKP",
-        "ISAT",
-        "ITMG"
-      ],
-      "success_tickers": [
-        "CPIN",
-        "CUAN",
-        "DEWA",
-        "EMTK",
-        "ESSA",
-        "EXCL",
-        "GOTO",
-        "HRTA",
-        "ICBP",
-        "INCO",
-        "INDF",
-        "INDY",
-        "INKP",
-        "ISAT",
-        "ITMG"
-      ],
-      "failures": [],
-      "idempotent_skip": false,
-      "completed_current_cycle": 30,
-      "cycle_completed": false
-    },
-    {
-      "run_date": "2026-09-02",
       "generated_at": "2026-09-02T15:09:01.623883+00:00",
       "cycle": 5,
       "selected_tickers": [],
@@ -685,9 +642,20 @@
       "idempotent_skip": true,
       "completed_current_cycle": 30,
       "cycle_completed": false
+    },
+    {
+      "run_date": "2026-09-16",
+      "generated_at": "2026-09-15T17:10:53.456530+00:00",
+      "cycle": 8,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": false,
+      "completed_current_cycle": 30,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-09-15T15:36:13.437020+00:00",
+  "updated_at": "2026-09-15T17:10:53.456530+00:00",
   "last_successful_batch": {
     "run_date": "2026-09-15",
     "generated_at": "2026-09-15T15:00:16.350449+00:00",
