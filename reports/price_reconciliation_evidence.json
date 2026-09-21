@@ -1,25 +1,25 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-21T16:28:19.840358+00:00",
+  "updated_at": "2026-09-21T17:06:04.261918+00:00",
   "qualification": {
     "qualified": false,
     "required_consecutive_sessions": 5,
     "consecutive_passes": 0,
-    "latest_market_date": "2026-09-21",
+    "latest_market_date": "2026-09-18",
     "expected_session_dates": [
+      "2026-09-14",
       "2026-09-15",
       "2026-09-16",
       "2026-09-17",
-      "2026-09-18",
-      "2026-09-21"
+      "2026-09-18"
     ],
     "missing_session_dates": [],
     "failing_session_dates": [
+      "2026-09-14",
       "2026-09-15",
       "2026-09-16",
       "2026-09-17",
-      "2026-09-18",
-      "2026-09-21"
+      "2026-09-18"
     ],
     "calendar_error": "",
     "enforcement_enabled": false
@@ -675,7 +675,7 @@
     },
     {
       "market_date": "2026-09-18",
-      "recorded_at": "2026-09-18T16:35:19.275163+00:00",
+      "recorded_at": "2026-09-21T17:06:04.261494+00:00",
       "eligible": false,
       "reasons": [
         "reconciliation_not_passed",
@@ -692,7 +692,7 @@
       "rows_compared": 0,
       "evidence": {
         "primary_path": "data/raw/price_reconciliation/2026-09-18/primary_yfinance_primary.csv",
-        "primary_sha256": "44adace598e7e0c8c26944c4c2a09a8f09a04354be7447c31039643e6e88464f",
+        "primary_sha256": "5d4026ee676224142eef437f7bd8832540b0379670c9c1487b1fee2770445cec",
         "reference_path": "",
         "reference_sha256": "",
         "comparison_path": "data/raw/price_reconciliation/2026-09-18/comparison.csv",
