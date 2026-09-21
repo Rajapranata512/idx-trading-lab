@@ -7,49 +7,6 @@
   "runs": [
     {
       "run_date": "2026-09-08",
-      "generated_at": "2026-09-08T13:55:01.475716+00:00",
-      "cycle": 6,
-      "selected_tickers": [
-        "JPFA",
-        "KLBF",
-        "MAPI",
-        "MBMA",
-        "MDKA",
-        "MEDC",
-        "NCKL",
-        "PGAS",
-        "PGEO",
-        "PTBA",
-        "SCMA",
-        "TLKM",
-        "UNTR",
-        "UNVR",
-        "WIFI"
-      ],
-      "success_tickers": [
-        "JPFA",
-        "KLBF",
-        "MAPI",
-        "MBMA",
-        "MDKA",
-        "MEDC",
-        "NCKL",
-        "PGAS",
-        "PGEO",
-        "PTBA",
-        "SCMA",
-        "TLKM",
-        "UNTR",
-        "UNVR",
-        "WIFI"
-      ],
-      "failures": [],
-      "idempotent_skip": false,
-      "completed_current_cycle": 45,
-      "cycle_completed": true
-    },
-    {
-      "run_date": "2026-09-08",
       "generated_at": "2026-09-08T14:32:21.829048+00:00",
       "cycle": 7,
       "selected_tickers": [],
@@ -654,9 +611,20 @@
       "idempotent_skip": false,
       "completed_current_cycle": 0,
       "cycle_completed": false
+    },
+    {
+      "run_date": "2026-09-22",
+      "generated_at": "2026-09-21T18:17:28.773514+00:00",
+      "cycle": 10,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": false,
+      "completed_current_cycle": 0,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-09-21T17:06:59.316111+00:00",
+  "updated_at": "2026-09-21T18:17:28.773514+00:00",
   "last_successful_batch": {
     "run_date": "2026-09-21",
     "generated_at": "2026-09-21T16:29:01.536238+00:00",
