@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-09-22T17:07:07.491433+00:00",
+  "generated_at": "2026-09-23T15:01:37.524832+00:00",
   "run_date": "2026-09-23",
-  "status": "blocked",
+  "status": "pass",
   "mode": "deferred_free_tier",
   "same_day_reconciliation": false,
   "final_execution_eligible": false,
@@ -33,11 +33,43 @@
       "ISAT",
       "ITMG"
     ],
-    "selected_tickers": [],
-    "success_tickers": [],
+    "selected_tickers": [
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
+    ],
+    "success_tickers": [
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
+    ],
     "failures": [],
     "idempotent_skip": false,
-    "completed_current_cycle": 15,
+    "completed_current_cycle": 30,
     "universe_tickers": 45,
     "start_date": "2026-08-09",
     "end_date": "2026-09-23"
@@ -46,40 +78,41 @@
     "cycle": 10,
     "status": "collecting",
     "successful_dates": [
-      "2026-09-22"
+      "2026-09-22",
+      "2026-09-23"
     ],
-    "successful_date_count": 1,
+    "successful_date_count": 2,
     "minimum_successful_dates_required": 3,
-    "remaining_successful_dates": 2,
-    "completed_tickers": 15,
+    "remaining_successful_dates": 1,
+    "completed_tickers": 30,
     "universe_tickers": 45,
-    "remaining_tickers": 30,
-    "ticker_progress_ratio": 0.333333,
+    "remaining_tickers": 15,
+    "ticker_progress_ratio": 0.666667,
     "cycle_completed": false,
     "ready_for_deferred_audit": false,
     "same_day_reconciliation": false,
     "final_execution_eligible": false
   },
   "last_successful_batch": {
-    "run_date": "2026-09-22",
-    "generated_at": "2026-09-22T14:51:56.217576+00:00",
+    "run_date": "2026-09-23",
+    "generated_at": "2026-09-23T15:01:37.524832+00:00",
     "cycle": 10,
     "success_tickers": [
-      "AADI",
-      "ADMR",
-      "ADRO",
-      "AKRA",
-      "AMMN",
-      "AMRT",
-      "ANTM",
-      "ASII",
-      "BBCA",
-      "BBNI",
-      "BBRI",
-      "BBTN",
-      "BMRI",
-      "BRPT",
-      "BUMI"
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
     ],
     "completed_cycle_tickers": [
       "AADI",
@@ -96,68 +129,73 @@
       "BBTN",
       "BMRI",
       "BRPT",
-      "BUMI"
+      "BUMI",
+      "CPIN",
+      "CUAN",
+      "DEWA",
+      "EMTK",
+      "ESSA",
+      "EXCL",
+      "GOTO",
+      "HRTA",
+      "ICBP",
+      "INCO",
+      "INDF",
+      "INDY",
+      "INKP",
+      "ISAT",
+      "ITMG"
     ],
-    "completed_current_cycle": 15,
+    "completed_current_cycle": 30,
     "cycle_completed": false,
     "reconstructed_from_state": false
   },
   "account": {
-    "status": "blocked",
-    "ready": false,
-    "reason_codes": [
-      "provider_remaining_quota_insufficient"
-    ],
+    "status": "ready",
+    "ready": true,
+    "reason_codes": [],
     "subscription_type": "free",
     "usage_date": "2026-09-22",
-    "quota_date_utc": "2026-09-22",
-    "quota_reset_applied": false,
+    "quota_date_utc": "2026-09-23",
+    "quota_reset_applied": true,
     "daily_limit": 20,
     "reported_used_calls": 15,
-    "used_calls": 15,
+    "used_calls": 0,
     "extra_calls": 0,
-    "remaining_calls": 5,
+    "remaining_calls": 20,
     "universe_tickers": 45,
     "planned_tickers": 15,
     "quota_scope": "explicit_batch",
     "call_cost_per_ticker": 1,
     "reserve_calls": 5,
     "required_calls": 20,
-    "message": "Provider account quota is insufficient for the planned EOD request batch"
+    "message": "Provider account quota is sufficient for the planned EOD request batch"
   },
   "audit": {
     "minimum_tickers_per_session": 43,
     "universe_tickers": 45,
     "cache_tickers": 45,
     "cache_ticker_coverage_ratio": 1.0,
-    "fully_covered_session_count": 48,
+    "fully_covered_session_count": 49,
     "fully_covered_session_dates": [
-      "2026-09-14",
       "2026-09-15",
       "2026-09-16",
       "2026-09-17",
-      "2026-09-18"
+      "2026-09-18",
+      "2026-09-21"
     ],
     "status": "pass",
     "pass": true,
     "message": "Independent price reconciliation passed",
-    "market_date": "2026-09-18",
+    "market_date": "2026-09-21",
     "session_dates": [
-      "2026-09-14",
       "2026-09-15",
       "2026-09-16",
       "2026-09-17",
-      "2026-09-18"
+      "2026-09-18",
+      "2026-09-21"
     ],
     "sessions": [
-      {
-        "date": "2026-09-14",
-        "rows_expected": 45,
-        "rows_compared": 45,
-        "coverage_ratio": 1.0,
-        "mismatch_rows": 0,
-        "mismatch_ratio": 0.0
-      },
       {
         "date": "2026-09-15",
         "rows_expected": 45,
@@ -189,6 +227,14 @@
         "coverage_ratio": 1.0,
         "mismatch_rows": 0,
         "mismatch_ratio": 0.0
+      },
+      {
+        "date": "2026-09-21",
+        "rows_expected": 45,
+        "rows_compared": 45,
+        "coverage_ratio": 1.0,
+        "mismatch_rows": 0,
+        "mismatch_ratio": 0.0
       }
     ],
     "rows_expected": 225,
@@ -205,9 +251,9 @@
   },
   "artifacts": {
     "cache_path": "data/raw/deferred_eodhd_reference.csv",
-    "cache_sha256": "ee3ede66096625c5499bc7e9941447e91eccce55139dce7902084cc26d9f2c48",
+    "cache_sha256": "efa3794bdc5a3b676807fd05eea5b47a9e8d2a5cff66c4a4c4f019ed39c61d28",
     "state_path": "reports/deferred_eod_reconciliation_state.json",
     "details_path": "reports/deferred_eod_reconciliation_details.csv"
   },
-  "message": "Deferred reconciliation is collecting or blocked; final execution remains disabled"
+  "message": "Deferred reconciliation passed for research evidence; it is not same-day execution evidence"
 }
