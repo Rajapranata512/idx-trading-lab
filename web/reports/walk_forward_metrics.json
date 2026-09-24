@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-23T17:18:53.954607",
+  "generated_at": "2026-09-24T15:03:39.878321",
   "walk_forward": {
     "config": {
       "train_days": 252,
@@ -302,17 +302,17 @@
       "LQ45"
     ],
     "timezone": "Asia/Jakarta",
-    "input_rows": 72876,
-    "eligible_rows": 21798,
+    "input_rows": 72932,
+    "eligible_rows": 21854,
     "excluded_rows": 51078,
     "excluded_uncovered_rows": 46391,
     "excluded_non_member_rows": 4687,
-    "input_unique_dates": 1243,
+    "input_unique_dates": 1244,
     "input_unique_tickers": 56,
-    "eligible_unique_dates": 451,
+    "eligible_unique_dates": 452,
     "eligible_unique_tickers": 52,
     "input_date_min": "2021-07-28",
-    "input_date_max": "2026-09-23",
+    "input_date_max": "2026-09-24",
     "coverage_effective_from": "2024-11-01",
     "coverage_effective_until": "2026-10-30",
     "source_period_count": 8,
