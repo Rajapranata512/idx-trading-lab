@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-01T17:02:48.596577+00:00",
+  "generated_at": "2026-10-01T17:25:29.306636+00:00",
   "signals": {
-    "generated_at": "2026-10-01T17:02:37.789493",
+    "generated_at": "2026-10-01T17:25:23.342526",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -25,7 +25,7 @@
         "close": 3120.0,
         "volume": 28016200.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-10-01 17:01:40.114597",
+        "ingested_at": "2026-10-01 17:24:29.770653",
         "ret_1d": 0.0032154340836012,
         "ret_5d": 0.022950819672131,
         "ret_20d": 0.1470588235294117,
@@ -106,7 +106,7 @@
         "close": 27075.0,
         "volume": 8222500.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-10-01 17:01:40.114597",
+        "ingested_at": "2026-10-01 17:24:29.770653",
         "ret_1d": 0.0754716981132075,
         "ret_5d": 0.1096311475409836,
         "ret_20d": 0.0808383233532934,
@@ -187,7 +187,7 @@
         "close": 1550.0,
         "volume": 12581800.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-10-01 17:01:40.114597",
+        "ingested_at": "2026-10-01 17:24:29.770653",
         "ret_1d": 0.0,
         "ret_5d": 0.0264900662251654,
         "ret_20d": 0.0839160839160839,
@@ -268,7 +268,7 @@
         "close": 1320.0,
         "volume": 45773100.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-10-01 17:01:40.114597",
+        "ingested_at": "2026-10-01 17:24:29.770653",
         "ret_1d": 0.0,
         "ret_5d": 0.0076335877862594,
         "ret_20d": 0.0114942528735633,
@@ -351,7 +351,7 @@
         "close": 3120.0,
         "volume": 28016200.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-10-01 17:01:40.114597",
+        "ingested_at": "2026-10-01 17:24:29.770653",
         "ret_1d": 0.0032154340836012,
         "ret_5d": 0.022950819672131,
         "ret_20d": 0.1470588235294117,
@@ -432,7 +432,7 @@
         "close": 27075.0,
         "volume": 8222500.0,
         "source": "split_adjusted_csv",
-        "ingested_at": "2026-10-01 17:01:40.114597",
+        "ingested_at": "2026-10-01 17:24:29.770653",
         "ret_1d": 0.0754716981132075,
         "ret_5d": 0.1096311475409836,
         "ret_20d": 0.0808383233532934,
@@ -594,8 +594,8 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-10-01T17:02:37.919979",
-    "run_id": "20261001_170134",
+    "generated_at": "2026-10-01T17:25:23.475598",
+    "run_id": "20261001_172422",
     "gate_pass": {
       "t1": false,
       "swing": false
@@ -643,7 +643,7 @@
       "v2_profit_factor_r": 0.0
     },
     "score_funnel": {
-      "generated_at": "2026-10-01T17:01:46.542075",
+      "generated_at": "2026-10-01T17:24:31.306547",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -712,7 +712,7 @@
         "excluded_swing": 0
       },
       "profit_quality": {
-        "generated_at": "2026-10-01T17:01:46.519513",
+        "generated_at": "2026-10-01T17:24:31.285839",
         "stage": "score",
         "status": "ok",
         "enabled": true,
@@ -852,6 +852,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20261001.json",
+      "run_id": "20261001_172422",
+      "started_at": "2026-10-01T17:24:22.279219",
+      "ended_at": "2026-10-01T17:25:24.147040",
+      "source": "yfinance_primary",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 21,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20261001.json",
       "run_id": "20261001_170134",
@@ -1019,33 +1046,6 @@
       "run_id": "20260929_163007",
       "started_at": "2026-09-29T16:30:07.723349",
       "ended_at": "2026-09-29T16:31:15.590121",
-      "source": "yfinance_primary",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 21,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20260928.json",
-      "run_id": "20260928_194514",
-      "started_at": "2026-09-28T19:45:14.195286",
-      "ended_at": "2026-09-28T19:46:11.344260",
       "source": "yfinance_primary",
       "signals": 0,
       "error_count": 0,
