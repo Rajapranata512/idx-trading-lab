@@ -1,28 +1,28 @@
 {
-  "generated_at": "2026-10-01T18:29:59.828450",
-  "run_id": "20261001_182939",
-  "data_date": "2026-09-30",
+  "generated_at": "2026-10-02T16:16:24.232037",
+  "run_id": "20261002_161555",
+  "data_date": "2026-10-02",
   "signals": [
     {
       "ticker": "PTBA",
       "mode": "swing",
-      "score": 74.65,
+      "score": 85.27,
       "shadow_rank": 1,
-      "shadow_p_win": 0.4585,
-      "shadow_expected_r": -0.1162,
+      "shadow_p_win": 0.4291,
+      "shadow_expected_r": -0.1658,
       "shadow_threshold": 0.55,
       "shadow_recommended": false,
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 3120.0,
-      "stop": 2919.35,
-      "tp1": 3320.65,
-      "tp2": 3521.3,
+      "entry": 3180.0,
+      "stop": 2966.79,
+      "tp1": 3393.21,
+      "tp2": 3606.42,
       "size": 200
     },
     {
-      "ticker": "MAPI",
+      "ticker": "PTBA",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 2,
@@ -33,47 +33,11 @@
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 1550.0,
-      "stop": 1434.46,
-      "tp1": 1665.54,
-      "tp2": 1781.08,
-      "size": 500
-    },
-    {
-      "ticker": "PTBA",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.2638,
-      "shadow_expected_r": -0.1718,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "shadow_status": "ready",
-      "shadow_block_reason": "",
-      "entry": 3120.0,
-      "stop": 2919.35,
-      "tp1": 3320.65,
-      "tp2": 3521.3,
+      "entry": 3180.0,
+      "stop": 2966.79,
+      "tp1": 3393.21,
+      "tp2": 3606.42,
       "size": 300
-    },
-    {
-      "ticker": "AMRT",
-      "mode": "t1",
-      "score": 98.34,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.2638,
-      "shadow_expected_r": -0.1718,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "shadow_status": "ready",
-      "shadow_block_reason": "",
-      "entry": 1320.0,
-      "stop": 1247.24,
-      "tp1": 1392.76,
-      "tp2": 1465.51,
-      "size": 900
     }
   ],
   "infer": {
@@ -992,7 +956,7 @@
         "block_reason": ""
       },
       "t1": {
-        "rows": 3,
+        "rows": 1,
         "source": "model",
         "threshold": 0.52,
         "thresholds_by_regime": {
@@ -1903,7 +1867,7 @@
         "block_reason": ""
       }
     },
-    "rows": 4,
+    "rows": 2,
     "ready_modes": [
       "swing",
       "t1"
