@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-10-07T17:51:42.931717",
-  "run_id": "20261007_175121",
-  "data_date": "2026-10-06",
+  "generated_at": "2026-10-07T19:00:52.293435",
+  "run_id": "20261007_190034",
+  "data_date": "2026-10-07",
   "signals": [
     {
-      "ticker": "PTBA",
+      "ticker": "MAPI",
       "mode": "swing",
-      "score": 80.07,
+      "score": 69.73,
       "shadow_rank": 1,
-      "shadow_p_win": 0.4387,
-      "shadow_expected_r": -0.1404,
+      "shadow_p_win": 0.4502,
+      "shadow_expected_r": -0.1212,
       "shadow_threshold": 0.55,
       "shadow_recommended": false,
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 3400.0,
-      "stop": 3173.51,
-      "tp1": 3626.49,
-      "tp2": 3852.99,
-      "size": 300
+      "entry": 1550.0,
+      "stop": 1430.59,
+      "tp1": 1669.41,
+      "tp2": 1788.82,
+      "size": 500
     },
     {
       "ticker": "PTBA",
@@ -33,16 +33,16 @@
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 3400.0,
-      "stop": 3173.51,
-      "tp1": 3626.49,
-      "tp2": 3852.99,
-      "size": 300
+      "entry": 3380.0,
+      "stop": 3149.68,
+      "tp1": 3610.32,
+      "tp2": 3840.63,
+      "size": 200
     },
     {
-      "ticker": "ADRO",
+      "ticker": "KLBF",
       "mode": "t1",
-      "score": 97.29,
+      "score": 95.09,
       "shadow_rank": 3,
       "shadow_p_win": 0.2656,
       "shadow_expected_r": -0.1682,
@@ -51,29 +51,47 @@
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 2600.0,
-      "stop": 2429.49,
-      "tp1": 2770.51,
-      "tp2": 2941.01,
-      "size": 400
+      "entry": 755.0,
+      "stop": 708.29,
+      "tp1": 801.71,
+      "tp2": 848.41,
+      "size": 1400
     },
     {
-      "ticker": "KLBF",
+      "ticker": "ADRO",
       "mode": "t1",
-      "score": 95.34,
+      "score": 100.0,
       "shadow_rank": 4,
-      "shadow_p_win": 0.2656,
-      "shadow_expected_r": -0.1682,
+      "shadow_p_win": 0.1852,
+      "shadow_expected_r": -0.2126,
       "shadow_threshold": 0.52,
       "shadow_recommended": false,
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 755.0,
-      "stop": 708.55,
-      "tp1": 801.45,
-      "tp2": 847.9,
-      "size": 1400
+      "entry": 2600.0,
+      "stop": 2431.67,
+      "tp1": 2768.33,
+      "tp2": 2936.66,
+      "size": 400
+    },
+    {
+      "ticker": "ASII",
+      "mode": "t1",
+      "score": 95.84,
+      "shadow_rank": 5,
+      "shadow_p_win": 0.1852,
+      "shadow_expected_r": -0.2126,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 4780.0,
+      "stop": 4567.97,
+      "tp1": 4992.03,
+      "tp2": 5204.06,
+      "size": 300
     }
   ],
   "infer": {
@@ -986,7 +1004,7 @@
         "block_reason": ""
       },
       "t1": {
-        "rows": 3,
+        "rows": 4,
         "source": "model",
         "threshold": 0.52,
         "thresholds_by_regime": {
@@ -1891,7 +1909,7 @@
         "block_reason": ""
       }
     },
-    "rows": 4,
+    "rows": 5,
     "ready_modes": [
       "swing",
       "t1"
