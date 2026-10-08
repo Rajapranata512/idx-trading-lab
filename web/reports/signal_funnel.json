@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T19:00:47.001343",
+  "generated_at": "2026-10-08T17:24:06.227048",
   "thresholds": {
     "min_live_score_t1": 95.0,
     "min_live_score_swing": 68.0,
@@ -61,14 +61,14 @@
     "message": "Event-risk filter applied",
     "path": "data/reference/event_risk_blacklist.csv",
     "as_of_date": "2026-10-07",
-    "active_events": 11,
+    "active_events": 10,
     "excluded_count": 0,
     "excluded_tickers": [],
     "excluded_t1": 0,
     "excluded_swing": 0
   },
   "profit_quality": {
-    "generated_at": "2026-10-07T19:00:46.965073",
+    "generated_at": "2026-10-08T17:24:06.207039",
     "stage": "score",
     "status": "ok",
     "enabled": true,
