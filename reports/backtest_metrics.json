@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T18:56:17.410570",
+  "generated_at": "2026-10-09T16:59:34.803093",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -21,17 +21,17 @@
       "LQ45"
     ],
     "timezone": "Asia/Jakarta",
-    "input_rows": 73437,
-    "eligible_rows": 22359,
+    "input_rows": 73485,
+    "eligible_rows": 22407,
     "excluded_rows": 51078,
     "excluded_uncovered_rows": 46391,
     "excluded_non_member_rows": 4687,
-    "input_unique_dates": 1254,
+    "input_unique_dates": 1255,
     "input_unique_tickers": 56,
-    "eligible_unique_dates": 462,
+    "eligible_unique_dates": 463,
     "eligible_unique_tickers": 52,
     "input_date_min": "2021-07-28",
-    "input_date_max": "2026-10-08",
+    "input_date_max": "2026-10-09",
     "coverage_effective_from": "2024-11-01",
     "coverage_effective_until": "2026-10-30",
     "source_period_count": 8,
@@ -83,19 +83,19 @@
   },
   "metrics": {
     "t1": {
-      "WinRate": 33.182844243792324,
-      "ProfitFactor": 0.4778567875497946,
-      "Expectancy": -0.009093389308964665,
-      "Trades": 443,
-      "CAGR": -6.641325859350166,
+      "WinRate": 33.33333333333333,
+      "ProfitFactor": 0.47874348877979644,
+      "Expectancy": -0.009057501130091222,
+      "Trades": 444,
+      "CAGR": -6.616056065175191,
       "MaxDD": -11.543301454698845
     },
     "swing": {
-      "WinRate": 44.375,
-      "ProfitFactor": 1.126029970284108,
-      "Expectancy": 0.005385395908285418,
-      "Trades": 320,
-      "CAGR": 3.965180956130432,
+      "WinRate": 44.54828660436137,
+      "ProfitFactor": 1.1305326492403036,
+      "Expectancy": 0.005560423888406138,
+      "Trades": 321,
+      "CAGR": 4.102864242663373,
       "MaxDD": -14.534722775038114
     }
   },
@@ -382,15 +382,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-10-08",
+    "as_of_date": "2026-10-09",
     "pass": false,
     "status": "risk_off",
     "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
     "values": {
-      "breadth_ma50_pct": 15.555555555555555,
-      "breadth_ma20_pct": 11.11111111111111,
-      "avg_ret20_pct": -9.602301376347302,
-      "median_atr_pct": 3.457516727166331,
+      "breadth_ma50_pct": 22.22222222222222,
+      "breadth_ma20_pct": 28.888888888888886,
+      "avg_ret20_pct": -7.487701296457224,
+      "median_atr_pct": 3.423685651817491,
       "sample_tickers": 45
     },
     "thresholds": {
@@ -424,16 +424,16 @@
       "t1": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.31304839010215624,
-        "rolling_expectancy": -0.012476586056767412,
+        "rolling_pf": 0.31907091902320495,
+        "rolling_expectancy": -0.012316261062800834,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       },
       "swing": {
         "trades_recent": 80,
         "rolling_window": 80,
-        "rolling_pf": 0.27277583135045425,
-        "rolling_expectancy": -0.03722402406302015,
+        "rolling_pf": 0.29122225242917954,
+        "rolling_expectancy": -0.035854900443715344,
         "triggered": true,
         "reason": "triggered_by_rolling_pf_and_rolling_expectancy"
       }
@@ -442,7 +442,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-10-08",
+    "as_of_date": "2026-10-09",
     "active": true,
     "active_modes": [
       "swing",
@@ -452,7 +452,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-10-11",
+    "cooldown_until": "2026-10-12",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {

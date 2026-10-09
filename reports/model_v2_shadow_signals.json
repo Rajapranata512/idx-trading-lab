@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-10-08T18:56:10.662217",
-  "run_id": "20261008_185553",
-  "data_date": "2026-10-08",
+  "generated_at": "2026-10-09T16:59:27.244431",
+  "run_id": "20261009_165902",
+  "data_date": "2026-10-09",
   "signals": [
     {
-      "ticker": "PTBA",
+      "ticker": "KLBF",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 1,
@@ -15,65 +15,11 @@
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 3320.0,
-      "stop": 3090.42,
-      "tp1": 3549.58,
-      "tp2": 3779.16,
-      "size": 300
-    },
-    {
-      "ticker": "KLBF",
-      "mode": "t1",
-      "score": 100.0,
-      "shadow_rank": 2,
-      "shadow_p_win": 0.2656,
-      "shadow_expected_r": -0.1682,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "shadow_status": "ready",
-      "shadow_block_reason": "",
-      "entry": 775.0,
-      "stop": 728.06,
-      "tp1": 821.94,
-      "tp2": 868.88,
+      "entry": 785.0,
+      "stop": 737.84,
+      "tp1": 832.16,
+      "tp2": 879.32,
       "size": 1400
-    },
-    {
-      "ticker": "ASII",
-      "mode": "t1",
-      "score": 98.96,
-      "shadow_rank": 3,
-      "shadow_p_win": 0.2656,
-      "shadow_expected_r": -0.1682,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "shadow_status": "ready",
-      "shadow_block_reason": "",
-      "entry": 4800.0,
-      "stop": 4587.4,
-      "tp1": 5012.6,
-      "tp2": 5225.2,
-      "size": 300
-    },
-    {
-      "ticker": "MAPI",
-      "mode": "t1",
-      "score": 96.58,
-      "shadow_rank": 4,
-      "shadow_p_win": 0.1852,
-      "shadow_expected_r": -0.2126,
-      "shadow_threshold": 0.52,
-      "shadow_recommended": false,
-      "shadow_model_source": "model",
-      "shadow_status": "ready",
-      "shadow_block_reason": "",
-      "entry": 1550.0,
-      "stop": 1433.41,
-      "tp1": 1666.59,
-      "tp2": 1783.19,
-      "size": 500
     }
   ],
   "infer": {
@@ -81,7 +27,7 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 4,
+        "rows": 1,
         "source": "model",
         "threshold": 0.52,
         "thresholds_by_regime": {
@@ -986,7 +932,7 @@
         "block_reason": ""
       }
     },
-    "rows": 4,
+    "rows": 1,
     "ready_modes": [
       "t1"
     ],
