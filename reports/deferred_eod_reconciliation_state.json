@@ -7,49 +7,6 @@
   "runs": [
     {
       "run_date": "2026-09-29",
-      "generated_at": "2026-09-28T18:11:00.873920+00:00",
-      "cycle": 11,
-      "selected_tickers": [
-        "CPIN",
-        "CUAN",
-        "DEWA",
-        "EMTK",
-        "ESSA",
-        "EXCL",
-        "GOTO",
-        "HRTA",
-        "ICBP",
-        "INCO",
-        "INDF",
-        "INDY",
-        "INKP",
-        "ISAT",
-        "ITMG"
-      ],
-      "success_tickers": [
-        "CPIN",
-        "CUAN",
-        "DEWA",
-        "EMTK",
-        "ESSA",
-        "EXCL",
-        "GOTO",
-        "HRTA",
-        "ICBP",
-        "INCO",
-        "INDF",
-        "INDY",
-        "INKP",
-        "ISAT",
-        "ITMG"
-      ],
-      "failures": [],
-      "idempotent_skip": false,
-      "completed_current_cycle": 30,
-      "cycle_completed": false
-    },
-    {
-      "run_date": "2026-09-29",
       "generated_at": "2026-09-28T18:39:55.576793+00:00",
       "cycle": 11,
       "selected_tickers": [],
@@ -686,9 +643,20 @@
       "idempotent_skip": false,
       "completed_current_cycle": 45,
       "cycle_completed": true
+    },
+    {
+      "run_date": "2026-10-13",
+      "generated_at": "2026-10-12T20:20:22.905841+00:00",
+      "cycle": 15,
+      "selected_tickers": [],
+      "success_tickers": [],
+      "failures": [],
+      "idempotent_skip": true,
+      "completed_current_cycle": 0,
+      "cycle_completed": false
     }
   ],
-  "updated_at": "2026-10-12T19:50:27.833077+00:00",
+  "updated_at": "2026-10-12T20:20:22.905841+00:00",
   "last_successful_batch": {
     "run_date": "2026-10-13",
     "generated_at": "2026-10-12T19:50:27.833077+00:00",
@@ -762,22 +730,18 @@
     "reconstructed_from_state": false
   },
   "rollout": {
-    "cycle": 14,
-    "status": "complete",
-    "successful_dates": [
-      "2026-10-09",
-      "2026-10-10",
-      "2026-10-13"
-    ],
-    "successful_date_count": 3,
+    "cycle": 15,
+    "status": "collecting",
+    "successful_dates": [],
+    "successful_date_count": 0,
     "minimum_successful_dates_required": 3,
-    "remaining_successful_dates": 0,
-    "completed_tickers": 45,
+    "remaining_successful_dates": 3,
+    "completed_tickers": 0,
     "universe_tickers": 45,
-    "remaining_tickers": 0,
-    "ticker_progress_ratio": 1.0,
-    "cycle_completed": true,
-    "ready_for_deferred_audit": true,
+    "remaining_tickers": 45,
+    "ticker_progress_ratio": 0.0,
+    "cycle_completed": false,
+    "ready_for_deferred_audit": false,
     "same_day_reconciliation": false,
     "final_execution_eligible": false
   },
