@@ -1,25 +1,43 @@
 {
-  "generated_at": "2026-10-13T18:21:50.027241",
-  "run_id": "20261013_182129",
-  "data_date": "2026-10-09",
+  "generated_at": "2026-10-13T19:24:14.398894",
+  "run_id": "20261013_192355",
+  "data_date": "2026-10-13",
   "signals": [
     {
       "ticker": "KLBF",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 1,
-      "shadow_p_win": 0.2528,
-      "shadow_expected_r": -0.1731,
+      "shadow_p_win": 0.253,
+      "shadow_expected_r": -0.173,
       "shadow_threshold": 0.52,
       "shadow_recommended": false,
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 785.0,
-      "stop": 737.84,
-      "tp1": 832.16,
-      "tp2": 879.32,
-      "size": 1400
+      "entry": 780.0,
+      "stop": 730.46,
+      "tp1": 829.54,
+      "tp2": 879.08,
+      "size": 1300
+    },
+    {
+      "ticker": "ICBP",
+      "mode": "t1",
+      "score": 100.0,
+      "shadow_rank": 2,
+      "shadow_p_win": 0.2519,
+      "shadow_expected_r": -0.1736,
+      "shadow_threshold": 0.52,
+      "shadow_recommended": false,
+      "shadow_model_source": "model",
+      "shadow_status": "ready",
+      "shadow_block_reason": "",
+      "entry": 7025.0,
+      "stop": 6688.06,
+      "tp1": 7361.94,
+      "tp2": 7698.88,
+      "size": 200
     }
   ],
   "infer": {
@@ -27,7 +45,7 @@
     "message": "Shadow inference completed",
     "modes": {
       "t1": {
-        "rows": 1,
+        "rows": 2,
         "source": "model",
         "threshold": 0.52,
         "thresholds_by_regime": {
@@ -924,7 +942,7 @@
         "block_reason": ""
       }
     },
-    "rows": 1,
+    "rows": 2,
     "ready_modes": [
       "t1"
     ],

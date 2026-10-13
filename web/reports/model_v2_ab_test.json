@@ -1,14 +1,16 @@
 {
-  "generated_at": "2026-10-13T18:21:50.037090",
-  "run_id": "20261013_182129",
+  "generated_at": "2026-10-13T19:24:14.413275",
+  "run_id": "20261013_192355",
   "max_positions": 3,
   "v1_top": [
-    "KLBF"
+    "KLBF",
+    "ICBP"
   ],
   "v2_top": [],
   "overlap_count": 0,
   "overlap_tickers": [],
   "only_v1": [
+    "ICBP",
     "KLBF"
   ],
   "only_v2": [],
