@@ -1,20 +1,22 @@
 {
-  "generated_at": "2026-10-13T19:24:14.413275",
-  "run_id": "20261013_192355",
+  "generated_at": "2026-10-14T15:06:47.727499",
+  "run_id": "20261014_150618",
   "max_positions": 3,
   "v1_top": [
-    "KLBF",
-    "ICBP"
+    "MEDC",
+    "ICBP",
+    "KLBF"
   ],
   "v2_top": [],
   "overlap_count": 0,
   "overlap_tickers": [],
   "only_v1": [
     "ICBP",
-    "KLBF"
+    "KLBF",
+    "MEDC"
   ],
   "only_v2": [],
   "jaccard_overlap": 0.0,
-  "v1_avg_score": 100.0,
+  "v1_avg_score": 99.9967,
   "v2_avg_p_win": 0.0
 }
