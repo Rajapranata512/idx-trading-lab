@@ -3,7 +3,7 @@
   "consecutive_passes": 0,
   "model_signature": "t1:2026-07-17T05:46:16.313976|swing:2026-07-17T05:46:16.313976",
   "current_rollout_pct": 0,
-  "last_evaluated_at": "2026-10-14T17:23:54.616009",
+  "last_evaluated_at": "2026-10-15T14:59:16.916204",
   "last_reason": "promotion_gate_failed",
   "final_decision_ready": false,
   "modes": {
@@ -13,13 +13,14 @@
       "shadow_session_dates": [
         "2026-10-12",
         "2026-10-13",
-        "2026-10-14"
+        "2026-10-14",
+        "2026-10-15"
       ],
       "model_signature": "t1:2026-10-12T19:48:18.565750",
       "current_rollout_pct": 0,
-      "shadow_sessions": 3,
+      "shadow_sessions": 4,
       "shadow_sessions_required": 20,
-      "last_evaluated_at": "2026-10-14T17:23:54.613762",
+      "last_evaluated_at": "2026-10-15T14:59:16.914880",
       "last_reason": "promotion_gate_failed",
       "final_decision_ready": false
     },
@@ -29,13 +30,14 @@
       "shadow_session_dates": [
         "2026-10-12",
         "2026-10-13",
-        "2026-10-14"
+        "2026-10-14",
+        "2026-10-15"
       ],
       "model_signature": "swing:2026-10-12T19:48:18.565750",
       "current_rollout_pct": 0,
-      "shadow_sessions": 3,
+      "shadow_sessions": 4,
       "shadow_sessions_required": 20,
-      "last_evaluated_at": "2026-10-14T17:23:54.615996",
+      "last_evaluated_at": "2026-10-15T14:59:16.916198",
       "last_reason": "promotion_gate_failed",
       "final_decision_ready": false
     }
