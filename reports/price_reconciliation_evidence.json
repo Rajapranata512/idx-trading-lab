@@ -1,26 +1,26 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-15T17:12:40.051868+00:00",
+  "updated_at": "2026-10-16T14:49:06.948343+00:00",
   "qualification": {
     "qualified": false,
     "required_consecutive_sessions": 5,
     "consecutive_passes": 0,
-    "latest_market_date": "2026-10-14",
+    "latest_market_date": "2026-10-16",
     "expected_session_dates": [
-      "2026-10-08",
-      "2026-10-09",
       "2026-10-12",
       "2026-10-13",
-      "2026-10-14"
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16"
     ],
     "missing_session_dates": [
       "2026-10-12"
     ],
     "failing_session_dates": [
-      "2026-10-08",
-      "2026-10-09",
       "2026-10-13",
-      "2026-10-14"
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16"
     ],
     "calendar_error": "",
     "enforcement_enabled": false
@@ -1185,6 +1185,33 @@
         "comparison_path": "data/raw/price_reconciliation/2026-10-15/comparison.csv",
         "comparison_sha256": "c5b2bc343c9338acc855fd6b5b05cee65400460d2565007bcb0ea70fde6f29c8",
         "summary_path": "data/raw/price_reconciliation/2026-10-15/summary.json"
+      }
+    },
+    {
+      "market_date": "2026-10-16",
+      "recorded_at": "2026-10-16T14:49:06.948004+00:00",
+      "eligible": false,
+      "reasons": [
+        "reconciliation_not_passed",
+        "unexpected_primary_source",
+        "unexpected_reference_source",
+        "coverage_below_threshold"
+      ],
+      "status": "unavailable",
+      "primary_source": "yfinance_primary",
+      "reference_source": "",
+      "coverage_ratio": 0.0,
+      "mismatch_ratio": 0.0,
+      "active_unresolved_count": 0,
+      "rows_compared": 0,
+      "evidence": {
+        "primary_path": "data/raw/price_reconciliation/2026-10-16/primary_yfinance_primary.csv",
+        "primary_sha256": "c2edf945f231285b3f0dce637af1361abf280f9d372cdaf90d0b1a74271faa70",
+        "reference_path": "",
+        "reference_sha256": "",
+        "comparison_path": "data/raw/price_reconciliation/2026-10-16/comparison.csv",
+        "comparison_sha256": "c5b2bc343c9338acc855fd6b5b05cee65400460d2565007bcb0ea70fde6f29c8",
+        "summary_path": "data/raw/price_reconciliation/2026-10-16/summary.json"
       }
     }
   ]
