@@ -1,17 +1,21 @@
 {
-  "last_attempt_at": "2026-10-16T16:49:13.048979",
-  "last_success_at": "2026-10-15T14:59:07.426469",
-  "status": "failed_no_rows",
-  "message": "No rows fetched from event-risk sources; keeping existing blacklist file",
-  "errors": [
-    "SUSPEND: HTTP Error 503: Service Unavailable",
-    "UMA: HTTP Error 503: Service Unavailable",
-    "MATERIAL: HTTP Error 503: Service Unavailable"
-  ],
+  "last_attempt_at": "2026-10-19T16:59:06.959273",
+  "last_success_at": "2026-10-19T16:59:06.959273",
+  "status": "updated",
+  "message": "Event-risk blacklist updated successfully",
+  "counts": {
+    "rows": 848,
+    "tickers": 528,
+    "status_counts": {
+      "UMA": 528,
+      "SUSPEND": 320
+    }
+  },
+  "errors": [],
   "source_status": {
-    "SUSPEND": "error",
-    "UMA": "error",
-    "MATERIAL": "error"
+    "SUSPEND": "ok",
+    "UMA": "ok",
+    "MATERIAL": "ok"
   },
   "blacklist_path": "data/reference/event_risk_blacklist.csv"
 }
