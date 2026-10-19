@@ -52,7 +52,7 @@
       }
     },
     {
-      "byte_size": 5996855,
+      "byte_size": 5996856,
       "columns": [
         {
           "dtype": "str",
@@ -105,7 +105,7 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-19T17:30:57.092790+00:00",
+          "max": "2026-10-19T18:46:32.431814+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
@@ -116,14 +116,14 @@
       "required": true,
       "role": "feature_price_input",
       "rows": 55023,
-      "sha256": "63f4bed1c841d1b018bf5afa244da1cdb396af05dc55f38f0e44202f14aac281",
+      "sha256": "79c2fde7cc5913e6eddd61ca22f5750bddfe4b2368596d3f9158fcf01f76e14b",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
       }
     },
     {
-      "byte_size": 5556641,
+      "byte_size": 5556642,
       "columns": [
         {
           "dtype": "str",
@@ -168,7 +168,7 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-19T17:30:57.092790+00:00",
+          "max": "2026-10-19T18:46:32.431814+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
@@ -179,7 +179,7 @@
       "required": true,
       "role": "raw_canonical_price_audit",
       "rows": 55023,
-      "sha256": "fde72213ca845105c79337aff6fa9b3586c5cd170234bfe04ced79607fabca7c",
+      "sha256": "8131d8261574e071f3aa8767480fc612d414c3d9369d23cb86038d2f16e69802",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -273,8 +273,8 @@
           "min": "2026-06-29T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-19T17:31:56.144818+00:00",
-          "min": "2026-10-19T17:31:56.144818+00:00"
+          "max": "2026-10-19T18:47:32.406959+00:00",
+          "min": "2026-10-19T18:47:32.406959+00:00"
         }
       },
       "format": "csv",
@@ -284,7 +284,7 @@
       "required": true,
       "role": "independent_delayed_price_reference",
       "rows": 3537,
-      "sha256": "a594988694b0406e9e758775e6123861959e3f032102a241e94c01d8d50f3a36",
+      "sha256": "7e4a5b212f0d1e369ff5b3733919e99bd515218d20b5f18071c3ebb3cb8b146a",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 45
@@ -350,7 +350,7 @@
       "path": "reports/deferred_eod_reconciliation.json",
       "required": true,
       "role": "independent_price_comparison_summary",
-      "sha256": "bdf0a30790c414b8896057bce27661b246c5d3aaccdd856d994d0276ca2edc71",
+      "sha256": "19f86bfd2bb680a0d6b332cf5fb016015ee0cb7c1f5e75b09f3e62d1e2525d9b",
       "top_level_keys": [
         "account",
         "artifacts",
@@ -371,7 +371,7 @@
       ]
     },
     {
-      "byte_size": 14627977,
+      "byte_size": 14628134,
       "columns": [
         {
           "dtype": "datetime64[us]",
@@ -576,8 +576,8 @@
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-19T17:30:58.065437+00:00",
-          "min": "2026-10-19T17:30:58.065437+00:00"
+          "max": "2026-10-19T18:46:33.403863+00:00",
+          "min": "2026-10-19T18:46:33.403863+00:00"
         }
       },
       "format": "parquet",
@@ -587,7 +587,7 @@
       "required": true,
       "role": "model_feature_matrix",
       "rows": 55023,
-      "sha256": "16410d1361c5e7704be5dabbbc99c25a808d0eeb030faa54f40229f3c39c46cd",
+      "sha256": "58c74aec9d124fa42288a84252a31481a61ea02f68c1f7398eec2d54cd49d15e",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -787,7 +787,7 @@
       }
     }
   ],
-  "dataset_id": "e3af6fbd414a44751bc7d873e14d22323c6fab7c2f1dacede1cfcab02a2041fe",
+  "dataset_id": "670299fa639f64ed77cff5634040ed53c6322cca1bda58e5ab50afeb43639cc8",
   "feature_contract": {
     "canonical_input_columns": [
       "date",
@@ -861,5 +861,5 @@
     "contains_secrets": false,
     "final_execution_eligible": false
   },
-  "source_revision": "bd513c0550b5183ef3491756fe31b3294e655a89"
+  "source_revision": "902eff09a001d7e8611a9021ad9ace1deb3eedd7"
 }
