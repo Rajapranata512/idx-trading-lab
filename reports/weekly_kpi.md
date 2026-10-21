@@ -1,24 +1,24 @@
 # Weekly KPI Dashboard
 
-- generated_at: 2026-10-20T17:24:09.272767
+- generated_at: 2026-10-21T15:14:03.413794
 - lookback_days: 7
 
 ## Run Stability
-- runs_total: 17
+- runs_total: 14
 - runs_failed: 0
 - error_rate_pct: 0.0
 - runs_live_allowed: 0
-- runs_risk_blocked: 17
+- runs_risk_blocked: 14
 
 ## Event Risk Feed
-- update_ok: 17
+- update_ok: 14
 - update_error: 0
 
 ## Strategy Snapshot (Swing)
-- ProfitFactor: 1.108136216393034
-- Expectancy: 0.004641126172286156
-- MaxDD(%): -14.534722775038114
-- Trades: 327
+- ProfitFactor: 1.0929375603963856
+- Expectancy: 0.004031950390397904
+- MaxDD(%): -14.78123954208092
+- Trades: 328
 
 ## Live Reconciliation
 - status: no_signals

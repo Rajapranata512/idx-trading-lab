@@ -52,7 +52,7 @@
       }
     },
     {
-      "byte_size": 6001646,
+      "byte_size": 6006434,
       "columns": [
         {
           "dtype": "str",
@@ -101,11 +101,11 @@
       ],
       "date_coverage": {
         "date": {
-          "max": "2026-10-20T00:00:00+00:00",
+          "max": "2026-10-21T00:00:00+00:00",
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-20T17:23:25.026326+00:00",
+          "max": "2026-10-21T15:13:00.584172+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
@@ -115,15 +115,15 @@
       "path": "data/processed/prices_daily_adjusted.csv",
       "required": true,
       "role": "feature_price_input",
-      "rows": 55068,
-      "sha256": "16a1ec46239573e678ef32943012d8106d2d5147fb43cdcba9d64771c42fc22c",
+      "rows": 55113,
+      "sha256": "c4d69ebae36c51e776035a9ee855425e88b8d1cc69c06c710b6d851a8a41b394",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
       }
     },
     {
-      "byte_size": 5561072,
+      "byte_size": 5565500,
       "columns": [
         {
           "dtype": "str",
@@ -164,11 +164,11 @@
       ],
       "date_coverage": {
         "date": {
-          "max": "2026-10-20T00:00:00+00:00",
+          "max": "2026-10-21T00:00:00+00:00",
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-20T17:23:25.026326+00:00",
+          "max": "2026-10-21T15:13:00.584172+00:00",
           "min": "2026-05-19T07:25:56.245063+00:00"
         }
       },
@@ -178,8 +178,8 @@
       "path": "data/raw/prices_daily.csv",
       "required": true,
       "role": "raw_canonical_price_audit",
-      "rows": 55068,
-      "sha256": "10c28d39a9ea2dc441566fdab9fbcb3ec57db88e764e584255ee4f5ecddec285",
+      "rows": 55113,
+      "sha256": "bb22ad0899334f41b373c501e1ed29fdab10e0d93d489e4855158dbbdaef080e",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -228,7 +228,7 @@
       }
     },
     {
-      "byte_size": 309603,
+      "byte_size": 314770,
       "columns": [
         {
           "dtype": "str",
@@ -269,12 +269,12 @@
       ],
       "date_coverage": {
         "date": {
-          "max": "2026-10-20T00:00:00+00:00",
+          "max": "2026-10-21T00:00:00+00:00",
           "min": "2026-06-29T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-20T17:24:11.148417+00:00",
-          "min": "2026-10-20T17:24:11.148417+00:00"
+          "max": "2026-10-21T15:14:12.006366+00:00",
+          "min": "2026-10-21T15:14:06.054420+00:00"
         }
       },
       "format": "csv",
@@ -283,15 +283,15 @@
       "path": "data/raw/deferred_eodhd_reference.csv",
       "required": true,
       "role": "independent_delayed_price_reference",
-      "rows": 3597,
-      "sha256": "ae4ac7b33f9e4f93818d40a55a35297dc780da6d67bf8e5879ce8d4865fed921",
+      "rows": 3657,
+      "sha256": "4ccf5886edaae59a348a4884a6af6ed2b455108ff41df91cb67f48ae6fc5b48a",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 45
       }
     },
     {
-      "byte_size": 9781,
+      "byte_size": 9651,
       "columns": [
         {
           "dtype": "str",
@@ -324,8 +324,8 @@
       ],
       "date_coverage": {
         "date": {
-          "max": "2026-10-15T00:00:00+00:00",
-          "min": "2026-10-09T00:00:00+00:00"
+          "max": "2026-10-19T00:00:00+00:00",
+          "min": "2026-10-13T00:00:00+00:00"
         }
       },
       "format": "csv",
@@ -335,14 +335,14 @@
       "required": true,
       "role": "independent_price_comparison_rows",
       "rows": 225,
-      "sha256": "8f7c9c6c2b15a210767e24c4ab907ce9ce66d52f310e9be657d4a09f4df8d85a",
+      "sha256": "1501073412e4c7b10c2fa1cbfda3b8389f027c20583d92f9f4eacc5477d420d7",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 45
       }
     },
     {
-      "byte_size": 5421,
+      "byte_size": 6001,
       "format": "json",
       "hash_mode": "normalized_utf8_lf",
       "json_type": "dict",
@@ -350,7 +350,7 @@
       "path": "reports/deferred_eod_reconciliation.json",
       "required": true,
       "role": "independent_price_comparison_summary",
-      "sha256": "7d7703e3a475941db2c7396def8c25cb3d17fc1fe7e43400bdec62deb626fed3",
+      "sha256": "5148d309b574af84ea872295a648653d1d3d883991e9cb19e7dabff982097177",
       "top_level_keys": [
         "account",
         "artifacts",
@@ -371,7 +371,7 @@
       ]
     },
     {
-      "byte_size": 14612498,
+      "byte_size": 14664313,
       "columns": [
         {
           "dtype": "datetime64[us]",
@@ -572,12 +572,12 @@
       ],
       "date_coverage": {
         "date": {
-          "max": "2026-10-20T00:00:00+00:00",
+          "max": "2026-10-21T00:00:00+00:00",
           "min": "2021-06-30T00:00:00+00:00"
         },
         "ingested_at": {
-          "max": "2026-10-20T17:23:25.961594+00:00",
-          "min": "2026-10-20T17:23:25.961594+00:00"
+          "max": "2026-10-21T15:13:01.576199+00:00",
+          "min": "2026-10-21T15:13:01.576199+00:00"
         }
       },
       "format": "parquet",
@@ -586,8 +586,8 @@
       "path": "data/processed/features.parquet",
       "required": true,
       "role": "model_feature_matrix",
-      "rows": 55068,
-      "sha256": "7c10ab4bac3f3329994b3f094cb2a250c6a8cce83005a98911f7bdc14e8ccf83",
+      "rows": 55113,
+      "sha256": "d3bd957b8d15c67371279891792b122e99e924d028716f47f50352073a1d3b3d",
       "ticker_coverage": {
         "column": "ticker",
         "unique_count": 56
@@ -787,7 +787,7 @@
       }
     }
   ],
-  "dataset_id": "11b3c309facc658bdea4538348bb07c059226f0f81108aa918b9a5540416d310",
+  "dataset_id": "df62e93975b9d0dcbf8be2a90f908fa62299b39918e251af7768f74b35d83e19",
   "feature_contract": {
     "canonical_input_columns": [
       "date",
@@ -861,5 +861,5 @@
     "contains_secrets": false,
     "final_execution_eligible": false
   },
-  "source_revision": "0c4f0885c74b0bd118e5473298d836b13ef636f6"
+  "source_revision": "ae1ae9c159809994ca740a98f65ca7a334cf7d58"
 }
