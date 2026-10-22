@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T17:26:52.111127",
+  "generated_at": "2026-10-22T15:15:09.373070",
   "equity_allocation_pct": 3.0,
   "min_live_score_t1": 95.0,
   "min_live_score_swing": 68.0,
@@ -21,17 +21,17 @@
       "LQ45"
     ],
     "timezone": "Asia/Jakarta",
-    "input_rows": 73857,
-    "eligible_rows": 22779,
+    "input_rows": 73904,
+    "eligible_rows": 22826,
     "excluded_rows": 51078,
     "excluded_uncovered_rows": 46391,
     "excluded_non_member_rows": 4687,
-    "input_unique_dates": 1263,
+    "input_unique_dates": 1264,
     "input_unique_tickers": 56,
-    "eligible_unique_dates": 471,
+    "eligible_unique_dates": 472,
     "eligible_unique_tickers": 52,
     "input_date_min": "2021-07-28",
-    "input_date_max": "2026-10-21",
+    "input_date_max": "2026-10-22",
     "coverage_effective_from": "2024-11-01",
     "coverage_effective_until": "2026-10-30",
     "source_period_count": 8,
@@ -382,15 +382,15 @@
   },
   "regime": {
     "enabled": true,
-    "as_of_date": "2026-10-21",
+    "as_of_date": "2026-10-22",
     "pass": false,
     "status": "risk_off",
     "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
     "values": {
-      "breadth_ma50_pct": 4.444444444444445,
-      "breadth_ma20_pct": 4.444444444444445,
-      "avg_ret20_pct": -17.33395018624285,
-      "median_atr_pct": 5.350777151865,
+      "breadth_ma50_pct": 6.666666666666667,
+      "breadth_ma20_pct": 13.333333333333334,
+      "avg_ret20_pct": -14.6272035441358,
+      "median_atr_pct": 5.309948886867784,
       "sample_tickers": 45
     },
     "thresholds": {
@@ -442,7 +442,7 @@
   "kill_switch": {
     "enabled": true,
     "status": "triggered",
-    "as_of_date": "2026-10-21",
+    "as_of_date": "2026-10-22",
     "active": true,
     "active_modes": [
       "swing",
@@ -452,7 +452,7 @@
       "swing",
       "t1"
     ],
-    "cooldown_until": "2026-10-24",
+    "cooldown_until": "2026-10-25",
     "state_path": "reports/kill_switch_state.json"
   },
   "gate_pass_insample": {

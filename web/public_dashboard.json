@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-21T17:27:19.755592+00:00",
+  "generated_at": "2026-10-22T15:15:39.052420+00:00",
   "signals": {
-    "generated_at": "2026-10-21T17:27:14.071323",
+    "generated_at": "2026-10-22T15:15:28.443534",
     "total": 0,
     "avg_score": 0.0,
     "by_mode": {},
@@ -12,10 +12,92 @@
     "items": []
   },
   "top_picks": {
-    "t1_total": 0,
+    "t1_total": 1,
     "swing_total": 0,
     "intraday_total": 0,
-    "t1_items": [],
+    "t1_items": [
+      {
+        "date": "2026-10-22",
+        "ticker": "PGEO",
+        "open": 980.0,
+        "high": 1020.0,
+        "low": 960.0,
+        "close": 1005.0,
+        "volume": 15536600.0,
+        "source": "split_adjusted_csv",
+        "ingested_at": "2026-10-22 15:14:45.765178",
+        "ret_1d": 0.004999999999999893,
+        "ret_5d": 0.025510204081632626,
+        "ret_20d": -0.06074766355140182,
+        "ma_20": 974.5,
+        "ma_50": 1019.2,
+        "ma_200": null,
+        "vol_20d": 0.054756998506268605,
+        "avg_vol_20d": 16522175.0,
+        "turnover": 15614283000.0,
+        "turnover_20d": 15596957850.0,
+        "rsi_14": 52.368531873513405,
+        "atr_14": 50.35635420903868,
+        "atr_pct": 5.010582508357072,
+        "ma_slope_20": -0.006318407960192718,
+        "ma_slope_50": -0.0015721393034810183,
+        "dist_ma_20": 0.030348258706437464,
+        "dist_ma_50": -0.014129353233816833,
+        "vol_60d": 0.035941730180668305,
+        "vol_ratio": 1.5234936300375068,
+        "ret_5d_20d_ratio": 0.4199371987386789,
+        "high_low_range": 0.05970149253725403,
+        "close_position": 0.7499999999875,
+        "volume_ratio_20d": 0.9403483500205027,
+        "turnover_ratio_20d": 1.0011108031557576,
+        "rsi_slope": 10.151405315818089,
+        "obv_slope": -0.39157418548316936,
+        "mfi_14": 38.03205849603186,
+        "high_20": 1070.0,
+        "low_20": 820.0,
+        "dist_high_20": -0.060747663552279674,
+        "dist_low_20": 0.22560975609606637,
+        "ma_gap_20_50": -0.0444776119402543,
+        "ma_stack_bullish": 0.0,
+        "rank_ret_20d": 0.7555555555555555,
+        "rank_vol_20d": 0.8888888888888888,
+        "market_breadth_ma20_pct": 13.333333333333334,
+        "market_breadth_ma50_pct": 6.666666666666667,
+        "market_avg_ret20_pct": -14.627203544135803,
+        "market_median_atr_pct": 5.309948886867784,
+        "relative_ret_20d": 0.08552437188995621,
+        "score": 100.0,
+        "reason": "Trend MA20 + momentum 5D + volatility sehat",
+        "mode": "t1",
+        "rank": 1,
+        "sizing_method": "volatility",
+        "entry": 1005.0,
+        "stop": 904.29,
+        "tp1": 1105.71,
+        "tp2": 1206.43,
+        "trailing_stop_rule": "If Close >= TP1 -> Stop Loss = Entry (Break-Even)",
+        "risk_per_share": 100.71,
+        "size": 400,
+        "position_value": 402000.0,
+        "risk_budget_base": 60000.0,
+        "risk_budget_effective": 43493.62,
+        "vol_target_multiplier": 0.7249,
+        "vol_target_multiplier_market": 0.7627,
+        "vol_target_multiplier_asset": 0.6812,
+        "vol_target_multiplier_asset_atr": 0.8001,
+        "vol_target_multiplier_asset_realized": 0.5353,
+        "vol_target_market_vol_index": 1.3112,
+        "vol_target_market_regime": "high",
+        "vol_target_regime_cap_enabled": true,
+        "vol_target_regime_cap": 0.75,
+        "vol_target_regime_cap_raw": 0.75,
+        "vol_target_realized_weight": 0.4,
+        "vol_target_ref_realized_pct": 2.9309,
+        "arb_protection_enabled": true,
+        "arb_worst_case_loss_pct": 19.56,
+        "arb_worst_case_idr": 78648.0
+      }
+    ],
     "swing_items": [],
     "intraday_items": []
   },
@@ -40,15 +122,15 @@
     },
     "regime": {
       "enabled": true,
-      "as_of_date": "2026-10-21",
+      "as_of_date": "2026-10-22",
       "pass": false,
       "status": "risk_off",
       "reason": "Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok",
       "values": {
-        "breadth_ma50_pct": 4.444444444444445,
-        "breadth_ma20_pct": 4.444444444444445,
-        "avg_ret20_pct": -17.33395018624285,
-        "median_atr_pct": 5.350777151865,
+        "breadth_ma50_pct": 6.666666666666667,
+        "breadth_ma20_pct": 13.333333333333334,
+        "avg_ret20_pct": -14.6272035441358,
+        "median_atr_pct": 5.309948886867784,
         "sample_tickers": 45
       },
       "thresholds": {
@@ -67,7 +149,7 @@
     "kill_switch": {
       "enabled": true,
       "status": "triggered",
-      "as_of_date": "2026-10-21",
+      "as_of_date": "2026-10-22",
       "active": true,
       "active_modes": [
         "swing",
@@ -77,7 +159,7 @@
         "swing",
         "t1"
       ],
-      "cooldown_until": "2026-10-24",
+      "cooldown_until": "2026-10-25",
       "state_path": "reports/kill_switch_state.json"
     },
     "model_v2_promotion": {},
@@ -106,18 +188,20 @@
     }
   },
   "funnel": {
-    "generated_at": "2026-10-21T17:27:14.177642",
-    "run_id": "20261021_172621",
+    "generated_at": "2026-10-22T15:15:28.548523",
+    "run_id": "20261022_151435",
     "gate_pass": {
       "t1": false,
       "swing": false
     },
     "allowed_modes": [],
     "pre_gate": {
-      "combined_plan_count": 0,
-      "execution_plan_count": 0,
-      "signal_count": 0,
-      "by_mode": {}
+      "combined_plan_count": 1,
+      "execution_plan_count": 1,
+      "signal_count": 1,
+      "by_mode": {
+        "t1": 1
+      }
     },
     "post_gate": {
       "combined_plan_count": 0,
@@ -138,7 +222,7 @@
     "signal_accuracy": {
       "status": "ok",
       "json_path": "reports/signal_accuracy_audit.json",
-      "audited_trade_count": 4458,
+      "audited_trade_count": 4466,
       "live_threshold_trade_count": 2199,
       "live_expectancy_r": -0.1365,
       "live_profit_factor_r": 0.5468
@@ -146,13 +230,13 @@
     "model_v2_accuracy": {
       "status": "ok",
       "json_path": "reports/model_v2_accuracy_audit.json",
-      "audited_trade_count": 4458,
+      "audited_trade_count": 4466,
       "v2_recommended_count": 0,
       "v2_expectancy_r": 0.0,
       "v2_profit_factor_r": 0.0
     },
     "score_funnel": {
-      "generated_at": "2026-10-21T17:26:33.397754",
+      "generated_at": "2026-10-22T15:14:51.846202",
       "thresholds": {
         "min_live_score_t1": 95.0,
         "min_live_score_swing": 68.0,
@@ -172,31 +256,31 @@
       "modes": {
         "t1": {
           "rank_candidates": 10,
-          "after_score_filter": 0,
-          "after_event_risk": 0,
+          "after_score_filter": 1,
+          "after_event_risk": 1,
           "small_size_before_filter": 2,
-          "dropped_by_score": 10,
+          "dropped_by_score": 9,
           "dropped_by_event_risk": 0
         },
         "swing": {
-          "rank_candidates": 1,
+          "rank_candidates": 2,
           "after_score_filter": 0,
           "after_event_risk": 0,
-          "small_size_before_filter": 0,
-          "dropped_by_score": 1,
+          "small_size_before_filter": 1,
+          "dropped_by_score": 2,
           "dropped_by_event_risk": 0
         }
       },
       "combined": {
-        "before_size_filter": 0,
+        "before_size_filter": 1,
         "dropped_by_size_filter": 0,
-        "after_size_filter": 0,
-        "after_top_n_combined": 0,
-        "execution_plan_count": 0,
-        "signal_count": 0,
-        "avg_roundtrip_cost_est_pct": null,
-        "before_profit_quality_gate": 0,
-        "after_profit_quality_gate": 0,
+        "after_size_filter": 1,
+        "after_top_n_combined": 1,
+        "execution_plan_count": 1,
+        "signal_count": 1,
+        "avg_roundtrip_cost_est_pct": 0.56,
+        "before_profit_quality_gate": 1,
+        "after_profit_quality_gate": 1,
         "dropped_by_profit_quality": 0
       },
       "data_quality_exclusions": {
@@ -213,7 +297,7 @@
         "status": "ok",
         "message": "Event-risk filter applied",
         "path": "data/reference/event_risk_blacklist.csv",
-        "as_of_date": "",
+        "as_of_date": "2026-10-22",
         "active_events": 6,
         "excluded_count": 0,
         "excluded_tickers": [],
@@ -221,14 +305,14 @@
         "excluded_swing": 0
       },
       "profit_quality": {
-        "generated_at": "2026-10-21T17:26:33.391461",
+        "generated_at": "2026-10-22T15:14:51.830686",
         "stage": "score",
         "status": "ok",
         "enabled": true,
-        "input_count": 0,
-        "output_count": 0,
+        "input_count": 1,
+        "output_count": 1,
         "blocked_count": 0,
-        "watch_count": 0,
+        "watch_count": 1,
         "pass_count": 0,
         "profile_path": "reports/ticker_edge_profile.csv",
         "profile_rows": 0,
@@ -255,7 +339,7 @@
         "reason": "Penghentian Sementara Perdagangan (Suspend) Saham PT Anugerah Kagum Karya Utama Tbk. (AKKU)",
         "start_date": "2026-10-15",
         "end_date": "2026-10-29",
-        "updated_at": "2026-10-21",
+        "updated_at": "2026-10-22",
         "source": "idx_announcement_suspend"
       },
       {
@@ -264,7 +348,7 @@
         "reason": "UMA atas Saham PT Anugerah Kagum Karya Utama Tbk. (AKKU)",
         "start_date": "2026-10-08",
         "end_date": "2026-10-22",
-        "updated_at": "2026-10-21",
+        "updated_at": "2026-10-22",
         "source": "idx_announcement_uma"
       },
       {
@@ -273,7 +357,7 @@
         "reason": "Penghentian Sementara Perdagangan (Suspend) Saham PT Alkindo Naratama Tbk. (ALDO)",
         "start_date": "2026-10-15",
         "end_date": "2026-10-29",
-        "updated_at": "2026-10-21",
+        "updated_at": "2026-10-22",
         "source": "idx_announcement_suspend"
       },
       {
@@ -282,7 +366,7 @@
         "reason": "UMA atas Saham PT Alkindo Naratama Tbk. (ALDO)",
         "start_date": "2026-10-14",
         "end_date": "2026-10-28",
-        "updated_at": "2026-10-21",
+        "updated_at": "2026-10-22",
         "source": "idx_announcement_uma"
       },
       {
@@ -291,7 +375,7 @@
         "reason": "UMA atas Saham PT Prima Cakrawala Abadi Tbk. (PCAR)",
         "start_date": "2026-10-09",
         "end_date": "2026-10-23",
-        "updated_at": "2026-10-21",
+        "updated_at": "2026-10-22",
         "source": "idx_announcement_uma"
       },
       {
@@ -300,7 +384,7 @@
         "reason": "Penghentian Sementara Perdagangan (Suspend) Saham PT Tifico Fiber Indonesia Tbk. (TFCO)",
         "start_date": "2026-10-13",
         "end_date": "2026-10-27",
-        "updated_at": "2026-10-21",
+        "updated_at": "2026-10-22",
         "source": "idx_announcement_suspend"
       }
     ],
@@ -334,6 +418,33 @@
     "recent_trades": []
   },
   "runs": [
+    {
+      "file": "run_log_20261022.json",
+      "run_id": "20261022_151435",
+      "started_at": "2026-10-22T15:14:35.574957",
+      "ended_at": "2026-10-22T15:15:29.385505",
+      "source": "yfinance_primary",
+      "signals": 0,
+      "error_count": 0,
+      "warning_count": 1,
+      "events": 21,
+      "issues": [
+        {
+          "level": "WARN",
+          "message": "live_gate_blocked",
+          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
+          "category": "protective_warning",
+          "category_label": "Protective warning",
+          "category_tone": "protective",
+          "summary": "Run completed. Trading was intentionally blocked by risk controls."
+        }
+      ],
+      "status": "warning",
+      "status_category": "protective_warning",
+      "status_category_label": "Protective warning",
+      "status_tone": "protective",
+      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
+    },
     {
       "file": "run_log_20261021.json",
       "run_id": "20261021_172621",
@@ -522,33 +633,6 @@
       "status_category_label": "Protective warning",
       "status_tone": "protective",
       "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
-    },
-    {
-      "file": "run_log_20261019.json",
-      "run_id": "20261019_173049",
-      "started_at": "2026-10-19T17:30:49.213377",
-      "ended_at": "2026-10-19T17:31:53.895623",
-      "source": "yfinance_primary",
-      "signals": 0,
-      "error_count": 0,
-      "warning_count": 1,
-      "events": 21,
-      "issues": [
-        {
-          "level": "WARN",
-          "message": "live_gate_blocked",
-          "detail": "No mode passed the live gate | Regime=risk_off | Failed checks: breadth_ma50_ok, breadth_ma20_ok, avg_ret20_ok | Kill switch=triggered",
-          "category": "protective_warning",
-          "category_label": "Protective warning",
-          "category_tone": "protective",
-          "summary": "Run completed. Trading was intentionally blocked by risk controls."
-        }
-      ],
-      "status": "warning",
-      "status_category": "protective_warning",
-      "status_category_label": "Protective warning",
-      "status_tone": "protective",
-      "status_note": "Run completed normally. Trading was intentionally held back by the system's risk controls."
     }
   ],
   "report": {
@@ -586,9 +670,9 @@
       "reconciliation_ok": true
     },
     "stats": {
-      "rows_total": 55113,
+      "rows_total": 55158,
       "ticker_total": 56,
-      "max_data_date": "2026-10-21",
+      "max_data_date": "2026-10-22",
       "stale_days": 0,
       "missing_rows": 0,
       "duplicate_rows": 0,
