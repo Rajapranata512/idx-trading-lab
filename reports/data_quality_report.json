@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-23T15:02:15.436511+00:00",
+  "generated_at": "2026-10-23T15:46:25.509636+00:00",
   "status": "warning",
   "pass": true,
   "reason_codes": [],
@@ -91,7 +91,7 @@
       "history_path": "reports/price_reconciliation_evidence.json",
       "session": {
         "market_date": "2026-10-23",
-        "recorded_at": "2026-10-23T15:02:15.410598+00:00",
+        "recorded_at": "2026-10-23T15:46:25.478873+00:00",
         "eligible": false,
         "reasons": [
           "reconciliation_not_passed",
@@ -108,7 +108,7 @@
         "rows_compared": 0,
         "evidence": {
           "primary_path": "data/raw/price_reconciliation/2026-10-23/primary_yfinance_primary.csv",
-          "primary_sha256": "82ef4fa9d11da32d52428983462a64f1b5556d2055ad93b20bd4ee8788da2a43",
+          "primary_sha256": "a59df7f93ada4eb51f2c6e7998901267ba05d80afedb1e1802ed2b4c9c511a64",
           "reference_path": "",
           "reference_sha256": "",
           "comparison_path": "data/raw/price_reconciliation/2026-10-23/comparison.csv",
