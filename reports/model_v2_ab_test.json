@@ -1,22 +1,20 @@
 {
-  "generated_at": "2026-10-26T18:45:25.042081",
-  "run_id": "20261026_184502",
+  "generated_at": "2026-10-27T15:53:38.881583",
+  "run_id": "20261027_155210",
   "max_positions": 3,
   "v1_top": [
-    "PGEO",
-    "BBNI",
-    "BMRI"
+    "AKRA",
+    "ASII"
   ],
   "v2_top": [],
   "overlap_count": 0,
   "overlap_tickers": [],
   "only_v1": [
-    "BBNI",
-    "BMRI",
-    "PGEO"
+    "AKRA",
+    "ASII"
   ],
   "only_v2": [],
   "jaccard_overlap": 0.0,
-  "v1_avg_score": 97.75,
+  "v1_avg_score": 97.56,
   "v2_avg_p_win": 0.0
 }
