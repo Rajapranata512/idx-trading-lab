@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-27T15:53:38.866908",
-  "run_id": "20261027_155210",
+  "generated_at": "2026-10-27T16:43:30.766426",
+  "run_id": "20261027_164309",
   "data_date": "2026-10-27",
   "signals": [
     {
@@ -939,11 +939,10 @@
     "blocked_modes": []
   },
   "train": {
-    "status": "updated",
-    "message": "Model v2 trained for modes: t1, swing",
-    "updated": true,
+    "status": "skipped_interval",
+    "message": "Last model_v2 training still within 7 days interval",
+    "updated": false,
     "state_path": "reports/model_v2_state.json",
-    "model_dir": "models/model_v2",
     "modes": {
       "t1": {
         "status": "trained",
@@ -2702,7 +2701,6 @@
         "metadata_path": "models/model_v2/swing.meta.json"
       }
     },
-    "errors": [],
     "artifact_check": {
       "ready": true,
       "missing_modes": [],
