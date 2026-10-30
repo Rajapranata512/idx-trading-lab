@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-10-29T18:34:54.464845",
-  "run_id": "20261029_183433",
-  "data_date": "2026-10-29",
+  "generated_at": "2026-10-30T16:42:12.383806",
+  "run_id": "20261030_164142",
+  "data_date": "2026-10-30",
   "signals": [
     {
       "ticker": "ASII",
       "mode": "t1",
       "score": 100.0,
       "shadow_rank": 1,
-      "shadow_p_win": 0.2435,
-      "shadow_expected_r": -0.1752,
+      "shadow_p_win": 0.2399,
+      "shadow_expected_r": -0.1772,
       "shadow_threshold": 0.52,
       "shadow_recommended": false,
       "shadow_model_source": "model",
       "shadow_status": "ready",
       "shadow_block_reason": "",
-      "entry": 4690.0,
-      "stop": 4299.96,
-      "tp1": 5080.04,
-      "tp2": 5470.07,
+      "entry": 4800.0,
+      "stop": 4414.97,
+      "tp1": 5185.03,
+      "tp2": 5570.07,
       "size": 100
     }
   ],
